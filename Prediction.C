@@ -97,6 +97,12 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
 
 	 ElecAccHTMHT_NJetsLow_ = (TH2F*)EffInputFolder->Get("ElecAccHTMHT_NJetsLow");
 	 ElecAccHTMHT_NJetsHigh_ = (TH2F*)EffInputFolder->Get("ElecAccHTMHT_NJetsHigh");
+
+	 	 MuAccHTMHTB0_ = (TH2F*)EffInputFolder->Get("MuAccHTMHTB0");
+	 MuAccHTMHTB1_Inf_ = (TH2F*)EffInputFolder->Get("MuAccHTMHTB1_Inf");
+
+	 ElecAccHTMHTB0_ = (TH2F*)EffInputFolder->Get("ElecAccHTMHTB0");
+	 ElecAccHTMHTB1_Inf_ = (TH2F*)EffInputFolder->Get("ElecAccHTMHTB1_Inf");
 	 
 	 // load TEfficiencies
 	 TDirectory *TEffInputFolder =   (TDirectory*)effInput->Get("TEfficiencies");

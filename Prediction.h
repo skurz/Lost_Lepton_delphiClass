@@ -200,6 +200,12 @@ public :
 
 	 TH2F *ElecAccHTMHT_NJetsLow_;
 	 TH2F *ElecAccHTMHT_NJetsHigh_;
+
+	 TH2F *MuAccHTMHTB0_;
+	 TH2F *MuAccHTMHTB1_Inf_;
+
+	 TH2F *ElecAccHTMHTB0_;
+	 TH2F *ElecAccHTMHTB1_Inf_;
    
 	 TH2F *ElecIsoPTActivity_, *ElecIsoPTActivityTAPMC_;
 //    TH1F *ElecRecoActivity_;

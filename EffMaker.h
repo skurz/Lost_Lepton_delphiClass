@@ -326,6 +326,8 @@ public :
 	TH2F *MuAccMHTNJetsB1_Inf_, *MuAccMHTNJetsB1_InfFail_;
 	TH2F *MuAccHTMHT_NJetsLow_, *MuAccHTMHT_NJetsLowFail_;
 	TH2F *MuAccHTMHT_NJetsHigh_, *MuAccHTMHT_NJetsHighFail_;
+	TH2F *MuAccHTMHTB0_, *MuAccHTMHTB0Fail_;
+	TH2F *MuAccHTMHTB1_Inf_, *MuAccHTMHTB1_InfFail_;
 	
 	// elec
 	//1D
@@ -345,6 +347,8 @@ public :
 	TH2F *ElecAccMHTNJetsB1_Inf_, *ElecAccMHTNJetsB1_InfFail_;
 	TH2F *ElecAccHTMHT_NJetsLow_, *ElecAccHTMHT_NJetsLowFail_;
 	TH2F *ElecAccHTMHT_NJetsHigh_, *ElecAccHTMHT_NJetsHighFail_;
+	TH2F *ElecAccHTMHTB0_, *ElecAccHTMHTB0Fail_;
+	TH2F *ElecAccHTMHTB1_Inf_, *ElecAccHTMHTB1_InfFail_;
 	
 	// Recoeptance
 	// mu 
