@@ -504,10 +504,12 @@ void ResultPlot()
 	TH1F* h_cs_elec = (TH1F*) ControlSampleElec_->getFullTH1F();
 
 	TH1F* fullPred_LL_ = new TH1F("fullPred_LL","fullPred_LL", 72, 1, 73);
-	TH1F* fullStatUp_LL_ = new TH1F("fullStatUp_LL","fullStatUp_LL", 72, 1, 73);
-	TH1F* fullStatDown_LL_ = new TH1F("fullStatDown_LL","fullStatDown_LL", 72, 1, 73);
+	TH1F* fullPredSysUp_LL_ = new TH1F("fullPredSysUp_LL","fullPredSysUp_LL", 72, 1, 73);
+	TH1F* fullPredSysDown_LL_ = new TH1F("fullPredSysDown_LL","fullPredSysDown_LL", 72, 1, 73);
 	TH1F* fullCS_LL_ = new TH1F("fullCS_LL","fullCS_LL", 72, 1, 73);
 	TH1F* fullWeight_LL_ = new TH1F("fullWeight_LL","fullWeight_LL", 72, 1, 73);
+	TH1F* fullWeightSysUp_LL_ = new TH1F("fullWeightSysUp_LL","fullWeightSysDown_LL", 72, 1, 73);
+	TH1F* fullWeightSysDown_LL_ = new TH1F("fullWeightSysUp_LL","fullWeightSysDown_LL", 72, 1, 73);
 
 	for(int i = 1; i<h_pred->GetNbinsX()+1; ++i){
 		double N_predicted = h_pred->GetBinContent(i);
@@ -527,17 +529,24 @@ void ResultPlot()
 		double Err_cs_mu = sqrt(N_cs_mu);
 		double Err_cs_elec = sqrt(N_cs_elec);
 
-		if(CombinedWeightDiLepPerBin_[i-1]->GetEntries()<3.5 && i > 37){
+		if(CombinedWeightDiLepPerBin_[i-1]->GetEntries()<0.5 && i > 37){
 			weight_combined = CombinedMeanWeightDiLep_->GetBinContent(i+1-18);
-			weight_combined_err = CombinedMeanWeightDiLep_->GetBinError(i+1-18)+0.2*0.2*weight_combined*weight_combined;
-			if(i > 55 && CombinedWeightDiLepPerBin_[i-1-18]->GetEntries()<3.5){
+			weight_combined_err = CombinedMeanWeightDiLep_->GetBinError(i+1-18);
+			fullWeightSysUp_LL_->SetBinContent(i,weight_combined*0.2);
+			fullWeightSysDown_LL_->SetBinContent(i,weight_combined*0.2);
+			if(i > 55 && CombinedWeightDiLepPerBin_[i-1-18]->GetEntries()<0.5){
 				weight_combined = CombinedMeanWeightDiLep_->GetBinContent(i+1-18);
-				weight_combined_err = CombinedMeanWeightDiLep_->GetBinError(i+1-18)+0.2*0.2*weight_combined*weight_combined;
+				weight_combined_err = CombinedMeanWeightDiLep_->GetBinError(i+1-18);
+				fullWeightSysUp_LL_->SetBinContent(i,weight_combined*0.3);
+				fullWeightSysDown_LL_->SetBinContent(i,weight_combined*0.3);
 			}
+		}else{
+			fullWeightSysUp_LL_->SetBinContent(i,0);
+			fullWeightSysDown_LL_->SetBinContent(i,0);
 		}
 
 		//std::cout<<weight_combined<<"; "<<CombinedWeightDiLepPerBin_[i-1]->GetMean()<<std::endl;
-
+/*
 		if(weight_mu < 0.1){
 			if(i > 19) weight_mu = MuMeanWeightDiLep_->GetBinContent(i-18);
 			else std::cout<<"Mu: Error using weight from lower N_BJets"<<std::endl;
@@ -573,7 +582,7 @@ void ResultPlot()
 
 
 		double Err_pred_ges = (Err_pred_mu + Err_pred_elec) / 2;
-
+*/
 		/*std::cout<<"Bin["<<i<<"]:"<<std::endl;
 		std::cout<<"   HT: "<<SearchBins_->GetSearchBin(i-1)->HTmin_<<"-"<<SearchBins_->GetSearchBin(i-1)->HTmax_;
 		std::cout<<"   MHT: "<<SearchBins_->GetSearchBin(i-1)->MHTmin_<<"-"<<SearchBins_->GetSearchBin(i-1)->MHTmax_;
@@ -589,23 +598,23 @@ void ResultPlot()
 		std::cout<<SearchBins_->GetSearchBin(i-1)->MHTmin_<<"-"<<SearchBins_->GetSearchBin(i-1)->MHTmax_<<" & ";
 		std::cout<<SearchBins_->GetSearchBin(i-1)->NJetsmin_<<"-"<<SearchBins_->GetSearchBin(i-1)->NJetsmax_<<" & ";
 		std::cout<<SearchBins_->GetSearchBin(i-1)->BTagsmin_<<"-"<<SearchBins_->GetSearchBin(i-1)->BTagsmax_<<" & ";
-		std::cout<<(N_cs_mu+N_cs_elec)/2<<" & ";//<<" ("<<CombinedWeightDiLepPerBin_[i-1]->GetEntries()<<") & ";
+		std::cout<<(N_cs_mu+N_cs_elec)<<" & ";//<<" ("<<CombinedWeightDiLepPerBin_[i-1]->GetEntries()<<") & ";
 		std::cout.precision(3);
-		std::cout<<weight_combined<<"+-"<<weight_combined_err<<" & ";
+		std::cout<<weight_combined<<"+-"<<weight_combined_err<<"+"<<fullWeightSysUp_LL_->GetBinContent(i)<<"-"<<fullWeightSysDown_LL_->GetBinContent(i)<<" & ";
 		std::cout.precision(5);
  //		std::cout<<CombinedWeightDiLepPerBin_[i-1]->GetRMS()<<" ("<<CombinedWeightDiLepPerBin_[i-1]->GetBinCenter(CombinedWeightDiLepPerBin_[i-1]->FindFirstBinAbove())<<"/"<<CombinedWeightDiLepPerBin_[i-1]->GetBinCenter(CombinedWeightDiLepPerBin_[i-1]->FindLastBinAbove())<<") & ";
 //		std::cout<<N_predicted<<"+-"<<sqrt(Err_pred_ges*Err_pred_ges+0.4*0.4*N_predicted*N_predicted)<<" \\\\"<<std::endl;
-		std::cout<<N_predicted<<"+-"<<sqrt(N_predicted*N_predicted/((N_cs_mu+N_cs_elec)/2))<<"+"<<0.3*N_predicted<<"-"<<0.3*N_predicted<<" \\\\"<<std::endl;
+		std::cout<<N_predicted<<"+-"<<sqrt(N_predicted*N_predicted/(N_cs_mu+N_cs_elec))<<"+"<<0.3*N_predicted<<"-"<<0.3*N_predicted<<" \\\\"<<std::endl;
 
-		fullCS_LL_->SetBinContent(i,(N_cs_mu+N_cs_elec)/2);
+		fullCS_LL_->SetBinContent(i,N_cs_mu+N_cs_elec);
 
 		fullWeight_LL_->SetBinContent(i,weight_combined);
 		fullWeight_LL_->SetBinError(i,weight_combined_err);
 
 		fullPred_LL_->SetBinContent(i,N_predicted);
-		if((N_cs_mu+N_cs_elec)>0) fullPred_LL_->SetBinError(i,sqrt(N_predicted*N_predicted/((N_cs_mu+N_cs_elec)/2)));
-		if((N_cs_mu+N_cs_elec)>0) fullStatUp_LL_->SetBinContent(i,0.3*N_predicted);
-		if((N_cs_mu+N_cs_elec)>0) fullStatDown_LL_->SetBinContent(i,0.3*N_predicted);
+		if((N_cs_mu+N_cs_elec)>0) fullPred_LL_->SetBinError(i,sqrt(N_predicted*N_predicted/(N_cs_mu+N_cs_elec)));
+		if((N_cs_mu+N_cs_elec)>0) fullPredSysUp_LL_->SetBinContent(i,0.3*N_predicted);
+		if((N_cs_mu+N_cs_elec)>0) fullPredSysDown_LL_->SetBinContent(i,0.3*N_predicted);
 
 		//std::cout<<"Bin["<<i<<"]: "<<N_predicted<<"+-"<<Err_pred_ges<<std::endl;
 		//std::cout<<"Bin["<<i<<"]: "<<N_predicted<<"+-"<<sqrt(Err_pred_ges*Err_pred_ges+0.4*0.4*N_predicted*N_predicted)<<std::endl;
@@ -617,8 +626,10 @@ void ResultPlot()
 	fullPred_LL_->Write();
 	fullCS_LL_->Write();
 	fullWeight_LL_->Write();
-	fullStatUp_LL_->Write();
-	fullStatDown_LL_->Write();
+	fullPredSysUp_LL_->Write();
+	fullPredSysDown_LL_->Write();
+	fullWeightSysUp_LL_->Write();
+	fullWeightSysDown_LL_->Write();
 	LLoutPutFile->Close();
 	
 }

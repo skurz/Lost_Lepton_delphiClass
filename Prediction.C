@@ -350,11 +350,11 @@ Bool_t Prediction::Process(Long64_t entry)
 		totalWeightDiLepIsoTrackReduced_ = totalWeightDiLep_ * (1 - expectationReductionIsoTrackEff_);
 
 		MuMeanWeightDiLep_->Fill(searchBin_+0.01, totalWeightDiLepIsoTrackReduced_/(Weight), Weight);
-		CombinedMeanWeightDiLep_->Fill(searchBin_+0.01, totalWeightDiLepIsoTrackReduced_/(Weight), Weight/2);
+		CombinedMeanWeightDiLep_->Fill(searchBin_+0.01, totalWeightDiLepIsoTrackReduced_/(Weight)/2, Weight);
 
 		if(searchBin_<100){
 			MuWeightDiLepPerBin_[searchBin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/(Weight),Weight);
-			CombinedWeightDiLepPerBin_[searchBin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/(Weight),Weight/2);
+			CombinedWeightDiLepPerBin_[searchBin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/(Weight)/2,Weight);
 		}
 	  
 	}	
@@ -435,11 +435,11 @@ Bool_t Prediction::Process(Long64_t entry)
 		totalWeightDiLepIsoTrackReduced_ = totalWeightDiLep_ * (1 - expectationReductionIsoTrackEff_);
 
 		ElecMeanWeightDiLep_->Fill(searchBin_+0.01, totalWeightDiLepIsoTrackReduced_/(Weight), Weight);
-		CombinedMeanWeightDiLep_->Fill(searchBin_+0.01, totalWeightDiLepIsoTrackReduced_/(Weight), Weight/2);
+		CombinedMeanWeightDiLep_->Fill(searchBin_+0.01, totalWeightDiLepIsoTrackReduced_/(Weight)/2, Weight);
 
 		if(searchBin_<100){
 			ElecWeightDiLepPerBin_[searchBin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/(Weight),Weight);
-			CombinedWeightDiLepPerBin_[searchBin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/(Weight),Weight/2);
+			CombinedWeightDiLepPerBin_[searchBin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/(Weight)/2,Weight);
 		}
 	}
 
