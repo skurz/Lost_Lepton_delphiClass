@@ -184,15 +184,23 @@ void ResultPlot()
 	double totalPreMu=0, totalPreMuError=0;
 	double totalPreElec=0, totalPreElecError=0;
 	double totalExpIsoTrack=0, totalExpIsoTrackError=0;
+
+	double totalPreIsoTrack=0, totalPreIsoTrackError=0;
+	double totalPreIsoTrackMu=0, totalPreIsoTrackMuError=0;
+	double totalPreIsoTrackElec=0, totalPreIsoTrackElecError=0;
 	
 	double totalExpMuAcc=0, totalExpMuReco=0, totalExpMuIso=0;
 	
 	double totalPreMuAcc=0, totalPreMuReco=0, totalPreMuIso=0;
+	double totalPreMuMuAcc=0, totalPreMuMuReco=0, totalPreMuMuIso=0;
+	double totalPreMuElecAcc=0, totalPreMuElecReco=0, totalPreMuElecIso=0;
 	
 	
 	double totalExpElecAcc=0, totalExpElecReco=0, totalExpElecIso=0;
 	
 	double totalPreElecAcc=0, totalPreElecReco=0, totalPreElecIso=0;
+	double totalPreElecMuAcc=0, totalPreElecMuReco=0, totalPreElecMuIso=0;
+	double totalPreElecElecAcc=0, totalPreElecElecReco=0, totalPreElecElecIso=0;
 	
 	//Declaration of leaves types
 	Float_t         HT;
@@ -258,33 +266,33 @@ void ResultPlot()
 						totalExpIsoTrack+=Weight;
 						totalExpIsoTrackError+= Weight*Weight;
 					}
-					if(muAcc==0 && ExpectationReductionIsoTrack==0)
+					if(muAcc==0)
 					{
 						totalExpectationMuAcc_->Fill(HT,MHT,NJets,BTags,Weight);
 						totalExpMuAcc+=Weight;
 					}
-					if(muReco==0 && ExpectationReductionIsoTrack==0)
+					if(muReco==0)
 					{
 						totalExpectationMuReco_->Fill(HT,MHT,NJets,BTags,Weight);
 						totalExpMuReco+=Weight;
 					}
-					if(muIso==0 && ExpectationReductionIsoTrack==0)
+					if(muIso==0)
 					{
 						totalExpectationMuIso_->Fill(HT,MHT,NJets,BTags,Weight);
 						totalExpMuIso+=Weight;
 					}
 					
-					if(elecAcc==0 && ExpectationReductionIsoTrack==0)
+					if(elecAcc==0)
 					{
 						totalExpectationElecAcc_->Fill(HT,MHT,NJets,BTags,Weight);
 						totalExpElecAcc+=Weight;
 					}
-					if(elecReco==0 && ExpectationReductionIsoTrack==0)
+					if(elecReco==0)
 					{
 						totalExpectationElecReco_->Fill(HT,MHT,NJets,BTags,Weight);
 						totalExpElecReco+=Weight;
 					}
-					if(elecIso==0 && ExpectationReductionIsoTrack==0)
+					if(elecIso==0)
 					{
 						totalExpectationElecIso_->Fill(HT,MHT,NJets,BTags,Weight);
 						totalExpElecIso+=Weight;
@@ -375,20 +383,32 @@ void ResultPlot()
 			// isotrackveto applied
 			totalPredictionIsoTrackReduction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLepIsoTrackReduced/2);
 			totalPredictionMuIsoTrackReduction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLepIsoTrackReduced);
+			totalPreIsoTrack+=totalWeightDiLepIsoTrackReduced;
+			totalPreIsoTrackError+=totalWeightDiLepIsoTrackReduced*totalWeightDiLepIsoTrackReduced;
+			totalPreIsoTrackMu+=totalWeightDiLepIsoTrackReduced;
+			totalPreIsoTrackMuError+=totalWeightDiLepIsoTrackReduced*totalWeightDiLepIsoTrackReduced;
+
 			// separted closure
 			totalPredictionMuCSMuAcc_->Fill(HT,MHT,NJets,BTags,muAccWeight);
-			totalPreMuAcc+=muAccWeight;
 			totalPredictionMuCSMuReco_->Fill(HT,MHT,NJets,BTags,muRecoWeight);
-			totalPreMuReco+=muRecoWeight;
 			totalPredictionMuCSMuIso_->Fill(HT,MHT,NJets,BTags,muIsoWeight);
-			totalPreMuIso+=muIsoWeight;
+			totalPreMuAcc+=muAccWeight/2;
+			totalPreMuReco+=muRecoWeight/2;
+			totalPreMuIso+=muIsoWeight/2;
+			totalPreMuMuAcc+=muAccWeight;
+			totalPreMuMuReco+=muRecoWeight;
+			totalPreMuMuIso+=muIsoWeight;
 			
 			totalPredictionMuCSElecAcc_->Fill(HT,MHT,NJets,BTags,elecAccWeight);
-			totalPreElecAcc+=elecAccWeight;
 			totalPredictionMuCSElecReco_->Fill(HT,MHT,NJets,BTags,elecRecoWeight);
-			totalPreElecReco+=elecRecoWeight;
 			totalPredictionMuCSElecIso_->Fill(HT,MHT,NJets,BTags,elecIsoWeight);
-			totalPreElecIso+=elecIsoWeight;
+			totalPreElecAcc+=elecAccWeight/2;
+			totalPreElecReco+=elecRecoWeight/2;
+			totalPreElecIso+=elecIsoWeight/2;
+			totalPreMuElecAcc+=elecAccWeight;
+			totalPreMuElecReco+=elecRecoWeight;
+			totalPreMuElecIso+=elecIsoWeight;
+
 			muIsoWeight_=muIsoWeight; muRecoWeight_=muRecoWeight; muAccWeight_=muAccWeight;  elecIsoWeight_=elecIsoWeight; elecRecoWeight_=elecRecoWeight; elecAccWeight_=elecAccWeight; 
 			PredictionWeight_= totalWeightDiLep;
 			OutPutTreePre_->Fill();
@@ -406,14 +426,31 @@ void ResultPlot()
 			// isotrackveto applied
 			totalPredictionIsoTrackReduction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLepIsoTrackReduced/2);
 			totalPredictionElecIsoTrackReduction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLepIsoTrackReduced);
+			totalPreIsoTrack+=totalWeightDiLepIsoTrackReduced;
+			totalPreIsoTrackError+=totalWeightDiLepIsoTrackReduced*totalWeightDiLepIsoTrackReduced;
+			totalPreIsoTrackElec+=totalWeightDiLepIsoTrackReduced;
+			totalPreIsoTrackElecError+=totalWeightDiLepIsoTrackReduced*totalWeightDiLepIsoTrackReduced;
 			// separted closure
 			totalPredictionElecCSMuAcc_->Fill(HT,MHT,NJets,BTags,muAccWeight);
 			totalPredictionElecCSMuReco_->Fill(HT,MHT,NJets,BTags,muRecoWeight);
 			totalPredictionElecCSMuIso_->Fill(HT,MHT,NJets,BTags,muIsoWeight);
+			totalPreMuAcc+=muAccWeight/2;
+			totalPreMuReco+=muRecoWeight/2;
+			totalPreMuIso+=muIsoWeight/2;
+			totalPreElecMuAcc+=muAccWeight;
+			totalPreElecMuReco+=muRecoWeight;
+			totalPreElecMuIso+=muIsoWeight;
 			
 			totalPredictionElecCSElecAcc_->Fill(HT,MHT,NJets,BTags,elecAccWeight);
 			totalPredictionElecCSElecReco_->Fill(HT,MHT,NJets,BTags,elecRecoWeight);
 			totalPredictionElecCSElecIso_->Fill(HT,MHT,NJets,BTags,elecIsoWeight);
+			totalPreElecAcc+=elecAccWeight/2;
+			totalPreElecReco+=elecRecoWeight/2;
+			totalPreElecIso+=elecIsoWeight/2;
+			totalPreElecElecAcc+=elecAccWeight;
+			totalPreElecElecReco+=elecRecoWeight;
+			totalPreElecElecIso+=elecIsoWeight;
+
 			PredictionWeight_= totalWeightDiLep;
 			OutPutTreePre_->Fill();
 		}
@@ -438,17 +475,40 @@ void ResultPlot()
 	FullClosureElec->SetName("LostLeptonClosureElecCS");
 	FullClosureElec->SetTitle("Closure of lost-lepton method elec control-sample");
 
-	std::cout<<"Result:\n TotalExpectationIsoTrack: "<<totalExpIsoTrack<<" +- " << sqrt(totalExpIsoTrackError)<<std::endl;
-	std::cout<<"Result:\n TotalExpectation: "<<totalExp<<" +- " << sqrt(totalExpError)<<"\n TotalPrediction: "<<totalPre/2<<" +- "<<sqrt(totalPreError)/2<<std::endl;
-	std::cout<<"TotalExpectation: "<<totalExp<<" +- " << sqrt(totalExpError)<<"\n TotalPredictionMu: "<<totalPreMu<<" +- "<<sqrt(totalPreMuError)<<std::endl;
-	std::cout<<"TotalExpectation: "<<totalExp<<" +- " << sqrt(totalExpError)<<"\n TotalPredictionElec: "<<totalPreElec<<" +- "<<sqrt(totalPreElecError)<<std::endl;
 	std::cout<<"--------------------------------------------------------------------------------------------------------------------------\n";
+	std::cout<<"\n Muon and Electron CS:"<<std::endl;
+	std::cout<<"TotalExpectationIsoTrack: "<<totalExpIsoTrack<<" +- " << sqrt(totalExpIsoTrackError)<<"\n TotalPredictionIsoTrack: "<<totalPreIsoTrack/2<<" +- "<<sqrt(totalPreIsoTrackError)/2<<std::endl;
+	std::cout<<"TotalExpectation: "<<totalExp<<" +- " << sqrt(totalExpError)<<"\n TotalPrediction: "<<totalPre/2<<" +- "<<sqrt(totalPreError)/2<<std::endl;
 	std::cout<<"MuAccExp: "<<totalExpMuAcc<<"\n MuAccPre: "<<totalPreMuAcc<<std::endl;
 	std::cout<<"MuRecoExp: "<<totalExpMuReco<<"\n MuRecoPre: "<<totalPreMuReco<<std::endl;
 	std::cout<<"MuIsoExp: "<<totalExpMuIso<<"\n MuIsoPre: "<<totalPreMuIso<<std::endl;
 	std::cout<<"ElecAccExp: "<<totalExpElecAcc<<"\n ElecAccPre: "<<totalPreElecAcc<<std::endl;
 	std::cout<<"ElecRecoExp: "<<totalExpElecReco<<"\n ElecRecoPre: "<<totalPreElecReco<<std::endl;
 	std::cout<<"ElecIsoExp: "<<totalExpElecIso<<"\n ElecIsoPre: "<<totalPreElecIso<<std::endl;
+	std::cout<<"--------------------------------------------------------------------------------------------------------------------------\n";
+
+	std::cout<<"\n Muon CS only:"<<std::endl;
+	std::cout<<"TotalExpectationIsoTrack: "<<totalExpIsoTrack<<" +- " << sqrt(totalExpIsoTrackError)<<"\n TotalPredictionIsoTrack: "<<totalPreIsoTrackMu<<" +- "<<sqrt(totalPreIsoTrackMuError)<<std::endl;
+	std::cout<<"TotalExpectation: "<<totalExp<<" +- " << sqrt(totalExpError)<<"\n TotalPrediction: "<<totalPreMu<<" +- "<<sqrt(totalPreMuError)<<std::endl;	
+	std::cout<<"MuAccExp: "<<totalExpMuAcc<<"\n MuAccPre: "<<totalPreMuMuAcc<<std::endl;
+	std::cout<<"MuRecoExp: "<<totalExpMuReco<<"\n MuRecoPre: "<<totalPreMuMuReco<<std::endl;
+	std::cout<<"MuIsoExp: "<<totalExpMuIso<<"\n MuIsoPre: "<<totalPreMuMuIso<<std::endl;
+	std::cout<<"ElecAccExp: "<<totalExpElecAcc<<"\n ElecAccPre: "<<totalPreMuElecAcc<<std::endl;
+	std::cout<<"ElecRecoExp: "<<totalExpElecReco<<"\n ElecRecoPre: "<<totalPreMuElecReco<<std::endl;
+	std::cout<<"ElecIsoExp: "<<totalExpElecIso<<"\n ElecIsoPre: "<<totalPreMuElecIso<<std::endl;
+	std::cout<<"--------------------------------------------------------------------------------------------------------------------------\n";
+
+	std::cout<<"\n Elec CS only:"<<std::endl;
+	std::cout<<"TotalExpectationIsoTrack: "<<totalExpIsoTrack<<" +- " << sqrt(totalExpIsoTrackError)<<"\n TotalPredictionIsoTrack: "<<totalPreIsoTrackElec<<" +- "<<sqrt(totalPreIsoTrackElecError)<<std::endl;
+	std::cout<<"TotalExpectation: "<<totalExp<<" +- " << sqrt(totalExpError)<<"\n TotalPrediction: "<<totalPreElec<<" +- "<<sqrt(totalPreElecError)<<std::endl;	
+	std::cout<<"MuAccExp: "<<totalExpMuAcc<<"\n MuAccPre: "<<totalPreElecMuAcc<<std::endl;
+	std::cout<<"MuRecoExp: "<<totalExpMuReco<<"\n MuRecoPre: "<<totalPreElecMuReco<<std::endl;
+	std::cout<<"MuIsoExp: "<<totalExpMuIso<<"\n MuIsoPre: "<<totalPreElecMuIso<<std::endl;
+	std::cout<<"ElecAccExp: "<<totalExpElecAcc<<"\n ElecAccPre: "<<totalPreElecElecAcc<<std::endl;
+	std::cout<<"ElecRecoExp: "<<totalExpElecReco<<"\n ElecRecoPre: "<<totalPreElecElecReco<<std::endl;
+	std::cout<<"ElecIsoExp: "<<totalExpElecIso<<"\n ElecIsoPre: "<<totalPreElecElecIso<<std::endl;
+	std::cout<<"--------------------------------------------------------------------------------------------------------------------------\n";
+
 	
 	outPutFile->cd();
 	OutPutTreeExp_->Write();
@@ -650,30 +710,7 @@ SearchBins::SearchBins()
 	
 	bins_.push_back( Bin(800,99999,750,9999,4,6,-1,0) );
 	
-	// NJewts 7,8 BTags=0
-	bins_.push_back( Bin(500,800,200,500,7,8,-1,0) );
-	bins_.push_back( Bin(800,1200,200,500,7,8,-1,0) );
-	bins_.push_back( Bin(1200,99999,200,500,7,8,-1,0) );
-	
-	bins_.push_back( Bin(500,1200,500,750,7,8,-1,0) );
-	bins_.push_back( Bin(1200,99999,500,750,7,8,-1,0) );
-	
-	bins_.push_back( Bin(800,99999,750,9999,7,8,-1,0) );
-	
-	
-	// NJewts 9,9999 BTags=0
-	bins_.push_back( Bin(500,800,200,500,9,9999,-1,0) );
-	bins_.push_back( Bin(800,1200,200,500,9,9999,-1,0) );
-	bins_.push_back( Bin(1200,99999,200,500,9,9999,-1,0) );
-	
-	bins_.push_back( Bin(500,1200,500,750,9,9999,-1,0) );
-	bins_.push_back( Bin(1200,99999,500,750,9,9999,-1,0) );
-	
-	bins_.push_back( Bin(800,99999,750,9999,9,9999,-1,0) );
-	
-	
-	
-	// NJets 4,6 BTags=1
+		// NJets 4,6 BTags=1
 	// fixed ht Njets btags all MHT bins
 	bins_.push_back( Bin(500,800,200,500,4,6,1,1) );
 	bins_.push_back( Bin(800,1200,200,500,4,6,1,1) );
@@ -683,8 +720,40 @@ SearchBins::SearchBins()
 	bins_.push_back( Bin(1200,99999,500,750,4,6,1,1) );
 	
 	bins_.push_back( Bin(800,99999,750,9999,4,6,1,1) );
+
+  // NJets 4,6 BTags=2
+  // fixed ht Njets btags all MHT bins
+  bins_.push_back( Bin(500,800,200,500,4,6,2,2) );
+  bins_.push_back( Bin(800,1200,200,500,4,6,2,2) );
+  bins_.push_back( Bin(1200,99999,200,500,4,6,2,2) );
+  
+  bins_.push_back( Bin(500,1200,500,750,4,6,2,2) );
+  bins_.push_back( Bin(1200,99999,500,750,4,6,2,2) );
+  
+  bins_.push_back( Bin(800,99999,750,9999,4,6,2,2) );
+
+  // NJets 4,6 BTags=>3
+  // fixed ht Njets btags all MHT bins
+  bins_.push_back( Bin(500,800,200,500,4,6,3,9999) );
+  bins_.push_back( Bin(800,1200,200,500,4,6,3,9999) );
+  bins_.push_back( Bin(1200,99999,200,500,4,6,3,9999) );
+  
+  bins_.push_back( Bin(500,1200,500,750,4,6,3,9999) );
+  bins_.push_back( Bin(1200,99999,500,750,4,6,3,9999) );
+  
+  bins_.push_back( Bin(800,99999,750,9999,4,6,3,9999) );
+
+  // NJewts 7,8 BTags=0
+  bins_.push_back( Bin(500,800,200,500,7,8,-1,0) );
+  bins_.push_back( Bin(800,1200,200,500,7,8,-1,0) );
+  bins_.push_back( Bin(1200,99999,200,500,7,8,-1,0) );
+  
+  bins_.push_back( Bin(500,1200,500,750,7,8,-1,0) );
+  bins_.push_back( Bin(1200,99999,500,750,7,8,-1,0) );
+  
+  bins_.push_back( Bin(800,99999,750,9999,7,8,-1,0) );
 	
-	// NJewts 7,8 BTags=0
+	// NJewts 7,8 BTags=1
 	bins_.push_back( Bin(500,800,200,500,7,8,1,1) );
 	bins_.push_back( Bin(800,1200,200,500,7,8,1,1) );
 	bins_.push_back( Bin(1200,99999,200,500,7,8,1,1) );
@@ -693,6 +762,37 @@ SearchBins::SearchBins()
 	bins_.push_back( Bin(1200,99999,500,750,7,8,1,1) );
 	
 	bins_.push_back( Bin(800,99999,750,9999,7,8,1,1) );
+
+    // NJewts 7,8 BTags=2
+  bins_.push_back( Bin(500,800,200,500,7,8,2,2) );
+  bins_.push_back( Bin(800,1200,200,500,7,8,2,2) );
+  bins_.push_back( Bin(1200,99999,200,500,7,8,2,2) );
+  
+  bins_.push_back( Bin(500,1200,500,750,7,8,2,2) );
+  bins_.push_back( Bin(1200,99999,500,750,7,8,2,2) );
+  
+  bins_.push_back( Bin(800,99999,750,9999,7,8,2,2) );
+
+    // NJewts 7,8 BTags=>3
+  bins_.push_back( Bin(500,800,200,500,7,8,3,9999) );
+  bins_.push_back( Bin(800,1200,200,500,7,8,3,9999) );
+  bins_.push_back( Bin(1200,99999,200,500,7,8,3,9999) );
+  
+  bins_.push_back( Bin(500,1200,500,750,7,8,3,9999) );
+  bins_.push_back( Bin(1200,99999,500,750,7,8,3,9999) );
+  
+  bins_.push_back( Bin(800,99999,750,9999,7,8,3,9999) );
+
+
+  // NJewts 9,9999 BTags=0
+  bins_.push_back( Bin(500,800,200,500,9,9999,-1,0) );
+  bins_.push_back( Bin(800,1200,200,500,9,9999,-1,0) );
+  bins_.push_back( Bin(1200,99999,200,500,9,9999,-1,0) );
+  
+  bins_.push_back( Bin(500,1200,500,750,9,9999,-1,0) );
+  bins_.push_back( Bin(1200,99999,500,750,9,9999,-1,0) );
+  
+  bins_.push_back( Bin(800,99999,750,9999,9,9999,-1,0) );
 	
 	
 	// NJewts 9,9999 BTags=1
@@ -704,32 +804,9 @@ SearchBins::SearchBins()
 	bins_.push_back( Bin(1200,99999,500,750,9,9999,1,1) );
 	
 	bins_.push_back( Bin(800,99999,750,9999,9,9999,1,1) );
+
 	
-	
-	
-	// NJets 4,6 BTags=2
-	// fixed ht Njets btags all MHT bins
-	bins_.push_back( Bin(500,800,200,500,4,6,2,2) );
-	bins_.push_back( Bin(800,1200,200,500,4,6,2,2) );
-	bins_.push_back( Bin(1200,99999,200,500,4,6,2,2) );
-	
-	bins_.push_back( Bin(500,1200,500,750,4,6,2,2) );
-	bins_.push_back( Bin(1200,99999,500,750,4,6,2,2) );
-	
-	bins_.push_back( Bin(800,99999,750,9999,4,6,2,2) );
-	
-	// NJewts 7,8 BTags=2
-	bins_.push_back( Bin(500,800,200,500,7,8,2,2) );
-	bins_.push_back( Bin(800,1200,200,500,7,8,2,2) );
-	bins_.push_back( Bin(1200,99999,200,500,7,8,2,2) );
-	
-	bins_.push_back( Bin(500,1200,500,750,7,8,2,2) );
-	bins_.push_back( Bin(1200,99999,500,750,7,8,2,2) );
-	
-	bins_.push_back( Bin(800,99999,750,9999,7,8,2,2) );
-	
-	
-	// NJewts 9,9999 BTags=2
+  	// NJewts 9,9999 BTags=2
 	bins_.push_back( Bin(500,800,200,500,9,9999,2,2) );
 	bins_.push_back( Bin(800,1200,200,500,9,9999,2,2) );
 	bins_.push_back( Bin(1200,99999,200,500,9,9999,2,2) );
@@ -739,29 +816,7 @@ SearchBins::SearchBins()
 	
 	bins_.push_back( Bin(800,99999,750,9999,9,9999,2,2) );
 	
-	
-	// NJets 4,6 BTags=>3
-	// fixed ht Njets btags all MHT bins
-	bins_.push_back( Bin(500,800,200,500,4,6,3,9999) );
-	bins_.push_back( Bin(800,1200,200,500,4,6,3,9999) );
-	bins_.push_back( Bin(1200,99999,200,500,4,6,3,9999) );
-	
-	bins_.push_back( Bin(500,1200,500,750,4,6,3,9999) );
-	bins_.push_back( Bin(1200,99999,500,750,4,6,3,9999) );
-	
-	bins_.push_back( Bin(800,99999,750,9999,4,6,3,9999) );
-	
-	// NJewts 7,8 BTags=>3
-	bins_.push_back( Bin(500,800,200,500,7,8,3,9999) );
-	bins_.push_back( Bin(800,1200,200,500,7,8,3,9999) );
-	bins_.push_back( Bin(1200,99999,200,500,7,8,3,9999) );
-	
-	bins_.push_back( Bin(500,1200,500,750,7,8,3,9999) );
-	bins_.push_back( Bin(1200,99999,500,750,7,8,3,9999) );
-	
-	bins_.push_back( Bin(800,99999,750,9999,7,8,3,9999) );
-	
-	
+
 	// NJewts 9,9999 BTags=>3
 	bins_.push_back( Bin(500,800,200,500,9,9999,3,9999) );
 	bins_.push_back( Bin(800,1200,200,500,9,9999,3,9999) );

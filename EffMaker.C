@@ -1381,6 +1381,12 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   //GetOutputList()->Add(IsoTrackReductionBTagNJets_);
   IsoTrackReductionBTagNJetsFail_ = (TH2F*)IsoTrackReductionBTagNJets_->Clone();
   IsoTrackReductionBTagNJetsFail_->SetName("IsoTrackReductionBTagNJetsFail");
+
+  IsoTrackReductionPTActivity_ = new TH2F("IsoTrackReductionPTActivity","IsoTrackReductionPTActivity",isotrackreductionPT2D_-1,isoTrackReductionPT2D_, isotrackreductionActivity2D_-1, isoTrackReductionActivity2D_);
+  //GetOutputList()->Add(IsoTrackReductionPTActivity_);
+  IsoTrackReductionPTActivityFail_ = (TH2F*)IsoTrackReductionPTActivity_->Clone();
+  IsoTrackReductionPTActivityFail_->SetName("IsoTrackReductionPTActivityFail");
+  //GetOutputList()->Add(IsoTrackReductionHTNJetsFail_); 
   
   
 }
@@ -2737,6 +2743,7 @@ Bool_t EffMaker::Process(Long64_t entry)
     IsoTrackReductionHTNJetsFail_->Fill(HT,NJets,Weight);
     IsoTrackReductionMHTNJetsFail_->Fill(MHT,NJets,Weight);
     IsoTrackReductionBTagNJetsFail_->Fill(BTags,NJets,Weight);
+    IsoTrackReductionPTActivityFail_->Fill(IsolatedTracksPt[0],IsoTrackActivity[0],Weight);
 
   }
   if(Expectation==1 && ExpectationReductionIsoTrack==1)
@@ -2757,6 +2764,7 @@ Bool_t EffMaker::Process(Long64_t entry)
     IsoTrackReductionHTNJets_->Fill(HT,NJets,Weight);
     IsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight);
     IsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight);
+    IsoTrackReductionPTActivity_->Fill(IsolatedTracksPt[0],IsoTrackActivity[0],Weight);
 
   }
   
@@ -4010,6 +4018,13 @@ void EffMaker::Terminate()
   IsoTrackReductionBTagNJets_->UseCurrentStyle();
   IsoTrackReductionBTagNJets_->Write();
   SaveEfficiency(IsoTrackReductionBTagNJets_);
+
+  IsoTrackReductionPTActivity_ = ratioCalculator(IsoTrackReductionPTActivity_,IsoTrackReductionPTActivityFail_);   
+  IsoTrackReductionPTActivity_->SetTitle("Simulation, L=10 fb-1, #sqrt{s}=13 TeV iso track expec. reduction; track p_{T} [GeV]; Activity [GeV]");
+  IsoTrackReductionPTActivity_->SetMarkerSize(2.0);
+  IsoTrackReductionPTActivity_->UseCurrentStyle();
+  IsoTrackReductionPTActivity_->Write();
+  SaveEfficiency(IsoTrackReductionPTActivity_);
   
   
   
@@ -4593,6 +4608,39 @@ SearchBins::SearchBins()
   
   bins_.push_back( Bin(800,99999,750,9999,4,6,-1,0) );
   
+    // NJets 4,6 BTags=1
+  // fixed ht Njets btags all MHT bins
+  bins_.push_back( Bin(500,800,200,500,4,6,1,1) );
+  bins_.push_back( Bin(800,1200,200,500,4,6,1,1) );
+  bins_.push_back( Bin(1200,99999,200,500,4,6,1,1) );
+  
+  bins_.push_back( Bin(500,1200,500,750,4,6,1,1) );
+  bins_.push_back( Bin(1200,99999,500,750,4,6,1,1) );
+  
+  bins_.push_back( Bin(800,99999,750,9999,4,6,1,1) );
+
+  // NJets 4,6 BTags=2
+  // fixed ht Njets btags all MHT bins
+  bins_.push_back( Bin(500,800,200,500,4,6,2,2) );
+  bins_.push_back( Bin(800,1200,200,500,4,6,2,2) );
+  bins_.push_back( Bin(1200,99999,200,500,4,6,2,2) );
+  
+  bins_.push_back( Bin(500,1200,500,750,4,6,2,2) );
+  bins_.push_back( Bin(1200,99999,500,750,4,6,2,2) );
+  
+  bins_.push_back( Bin(800,99999,750,9999,4,6,2,2) );
+
+  // NJets 4,6 BTags=>3
+  // fixed ht Njets btags all MHT bins
+  bins_.push_back( Bin(500,800,200,500,4,6,3,9999) );
+  bins_.push_back( Bin(800,1200,200,500,4,6,3,9999) );
+  bins_.push_back( Bin(1200,99999,200,500,4,6,3,9999) );
+  
+  bins_.push_back( Bin(500,1200,500,750,4,6,3,9999) );
+  bins_.push_back( Bin(1200,99999,500,750,4,6,3,9999) );
+  
+  bins_.push_back( Bin(800,99999,750,9999,4,6,3,9999) );
+
   // NJewts 7,8 BTags=0
   bins_.push_back( Bin(500,800,200,500,7,8,-1,0) );
   bins_.push_back( Bin(800,1200,200,500,7,8,-1,0) );
@@ -4603,7 +4651,37 @@ SearchBins::SearchBins()
   
   bins_.push_back( Bin(800,99999,750,9999,7,8,-1,0) );
   
+  // NJewts 7,8 BTags=1
+  bins_.push_back( Bin(500,800,200,500,7,8,1,1) );
+  bins_.push_back( Bin(800,1200,200,500,7,8,1,1) );
+  bins_.push_back( Bin(1200,99999,200,500,7,8,1,1) );
   
+  bins_.push_back( Bin(500,1200,500,750,7,8,1,1) );
+  bins_.push_back( Bin(1200,99999,500,750,7,8,1,1) );
+  
+  bins_.push_back( Bin(800,99999,750,9999,7,8,1,1) );
+
+    // NJewts 7,8 BTags=2
+  bins_.push_back( Bin(500,800,200,500,7,8,2,2) );
+  bins_.push_back( Bin(800,1200,200,500,7,8,2,2) );
+  bins_.push_back( Bin(1200,99999,200,500,7,8,2,2) );
+  
+  bins_.push_back( Bin(500,1200,500,750,7,8,2,2) );
+  bins_.push_back( Bin(1200,99999,500,750,7,8,2,2) );
+  
+  bins_.push_back( Bin(800,99999,750,9999,7,8,2,2) );
+
+    // NJewts 7,8 BTags=>3
+  bins_.push_back( Bin(500,800,200,500,7,8,3,9999) );
+  bins_.push_back( Bin(800,1200,200,500,7,8,3,9999) );
+  bins_.push_back( Bin(1200,99999,200,500,7,8,3,9999) );
+  
+  bins_.push_back( Bin(500,1200,500,750,7,8,3,9999) );
+  bins_.push_back( Bin(1200,99999,500,750,7,8,3,9999) );
+  
+  bins_.push_back( Bin(800,99999,750,9999,7,8,3,9999) );
+
+
   // NJewts 9,9999 BTags=0
   bins_.push_back( Bin(500,800,200,500,9,9999,-1,0) );
   bins_.push_back( Bin(800,1200,200,500,9,9999,-1,0) );
@@ -4615,29 +4693,6 @@ SearchBins::SearchBins()
   bins_.push_back( Bin(800,99999,750,9999,9,9999,-1,0) );
   
   
-  
-  // NJets 4,6 BTags=1
-  // fixed ht Njets btags all MHT bins
-  bins_.push_back( Bin(500,800,200,500,4,6,1,1) );
-  bins_.push_back( Bin(800,1200,200,500,4,6,1,1) );
-  bins_.push_back( Bin(1200,99999,200,500,4,6,1,1) );
-  
-  bins_.push_back( Bin(500,1200,500,750,4,6,1,1) );
-  bins_.push_back( Bin(1200,99999,500,750,4,6,1,1) );
-  
-  bins_.push_back( Bin(800,99999,750,9999,4,6,1,1) );
-  
-  // NJewts 7,8 BTags=0
-  bins_.push_back( Bin(500,800,200,500,7,8,1,1) );
-  bins_.push_back( Bin(800,1200,200,500,7,8,1,1) );
-  bins_.push_back( Bin(1200,99999,200,500,7,8,1,1) );
-  
-  bins_.push_back( Bin(500,1200,500,750,7,8,1,1) );
-  bins_.push_back( Bin(1200,99999,500,750,7,8,1,1) );
-  
-  bins_.push_back( Bin(800,99999,750,9999,7,8,1,1) );
-  
-  
   // NJewts 9,9999 BTags=1
   bins_.push_back( Bin(500,800,200,500,9,9999,1,1) );
   bins_.push_back( Bin(800,1200,200,500,9,9999,1,1) );
@@ -4647,32 +4702,9 @@ SearchBins::SearchBins()
   bins_.push_back( Bin(1200,99999,500,750,9,9999,1,1) );
   
   bins_.push_back( Bin(800,99999,750,9999,9,9999,1,1) );
+
   
-  
-  
-  // NJets 4,6 BTags=2
-  // fixed ht Njets btags all MHT bins
-  bins_.push_back( Bin(500,800,200,500,4,6,2,2) );
-  bins_.push_back( Bin(800,1200,200,500,4,6,2,2) );
-  bins_.push_back( Bin(1200,99999,200,500,4,6,2,2) );
-  
-  bins_.push_back( Bin(500,1200,500,750,4,6,2,2) );
-  bins_.push_back( Bin(1200,99999,500,750,4,6,2,2) );
-  
-  bins_.push_back( Bin(800,99999,750,9999,4,6,2,2) );
-  
-  // NJewts 7,8 BTags=2
-  bins_.push_back( Bin(500,800,200,500,7,8,2,2) );
-  bins_.push_back( Bin(800,1200,200,500,7,8,2,2) );
-  bins_.push_back( Bin(1200,99999,200,500,7,8,2,2) );
-  
-  bins_.push_back( Bin(500,1200,500,750,7,8,2,2) );
-  bins_.push_back( Bin(1200,99999,500,750,7,8,2,2) );
-  
-  bins_.push_back( Bin(800,99999,750,9999,7,8,2,2) );
-  
-  
-  // NJewts 9,9999 BTags=2
+    // NJewts 9,9999 BTags=2
   bins_.push_back( Bin(500,800,200,500,9,9999,2,2) );
   bins_.push_back( Bin(800,1200,200,500,9,9999,2,2) );
   bins_.push_back( Bin(1200,99999,200,500,9,9999,2,2) );
@@ -4682,29 +4714,7 @@ SearchBins::SearchBins()
   
   bins_.push_back( Bin(800,99999,750,9999,9,9999,2,2) );
   
-  
-  // NJets 4,6 BTags=>3
-  // fixed ht Njets btags all MHT bins
-  bins_.push_back( Bin(500,800,200,500,4,6,3,9999) );
-  bins_.push_back( Bin(800,1200,200,500,4,6,3,9999) );
-  bins_.push_back( Bin(1200,99999,200,500,4,6,3,9999) );
-  
-  bins_.push_back( Bin(500,1200,500,750,4,6,3,9999) );
-  bins_.push_back( Bin(1200,99999,500,750,4,6,3,9999) );
-  
-  bins_.push_back( Bin(800,99999,750,9999,4,6,3,9999) );
-  
-  // NJewts 7,8 BTags=>3
-  bins_.push_back( Bin(500,800,200,500,7,8,3,9999) );
-  bins_.push_back( Bin(800,1200,200,500,7,8,3,9999) );
-  bins_.push_back( Bin(1200,99999,200,500,7,8,3,9999) );
-  
-  bins_.push_back( Bin(500,1200,500,750,7,8,3,9999) );
-  bins_.push_back( Bin(1200,99999,500,750,7,8,3,9999) );
-  
-  bins_.push_back( Bin(800,99999,750,9999,7,8,3,9999) );
-  
-  
+
   // NJewts 9,9999 BTags=>3
   bins_.push_back( Bin(500,800,200,500,9,9999,3,9999) );
   bins_.push_back( Bin(800,1200,200,500,9,9999,3,9999) );

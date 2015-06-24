@@ -224,6 +224,7 @@ public :
 	 TH2F *ExpectationReductionIsoTrackBTagsNJetsEff_;
 	 TH2F *ExpectationReductionIsoTrackHTNJetsEff_;
 	 TH2F *ExpectationReductionIsoTrackMHTNJetsEff_;
+	 TH2F *ExpectationReductionIsoTrackPTActivityEff_;
 	 
 	 UShort_t elecActivityMethod, muActivityMethod, isoTrackActivityMethod;
 
