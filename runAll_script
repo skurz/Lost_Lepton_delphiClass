@@ -1,0 +1,16 @@
+echo "Removing old files"
+rm Efficiencies/*.pdf
+rm *.root
+#rm  ttbar/*.root
+#rm  wpj/*.root
+#rm singleTop/*.root
+wait
+echo "Done"
+echo "Running Lost-Lepton Package"
+root -l -b -q MakeExpectation.C+
+wait
+root -l -b -q MakeEff.C+
+wait
+root -l -b -q MakePrediction.C+
+wait
+echo "Done"

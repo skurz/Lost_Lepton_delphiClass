@@ -1,6 +1,9 @@
 #ifndef EffMaker_h
 #define EffMaker_h
 
+//#include <LLTools.h>
+#include <THEff.h>
+
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
@@ -12,6 +15,7 @@
 #include "TCanvas.h"
 #include "TEfficiency.h"
 #include "TGraphAsymmErrors.h"
+#include <TLegend.h>
 
 
 // output control
@@ -31,10 +35,10 @@ const int oneDNJets_=6;
 double OneDNJets_[oneDNJets_] = {4,5,6,8,11,20};
 const int oneDBJets_=6;
 double OneDBJets_[oneDBJets_] = {0,1,2,3,5,10};
-const int oneDDeltaR_=17;
-double OneDDeltaR_[oneDDeltaR_]={0 ,0.1 ,0.2 ,0.3 ,0.4 ,0.5 ,0.6 ,0.7 ,0.8 ,0.9 ,1.0 ,1.1 ,1.3 ,1.5 ,1.8 ,2.0 , 5.0 };
-const int oneDPTRel_=17;
-double OneDPTRel_[oneDPTRel_]={0 ,0.1 ,0.2 ,0.3 ,0.4 ,0.5 ,0.6 ,0.7 ,0.8 ,0.9 ,1.0 ,1.1 ,1.3 ,1.5 ,1.8 ,2.0 , 5.0 };
+const int oneDDeltaR_=8;
+double OneDDeltaR_[oneDDeltaR_]={0, 0.2 ,0.3, 0.5 ,0.7 ,1.0 , 1.8, 5.0 };
+const int oneDPTRel_=7;
+double OneDPTRel_[oneDPTRel_]={0, 0.2 ,0.4 ,0.6 ,0.8 ,1.0 , 10.0};
 
 // used for closure
 // const int oneDPT_=12;
@@ -79,8 +83,6 @@ double muAccNJets_ [muaccNJets_] = {4,5,6,9,20};
 
 // elec acceptance
 // 2D
-//const int elecaccHT_ = 3;
-//double elecAccHT_ [elecaccHT_] = {500,1300,2500};
 const int elecaccHT_ = 4;
 double elecAccHT_ [elecaccHT_] = {500,800,1200,2500};
 const int elecaccMHT_ = 4;
@@ -112,730 +114,341 @@ const int isotrackreductionBTags_ = 5;
 double isoTrackReductionBTags_[isotrackreductionBTags_] = {0,1,2,3,10};
 const int isotrackreductionNJets_ = 6;
 double isoTrackReductionNJets_ [isotrackreductionNJets_] = {4,5,6,8,11,20};
+const int isotrackreductionPT_ = 8;
+double isoTrackReductionPT_ [isotrackreductionPT_] = {5,10,20,25,30,40,50,200};
+const int isotrackreductionActivity_ = 6;
+double isoTrackReductionActivity_ [isotrackreductionActivity_] = {0,20,40,60,150,1600};
 // 2D
 const int isotrackreductionBTags2D_ = 3;
 double isoTrackReductionBTags2D_[isotrackreductionBTags2D_] = {0,1,10};
 const int isotrackreductionNJets2D_ = 4;
 double isoTrackReductionNJets2D_ [isotrackreductionNJets2D_] = {4,6,7,20};
-const int isotrackreductionPT2D_=7;
-double isoTrackReductionPT2D_[isotrackreductionPT2D_]={10,20,30,40,50,100,1600};
-const int isotrackreductionActivity2D_=3;
-double isoTrackReductionActivity2D_[isotrackreductionActivity2D_]={10,100,1900};
+const int isotrackreductionPT2D_ = 8;
+double isoTrackReductionPT2D_[isotrackreductionPT2D_] = {5,10,20,25,30,40,50,200};
+const int isotrackreductionActivity2D_ = 6;
+double isoTrackReductionActivity2D_ [isotrackreductionActivity2D_] = {0,20,40,60,150,1600};
 
 
-class Bin
-{
-public:
-	Bin(){}
-	Bin(double HTmin, double HTmax, double MHTmin, double MHTmax, int NJetsmin, int NJetsmax, int BTagsmin, int BTagsmax)
-	{
-		HTmin_=HTmin;
-		HTmax_=HTmax;
-		MHTmin_=MHTmin;
-		MHTmax_=MHTmax;
-		NJetsmin_=NJetsmin;
-		NJetsmax_=NJetsmax;
-		BTagsmin_=BTagsmin;
-		BTagsmax_=BTagsmax;
-	}
-	double HTmin_, HTmax_, MHTmin_, MHTmax_;
-	int NJetsmin_, NJetsmax_, BTagsmin_, BTagsmax_;
-	~Bin(){}
-private:
-};
-class SearchBins
-{
-public:
-	SearchBins();
-	unsigned int GetBinNumber(double HT, double MHT, int NJets, int BTags);
-	
-	~SearchBins(){}
-protected:
-	std::vector<Bin> bins_;
-};
-class TH1Feff
-{
-public:
-	TH1Feff(){}
-	TH1Feff(const char* name, const char* title, Int_t nbinsx, const double* xbins)
-	{
-		RefTH1F_ = new 	TH1F(name, title, nbinsx, xbins);
-		RefTH1F_->Sumw2();
-		name_=name;
-		title_=title;
-	}
-	TH1Feff(const char* name, const char* title, unsigned int nBins, double startBin, double endBin)
-	{
-		RefTH1F_ = new 	TH1F(name, title, nBins, startBin,endBin);
-		RefTH1F_->Sumw2();
-		name_=name;
-		title_=title;
-	}
-	TH1F* Clone(){return RefTH1F_;}
-	void SetName(const char* title){RefTH1F_->SetName(title); }
-	void SetTitle(const char* title){RefTH1F_->SetTitle(title);}
-	void Fill(Double_t x,Double_t Weight,bool passOrFail);
-	TGraphAsymmErrors* GetEfficiency();
-	TH1F* GetSanityCheckTH1F(){return RefTH1F_;}
-	void saveResults(TDirectory* MainDirectory);
-	~TH1Feff(){}
-private:
-	TH1F* RefTH1F_;
-	vector<Double_t> weights_;
-	vector<TH1F*> TH1FFail_, TH1FPass_;
-	const char* name_;
-	const char* title_;
-};
-
-class TH2Feff
-{
-public:
-	TH2Feff(){}
-	TH2Feff(const char* name, const char* title, Int_t nbinsx, const Double_t* xbins, Int_t nbinsy, const Double_t* ybins)
-	{
-		RefTH2F_ = new 	TH2F(name, title, nbinsx, xbins,nbinsy,ybins);
-		RefTH2F_->Sumw2();
-		nbinsx_=nbinsx; xbins_=xbins;
-		nbinsy_=nbinsy; ybins_=ybins;
-		name_=name;
-		title_=title;
-	}
-	TH2F* Clone(){return RefTH2F_;}
-	void SetName(const char* title){RefTH2F_->SetName(title);}
-	void Fill(Double_t x, Double_t y, Double_t Weight,bool passOrFail);
-	std::vector<TGraphAsymmErrors*> GetEfficiency();
-	TH2F* GetSanityCheckTH2F(){return RefTH2F_;}
-	void saveResults(TDirectory* MainDirectory);
-	~TH2Feff(){}
-private:
-	TH2F* RefTH2F_;
-	vector<Double_t> weights_;
-	vector<TH2F*> TH2FFail_, TH2FPass_;
-	Int_t nbinsx_, nbinsy_;
-	const Double_t* xbins_;
-	const Double_t* ybins_;
-	const char* name_;
-	const char* title_;
-};
-class Efficiency : public SearchBins
-{
-public:
-	Efficiency(){}
-	Efficiency(const char* name, const char* title);
-
-	void Fill(double HT, double MHT, int NJets, int BTags, double Weight, bool passOrFail);
-
-	void saveResults(TDirectory* MainDirectory);
-	~Efficiency(){}
-private:	
-	const char* name_;
-	const char* title_;
-	TH1Feff* TH1FSearchBins_;
-	std::vector<TH1Feff*> TH1FSearchBinsSplit_;
-	unsigned int splitAfter_;
-	
-};
-class SearchBinEventCount : public SearchBins
-{
-public:
-	SearchBinEventCount(){}
-	SearchBinEventCount(const char*);
-	void Fill(double HT, double MHT, int NJets, int BTags, double Weight);
-	void saveResults(TDirectory* MainDirectory);
-	~SearchBinEventCount(){}
-private:
-	TH1F* fullTH1F_;
-	std::vector<TH1F*> splitTH1F_;
-	unsigned int splitAfter_;
-	const char* name_;
-};
 
 class EffMaker : public TSelector {
 public :	
-	TH2F* ratioCalculator(TH2F* passTH2, TH2F* failTH2);
-	TH1F* ratioCalculator(TH1F* passTH1, TH1F* failTH1);
-	TEfficiency* ratioCalculatorTEff(TH2F* passTH2, TH2F* failTH2);
-	TEfficiency* ratioCalculatorTEff(TH1F* passTH1, TH1F* failTH1);
-	double MTWCalculator(double metPt,double  metPhi,double  lepPt,double  lepPhi);
-	void SaveEfficiency(TH2F *input);
-	void SaveEfficiency(TH1F *input);
 	TTree          *fChain;   //!pointer to the analyzed TTree or TChain
 	
 	SearchBinEventCount *totalExpectation_;
 	
-	// TH efficiencies
+	//efficiencies
+
 	//purity
+
 	//mu
 	//1D
-	
-	
-	TH1F *MuPurityBTag_, *MuPurityBTagFail_;
-	TH1F *MuPurityNJets_, *MuPurityNJetsFail_;
-	TH1F *MuPurityHT_, *MuPurityHTFail_;
-	TH1F *MuPurityMHT_, *MuPurityMHTFail_;
-	TH1F *MuPurityPT_, *MuPurityPTFail_;
-	TH1F *MuPurityActivity_, *MuPurityActivityFail_;
+	TH1Eff *MuPurityBTag_;
+	TH1Eff *MuPurityNJets_;
+	TH1Eff *MuPurityHT_;
+	TH1Eff *MuPurityMHT_;
+	TH1Eff *MuPurityPT_;
+	TH1Eff *MuPurityActivity_;
 	//2D
-	TH2F *MuonPurityMHTNJet, *MuonPurityMHTNJetFail;
+	TH2Eff *MuonPurityMHTNJet_;
 	
 	//elec
 	//1D
-	TH1F *ElecPurityBTag_, *ElecPurityBTagFail_;
-	TH1F *ElecPurityNJets_, *ElecPurityNJetsFail_;
-	TH1F *ElecPurityHT_, *ElecPurityHTFail_;
-	TH1F *ElecPurityMHT_, *ElecPurityMHTFail_;
-	TH1F *ElecPurityPT_, *ElecPurityPTFail_;
-	TH1F *ElecPurityActivity_, *ElecPurityActivityFail_;
+	TH1Eff *ElecPurityBTag_;
+	TH1Eff *ElecPurityNJets_;
+	TH1Eff *ElecPurityHT_;
+	TH1Eff *ElecPurityMHT_;
+	TH1Eff *ElecPurityPT_;
+	TH1Eff *ElecPurityActivity_;
 	//2D
-	TH2F *ElecPurityMHTNJet, *ElecPurityMHTNJetFail;
+	TH2Eff *ElecPurityMHTNJet_;
 	
 	// x-check of purity
 	
-	TH1F *MuPurityCheckBTag_, *MuPurityCheckBTagFail_;
-	TH1F *MuPurityCheckNJets_, *MuPurityCheckNJetsFail_;
-	TH1F *MuPurityCheckHT_, *MuPurityCheckHTFail_;
-	TH1F *MuPurityCheckMHT_, *MuPurityCheckMHTFail_;
-	TH1F *MuPurityCheckPT_, *MuPurityCheckPTFail_;
-	TH1F *MuPurityCheckActivity_, *MuPurityCheckActivityFail_;
+	TH1Eff *MuPurityCheckBTag_;
+	TH1Eff *MuPurityCheckNJets_;
+	TH1Eff *MuPurityCheckHT_;
+	TH1Eff *MuPurityCheckMHT_;
+	TH1Eff *MuPurityCheckPT_;
+	TH1Eff *MuPurityCheckActivity_;
 	//2D
-	TH2F *MuonPurityCheckMHTNJet, *MuonPurityCheckMHTNJetFail;
+	TH2Eff *MuonPurityCheckMHTNJet_;
 	
 	//elec
 	//1D
-	TH1F *ElecPurityCheckBTag_, *ElecPurityCheckBTagFail_;
-	TH1F *ElecPurityCheckNJets_, *ElecPurityCheckNJetsFail_;
-	TH1F *ElecPurityCheckHT_, *ElecPurityCheckHTFail_;
-	TH1F *ElecPurityCheckMHT_, *ElecPurityCheckMHTFail_;
-	TH1F *ElecPurityCheckPT_, *ElecPurityCheckPTFail_;
-	TH1F *ElecPurityCheckActivity_, *ElecPurityCheckActivityFail_;
+	TH1Eff *ElecPurityCheckBTag_;
+	TH1Eff *ElecPurityCheckNJets_;
+	TH1Eff *ElecPurityCheckHT_;
+	TH1Eff *ElecPurityCheckMHT_;
+	TH1Eff *ElecPurityCheckPT_;
+	TH1Eff *ElecPurityCheckActivity_;
 	//2D
-	TH2F *ElecPurityCheckMHTNJet, *ElecPurityCheckMHTNJetFail;
+	TH2Eff *ElecPurityCheckMHTNJet_;
 	
 	
 	// Acceptance
 	// mu 
 	//1D
-	TH1F *MuAccBTag_, *MuAccBTagFail_;
-	TH1F *MuAccNJets_, *MuAccNJetsFail_;
-	TH1F *MuAccHT_, *MuAccHTFail_;
-	TH1F *MuAccMHT_, *MuAccMHTFail_;
-	TH1F *MuAccPT_, *MuAccPTFail_;
-	TH1F *MuAccActivity_, *MuAccActivityFail_;
+	TH1Eff *MuAccBTag_;
+	TH1Eff *MuAccNJets_;
+	TH1Eff *MuAccHT_;
+	TH1Eff *MuAccMHT_;
+	TH1Eff *MuAccPT_;
+	TH1Eff *MuAccActivity_;
 	// 2D
-	TH2F *MuAccHTNJets_, *MuAccHTNJetsFail_;
-	TH2F *MuAccMHTNJets_, *MuAccMHTNJetsFail_;
-	TH2F *MuAccHTMHT_, *MuAccHTMHTFail_;
-	TH2F *MuAccBTagNJets_, *MuAccBTagNJetsFail_;
-	TH2F *MuAccMHTNJetsB0_, *MuAccMHTNJetsB0Fail_;
-	TH2F *MuAccMHTNJetsB1_Inf_, *MuAccMHTNJetsB1_InfFail_;
-	TH2F *MuAccHTMHT_NJetsLow_, *MuAccHTMHT_NJetsLowFail_;
-	TH2F *MuAccHTMHT_NJetsHigh_, *MuAccHTMHT_NJetsHighFail_;
-	TH2F *MuAccHTMHTB0_, *MuAccHTMHTB0Fail_;
-	TH2F *MuAccHTMHTB1_Inf_, *MuAccHTMHTB1_InfFail_;
+	TH2Eff *MuAccHTNJets_;
+	TH2Eff *MuAccMHTNJets_;
+	TH2Eff *MuAccHTMHT_;
+	TH2Eff *MuAccBTagNJets_;
+	TH2Eff *MuAccMHTNJetsB0_;
+	TH2Eff *MuAccMHTNJetsB1_Inf_;
+	TH2Eff *MuAccHTMHT_NJetsLow_;
+	TH2Eff *MuAccHTMHT_NJetsHigh_;
+	TH2Eff *MuAccHTMHTB0_;
+	TH2Eff *MuAccHTMHTB1_Inf_;
 	
 	// elec
 	//1D
-	TH1F *ElecAccBTag_, *ElecAccBTagFail_;
-	TH1F *ElecAccNJets_, *ElecAccNJetsFail_;
-	TH1F *ElecAccHT_, *ElecAccHTFail_;
-	TH1F *ElecAccMHT_, *ElecAccMHTFail_;
-	TH1F *ElecAccPT_, *ElecAccPTFail_;
-	TH1F *ElecAccActivity_, *ElecAccActivityFail_;
+	TH1Eff *ElecAccBTag_;
+	TH1Eff *ElecAccNJets_;
+	TH1Eff *ElecAccHT_;
+	TH1Eff *ElecAccMHT_;
+	TH1Eff *ElecAccPT_;
+	TH1Eff *ElecAccActivity_;
+	// 2D
+	TH2Eff *ElecAccHTNJets_;
+	TH2Eff *ElecAccMHTNJets_;
+	TH2Eff *ElecAccHTMHT_;
+	TH2Eff *ElecAccBTagNJets_;
+	TH2Eff *ElecAccMHTNJetsB0_;
+	TH2Eff *ElecAccMHTNJetsB1_Inf_;
+	TH2Eff *ElecAccHTMHT_NJetsLow_;
+	TH2Eff *ElecAccHTMHT_NJetsHigh_;
+	TH2Eff *ElecAccHTMHTB0_;
+	TH2Eff *ElecAccHTMHTB1_Inf_;
+	
+
+	// Reco 
+	// mu 
+	//1D
+	TH1Eff *MuRecoBTag_;
+	TH1Eff *MuRecoNJets_;
+	TH1Eff *MuRecoHT_;
+	TH1Eff *MuRecoMHT_;
+	TH1Eff *MuRecoPT_;
+	TH1Eff *MuRecoActivity_;
+	TH1Eff *MuRecoRelPTJet_;
+	TH1Eff *MuRecoDeltaRJet_;	
+	//2D
+	TH2Eff *MuRecoPTActivity_;
+	TH2Eff *MuRecoRelPTDeltaRJet_;
+	
+	// elec
+	//1D
+	TH1Eff *ElecRecoBTag_;
+	TH1Eff *ElecRecoNJets_;
+	TH1Eff *ElecRecoHT_;
+	TH1Eff *ElecRecoMHT_;
+	TH1Eff *ElecRecoPT_;
+	TH1Eff *ElecRecoActivity_;
+	TH1Eff *ElecRecoRelPTJet_;
+	TH1Eff *ElecRecoDeltaRJet_;
+	//2D
+	TH2Eff *ElecRecoPTActivity_;
+	TH2Eff *ElecRecoRelPTDeltaRJet_;
+	
+	// Iso
+	// mu 
+	//1D
+	TH1Eff *MuIsoBTag_;
+	TH1Eff *MuIsoNJets_;
+	TH1Eff *MuIsoHT_;
+	TH1Eff *MuIsoMHT_;
+	TH1Eff *MuIsoPT_;
+	TH1Eff *MuIsoActivity_;
+	TH1Eff *MuIsoRelPTJet_;
+	TH1Eff *MuIsoDeltaRJet_;
+	//2D
+	TH2Eff *MuIsoPTActivity_;
+	TH2Eff *MuIsoRelPTDeltaRJet_;
+	
+	// elec
+	//1D
+	TH1Eff *ElecIsoBTag_;
+	TH1Eff *ElecIsoNJets_;
+	TH1Eff *ElecIsoHT_;
+	TH1Eff *ElecIsoMHT_;
+	TH1Eff *ElecIsoPT_;
+	TH1Eff *ElecIsoActivity_;
+	TH1Eff *ElecIsoRelPTJet_;
+	TH1Eff *ElecIsoDeltaRJet_;
+	//2D
+	TH2Eff *ElecIsoPTActivity_;
+	TH2Eff *ElecIsoRelPTDeltaRJet_;	
 
 	
-	// 2D
-	TH2F *ElecAccHTNJets_, *ElecAccHTNJetsFail_; 
-	TH2F *ElecAccMHTNJets_, *ElecAccMHTNJetsFail_;
-	TH2F *ElecAccHTMHT_, *ElecAccHTMHTFail_;
-	TH2F *ElecAccBTagNJets_, *ElecAccBTagNJetsFail_;
-	TH2F *ElecAccMHTNJetsB0_, *ElecAccMHTNJetsB0Fail_;
-	TH2F *ElecAccMHTNJetsB1_Inf_, *ElecAccMHTNJetsB1_InfFail_;
-	TH2F *ElecAccHTMHT_NJetsLow_, *ElecAccHTMHT_NJetsLowFail_;
-	TH2F *ElecAccHTMHT_NJetsHigh_, *ElecAccHTMHT_NJetsHighFail_;
-	TH2F *ElecAccHTMHTB0_, *ElecAccHTMHTB0Fail_;
-	TH2F *ElecAccHTMHTB1_Inf_, *ElecAccHTMHTB1_InfFail_;
-	
-	// Recoeptance
+	// MTW
 	// mu 
 	//1D
-	TH1F *MuRecoBTag_, *MuRecoBTagFail_;
-	TH1F *MuRecoNJets_, *MuRecoNJetsFail_;
-	TH1F *MuRecoHT_, *MuRecoHTFail_;
-	TH1F *MuRecoMHT_, *MuRecoMHTFail_;
-	TH1F *MuRecoPT_, *MuRecoPTFail_;
-	TH1F *MuRecoActivity_, *MuRecoActivityFail_;
-	
+	TH1Eff *MuMTWBTag_;
+	TH1Eff *MuMTWNJets_;
+	TH1Eff *MuMTWHT_;
+	TH1Eff *MuMTWMHT_;
+	TH1Eff *MuMTWPT_;
+	TH1Eff *MuMTWActivity_;
+	// 2D
+	TH2Eff *MuMTWPTActivity_;
 	
 	// elec
 	//1D
-	TH1F *ElecRecoBTag_, *ElecRecoBTagFail_;
-	TH1F *ElecRecoNJets_, *ElecRecoNJetsFail_;
-	TH1F *ElecRecoHT_, *ElecRecoHTFail_;
-	TH1F *ElecRecoMHT_, *ElecRecoMHTFail_;
-	TH1F *ElecRecoPT_, *ElecRecoPTFail_;
-	TH1F *ElecRecoActivity_, *ElecRecoActivityFail_;
-	
-	// Isoeptance
-	// mu 
-	//1D
-	TH1F *MuIsoBTag_, *MuIsoBTagFail_;
-	TH1F *MuIsoNJets_, *MuIsoNJetsFail_;
-	TH1F *MuIsoHT_, *MuIsoHTFail_;
-	TH1F *MuIsoMHT_, *MuIsoMHTFail_;
-	TH1F *MuIsoPT_, *MuIsoPTFail_;
-	TH1F *MuIsoActivity_, *MuIsoActivityFail_;
-	
-	// elec
-	//1D
-	TH1F *ElecIsoBTag_, *ElecIsoBTagFail_;
-	TH1F *ElecIsoNJets_, *ElecIsoNJetsFail_;
-	TH1F *ElecIsoHT_, *ElecIsoHTFail_;
-	TH1F *ElecIsoMHT_, *ElecIsoMHTFail_;
-	TH1F *ElecIsoPT_, *ElecIsoPTFail_;
-	TH1F *ElecIsoActivity_, *ElecIsoActivityFail_;
-	
-	// MTWeptance
-	// mu 
-	//1D
-	TH1F *MuMTWBTag_, *MuMTWBTagFail_;
-	TH1F *MuMTWNJets_, *MuMTWNJetsFail_;
-	TH1F *MuMTWHT_, *MuMTWHTFail_;
-	TH1F *MuMTWMHT_, *MuMTWMHTFail_;
-	TH1F *MuMTWPT_, *MuMTWPTFail_;
-	TH1F *MuMTWActivity_, *MuMTWActivityFail_;
+	TH1Eff *ElecMTWBTag_;
+	TH1Eff *ElecMTWNJets_;
+	TH1Eff *ElecMTWHT_;
+	TH1Eff *ElecMTWMHT_;
+	TH1Eff *ElecMTWPT_;
+	TH1Eff *ElecMTWActivity_;
 	// 2D
-	TH2F *MuMTWPTActivity_, *MuMTWPTActivityFail_;
-	
-	// elec
-	//1D
-	TH1F *ElecMTWBTag_, *ElecMTWBTagFail_;
-	TH1F *ElecMTWNJets_, *ElecMTWNJetsFail_;
-	TH1F *ElecMTWHT_, *ElecMTWHTFail_;
-	TH1F *ElecMTWMHT_, *ElecMTWMHTFail_;
-	TH1F *ElecMTWPT_, *ElecMTWPTFail_;
-	TH1F *ElecMTWActivity_, *ElecMTWActivityFail_;
-	// 2D
-	TH2F *ElecMTWPTActivity_, *ElecMTWPTActivityFail_;
+	TH2Eff *ElecMTWPTActivity_;
 	
 	
 	// Di lep control sample
 	// mu 
 	//1D
-	TH1F *MuDiLepBTag_, *MuDiLepBTagFail_;
-	TH1F *MuDiLepNJets_, *MuDiLepNJetsFail_;
-	TH1F *MuDiLepHT_, *MuDiLepHTFail_;
-	TH1F *MuDiLepMHT_, *MuDiLepMHTFail_;
-	TH1F *MuDiLepPT_, *MuDiLepPTFail_;
-	TH1F *MuDiLepActivity_, *MuDiLepActivityFail_;
+	TH1Eff *MuDiLepBTag_;
+	TH1Eff *MuDiLepNJets_;
+	TH1Eff *MuDiLepHT_;
+	TH1Eff *MuDiLepMHT_;
+	TH1Eff *MuDiLepPT_;
+	TH1Eff *MuDiLepActivity_;
 	
 	
 	// elec
 	//1D
-	TH1F *ElecDiLepBTag_, *ElecDiLepBTagFail_;
-	TH1F *ElecDiLepNJets_, *ElecDiLepNJetsFail_;
-	TH1F *ElecDiLepHT_, *ElecDiLepHTFail_;
-	TH1F *ElecDiLepMHT_, *ElecDiLepMHTFail_;
-	TH1F *ElecDiLepPT_, *ElecDiLepPTFail_;
-	TH1F *ElecDiLepActivity_, *ElecDiLepActivityFail_;
+	TH1Eff *ElecDiLepBTag_;
+	TH1Eff *ElecDiLepNJets_;
+	TH1Eff *ElecDiLepHT_;
+	TH1Eff *ElecDiLepMHT_;
+	TH1Eff *ElecDiLepPT_;
+	TH1Eff *ElecDiLepActivity_;
 	
 	// di lep mtw cut applied
 	// mu 
 	//1D
-	TH1F *MuDiLepMTWBTag_, *MuDiLepMTWBTagFail_;
-	TH1F *MuDiLepMTWNJets_, *MuDiLepMTWNJetsFail_;
-	TH1F *MuDiLepMTWHT_, *MuDiLepMTWHTFail_;
-	TH1F *MuDiLepMTWMHT_, *MuDiLepMTWMHTFail_;
-	TH1F *MuDiLepMTWPT_, *MuDiLepMTWPTFail_;
-	TH1F *MuDiLepMTWActivity_, *MuDiLepMTWActivityFail_;
+	TH1Eff *MuDiLepMTWBTag_;
+	TH1Eff *MuDiLepMTWNJets_;
+	TH1Eff *MuDiLepMTWHT_;
+	TH1Eff *MuDiLepMTWMHT_;
+	TH1Eff *MuDiLepMTWPT_;
+	TH1Eff *MuDiLepMTWActivity_;
 	
 	// elec
 	//1D
-	TH1F *ElecDiLepMTWBTag_, *ElecDiLepMTWBTagFail_;
-	TH1F *ElecDiLepMTWNJets_, *ElecDiLepMTWNJetsFail_;
-	TH1F *ElecDiLepMTWHT_, *ElecDiLepMTWHTFail_;
-	TH1F *ElecDiLepMTWMHT_, *ElecDiLepMTWMHTFail_;
-	TH1F *ElecDiLepMTWPT_, *ElecDiLepMTWPTFail_;
-	TH1F *ElecDiLepMTWActivity_, *ElecDiLepMTWActivityFail_;
-	
+	TH1Eff *ElecDiLepMTWBTag_;
+	TH1Eff *ElecDiLepMTWNJets_;
+	TH1Eff *ElecDiLepMTWHT_;
+	TH1Eff *ElecDiLepMTWMHT_;
+	TH1Eff *ElecDiLepMTWPT_;
+	TH1Eff *ElecDiLepMTWActivity_;	
 	
 	// mu 
 	//1D
-	TH1F *MuDiLepContributionBTag_, *MuDiLepContributionBTagFail_;
-	TH1F *MuDiLepContributionNJets_, *MuDiLepContributionNJetsFail_;
-	TH1F *MuDiLepContributionHT_, *MuDiLepContributionHTFail_;
-	TH1F *MuDiLepContributionMHT_, *MuDiLepContributionMHTFail_;
+	TH1Eff *MuDiLepContributionBTag_;
+	TH1Eff *MuDiLepContributionNJets_;
+	TH1Eff *MuDiLepContributionHT_;
+	TH1Eff *MuDiLepContributionMHT_;
 	
 	// elec
 	//1D
-	TH1F *ElecDiLepContributionBTag_, *ElecDiLepContributionBTagFail_;
-	TH1F *ElecDiLepContributionNJets_, *ElecDiLepContributionNJetsFail_;
-	TH1F *ElecDiLepContributionHT_, *ElecDiLepContributionHTFail_;
-	TH1F *ElecDiLepContributionMHT_, *ElecDiLepContributionMHTFail_;
+	TH1Eff *ElecDiLepContributionBTag_;
+	TH1Eff *ElecDiLepContributionNJets_;
+	TH1Eff *ElecDiLepContributionHT_;
+	TH1Eff *ElecDiLepContributionMHT_;
 	
 	// di lep mtw cut applied
 	// mu 
 	//1D
-	TH1F *MuDiLepContributionMTWBTag_, *MuDiLepContributionMTWBTagFail_;
-	TH1F *MuDiLepContributionMTWNJets_, *MuDiLepContributionMTWNJetsFail_;
-	TH1F *MuDiLepContributionMTWHT_, *MuDiLepContributionMTWHTFail_;
-	TH1F *MuDiLepContributionMTWMHT_, *MuDiLepContributionMTWMHTFail_;
+	TH1Eff *MuDiLepContributionMTWBTag_;
+	TH1Eff *MuDiLepContributionMTWNJets_;
+	TH1Eff *MuDiLepContributionMTWHT_;
+	TH1Eff *MuDiLepContributionMTWMHT_;
 	
 	// elec
 	//1D
-	TH1F *ElecDiLepContributionMTWBTag_, *ElecDiLepContributionMTWBTagFail_;
-	TH1F *ElecDiLepContributionMTWNJets_, *ElecDiLepContributionMTWNJetsFail_;
-	TH1F *ElecDiLepContributionMTWHT_, *ElecDiLepContributionMTWHTFail_;
-	TH1F *ElecDiLepContributionMTWMHT_, *ElecDiLepContributionMTWMHTFail_;
+	TH1Eff *ElecDiLepContributionMTWBTag_;
+	TH1Eff *ElecDiLepContributionMTWNJets_;
+	TH1Eff *ElecDiLepContributionMTWHT_;
+	TH1Eff *ElecDiLepContributionMTWMHT_;
 	
-	// single isolated track from mu or electron
-	// muon
-	TH1F *IsoTrackMuBTag_, *IsoTrackMuBTagFail_;
-	TH1F *IsoTrackMuNJets_, *IsoTrackMuNJetsFail_;
-	TH1F *IsoTrackMuHT_, *IsoTrackMuHTFail_;
-	TH1F *IsoTrackMuMHT_, *IsoTrackMuMHTFail_;
-	
-	TH1F *IsoTrackMuMTWBTag_, *IsoTrackMuMTWBTagFail_;
-	TH1F *IsoTrackMuMTWNJets_, *IsoTrackMuMTWNJetsFail_;
-	TH1F *IsoTrackMuMTWHT_, *IsoTrackMuMTWHTFail_;
-	TH1F *IsoTrackMuMTWMHT_, *IsoTrackMuMTWMHTFail_;
-	// match to isolated muon
-	TH1F *IsoTrackMuMatchedToIsoMuBTag_, *IsoTrackMuMatchedToIsoMuBTagFail_;
-	TH1F *IsoTrackMuMatchedToIsoMuNJets_, *IsoTrackMuMatchedToIsoMuNJetsFail_;
-	TH1F *IsoTrackMuMatchedToIsoMuHT_, *IsoTrackMuMatchedToIsoMuHTFail_;
-	TH1F *IsoTrackMuMatchedToIsoMuMHT_, *IsoTrackMuMatchedToIsoMuMHTFail_;
-	
-	// elec
-	TH1F *IsoTrackElecBTag_, *IsoTrackElecBTagFail_;
-	TH1F *IsoTrackElecNJets_, *IsoTrackElecNJetsFail_;
-	TH1F *IsoTrackElecHT_, *IsoTrackElecHTFail_;
-	TH1F *IsoTrackElecMHT_, *IsoTrackElecMHTFail_;
-	
-	TH1F *IsoTrackElecMTWBTag_, *IsoTrackElecMTWBTagFail_;
-	TH1F *IsoTrackElecMTWNJets_, *IsoTrackElecMTWNJetsFail_;
-	TH1F *IsoTrackElecMTWHT_, *IsoTrackElecMTWHTFail_;
-	TH1F *IsoTrackElecMTWMHT_, *IsoTrackElecMTWMHTFail_;
-	// match to isolated muon
-	TH1F *IsoTrackElecMatchedToIsoElecBTag_, *IsoTrackElecMatchedToIsoElecBTagFail_;
-	TH1F *IsoTrackElecMatchedToIsoElecNJets_, *IsoTrackElecMatchedToIsoElecNJetsFail_;
-	TH1F *IsoTrackElecMatchedToIsoElecHT_, *IsoTrackElecMatchedToIsoElecHTFail_;
-	TH1F *IsoTrackElecMatchedToIsoElecMHT_, *IsoTrackElecMatchedToIsoElecMHTFail_;
-	
-	// isotrack di lep contribution and efficiency
-	//mu contribution
-	TH1F *IsoTrackMuDiLepContributionBTag_, *IsoTrackMuDiLepContributionBTagFail_;
-	TH1F *IsoTrackMuDiLepContributionNJets_, *IsoTrackMuDiLepContributionNJetsFail_;
-	TH1F *IsoTrackMuDiLepContributionHT_, *IsoTrackMuDiLepContributionHTFail_;
-	TH1F *IsoTrackMuDiLepContributionMHT_, *IsoTrackMuDiLepContributionMHTFail_;
-	// efficiency
-	TH1F *IsoTrackMuDiLepEffBTag_, *IsoTrackMuDiLepEffBTagFail_;
-	TH1F *IsoTrackMuDiLepEffNJets_, *IsoTrackMuDiLepEffNJetsFail_;
-	TH1F *IsoTrackMuDiLepEffHT_, *IsoTrackMuDiLepEffHTFail_;
-	TH1F *IsoTrackMuDiLepEffMHT_, *IsoTrackMuDiLepEffMHTFail_;
-	TH1F *IsoTrackMuDiLepEffPT_, *IsoTrackMuDiLepEffPTFail_;
-	TH1F *IsoTrackMuDiLepEffActivity_, *IsoTrackMuDiLepEffActivityFail_;
-	
-	//elec contribution
-	TH1F *IsoTrackElecDiLepContributionBTag_, *IsoTrackElecDiLepContributionBTagFail_;
-	TH1F *IsoTrackElecDiLepContributionNJets_, *IsoTrackElecDiLepContributionNJetsFail_;
-	TH1F *IsoTrackElecDiLepContributionHT_, *IsoTrackElecDiLepContributionHTFail_;
-	TH1F *IsoTrackElecDiLepContributionMHT_, *IsoTrackElecDiLepContributionMHTFail_;
-	// efficiency
-	TH1F *IsoTrackElecDiLepEffBTag_, *IsoTrackElecDiLepEffBTagFail_;
-	TH1F *IsoTrackElecDiLepEffNJets_, *IsoTrackElecDiLepEffNJetsFail_;
-	TH1F *IsoTrackElecDiLepEffHT_, *IsoTrackElecDiLepEffHTFail_;
-	TH1F *IsoTrackElecDiLepEffMHT_, *IsoTrackElecDiLepEffMHTFail_;
-	TH1F *IsoTrackElecDiLepEffPT_, *IsoTrackElecDiLepEffPTFail_;
-	TH1F *IsoTrackElecDiLepEffActivity_, *IsoTrackElecDiLepEffActivityFail_;
-	
-	// 2D efficiencies
-	TH2F *MuIsoPTActivity_, *MuIsoPTActivityFail_;
-	TH2F *MuRecoPTActivity_, *MuRecoPTActivityFail_;
-	
-	TH2F *ElecIsoPTActivity_, *ElecIsoPTActivityFail_;
-	TH2F *ElecRecoPTActivity_, *ElecRecoPTActivityFail_;
 
-	TH2F *MuIsoHTMHT_, *MuIsoHTMHTFail_;
-	TH2F *MuRecoHTMHT_, *MuRecoHTMHTFail_;
-	
-	TH2F *ElecIsoHTMHT_, *ElecIsoHTMHTFail_;
-	TH2F *ElecRecoHTMHT_, *ElecRecoHTMHTFail_;
-  
-	
-	// TEff used efficienies
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	TH1Feff *MuPurityBTagEff_;
-	TH1Feff *MuPurityNJetsEff_;
-	TH1Feff *MuPurityHTEff_;
-	TH1Feff *MuPurityMHTEff_;
-	TH1Feff *MuPurityPTEff_;
-	TH1Feff *MuPurityActivityEff_;
-	//2D
-	TH2Feff *MuonPurityMHTNJetEff_;
-	
-	//elec
-	//1D
-	TH1Feff *ElecPurityBTagEff_;
-	TH1Feff *ElecPurityNJetsEff_;
-	TH1Feff *ElecPurityHTEff_;
-	TH1Feff *ElecPurityMHTEff_;
-	TH1Feff *ElecPurityPTEff_;
-	TH1Feff *ElecPurityActivityEff_;
-	//2D
-	TH2Feff *ElecPurityMHTNJetEff_;
-	
-	// Acceptance
-	// mu 
-	//1D
-	TH1Feff *MuAccBTagEff_;
-	TH1Feff *MuAccNJetsEff_;
-	TH1Feff *MuAccHTEff_;
-	TH1Feff *MuAccMHTEff_;
-	TH1Feff *MuAccPTEff_;
-	TH1Feff *MuAccActivityEff_;
-	// 2D
-	TH2Feff *MuAccHTNJetsEff_; 
-	TH2Feff *MuAccMHTNJetsEff_;
-	TH2Feff *MuAccBTagNJetsEff_;
-	
-	// elec
-	//1D
-	TH1Feff *ElecAccBTagEff_;
-	TH1Feff *ElecAccNJetsEff_;
-	TH1Feff *ElecAccHTEff_;
-	TH1Feff *ElecAccMHTEff_;
-	TH1Feff *ElecAccPTEff_;
-	TH1Feff *ElecAccActivityEff_;
-	
-	// 2D
-	TH2Feff *ElecAccHTNJetsEff_; 
-	TH2Feff *ElecAccMHTNJetsEff_;
-	TH2Feff *ElecAccBTagNJetsEff_;
-	
-	// Recoeptance
-	// mu 
-	//1D
-	TH1Feff *MuRecoBTagEff_;
-	TH1Feff *MuRecoNJetsEff_;
-	TH1Feff *MuRecoHTEff_;
-	TH1Feff *MuRecoMHTEff_;
-	TH1Feff *MuRecoPTEff_;
-	TH1Feff *MuRecoActivityEff_;
-	
-	
-	// elec
-	//1D
-	TH1Feff *ElecRecoBTagEff_, *ElecRecoBTagFailEff_;
-	TH1Feff *ElecRecoNJetsEff_, *ElecRecoNJetsFailEff_;
-	TH1Feff *ElecRecoHTEff_, *ElecRecoHTFailEff_;
-	TH1Feff *ElecRecoMHTEff_, *ElecRecoMHTFailEff_;
-	TH1Feff *ElecRecoPTEff_, *ElecRecoPTFailEff_;
-	TH1Feff *ElecRecoActivityEff_, *ElecRecoActivityFailEff_;
-	
-	// Isoeptance
-	// mu 
-	//1D
-	TH1Feff *MuIsoBTagEff_, *MuIsoBTagFailEff_;
-	TH1Feff *MuIsoNJetsEff_, *MuIsoNJetsFailEff_;
-	TH1Feff *MuIsoHTEff_, *MuIsoHTFailEff_;
-	TH1Feff *MuIsoMHTEff_, *MuIsoMHTFailEff_;
-	TH1Feff *MuIsoPTEff_, *MuIsoPTFailEff_;
-	TH1Feff *MuIsoActivityEff_, *MuIsoActivityFailEff_;
-	
-	// elec
-	//1D
-	TH1Feff *ElecIsoBTagEff_, *ElecIsoBTagFailEff_;
-	TH1Feff *ElecIsoNJetsEff_, *ElecIsoNJetsFailEff_;
-	TH1Feff *ElecIsoHTEff_, *ElecIsoHTFailEff_;
-	TH1Feff *ElecIsoMHTEff_, *ElecIsoMHTFailEff_;
-	TH1Feff *ElecIsoPTEff_, *ElecIsoPTFailEff_;
-	TH1Feff *ElecIsoActivityEff_, *ElecIsoActivityFailEff_;
-	
-	// MTWeptance
-	// mu 
-	//1D
-	TH1Feff *MuMTWBTagEff_, *MuMTWBTagFailEff_;
-	TH1Feff *MuMTWNJetsEff_, *MuMTWNJetsFailEff_;
-	TH1Feff *MuMTWHTEff_, *MuMTWHTFailEff_;
-	TH1Feff *MuMTWMHTEff_, *MuMTWMHTFailEff_;
-	TH1Feff *MuMTWPTEff_, *MuMTWPTFailEff_;
-	TH1Feff *MuMTWActivityEff_, *MuMTWActivityFailEff_;
-	// 2D
-	TH2Feff *MuMTWPTActivityEff_, *MuMTWPTActivityFailEff_;
-	
-	// elec
-	//1D
-	TH1Feff *ElecMTWBTagEff_, *ElecMTWBTagFailEff_;
-	TH1Feff *ElecMTWNJetsEff_, *ElecMTWNJetsFailEff_;
-	TH1Feff *ElecMTWHTEff_, *ElecMTWHTFailEff_;
-	TH1Feff *ElecMTWMHTEff_, *ElecMTWMHTFailEff_;
-	TH1Feff *ElecMTWPTEff_, *ElecMTWPTFailEff_;
-	TH1Feff *ElecMTWActivityEff_, *ElecMTWActivityFailEff_;
-	// 2D
-	TH2Feff *ElecMTWPTActivityEff_, *ElecMTWPTActivityFailEff_;
-	
-	
-	// Di lep control sample
-	// mu 
-	//1D
-	TH1Feff *MuDiLepBTagEff_, *MuDiLepBTagFailEff_;
-	TH1Feff *MuDiLepNJetsEff_, *MuDiLepNJetsFailEff_;
-	TH1Feff *MuDiLepHTEff_, *MuDiLepHTFailEff_;
-	TH1Feff *MuDiLepMHTEff_, *MuDiLepMHTFailEff_;
-	TH1Feff *MuDiLepPTEff_, *MuDiLepPTFailEff_;
-	TH1Feff *MuDiLepActivityEff_, *MuDiLepActivityFailEff_;
-	
-	
-	// elec
-	//1D
-	TH1Feff *ElecDiLepBTagEff_, *ElecDiLepBTagFailEff_;
-	TH1Feff *ElecDiLepNJetsEff_, *ElecDiLepNJetsFailEff_;
-	TH1Feff *ElecDiLepHTEff_, *ElecDiLepHTFailEff_;
-	TH1Feff *ElecDiLepMHTEff_, *ElecDiLepMHTFailEff_;
-	TH1Feff *ElecDiLepPTEff_, *ElecDiLepPTFailEff_;
-	TH1Feff *ElecDiLepActivityEff_, *ElecDiLepActivityFailEff_;
-	
-	// di lep mtw cut applied
-	// mu 
-	//1D
-	TH1Feff *MuDiLepMTWBTagEff_, *MuDiLepMTWBTagFailEff_;
-	TH1Feff *MuDiLepMTWNJetsEff_, *MuDiLepMTWNJetsFailEff_;
-	TH1Feff *MuDiLepMTWHTEff_, *MuDiLepMTWHTFailEff_;
-	TH1Feff *MuDiLepMTWMHTEff_, *MuDiLepMTWMHTFailEff_;
-	TH1Feff *MuDiLepMTWPTEff_, *MuDiLepMTWPTFailEff_;
-	TH1Feff *MuDiLepMTWActivityEff_, *MuDiLepMTWActivityFailEff_;
-	
-	// elec
-	//1D
-	TH1Feff *ElecDiLepMTWBTagEff_, *ElecDiLepMTWBTagFailEff_;
-	TH1Feff *ElecDiLepMTWNJetsEff_, *ElecDiLepMTWNJetsFailEff_;
-	TH1Feff *ElecDiLepMTWHTEff_, *ElecDiLepMTWHTFailEff_;
-	TH1Feff *ElecDiLepMTWMHTEff_, *ElecDiLepMTWMHTFailEff_;
-	TH1Feff *ElecDiLepMTWPTEff_, *ElecDiLepMTWPTFailEff_;
-	TH1Feff *ElecDiLepMTWActivityEff_, *ElecDiLepMTWActivityFailEff_;
-	
-	
-	// mu 
-	//1D
-	TH1Feff *MuDiLepContributionBTagEff_, *MuDiLepContributionBTagFailEff_;
-	TH1Feff *MuDiLepContributionNJetsEff_, *MuDiLepContributionNJetsFailEff_;
-	TH1Feff *MuDiLepContributionHTEff_, *MuDiLepContributionHTFailEff_;
-	TH1Feff *MuDiLepContributionMHTEff_, *MuDiLepContributionMHTFailEff_;
-	
-	// elec
-	//1D
-	TH1Feff *ElecDiLepContributionBTagEff_, *ElecDiLepContributionBTagFailEff_;
-	TH1Feff *ElecDiLepContributionNJetsEff_, *ElecDiLepContributionNJetsFailEff_;
-	TH1Feff *ElecDiLepContributionHTEff_, *ElecDiLepContributionHTFailEff_;
-	TH1Feff *ElecDiLepContributionMHTEff_, *ElecDiLepContributionMHTFailEff_;
-	
-	// di lep mtw cut applied
-	// mu 
-	//1D
-	TH1Feff *MuDiLepContributionMTWBTagEff_, *MuDiLepContributionMTWBTagFailEff_;
-	TH1Feff *MuDiLepContributionMTWNJetsEff_, *MuDiLepContributionMTWNJetsFailEff_;
-	TH1Feff *MuDiLepContributionMTWHTEff_, *MuDiLepContributionMTWHTFailEff_;
-	TH1Feff *MuDiLepContributionMTWMHTEff_, *MuDiLepContributionMTWMHTFailEff_;
-	
-	// elec
-	//1D
-	TH1Feff *ElecDiLepContributionMTWBTagEff_, *ElecDiLepContributionMTWBTagFailEff_;
-	TH1Feff *ElecDiLepContributionMTWNJetsEff_, *ElecDiLepContributionMTWNJetsFailEff_;
-	TH1Feff *ElecDiLepContributionMTWHTEff_, *ElecDiLepContributionMTWHTFailEff_;
-	TH1Feff *ElecDiLepContributionMTWMHTEff_, *ElecDiLepContributionMTWMHTFailEff_;
-	
 	// single isolated track from mu or electron
 	// muon
-	TH1Feff *IsoTrackMuBTagEff_, *IsoTrackMuBTagFailEff_;
-	TH1Feff *IsoTrackMuNJetsEff_, *IsoTrackMuNJetsFailEff_;
-	TH1Feff *IsoTrackMuHTEff_, *IsoTrackMuHTFailEff_;
-	TH1Feff *IsoTrackMuMHTEff_, *IsoTrackMuMHTFailEff_;
-	
-	TH1Feff *IsoTrackMuMTWBTagEff_, *IsoTrackMuMTWBTagFailEff_;
-	TH1Feff *IsoTrackMuMTWNJetsEff_, *IsoTrackMuMTWNJetsFailEff_;
-	TH1Feff *IsoTrackMuMTWHTEff_, *IsoTrackMuMTWHTFailEff_;
-	TH1Feff *IsoTrackMuMTWMHTEff_, *IsoTrackMuMTWMHTFailEff_;
-	// match to isolated muon
-	TH1Feff *IsoTrackMuMatchedToIsoMuBTagEff_, *IsoTrackMuMatchedToIsoMuBTagFailEff_;
-	TH1Feff *IsoTrackMuMatchedToIsoMuNJetsEff_, *IsoTrackMuMatchedToIsoMuNJetsFailEff_;
-	TH1Feff *IsoTrackMuMatchedToIsoMuHTEff_, *IsoTrackMuMatchedToIsoMuHTFailEff_;
-	TH1Feff *IsoTrackMuMatchedToIsoMuMHTEff_, *IsoTrackMuMatchedToIsoMuMHTFailEff_;
+	TH1Eff *IsoTrackMuBTag_;
+	TH1Eff *IsoTrackMuNJets_;
+	TH1Eff *IsoTrackMuHT_;
+	TH1Eff *IsoTrackMuMHT_;
+	TH2Eff *IsoTrackMuPTActivity_;
 	
 	// elec
-	TH1Feff *IsoTrackElecBTagEff_, *IsoTrackElecBTagFailEff_;
-	TH1Feff *IsoTrackElecNJetsEff_, *IsoTrackElecNJetsFailEff_;
-	TH1Feff *IsoTrackElecHTEff_, *IsoTrackElecHTFailEff_;
-	TH1Feff *IsoTrackElecMHTEff_, *IsoTrackElecMHTFailEff_;
+	TH1Eff *IsoTrackElecBTag_;
+	TH1Eff *IsoTrackElecNJets_;
+	TH1Eff *IsoTrackElecHT_;
+	TH1Eff *IsoTrackElecMHT_;
+	TH2Eff *IsoTrackElecPTActivity_;
 	
-	TH1Feff *IsoTrackElecMTWBTagEff_, *IsoTrackElecMTWBTagFailEff_;
-	TH1Feff *IsoTrackElecMTWNJetsEff_, *IsoTrackElecMTWNJetsFailEff_;
-	TH1Feff *IsoTrackElecMTWHTEff_, *IsoTrackElecMTWHTFailEff_;
-	TH1Feff *IsoTrackElecMTWMHTEff_, *IsoTrackElecMTWMHTFailEff_;
-	// match to isolated muon
-	TH1Feff *IsoTrackElecMatchedToIsoElecBTagEff_, *IsoTrackElecMatchedToIsoElecBTagFailEff_;
-	TH1Feff *IsoTrackElecMatchedToIsoElecNJetsEff_, *IsoTrackElecMatchedToIsoElecNJetsFailEff_;
-	TH1Feff *IsoTrackElecMatchedToIsoElecHTEff_, *IsoTrackElecMatchedToIsoElecHTFailEff_;
-	TH1Feff *IsoTrackElecMatchedToIsoElecMHTEff_, *IsoTrackElecMatchedToIsoElecMHTFailEff_;
-	
-	// isotrack di lep contribution and efficiency
-	//mu contribution
-	TH1Feff *IsoTrackMuDiLepContributionBTagEff_, *IsoTrackMuDiLepContributionBTagFailEff_;
-	TH1Feff *IsoTrackMuDiLepContributionNJetsEff_, *IsoTrackMuDiLepContributionNJetsFailEff_;
-	TH1Feff *IsoTrackMuDiLepContributionHTEff_, *IsoTrackMuDiLepContributionHTFailEff_;
-	TH1Feff *IsoTrackMuDiLepContributionMHTEff_, *IsoTrackMuDiLepContributionMHTFailEff_;
-	// efficiency
-	TH1Feff *IsoTrackMuDiLepEff_BTagEff_, *IsoTrackMuDiLepEff_BTagFailEff_;
-	TH1Feff *IsoTrackMuDiLepEff_NJetsEff_, *IsoTrackMuDiLepEff_NJetsFailEff_;
-	TH1Feff *IsoTrackMuDiLepEff_HTEff_, *IsoTrackMuDiLepEff_HTFailEff_;
-	TH1Feff *IsoTrackMuDiLepEff_MHTEff_, *IsoTrackMuDiLepEff_MHTFailEff_;
-	TH1Feff *IsoTrackMuDiLepEff_PTEff_, *IsoTrackMuDiLepEff_PTFailEff_;
-	TH1Feff *IsoTrackMuDiLepEff_ActivityEff_, *IsoTrackMuDiLepEff_ActivityFailEff_;
-	
-	//elec contribution
-	TH1Feff *IsoTrackElecDiLepContributionBTagEff_, *IsoTrackElecDiLepContributionBTagFailEff_;
-	TH1Feff *IsoTrackElecDiLepContributionNJetsEff_, *IsoTrackElecDiLepContributionNJetsFailEff_;
-	TH1Feff *IsoTrackElecDiLepContributionHTEff_, *IsoTrackElecDiLepContributionHTFailEff_;
-	TH1Feff *IsoTrackElecDiLepContributionMHTEff_, *IsoTrackElecDiLepContributionMHTFailEff_;
-	// efficiency
-	TH1Feff *IsoTrackElecDiLepEff_BTagEff_, *IsoTrackElecDiLepEff_BTagFailEff_;
-	TH1Feff *IsoTrackElecDiLepEff_NJetsEff_, *IsoTrackElecDiLepEff_NJetsFailEff_;
-	TH1Feff *IsoTrackElecDiLepEff_HTEff_, *IsoTrackElecDiLepEff_HTFailEff_;
-	TH1Feff *IsoTrackElecDiLepEff_MHTEff_, *IsoTrackElecDiLepEff_MHTFailEff_;
-	TH1Feff *IsoTrackElecDiLepEff_PTEff_, *IsoTrackElecDiLepEff_PTFailEff_;
-	TH1Feff *IsoTrackElecDiLepEff_ActivityEff_, *IsoTrackElecDiLepEff_ActivityFailEff_;
-	
-	// 2D efficiencies
-	TH2Feff *MuIsoPTActivityEff_, *MuIsoPTActivityFailEff_;
-	TH2Feff *MuRecoPTActivityEff_, *MuRecoPTActivityFailEff_;
-	
-	TH2Feff *ElecIsoPTActivityEff_, *ElecIsoPTActivityFailEff_;
-	TH2Feff *ElecRecoPTActivityEff_, *ElecRecoPTActivityFailEff_;
-	
-	// ExpectationReductionIsoTrack 
-	//1D
-	TH1Feff *ExpectationReductionIsoTrackBTagEff_, *ExpectationReductionIsoTrackBTagFailEff_;
-	TH1Feff *ExpectationReductionIsoTrackNJetsEff_, *ExpectationReductionIsoTrackNJetsFailEff_;
-	TH1Feff *ExpectationReductionIsoTrackHTEff_, *ExpectationReductionIsoTrackHTFailEff_;
-	TH1Feff *ExpectationReductionIsoTrackMHTEff_, *ExpectationReductionIsoTrackMHTFailEff_;
-	
-	TH1F *ExpectationReductionIsoTrackBTagEff, *ExpectationReductionIsoTrackBTagEffFail;
-	TH1F *ExpectationReductionIsoTrackNJetsEff, *ExpectationReductionIsoTrackNJetsEffFail;
-	TH1F *ExpectationReductionIsoTrackHTEff, *ExpectationReductionIsoTrackHTEffFail;
-	TH1F *ExpectationReductionIsoTrackMHTEff, *ExpectationReductionIsoTrackMHTEffFail;
+	TH1Eff *ExpectationReductionIsoTrackBTagEff_;
+	TH1Eff *ExpectationReductionIsoTrackNJetsEff_;
+	TH1Eff *ExpectationReductionIsoTrackHTEff_;
+	TH1Eff *ExpectationReductionIsoTrackMHTEff_;
+	TH1Eff *ExpectationReductionIsoTrackPTEff_;
+	TH1Eff *ExpectationReductionIsoTrackActivityEff_;
 	//2D
 	// 2D
-	TH2F *IsoTrackReductionHTNJets_, *IsoTrackReductionHTNJetsFail_; 
-	TH2F *IsoTrackReductionMHTNJets_, *IsoTrackReductionMHTNJetsFail_;
-	TH2F *IsoTrackReductionBTagNJets_, *IsoTrackReductionBTagNJetsFail_;
-	TH2F *IsoTrackReductionPTActivity_, *IsoTrackReductionPTActivityFail_;
+	TH2Eff *IsoTrackReductionHTNJets_; 
+	TH2Eff *IsoTrackReductionMHTNJets_;
+	TH2Eff *IsoTrackReductionBTagNJets_;
+	TH2Eff *IsoTrackReductionPTActivity_;
 	
 	
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// Search bin efficiencies
-	Efficiency *MuAccSearchBinEff_, *MuRecoSearchBinEff_, *MuIsoSearchBinEff_, *MuMTWSearchBinEff_, *MuDiLepContributionMTWAppliedSearchBinEff_, *MuDiLepEffMTWAppliedSearchBinEff_, *MuPuritySearchBinEff_;
-	Efficiency *ElecAccSearchBinEff_, *ElecRecoSearchBinEff_, *ElecIsoSearchBinEff_, *ElecMTWSearchBinEff_, *ElecDiLepContributionMTWAppliedSearchBinEff_, *ElecDiLepEffMTWAppliedSearchBinEff_, *ElecPuritySearchBinEff_;
+	// mu iso tracks
+	TH1Eff *ExpectationReductionMuIsoTrackBTagEff_;
+	TH1Eff *ExpectationReductionMuIsoTrackNJetsEff_;
+	TH1Eff *ExpectationReductionMuIsoTrackHTEff_;
+	TH1Eff *ExpectationReductionMuIsoTrackMHTEff_;
+	TH1Eff *ExpectationReductionMuIsoTrackPTEff_;
+	TH1Eff *ExpectationReductionMuIsoTrackActivityEff_;
+	//2D
+	TH2Eff *MuIsoTrackReductionHTNJets_; 
+	TH2Eff *MuIsoTrackReductionMHTNJets_;
+	TH2Eff *MuIsoTrackReductionBTagNJets_;
+	TH2Eff *MuIsoTrackReductionPTActivity_;
 	
-	Efficiency *ExpectationReductionIsoTrack_;
+	//elec iso tracks
+	TH1Eff *ExpectationReductionElecIsoTrackBTagEff_;
+	TH1Eff *ExpectationReductionElecIsoTrackNJetsEff_;
+	TH1Eff *ExpectationReductionElecIsoTrackHTEff_;
+	TH1Eff *ExpectationReductionElecIsoTrackMHTEff_;
+	TH1Eff *ExpectationReductionElecIsoTrackPTEff_;
+	TH1Eff *ExpectationReductionElecIsoTrackActivityEff_;
+	//2D
+	TH2Eff *ElecIsoTrackReductionHTNJets_; 
+	TH2Eff *ElecIsoTrackReductionMHTNJets_;
+	TH2Eff *ElecIsoTrackReductionBTagNJets_;
+	TH2Eff *ElecIsoTrackReductionPTActivity_;
 	
+	//pion iso tracks
+	TH1Eff *ExpectationReductionPionIsoTrackBTagEff_;
+	TH1Eff *ExpectationReductionPionIsoTrackNJetsEff_;
+	TH1Eff *ExpectationReductionPionIsoTrackHTEff_;
+	TH1Eff *ExpectationReductionPionIsoTrackMHTEff_;
+	TH1Eff *ExpectationReductionPionIsoTrackPTEff_;
+	TH1Eff *ExpectationReductionPionIsoTrackActivityEff_;
+	//2D
+	TH2Eff *PionIsoTrackReductionHTNJets_; 
+	TH2Eff *PionIsoTrackReductionMHTNJets_;
+	TH2Eff *PionIsoTrackReductionBTagNJets_;
+	TH2Eff *PionIsoTrackReductionPTActivity_;
+	
+	
+   // Declaration of leaf types
 	// Declaration of leaf types
 	UInt_t          EvtNum;
 	Float_t         HT;
@@ -843,16 +456,24 @@ public :
 	UShort_t        NJets;
 	UShort_t        BTags;
 	UShort_t        Leptons;
+	UShort_t        isoTracks;
+	UChar_t         DY;
+	UShort_t        Bin;
 	UShort_t        NVtx;
 	Float_t         DeltaPhi1;
 	Float_t         DeltaPhi2;
 	Float_t         DeltaPhi3;
 	Float_t         minDeltaPhiN;
+	Float_t         DeltaPhiN1;
+	Float_t         DeltaPhiN2;
+	Float_t         DeltaPhiN3;
 	Float_t         Weight;
 	Float_t         MET;
 	Float_t         METPhi;
 	UShort_t        GenMuNum;
 	UShort_t        GenMuFromTau[2];   //[GenMuNum]
+	Float_t         GenMuDeltaRJet[2];   //[GenMuNum]
+	Float_t         GenMuRelPTJet[2];   //[GenMuNum]
 	Float_t         GenMuPt[2];   //[GenMuNum]
 	Float_t         GenMuEta[2];   //[GenMuNum]
 	Float_t         GenMuPhi[2];   //[GenMuNum]
@@ -860,6 +481,8 @@ public :
 	Float_t         GenMuonActivity[2];   //[GenMuNum]
 	UShort_t        GenElecNum;
 	UShort_t        GenElecFromTau[2];   //[GenElecNum]
+	Float_t         GenElecDeltaRJet[2];   //[GenElecNum]
+	Float_t         GenElecRelPTJet[2];   //[GenElecNum]
 	Float_t         GenElecPt[2];   //[GenElecNum]
 	Float_t         GenElecEta[2];   //[GenElecNum]
 	Float_t         GenElecPhi[2];   //[GenElecNum]
@@ -876,15 +499,19 @@ public :
 	UShort_t        muAcc;
 	UShort_t        muReco;
 	UShort_t        muIso;
-	Float_t         mtw;
+	Float_t         MTW;
 	Float_t         IsoTrackMTW;
 	UShort_t        elecAcc;
 	UShort_t        elecReco;
 	UShort_t        elecIso;
 	UShort_t        muIsoTrack;
-	UShort_t	MuPurity;
-	UShort_t	ElecPurity;
-	UShort_t        elecIsoTrack;
+	UShort_t        MuPurity;
+	UShort_t        ElecPurity;
+	UShort_t        muActivityMethod;
+	UShort_t        elecActivityMethod;
+	UShort_t        muIsoTrackActivityMethod;
+	UShort_t        elecIsoTrackActivityMethod;
+	UShort_t        pionIsoTrackActivityMethod;
 	UShort_t        FallsVetoLep;
 	UShort_t        selectedIDIsoMuonsNum;
 	Float_t         selectedIDIsoMuonsPt[3];   //[selectedIDIsoMuonsNum]
@@ -895,6 +522,7 @@ public :
 	Float_t         selectedIDIsoMuonsEta[3];   //[selectedIDIsoMuonsNum]
 	Float_t         selectedIDIsoMuonsPhi[3];   //[selectedIDIsoMuonsNum]
 	Float_t         selectedIDIsoMuonsE[3];   //[selectedIDIsoMuonsNum]
+	Float_t         selectedIDIsoMuons_MTW[3];   //[selectedIDIsoMuonsNum]
 	Float_t         RecoIsoMuonActivity[3];   //[selectedIDIsoMuonsNum]
 	UShort_t        selectedIDMuonsNum;
 	Float_t         selectedIDMuonsPt[5];   //[selectedIDMuonsNum]
@@ -902,39 +530,59 @@ public :
 	Float_t         selectedIDMuonsEta[5];   //[selectedIDMuonsNum]
 	Float_t         selectedIDMuonsPhi[5];   //[selectedIDMuonsNum]
 	Float_t         selectedIDMuonsE[5];   //[selectedIDMuonsNum]
+	Float_t         selectedIDMuons_MTW[3];   //[selectedIDIsoMuonsNum]
 	Float_t         RecoMuonActivity[5];   //[selectedIDMuonsNum]
 	UShort_t        RecoIsoMuonIsoTrackMatched[3];   //[selectedIDIsoMuonsNum]
 	UShort_t        selectedIDIsoElectronsNum;
-	Float_t         selectedIDIsoElectronsPt[4];   //[selectedIDIsoElectronsNum]
-	UShort_t        elecIsoMatched[4];   //[selectedIDIsoElectronsNum]
-	UShort_t        RecoIsoElecPromtMatched[4];   //[selectedIDIsoElectronsNum]
-	Float_t         RecoIsoElecPromtMatchedDeltaR[4];   //[selectedIDIsoElectronsNum]
-	Float_t         RecoIsoElecPromtMatchedRelPt[4];   //[selectedIDIsoElectronsNum]
-	Float_t         selectedIDIsoElectronsEta[4];   //[selectedIDIsoElectronsNum]
-	Float_t         selectedIDIsoElectronsPhi[4];   //[selectedIDIsoElectronsNum]
-	Float_t         selectedIDIsoElectronsE[4];   //[selectedIDIsoElectronsNum]
-	Float_t         RecoIsoElectronActivity[4];   //[selectedIDIsoElectronsNum]
-	UShort_t        RecoIsoElecIsoTrackMatched[4];   //[selectedIDIsoElectronsNum]
+	Float_t         selectedIDIsoElectronsPt[3];   //[selectedIDIsoElectronsNum]
+	UShort_t        elecIsoMatched[3];   //[selectedIDIsoElectronsNum]
+	UShort_t        RecoIsoElecPromtMatched[3];   //[selectedIDIsoElectronsNum]
+	Float_t         RecoIsoElecPromtMatchedDeltaR[3];   //[selectedIDIsoElectronsNum]
+	Float_t         RecoIsoElecPromtMatchedRelPt[3];   //[selectedIDIsoElectronsNum]
+	Float_t         selectedIDIsoElectronsEta[3];   //[selectedIDIsoElectronsNum]
+	Float_t         selectedIDIsoElectronsPhi[3];   //[selectedIDIsoElectronsNum]
+	Float_t         selectedIDIsoElectronsE[3];   //[selectedIDIsoElectronsNum]
+	Float_t         selectedIDIsoElectrons_MTW[3];   //[selectedIDIsoElectronsNum]
+	Float_t         RecoIsoElectronActivity[3];   //[selectedIDIsoElectronsNum]
+	UShort_t        RecoIsoElecIsoTrackMatched[3];   //[selectedIDIsoElectronsNum]
 	UShort_t        selectedIDElectronsNum;
-	Float_t         selectedIDElectronsPt[7];   //[selectedIDElectronsNum]
-	UShort_t        selectedIDElectronsMatched[7];   //[selectedIDElectronsNum]
-	Float_t         selectedIDElectronsEta[7];   //[selectedIDElectronsNum]
-	Float_t         selectedIDElectronsPhi[7];   //[selectedIDElectronsNum]
-	Float_t         selectedIDElectronsE[7];   //[selectedIDElectronsNum]
-	Float_t         RecoElectronActivity[7];   //[selectedIDElectronsNum]
-	UShort_t        IsolatedTracksNum;
-	UShort_t        FallsVetoIsoTrack;
-	Float_t         IsolatedTracksPt[4];   //[IsolatedTracksNum]
-	Float_t         IsolatedTracksEta[4];   //[IsolatedTracksNum]
-	Float_t         IsolatedTracksPhi[4];   //[IsolatedTracksNum]
-	Float_t         IsolatedTracksE[4];   //[IsolatedTracksNum]
-	UShort_t        muIsoTrackMatched[4];   //[IsolatedTracksNum]
-	UShort_t        elecIsoTrackMatched[4];   //[IsolatedTracksNum]
-	UShort_t        SelectedIsoTracksMatchedToGenLepton[4];   //[IsolatedTracksNum]
-	Float_t         SelectedIsoTracksMatchedToGenDeltaR[4];   //[IsolatedTracksNum]
-	Float_t         SelectedIsoTracksMatchedToGenRelPT[4];   //[IsolatedTracksNum]
-	UShort_t        SelectedIsoTracksMatchedToRecoIsoLepton[4];   //[IsolatedTracksNum]
-	Float_t         IsoTrackActivity[4];   //[IsolatedTracksNum]
+	Float_t         selectedIDElectronsPt[4];   //[selectedIDElectronsNum]
+	UShort_t        selectedIDElectronsMatched[4];   //[selectedIDElectronsNum]
+	Float_t         selectedIDElectronsEta[4];   //[selectedIDElectronsNum]
+	Float_t         selectedIDElectronsPhi[4];   //[selectedIDElectronsNum]
+	Float_t         selectedIDElectronsE[4];   //[selectedIDElectronsNum]
+	Float_t         selectedIDElectrons_MTW[3];   //[selectedIDIsoElectronsNum]
+	Float_t         RecoElectronActivity[4];   //[selectedIDElectronsNum]
+	UShort_t        IsolatedElectronTracksVetoNum;
+	Float_t         IsolatedElectronTracksVetoPt[3];   //[IsolatedElectronTracksVetoNum]
+	Float_t         IsolatedElectronTracksVetoEta[3];   //[IsolatedElectronTracksVetoNum]
+	Float_t         IsolatedElectronTracksVetoPhi[3];   //[IsolatedElectronTracksVetoNum]
+	Float_t         IsolatedElectronTracksVetoE[3];   //[IsolatedElectronTracksVetoNum]
+	Float_t         IsolatedElectronTracksVetoActivity[3];   //[IsolatedElectronTracksVetoNum]
+	Float_t         IsolatedElectronTracksVetoMTW[3];   //[IsolatedElectronTracksVetoNum]
+	UShort_t        muIsoTrackMatchedToGenElec[3];   //[IsolatedElectronTracksVetoNum]
+	UShort_t        elecIsoTrackMatchedToGenElec[3];   //[IsolatedElectronTracksVetoNum]
+	UShort_t        pionIsoTrackMatchedToGenElec[3];   //[IsolatedElectronTracksVetoNum]
+	UShort_t        IsolatedMuonTracksVetoNum;
+	Float_t         IsolatedMuonTracksVetoPt[3];   //[IsolatedMuonTracksVetoNum]
+	Float_t         IsolatedMuonTracksVetoEta[3];   //[IsolatedMuonTracksVetoNum]
+	Float_t         IsolatedMuonTracksVetoPhi[3];   //[IsolatedMuonTracksVetoNum]
+	Float_t         IsolatedMuonTracksVetoE[3];   //[IsolatedMuonTracksVetoNum]
+	Float_t         IsolatedMuonTracksVetoActivity[3];   //[IsolatedMuonTracksVetoNum]
+	Float_t         IsolatedMuonTracksVetoMTW[3];   //[IsolatedMuonTracksVetoNum]
+	UShort_t        muIsoTrackMatchedToGenMu[3];   //[IsolatedMuonTracksVetoNum]
+	UShort_t        elecIsoTrackMatchedToGenMu[3];   //[IsolatedMuonTracksVetoNum]
+	UShort_t        pionIsoTrackMatchedToGenMu[3];   //[IsolatedMuonTracksVetoNum]
+	UShort_t        IsolatedPionTracksVetoNum;
+	Float_t         IsolatedPionTracksVetoPt[4];   //[IsolatedPionTracksVetoNum]
+	Float_t         IsolatedPionTracksVetoEta[4];   //[IsolatedPionTracksVetoNum]
+	Float_t         IsolatedPionTracksVetoPhi[4];   //[IsolatedPionTracksVetoNum]
+	Float_t         IsolatedPionTracksVetoE[4];   //[IsolatedPionTracksVetoNum]
+	Float_t         IsolatedPionTracksVetoActivity[4];   //[IsolatedPionTracksVetoNum]
+	Float_t         IsolatedPionTracksVetoMTW[4];   //[IsolatedPionTracksVetoNum]
+	UShort_t        muIsoTrackMatchedToGenSingleProngTau[4];   //[IsolatedPionTracksVetoNum]
+	UShort_t        elecIsoTrackMatchedToGenSingleProngTau[4];   //[IsolatedPionTracksVetoNum]
+	UShort_t        pionIsoTrackMatchedToGenSingleProngTau[4];   //[IsolatedPionTracksVetoNum]
 	UShort_t        JetsNum;
 	Float_t         JetsPt[15];   //[JetsNum]
 	Float_t         JetsEta[15];   //[JetsNum]
@@ -965,6 +613,13 @@ public :
 	UShort_t        IsoTrackDiLepControlSampleElec;
 	UShort_t        IsoTrackDiLepMu;
 	UShort_t        IsoTrackDiLepElec;
+	Float_t         GenMuWPt;
+	Float_t         GenMuWPhi;
+	Float_t         GenElecWPt;
+	Float_t         GenElecWPhi;
+	UShort_t        GenBosonNum;
+	Float_t         GenBosonPt[2];   //[GenBosonNum]
+	Float_t         GenBosonPhi[2];   //[GenBosonNum]
 	
 	// List of branches
 	TBranch        *b_EvtNum;   //!
@@ -973,16 +628,24 @@ public :
 	TBranch        *b_NJets;   //!
 	TBranch        *b_BTags;   //!
 	TBranch        *b_Leptons;   //!
+	TBranch        *b_isoTracks;   //!
+	TBranch        *b_DY;   //!
+	TBranch        *b_Bin;   //!
 	TBranch        *b_NVtx;   //!
 	TBranch        *b_DeltaPhi1;   //!
 	TBranch        *b_DeltaPhi2;   //!
 	TBranch        *b_DeltaPhi3;   //!
 	TBranch        *b_minDeltaPhiN;   //!
+	TBranch        *b_DeltaPhiN1;   //!
+	TBranch        *b_DeltaPhiN2;   //!
+	TBranch        *b_DeltaPhiN3;   //!
 	TBranch        *b_Weight;   //!
 	TBranch        *b_MET;   //!
 	TBranch        *b_METPhi;   //!
 	TBranch        *b_GenMuNum;   //!
 	TBranch        *b_GenMuFromTau;   //!
+	TBranch        *b_GenMuDeltaRJet;   //!
+	TBranch        *b_GenMuRelPTJet;   //!
 	TBranch        *b_GenMuPt;   //!
 	TBranch        *b_GenMuEta;   //!
 	TBranch        *b_GenMuPhi;   //!
@@ -990,6 +653,8 @@ public :
 	TBranch        *b_GenMuonActivity;   //!
 	TBranch        *b_GenElecNum;   //!
 	TBranch        *b_GenElecFromTau;   //!
+	TBranch        *b_GenElecDeltaRJet;   //!
+	TBranch        *b_GenElecRelPTJet;   //!
 	TBranch        *b_GenElecPt;   //!
 	TBranch        *b_GenElecEta;   //!
 	TBranch        *b_GenElecPhi;   //!
@@ -1014,7 +679,11 @@ public :
 	TBranch        *b_muIsoTrack;   //!
 	TBranch        *b_MuPurity;   //!
 	TBranch        *b_ElecPurity;   //!
-	TBranch        *b_elecIsoTrack;   //!
+	TBranch        *b_muActivityMethod;   //!
+	TBranch        *b_elecActivityMethod;   //!
+	TBranch        *b_muIsoTrackActivityMethod;   //!
+	TBranch        *b_elecIsoTrackActivityMethod;   //!
+	TBranch        *b_pionIsoTrackActivityMethod;   //!
 	TBranch        *b_FallsVetoLep;   //!
 	TBranch        *b_selectedIDIsoMuonsNum;   //!
 	TBranch        *b_selectedIDIsoMuonsPt;   //!
@@ -1025,6 +694,7 @@ public :
 	TBranch        *b_selectedIDIsoMuonsEta;   //!
 	TBranch        *b_selectedIDIsoMuonsPhi;   //!
 	TBranch        *b_selectedIDIsoMuonsE;   //!
+	TBranch        *b_selectedIDIsoMuons_MTW;   //!
 	TBranch        *b_RecoIsoMuonActivity;   //!
 	TBranch        *b_selectedIDMuonsNum;   //!
 	TBranch        *b_selectedIDMuonsPt;   //!
@@ -1032,6 +702,7 @@ public :
 	TBranch        *b_selectedIDMuonsEta;   //!
 	TBranch        *b_selectedIDMuonsPhi;   //!
 	TBranch        *b_selectedIDMuonsE;   //!
+	TBranch        *b_selectedIDMuons_MTW;   //!
 	TBranch        *b_RecoMuonActivity;   //!
 	TBranch        *b_RecoIsoMuonIsoTrackMatched;   //!
 	TBranch        *b_selectedIDIsoElectronsNum;   //!
@@ -1043,6 +714,7 @@ public :
 	TBranch        *b_selectedIDIsoElectronsEta;   //!
 	TBranch        *b_selectedIDIsoElectronsPhi;   //!
 	TBranch        *b_selectedIDIsoElectronsE;   //!
+	TBranch        *b_selectedIDIsoElectrons_MTW;   //!
 	TBranch        *b_RecoIsoElectronActivity;   //!
 	TBranch        *b_RecoIsoElecIsoTrackMatched;   //!
 	TBranch        *b_selectedIDElectronsNum;   //!
@@ -1051,20 +723,38 @@ public :
 	TBranch        *b_selectedIDElectronsEta;   //!
 	TBranch        *b_selectedIDElectronsPhi;   //!
 	TBranch        *b_selectedIDElectronsE;   //!
+	TBranch        *b_selectedIDElectrons_MTW;   //!
 	TBranch        *b_RecoElectronActivity;   //!
-	TBranch        *b_IsolatedTracksNum;   //!
-	TBranch        *b_FallsVetoIsoTrack;   //!
-	TBranch        *b_IsolatedTracksPt;   //!
-	TBranch        *b_IsolatedTracksEta;   //!
-	TBranch        *b_IsolatedTracksPhi;   //!
-	TBranch        *b_IsolatedTracksE;   //!
-	TBranch        *b_muIsoTrackMatched;   //!
-	TBranch        *b_elecIsoTrackMatched;   //!
-	TBranch        *b_SelectedIsoTracksMatchedToGenLepton;   //!
-	TBranch        *b_SelectedIsoTracksMatchedToGenDeltaR;   //!
-	TBranch        *b_SelectedIsoTracksMatchedToGenRelPT;   //!
-	TBranch        *b_SelectedIsoTracksMatchedToRecoIsoLepton;   //!
-	TBranch        *b_IsoTrackActivity;   //!
+	TBranch        *b_IsolatedElectronTracksVetoNum;   //!
+	TBranch        *b_IsolatedElectronTracksVetoPt;   //!
+	TBranch        *b_IsolatedElectronTracksVetoEta;   //!
+	TBranch        *b_IsolatedElectronTracksVetoPhi;   //!
+	TBranch        *b_IsolatedElectronTracksVetoE;   //!
+	TBranch        *b_IsolatedElectronTracksVetoActivity;   //!
+	TBranch        *b_IsolatedElectronTracksVetoMTW;   //!
+	TBranch        *b_muIsoTrackMatchedToGenElec;   //!
+	TBranch        *b_elecIsoTrackMatchedToGenElec;   //!
+	TBranch        *b_pionIsoTrackMatchedToGenElec;   //!
+	TBranch        *b_IsolatedMuonTracksVetoNum;   //!
+	TBranch        *b_IsolatedMuonTracksVetoPt;   //!
+	TBranch        *b_IsolatedMuonTracksVetoEta;   //!
+	TBranch        *b_IsolatedMuonTracksVetoPhi;   //!
+	TBranch        *b_IsolatedMuonTracksVetoE;   //!
+	TBranch        *b_IsolatedMuonTracksVetoActivity;   //!
+	TBranch        *b_IsolatedMuonTracksVetoMTW;   //!
+	TBranch        *b_muIsoTrackMatchedToGenMu;   //!
+	TBranch        *b_elecIsoTrackMatchedToGenMu;   //!
+	TBranch        *b_pionIsoTrackMatchedToGenMu;   //!
+	TBranch        *b_IsolatedPionTracksVetoNum;   //!
+	TBranch        *b_IsolatedPionTracksVetoPt;   //!
+	TBranch        *b_IsolatedPionTracksVetoEta;   //!
+	TBranch        *b_IsolatedPionTracksVetoPhi;   //!
+	TBranch        *b_IsolatedPionTracksVetoE;   //!
+	TBranch        *b_IsolatedPionTracksVetoActivity;   //!
+	TBranch        *b_IsolatedPionTracksVetoMTW;   //!
+	TBranch        *b_muIsoTrackMatchedToGenSingleProngTau;   //!
+	TBranch        *b_elecIsoTrackMatchedToGenSingleProngTau;   //!
+	TBranch        *b_pionIsoTrackMatchedToGenSingleProngTau;   //!
 	TBranch        *b_JetsNum;   //!
 	TBranch        *b_JetsPt;   //!
 	TBranch        *b_JetsEta;   //!
@@ -1095,6 +785,13 @@ public :
 	TBranch        *b_IsoTrackDiLepControlSampleElec;   //!
 	TBranch        *b_IsoTrackDiLepMu;   //!
 	TBranch        *b_IsoTrackDiLepElec;   //!
+	TBranch        *b_GenMuWPt;   //!
+	TBranch        *b_GenMuWPhi;   //!
+	TBranch        *b_GenElecWPt;   //!
+	TBranch        *b_GenElecWPhi;   //!
+	TBranch        *b_GenBosonNum;   //!
+	TBranch        *b_GenBosonPt;   //!
+	TBranch        *b_GenBosonPhi;   //!
 	
 	EffMaker(TTree * /*tree*/ =0) : fChain(0) { }
 	virtual ~EffMaker() { }
@@ -1120,158 +817,200 @@ public :
 #ifdef EffMaker_cxx
 void EffMaker::Init(TTree *tree)
 {
-  // The Init() function is called when the selector needs to initialize
-  // a new tree or chain. Typically here the branch addresses and branch
-  // pointers of the tree will be set.
-  // It is normally not necessary to make changes to the generated
-  // code, but the routine can be extended by the user if needed.
-  // Init() will be called many times when running on PROOF
-  // (once per file to be processed).
-  
-  // Set branch addresses and branch pointers
-  if (!tree) return;
-  fChain = tree;
-  fChain->SetMakeClass(1);
-  
+	// The Init() function is called when the selector needs to initialize
+	// a new tree or chain. Typically here the branch addresses and branch
+	// pointers of the tree will be set.
+	// It is normally not necessary to make changes to the generated
+	// code, but the routine can be extended by the user if needed.
+	// Init() will be called many times when running on PROOF
+	// (once per file to be processed).
+	
+	// Set branch addresses and branch pointers
+	if (!tree) return;
+	fChain = tree;
+	fChain->SetMakeClass(1);
+	
 	fChain->SetBranchAddress("EvtNum", &EvtNum, &b_EvtNum);
-  fChain->SetBranchAddress("HT", &HT, &b_HT);
-  fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
-  fChain->SetBranchAddress("NJets", &NJets, &b_NJets);
-  fChain->SetBranchAddress("BTags", &BTags, &b_BTags);
-  fChain->SetBranchAddress("Leptons", &Leptons, &b_Leptons);
-  fChain->SetBranchAddress("NVtx", &NVtx, &b_NVtx);
-  fChain->SetBranchAddress("DeltaPhi1", &DeltaPhi1, &b_DeltaPhi1);
-  fChain->SetBranchAddress("DeltaPhi2", &DeltaPhi2, &b_DeltaPhi2);
-  fChain->SetBranchAddress("DeltaPhi3", &DeltaPhi3, &b_DeltaPhi3);
-  fChain->SetBranchAddress("minDeltaPhiN", &minDeltaPhiN, &b_minDeltaPhiN);
-  fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
-  fChain->SetBranchAddress("MET", &MET, &b_MET);
-  fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
-  fChain->SetBranchAddress("GenMuNum", &GenMuNum, &b_GenMuNum);
-  fChain->SetBranchAddress("GenMuFromTau", GenMuFromTau, &b_GenMuFromTau);
-  fChain->SetBranchAddress("GenMuPt", GenMuPt, &b_GenMuPt);
-  fChain->SetBranchAddress("GenMuEta", GenMuEta, &b_GenMuEta);
-  fChain->SetBranchAddress("GenMuPhi", GenMuPhi, &b_GenMuPhi);
-  fChain->SetBranchAddress("GenMuonIsoTrackMatched", GenMuonIsoTrackMatched, &b_GenMuonIsoTrackMatched);
-  fChain->SetBranchAddress("GenMuonActivity", GenMuonActivity, &b_GenMuonActivity);
-  fChain->SetBranchAddress("GenElecNum", &GenElecNum, &b_GenElecNum);
-  fChain->SetBranchAddress("GenElecFromTau", GenElecFromTau, &b_GenElecFromTau);
-  fChain->SetBranchAddress("GenElecPt", GenElecPt, &b_GenElecPt);
-  fChain->SetBranchAddress("GenElecEta", GenElecEta, &b_GenElecEta);
-  fChain->SetBranchAddress("GenElecPhi", GenElecPhi, &b_GenElecPhi);
-  fChain->SetBranchAddress("GenElecIsoTrackMatched", GenElecIsoTrackMatched, &b_GenElecIsoTrackMatched);
-  fChain->SetBranchAddress("GenElecActivity", GenElecActivity, &b_GenElecActivity);
-  fChain->SetBranchAddress("GenTauNum", &GenTauNum, &b_GenTauNum);
-  fChain->SetBranchAddress("GenTauPt", GenTauPt, &b_GenTauPt);
-  fChain->SetBranchAddress("GenTauEta", GenTauEta, &b_GenTauEta);
-  fChain->SetBranchAddress("GenTauPhi", GenTauPhi, &b_GenTauPhi);
-  fChain->SetBranchAddress("GenTauIsoTrackMatched", GenTauIsoTrackMatched, &b_GenTauIsoTrackMatched);
-  fChain->SetBranchAddress("GenTauActivity", GenTauActivity, &b_GenTauActivity);
-  fChain->SetBranchAddress("Expectation", &Expectation, &b_Expectation);
+	fChain->SetBranchAddress("HT", &HT, &b_HT);
+	fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
+	fChain->SetBranchAddress("NJets", &NJets, &b_NJets);
+	fChain->SetBranchAddress("BTags", &BTags, &b_BTags);
+	fChain->SetBranchAddress("Leptons", &Leptons, &b_Leptons);
+	fChain->SetBranchAddress("isoTracks", &isoTracks, &b_isoTracks);
+	fChain->SetBranchAddress("DY", &DY, &b_DY);
+	fChain->SetBranchAddress("Bin", &Bin, &b_Bin);
+	fChain->SetBranchAddress("NVtx", &NVtx, &b_NVtx);
+	fChain->SetBranchAddress("DeltaPhi1", &DeltaPhi1, &b_DeltaPhi1);
+	fChain->SetBranchAddress("DeltaPhi2", &DeltaPhi2, &b_DeltaPhi2);
+	fChain->SetBranchAddress("DeltaPhi3", &DeltaPhi3, &b_DeltaPhi3);
+	fChain->SetBranchAddress("minDeltaPhiN", &minDeltaPhiN, &b_minDeltaPhiN);
+	fChain->SetBranchAddress("DeltaPhiN1", &DeltaPhiN1, &b_DeltaPhiN1);
+	fChain->SetBranchAddress("DeltaPhiN2", &DeltaPhiN2, &b_DeltaPhiN2);
+	fChain->SetBranchAddress("DeltaPhiN3", &DeltaPhiN3, &b_DeltaPhiN3);
+	fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
+	fChain->SetBranchAddress("MET", &MET, &b_MET);
+	fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
+	fChain->SetBranchAddress("GenMuNum", &GenMuNum, &b_GenMuNum);
+	fChain->SetBranchAddress("GenMuFromTau", GenMuFromTau, &b_GenMuFromTau);
+	fChain->SetBranchAddress("GenMuDeltaRJet", GenMuDeltaRJet, &b_GenMuDeltaRJet);
+	fChain->SetBranchAddress("GenMuRelPTJet", GenMuRelPTJet, &b_GenMuRelPTJet);
+	fChain->SetBranchAddress("GenMuPt", GenMuPt, &b_GenMuPt);
+	fChain->SetBranchAddress("GenMuEta", GenMuEta, &b_GenMuEta);
+	fChain->SetBranchAddress("GenMuPhi", GenMuPhi, &b_GenMuPhi);
+	fChain->SetBranchAddress("GenMuonIsoTrackMatched", GenMuonIsoTrackMatched, &b_GenMuonIsoTrackMatched);
+	fChain->SetBranchAddress("GenMuonActivity", GenMuonActivity, &b_GenMuonActivity);
+	fChain->SetBranchAddress("GenElecNum", &GenElecNum, &b_GenElecNum);
+	fChain->SetBranchAddress("GenElecFromTau", GenElecFromTau, &b_GenElecFromTau);
+	fChain->SetBranchAddress("GenElecDeltaRJet", GenElecDeltaRJet, &b_GenElecDeltaRJet);
+	fChain->SetBranchAddress("GenElecRelPTJet", GenElecRelPTJet, &b_GenElecRelPTJet);
+	fChain->SetBranchAddress("GenElecPt", GenElecPt, &b_GenElecPt);
+	fChain->SetBranchAddress("GenElecEta", GenElecEta, &b_GenElecEta);
+	fChain->SetBranchAddress("GenElecPhi", GenElecPhi, &b_GenElecPhi);
+	fChain->SetBranchAddress("GenElecIsoTrackMatched", GenElecIsoTrackMatched, &b_GenElecIsoTrackMatched);
+	fChain->SetBranchAddress("GenElecActivity", GenElecActivity, &b_GenElecActivity);
+	fChain->SetBranchAddress("GenTauNum", &GenTauNum, &b_GenTauNum);
+	fChain->SetBranchAddress("GenTauPt", GenTauPt, &b_GenTauPt);
+	fChain->SetBranchAddress("GenTauEta", GenTauEta, &b_GenTauEta);
+	fChain->SetBranchAddress("GenTauPhi", GenTauPhi, &b_GenTauPhi);
+	fChain->SetBranchAddress("GenTauIsoTrackMatched", GenTauIsoTrackMatched, &b_GenTauIsoTrackMatched);
+	fChain->SetBranchAddress("GenTauActivity", GenTauActivity, &b_GenTauActivity);
+	fChain->SetBranchAddress("Expectation", &Expectation, &b_Expectation);
 	fChain->SetBranchAddress("ExpectationReductionIsoTrack", &ExpectationReductionIsoTrack, &b_ExpectationReductionIsoTrack);
-  fChain->SetBranchAddress("muAcc", &muAcc, &b_muAcc);
-  fChain->SetBranchAddress("muReco", &muReco, &b_muReco);
-  fChain->SetBranchAddress("muIso", &muIso, &b_muIso);
-  fChain->SetBranchAddress("MTW", &mtw, &b_MTW);
-  fChain->SetBranchAddress("IsoTrackMTW", &IsoTrackMTW, &b_IsoTrackMTW);
-  fChain->SetBranchAddress("elecAcc", &elecAcc, &b_elecAcc);
-  fChain->SetBranchAddress("elecReco", &elecReco, &b_elecReco);
-  fChain->SetBranchAddress("elecIso", &elecIso, &b_elecIso);
-  fChain->SetBranchAddress("muIsoTrack", &muIsoTrack, &b_muIsoTrack);
-  fChain->SetBranchAddress("MuPurity", &MuPurity, &b_MuPurity);
-  fChain->SetBranchAddress("ElecPurity", &ElecPurity, &b_ElecPurity);
-  fChain->SetBranchAddress("elecIsoTrack", &elecIsoTrack, &b_elecIsoTrack);
-  fChain->SetBranchAddress("FallsVetoLep", &FallsVetoLep, &b_FallsVetoLep);
-  fChain->SetBranchAddress("selectedIDIsoMuonsNum", &selectedIDIsoMuonsNum, &b_selectedIDIsoMuonsNum);
-  fChain->SetBranchAddress("selectedIDIsoMuonsPt", selectedIDIsoMuonsPt, &b_selectedIDIsoMuonsPt);
-  fChain->SetBranchAddress("muIsoMatched", muIsoMatched, &b_muIsoMatched);
-  fChain->SetBranchAddress("RecoIsoMuonPromtMatched", RecoIsoMuonPromtMatched, &b_RecoIsoMuonPromtMatched);
-  fChain->SetBranchAddress("RecoIsoMuonPromtMatchedDeltaR", RecoIsoMuonPromtMatchedDeltaR, &b_RecoIsoMuonPromtMatchedDeltaR);
-  fChain->SetBranchAddress("RecoIsoMuonPromtMatchedRelPt", RecoIsoMuonPromtMatchedRelPt, &b_RecoIsoMuonPromtMatchedRelPt);
-  fChain->SetBranchAddress("selectedIDIsoMuonsEta", selectedIDIsoMuonsEta, &b_selectedIDIsoMuonsEta);
-  fChain->SetBranchAddress("selectedIDIsoMuonsPhi", selectedIDIsoMuonsPhi, &b_selectedIDIsoMuonsPhi);
-  fChain->SetBranchAddress("selectedIDIsoMuonsE", selectedIDIsoMuonsE, &b_selectedIDIsoMuonsE);
-  fChain->SetBranchAddress("RecoIsoMuonActivity", RecoIsoMuonActivity, &b_RecoIsoMuonActivity);
-  fChain->SetBranchAddress("selectedIDMuonsNum", &selectedIDMuonsNum, &b_selectedIDMuonsNum);
-  fChain->SetBranchAddress("selectedIDMuonsPt", selectedIDMuonsPt, &b_selectedIDMuonsPt);
-  fChain->SetBranchAddress("selectedIDMuonsMatched", selectedIDMuonsMatched, &b_selectedIDMuonsMatched);
-  fChain->SetBranchAddress("selectedIDMuonsEta", selectedIDMuonsEta, &b_selectedIDMuonsEta);
-  fChain->SetBranchAddress("selectedIDMuonsPhi", selectedIDMuonsPhi, &b_selectedIDMuonsPhi);
-  fChain->SetBranchAddress("selectedIDMuonsE", selectedIDMuonsE, &b_selectedIDMuonsE);
-  fChain->SetBranchAddress("RecoMuonActivity", RecoMuonActivity, &b_RecoMuonActivity);
-  fChain->SetBranchAddress("RecoIsoMuonIsoTrackMatched", RecoIsoMuonIsoTrackMatched, &b_RecoIsoMuonIsoTrackMatched);
-  fChain->SetBranchAddress("selectedIDIsoElectronsNum", &selectedIDIsoElectronsNum, &b_selectedIDIsoElectronsNum);
-  fChain->SetBranchAddress("selectedIDIsoElectronsPt", selectedIDIsoElectronsPt, &b_selectedIDIsoElectronsPt);
-  fChain->SetBranchAddress("elecIsoMatched", elecIsoMatched, &b_elecIsoMatched);
-  fChain->SetBranchAddress("RecoIsoElecPromtMatched", RecoIsoElecPromtMatched, &b_RecoIsoElecPromtMatched);
-  fChain->SetBranchAddress("RecoIsoElecPromtMatchedDeltaR", RecoIsoElecPromtMatchedDeltaR, &b_RecoIsoElecPromtMatchedDeltaR);
-  fChain->SetBranchAddress("RecoIsoElecPromtMatchedRelPt", RecoIsoElecPromtMatchedRelPt, &b_RecoIsoElecPromtMatchedRelPt);
-  fChain->SetBranchAddress("selectedIDIsoElectronsEta", selectedIDIsoElectronsEta, &b_selectedIDIsoElectronsEta);
-  fChain->SetBranchAddress("selectedIDIsoElectronsPhi", selectedIDIsoElectronsPhi, &b_selectedIDIsoElectronsPhi);
-  fChain->SetBranchAddress("selectedIDIsoElectronsE", selectedIDIsoElectronsE, &b_selectedIDIsoElectronsE);
-  fChain->SetBranchAddress("RecoIsoElectronActivity", RecoIsoElectronActivity, &b_RecoIsoElectronActivity);
-  fChain->SetBranchAddress("RecoIsoElecIsoTrackMatched", RecoIsoElecIsoTrackMatched, &b_RecoIsoElecIsoTrackMatched);
-  fChain->SetBranchAddress("selectedIDElectronsNum", &selectedIDElectronsNum, &b_selectedIDElectronsNum);
-  fChain->SetBranchAddress("selectedIDElectronsPt", selectedIDElectronsPt, &b_selectedIDElectronsPt);
-  fChain->SetBranchAddress("selectedIDElectronsMatched", selectedIDElectronsMatched, &b_selectedIDElectronsMatched);
-  fChain->SetBranchAddress("selectedIDElectronsEta", selectedIDElectronsEta, &b_selectedIDElectronsEta);
-  fChain->SetBranchAddress("selectedIDElectronsPhi", selectedIDElectronsPhi, &b_selectedIDElectronsPhi);
-  fChain->SetBranchAddress("selectedIDElectronsE", selectedIDElectronsE, &b_selectedIDElectronsE);
-  fChain->SetBranchAddress("RecoElectronActivity", RecoElectronActivity, &b_RecoElectronActivity);
-  fChain->SetBranchAddress("IsolatedTracksNum", &IsolatedTracksNum, &b_IsolatedTracksNum);
-  fChain->SetBranchAddress("FallsVetoIsoTrack", &FallsVetoIsoTrack, &b_FallsVetoIsoTrack);
-  fChain->SetBranchAddress("IsolatedTracksPt", IsolatedTracksPt, &b_IsolatedTracksPt);
-  fChain->SetBranchAddress("IsolatedTracksEta", IsolatedTracksEta, &b_IsolatedTracksEta);
-  fChain->SetBranchAddress("IsolatedTracksPhi", IsolatedTracksPhi, &b_IsolatedTracksPhi);
-  fChain->SetBranchAddress("IsolatedTracksE", IsolatedTracksE, &b_IsolatedTracksE);
-  fChain->SetBranchAddress("muIsoTrackMatched", muIsoTrackMatched, &b_muIsoTrackMatched);
-  fChain->SetBranchAddress("elecIsoTrackMatched", elecIsoTrackMatched, &b_elecIsoTrackMatched);
-  fChain->SetBranchAddress("SelectedIsoTracksMatchedToGenLepton", SelectedIsoTracksMatchedToGenLepton, &b_SelectedIsoTracksMatchedToGenLepton);
-  fChain->SetBranchAddress("SelectedIsoTracksMatchedToGenDeltaR", SelectedIsoTracksMatchedToGenDeltaR, &b_SelectedIsoTracksMatchedToGenDeltaR);
-  fChain->SetBranchAddress("SelectedIsoTracksMatchedToGenRelPT", SelectedIsoTracksMatchedToGenRelPT, &b_SelectedIsoTracksMatchedToGenRelPT);
-  fChain->SetBranchAddress("SelectedIsoTracksMatchedToRecoIsoLepton", SelectedIsoTracksMatchedToRecoIsoLepton, &b_SelectedIsoTracksMatchedToRecoIsoLepton);
-  fChain->SetBranchAddress("IsoTrackActivity", IsoTrackActivity, &b_IsoTrackActivity);
-  fChain->SetBranchAddress("JetsNum", &JetsNum, &b_JetsNum);
-  fChain->SetBranchAddress("JetsPt", JetsPt, &b_JetsPt);
-  fChain->SetBranchAddress("JetsEta", JetsEta, &b_JetsEta);
-  fChain->SetBranchAddress("JetsPhi", JetsPhi, &b_JetsPhi);
-  fChain->SetBranchAddress("JetsE", JetsE, &b_JetsE);
-  fChain->SetBranchAddress("Jets_bDiscriminator", Jets_bDiscriminator, &b_Jets_bDiscriminator);
-  fChain->SetBranchAddress("Jets_chargedEmEnergyFraction", Jets_chargedEmEnergyFraction, &b_Jets_chargedEmEnergyFraction);
-  fChain->SetBranchAddress("Jets_chargedHadronEnergyFraction", Jets_chargedHadronEnergyFraction, &b_Jets_chargedHadronEnergyFraction);
-  fChain->SetBranchAddress("Jets_chargedHadronMultiplicity", Jets_chargedHadronMultiplicity, &b_Jets_chargedHadronMultiplicity);
-  fChain->SetBranchAddress("Jets_electronMultiplicity", Jets_electronMultiplicity, &b_Jets_electronMultiplicity);
-  fChain->SetBranchAddress("Jets_jetArea", Jets_jetArea, &b_Jets_jetArea);
-  fChain->SetBranchAddress("Jets_muonEnergyFraction", Jets_muonEnergyFraction, &b_Jets_muonEnergyFraction);
-  fChain->SetBranchAddress("Jets_muonMultiplicity", Jets_muonMultiplicity, &b_Jets_muonMultiplicity);
-  fChain->SetBranchAddress("Jets_neutralEmEnergyFraction", Jets_neutralEmEnergyFraction, &b_Jets_neutralEmEnergyFraction);
-  fChain->SetBranchAddress("Jets_neutralHadronMultiplicity", Jets_neutralHadronMultiplicity, &b_Jets_neutralHadronMultiplicity);
-  fChain->SetBranchAddress("Jets_photonEnergyFraction", Jets_photonEnergyFraction, &b_Jets_photonEnergyFraction);
-  fChain->SetBranchAddress("Jets_photonMultiplicity", Jets_photonMultiplicity, &b_Jets_photonMultiplicity);
-  fChain->SetBranchAddress("ExpectationDiLep", &ExpectationDiLep, &b_ExpectationDiLep);
-  fChain->SetBranchAddress("MuDiLepControlSample", &MuDiLepControlSample, &b_MuDiLepControlSample);
-  fChain->SetBranchAddress("ElecDiLepControlSample", &ElecDiLepControlSample, &b_ElecDiLepControlSample);
-  fChain->SetBranchAddress("StandAloneGenMuIsoTrackMatched", &StandAloneGenMuIsoTrackMatched, &b_StandAloneGenMuIsoTrackMatched);
-  fChain->SetBranchAddress("StandAloneIsoTrackToMuMatched", &StandAloneIsoTrackToMuMatched, &b_StandAloneIsoTrackToMuMatched);
-  fChain->SetBranchAddress("StandAloneGenElecIsoTrackMatched", &StandAloneGenElecIsoTrackMatched, &b_StandAloneGenElecIsoTrackMatched);
-  fChain->SetBranchAddress("StandAloneIsoTrackToElecMatched", &StandAloneIsoTrackToElecMatched, &b_StandAloneIsoTrackToElecMatched);
-  fChain->SetBranchAddress("StandAloneIsoTrackToRecoMuMatched", &StandAloneIsoTrackToRecoMuMatched, &b_StandAloneIsoTrackToRecoMuMatched);
-  fChain->SetBranchAddress("StandAloneIsoTrackToRecoElecMatched", &StandAloneIsoTrackToRecoElecMatched, &b_StandAloneIsoTrackToRecoElecMatched);
-  fChain->SetBranchAddress("IsoTrackDiLepControlSampleMu", &IsoTrackDiLepControlSampleMu, &b_IsoTrackDiLepControlSampleMu);
-  fChain->SetBranchAddress("IsoTrackDiLepControlSampleElec", &IsoTrackDiLepControlSampleElec, &b_IsoTrackDiLepControlSampleElec);
-  fChain->SetBranchAddress("IsoTrackDiLepMu", &IsoTrackDiLepMu, &b_IsoTrackDiLepMu);
-  fChain->SetBranchAddress("IsoTrackDiLepElec", &IsoTrackDiLepElec, &b_IsoTrackDiLepElec);
+	fChain->SetBranchAddress("muAcc", &muAcc, &b_muAcc);
+	fChain->SetBranchAddress("muReco", &muReco, &b_muReco);
+	fChain->SetBranchAddress("muIso", &muIso, &b_muIso);
+	fChain->SetBranchAddress("MTW", &MTW, &b_MTW);
+	fChain->SetBranchAddress("IsoTrackMTW", &IsoTrackMTW, &b_IsoTrackMTW);
+	fChain->SetBranchAddress("elecAcc", &elecAcc, &b_elecAcc);
+	fChain->SetBranchAddress("elecReco", &elecReco, &b_elecReco);
+	fChain->SetBranchAddress("elecIso", &elecIso, &b_elecIso);
+	fChain->SetBranchAddress("muIsoTrack", &muIsoTrack, &b_muIsoTrack);
+	fChain->SetBranchAddress("MuPurity", &MuPurity, &b_MuPurity);
+	fChain->SetBranchAddress("ElecPurity", &ElecPurity, &b_ElecPurity);
+	fChain->SetBranchAddress("muActivityMethod", &muActivityMethod, &b_muActivityMethod);
+	fChain->SetBranchAddress("elecActivityMethod", &elecActivityMethod, &b_elecActivityMethod);
+	fChain->SetBranchAddress("muIsoTrackActivityMethod", &muIsoTrackActivityMethod, &b_muIsoTrackActivityMethod);
+	fChain->SetBranchAddress("elecIsoTrackActivityMethod", &elecIsoTrackActivityMethod, &b_elecIsoTrackActivityMethod);
+	fChain->SetBranchAddress("pionIsoTrackActivityMethod", &pionIsoTrackActivityMethod, &b_pionIsoTrackActivityMethod);
+	fChain->SetBranchAddress("FallsVetoLep", &FallsVetoLep, &b_FallsVetoLep);
+	fChain->SetBranchAddress("selectedIDIsoMuonsNum", &selectedIDIsoMuonsNum, &b_selectedIDIsoMuonsNum);
+	fChain->SetBranchAddress("selectedIDIsoMuonsPt", selectedIDIsoMuonsPt, &b_selectedIDIsoMuonsPt);
+	fChain->SetBranchAddress("muIsoMatched", muIsoMatched, &b_muIsoMatched);
+	fChain->SetBranchAddress("RecoIsoMuonPromtMatched", RecoIsoMuonPromtMatched, &b_RecoIsoMuonPromtMatched);
+	fChain->SetBranchAddress("RecoIsoMuonPromtMatchedDeltaR", RecoIsoMuonPromtMatchedDeltaR, &b_RecoIsoMuonPromtMatchedDeltaR);
+	fChain->SetBranchAddress("RecoIsoMuonPromtMatchedRelPt", RecoIsoMuonPromtMatchedRelPt, &b_RecoIsoMuonPromtMatchedRelPt);
+	fChain->SetBranchAddress("selectedIDIsoMuonsEta", selectedIDIsoMuonsEta, &b_selectedIDIsoMuonsEta);
+	fChain->SetBranchAddress("selectedIDIsoMuonsPhi", selectedIDIsoMuonsPhi, &b_selectedIDIsoMuonsPhi);
+	fChain->SetBranchAddress("selectedIDIsoMuonsE", selectedIDIsoMuonsE, &b_selectedIDIsoMuonsE);
+	fChain->SetBranchAddress("selectedIDIsoMuons_MTW", selectedIDIsoMuons_MTW, &b_selectedIDIsoMuons_MTW);
+	fChain->SetBranchAddress("RecoIsoMuonActivity", RecoIsoMuonActivity, &b_RecoIsoMuonActivity);
+	fChain->SetBranchAddress("selectedIDMuonsNum", &selectedIDMuonsNum, &b_selectedIDMuonsNum);
+	fChain->SetBranchAddress("selectedIDMuonsPt", selectedIDMuonsPt, &b_selectedIDMuonsPt);
+	fChain->SetBranchAddress("selectedIDMuonsMatched", selectedIDMuonsMatched, &b_selectedIDMuonsMatched);
+	fChain->SetBranchAddress("selectedIDMuonsEta", selectedIDMuonsEta, &b_selectedIDMuonsEta);
+	fChain->SetBranchAddress("selectedIDMuonsPhi", selectedIDMuonsPhi, &b_selectedIDMuonsPhi);
+	fChain->SetBranchAddress("selectedIDMuonsE", selectedIDMuonsE, &b_selectedIDMuonsE);
+	fChain->SetBranchAddress("selectedIDMuons_MTW", selectedIDMuons_MTW, &b_selectedIDMuons_MTW);
+	fChain->SetBranchAddress("RecoMuonActivity", RecoMuonActivity, &b_RecoMuonActivity);
+	fChain->SetBranchAddress("RecoIsoMuonIsoTrackMatched", RecoIsoMuonIsoTrackMatched, &b_RecoIsoMuonIsoTrackMatched);
+	fChain->SetBranchAddress("selectedIDIsoElectronsNum", &selectedIDIsoElectronsNum, &b_selectedIDIsoElectronsNum);
+	fChain->SetBranchAddress("selectedIDIsoElectronsPt", selectedIDIsoElectronsPt, &b_selectedIDIsoElectronsPt);
+	fChain->SetBranchAddress("elecIsoMatched", elecIsoMatched, &b_elecIsoMatched);
+	fChain->SetBranchAddress("RecoIsoElecPromtMatched", RecoIsoElecPromtMatched, &b_RecoIsoElecPromtMatched);
+	fChain->SetBranchAddress("RecoIsoElecPromtMatchedDeltaR", RecoIsoElecPromtMatchedDeltaR, &b_RecoIsoElecPromtMatchedDeltaR);
+	fChain->SetBranchAddress("RecoIsoElecPromtMatchedRelPt", RecoIsoElecPromtMatchedRelPt, &b_RecoIsoElecPromtMatchedRelPt);
+	fChain->SetBranchAddress("selectedIDIsoElectronsEta", selectedIDIsoElectronsEta, &b_selectedIDIsoElectronsEta);
+	fChain->SetBranchAddress("selectedIDIsoElectronsPhi", selectedIDIsoElectronsPhi, &b_selectedIDIsoElectronsPhi);
+	fChain->SetBranchAddress("selectedIDIsoElectronsE", selectedIDIsoElectronsE, &b_selectedIDIsoElectronsE);
+	fChain->SetBranchAddress("selectedIDIsoElectrons_MTW", selectedIDIsoElectrons_MTW, &b_selectedIDIsoElectrons_MTW);
+	fChain->SetBranchAddress("RecoIsoElectronActivity", RecoIsoElectronActivity, &b_RecoIsoElectronActivity);
+	fChain->SetBranchAddress("RecoIsoElecIsoTrackMatched", RecoIsoElecIsoTrackMatched, &b_RecoIsoElecIsoTrackMatched);
+	fChain->SetBranchAddress("selectedIDElectronsNum", &selectedIDElectronsNum, &b_selectedIDElectronsNum);
+	fChain->SetBranchAddress("selectedIDElectronsPt", selectedIDElectronsPt, &b_selectedIDElectronsPt);
+	fChain->SetBranchAddress("selectedIDElectronsMatched", selectedIDElectronsMatched, &b_selectedIDElectronsMatched);
+	fChain->SetBranchAddress("selectedIDElectronsEta", selectedIDElectronsEta, &b_selectedIDElectronsEta);
+	fChain->SetBranchAddress("selectedIDElectronsPhi", selectedIDElectronsPhi, &b_selectedIDElectronsPhi);
+	fChain->SetBranchAddress("selectedIDElectronsE", selectedIDElectronsE, &b_selectedIDElectronsE);
+	fChain->SetBranchAddress("selectedIDElectrons_MTW", selectedIDElectrons_MTW, &b_selectedIDElectrons_MTW);
+	fChain->SetBranchAddress("RecoElectronActivity", RecoElectronActivity, &b_RecoElectronActivity);
+	fChain->SetBranchAddress("IsolatedElectronTracksVetoNum", &IsolatedElectronTracksVetoNum, &b_IsolatedElectronTracksVetoNum);
+	fChain->SetBranchAddress("IsolatedElectronTracksVetoPt", IsolatedElectronTracksVetoPt, &b_IsolatedElectronTracksVetoPt);
+	fChain->SetBranchAddress("IsolatedElectronTracksVetoEta", IsolatedElectronTracksVetoEta, &b_IsolatedElectronTracksVetoEta);
+	fChain->SetBranchAddress("IsolatedElectronTracksVetoPhi", IsolatedElectronTracksVetoPhi, &b_IsolatedElectronTracksVetoPhi);
+	fChain->SetBranchAddress("IsolatedElectronTracksVetoE", IsolatedElectronTracksVetoE, &b_IsolatedElectronTracksVetoE);
+	fChain->SetBranchAddress("IsolatedElectronTracksVetoActivity", IsolatedElectronTracksVetoActivity, &b_IsolatedElectronTracksVetoActivity);
+	fChain->SetBranchAddress("IsolatedElectronTracksVetoMTW", IsolatedElectronTracksVetoMTW, &b_IsolatedElectronTracksVetoMTW);
+	fChain->SetBranchAddress("muIsoTrackMatchedToGenElec", muIsoTrackMatchedToGenElec, &b_muIsoTrackMatchedToGenElec);
+	fChain->SetBranchAddress("elecIsoTrackMatchedToGenElec", elecIsoTrackMatchedToGenElec, &b_elecIsoTrackMatchedToGenElec);
+	fChain->SetBranchAddress("pionIsoTrackMatchedToGenElec", pionIsoTrackMatchedToGenElec, &b_pionIsoTrackMatchedToGenElec);
+	fChain->SetBranchAddress("IsolatedMuonTracksVetoNum", &IsolatedMuonTracksVetoNum, &b_IsolatedMuonTracksVetoNum);
+	fChain->SetBranchAddress("IsolatedMuonTracksVetoPt", IsolatedMuonTracksVetoPt, &b_IsolatedMuonTracksVetoPt);
+	fChain->SetBranchAddress("IsolatedMuonTracksVetoEta", IsolatedMuonTracksVetoEta, &b_IsolatedMuonTracksVetoEta);
+	fChain->SetBranchAddress("IsolatedMuonTracksVetoPhi", IsolatedMuonTracksVetoPhi, &b_IsolatedMuonTracksVetoPhi);
+	fChain->SetBranchAddress("IsolatedMuonTracksVetoE", IsolatedMuonTracksVetoE, &b_IsolatedMuonTracksVetoE);
+	fChain->SetBranchAddress("IsolatedMuonTracksVetoActivity", IsolatedMuonTracksVetoActivity, &b_IsolatedMuonTracksVetoActivity);
+	fChain->SetBranchAddress("IsolatedMuonTracksVetoMTW", IsolatedMuonTracksVetoMTW, &b_IsolatedMuonTracksVetoMTW);
+	fChain->SetBranchAddress("muIsoTrackMatchedToGenMu", muIsoTrackMatchedToGenMu, &b_muIsoTrackMatchedToGenMu);
+	fChain->SetBranchAddress("elecIsoTrackMatchedToGenMu", elecIsoTrackMatchedToGenMu, &b_elecIsoTrackMatchedToGenMu);
+	fChain->SetBranchAddress("pionIsoTrackMatchedToGenMu", pionIsoTrackMatchedToGenMu, &b_pionIsoTrackMatchedToGenMu);
+	fChain->SetBranchAddress("IsolatedPionTracksVetoNum", &IsolatedPionTracksVetoNum, &b_IsolatedPionTracksVetoNum);
+	fChain->SetBranchAddress("IsolatedPionTracksVetoPt", IsolatedPionTracksVetoPt, &b_IsolatedPionTracksVetoPt);
+	fChain->SetBranchAddress("IsolatedPionTracksVetoEta", IsolatedPionTracksVetoEta, &b_IsolatedPionTracksVetoEta);
+	fChain->SetBranchAddress("IsolatedPionTracksVetoPhi", IsolatedPionTracksVetoPhi, &b_IsolatedPionTracksVetoPhi);
+	fChain->SetBranchAddress("IsolatedPionTracksVetoE", IsolatedPionTracksVetoE, &b_IsolatedPionTracksVetoE);
+	fChain->SetBranchAddress("IsolatedPionTracksVetoActivity", IsolatedPionTracksVetoActivity, &b_IsolatedPionTracksVetoActivity);
+	fChain->SetBranchAddress("IsolatedPionTracksVetoMTW", IsolatedPionTracksVetoMTW, &b_IsolatedPionTracksVetoMTW);
+	fChain->SetBranchAddress("muIsoTrackMatchedToGenSingleProngTau", muIsoTrackMatchedToGenSingleProngTau, &b_muIsoTrackMatchedToGenSingleProngTau);
+	fChain->SetBranchAddress("elecIsoTrackMatchedToGenSingleProngTau", elecIsoTrackMatchedToGenSingleProngTau, &b_elecIsoTrackMatchedToGenSingleProngTau);
+	fChain->SetBranchAddress("pionIsoTrackMatchedToGenSingleProngTau", pionIsoTrackMatchedToGenSingleProngTau, &b_pionIsoTrackMatchedToGenSingleProngTau);
+	fChain->SetBranchAddress("JetsNum", &JetsNum, &b_JetsNum);
+	fChain->SetBranchAddress("JetsPt", JetsPt, &b_JetsPt);
+	fChain->SetBranchAddress("JetsEta", JetsEta, &b_JetsEta);
+	fChain->SetBranchAddress("JetsPhi", JetsPhi, &b_JetsPhi);
+	fChain->SetBranchAddress("JetsE", JetsE, &b_JetsE);
+	fChain->SetBranchAddress("Jets_bDiscriminator", Jets_bDiscriminator, &b_Jets_bDiscriminator);
+	fChain->SetBranchAddress("Jets_chargedEmEnergyFraction", Jets_chargedEmEnergyFraction, &b_Jets_chargedEmEnergyFraction);
+	fChain->SetBranchAddress("Jets_chargedHadronEnergyFraction", Jets_chargedHadronEnergyFraction, &b_Jets_chargedHadronEnergyFraction);
+	fChain->SetBranchAddress("Jets_chargedHadronMultiplicity", Jets_chargedHadronMultiplicity, &b_Jets_chargedHadronMultiplicity);
+	fChain->SetBranchAddress("Jets_electronMultiplicity", Jets_electronMultiplicity, &b_Jets_electronMultiplicity);
+	fChain->SetBranchAddress("Jets_jetArea", Jets_jetArea, &b_Jets_jetArea);
+	fChain->SetBranchAddress("Jets_muonEnergyFraction", Jets_muonEnergyFraction, &b_Jets_muonEnergyFraction);
+	fChain->SetBranchAddress("Jets_muonMultiplicity", Jets_muonMultiplicity, &b_Jets_muonMultiplicity);
+	fChain->SetBranchAddress("Jets_neutralEmEnergyFraction", Jets_neutralEmEnergyFraction, &b_Jets_neutralEmEnergyFraction);
+	fChain->SetBranchAddress("Jets_neutralHadronMultiplicity", Jets_neutralHadronMultiplicity, &b_Jets_neutralHadronMultiplicity);
+	fChain->SetBranchAddress("Jets_photonEnergyFraction", Jets_photonEnergyFraction, &b_Jets_photonEnergyFraction);
+	fChain->SetBranchAddress("Jets_photonMultiplicity", Jets_photonMultiplicity, &b_Jets_photonMultiplicity);
+	fChain->SetBranchAddress("ExpectationDiLep", &ExpectationDiLep, &b_ExpectationDiLep);
+	fChain->SetBranchAddress("MuDiLepControlSample", &MuDiLepControlSample, &b_MuDiLepControlSample);
+	fChain->SetBranchAddress("ElecDiLepControlSample", &ElecDiLepControlSample, &b_ElecDiLepControlSample);
+	fChain->SetBranchAddress("StandAloneGenMuIsoTrackMatched", &StandAloneGenMuIsoTrackMatched, &b_StandAloneGenMuIsoTrackMatched);
+	fChain->SetBranchAddress("StandAloneIsoTrackToMuMatched", &StandAloneIsoTrackToMuMatched, &b_StandAloneIsoTrackToMuMatched);
+	fChain->SetBranchAddress("StandAloneGenElecIsoTrackMatched", &StandAloneGenElecIsoTrackMatched, &b_StandAloneGenElecIsoTrackMatched);
+	fChain->SetBranchAddress("StandAloneIsoTrackToElecMatched", &StandAloneIsoTrackToElecMatched, &b_StandAloneIsoTrackToElecMatched);
+	fChain->SetBranchAddress("StandAloneIsoTrackToRecoMuMatched", &StandAloneIsoTrackToRecoMuMatched, &b_StandAloneIsoTrackToRecoMuMatched);
+	fChain->SetBranchAddress("StandAloneIsoTrackToRecoElecMatched", &StandAloneIsoTrackToRecoElecMatched, &b_StandAloneIsoTrackToRecoElecMatched);
+	fChain->SetBranchAddress("IsoTrackDiLepControlSampleMu", &IsoTrackDiLepControlSampleMu, &b_IsoTrackDiLepControlSampleMu);
+	fChain->SetBranchAddress("IsoTrackDiLepControlSampleElec", &IsoTrackDiLepControlSampleElec, &b_IsoTrackDiLepControlSampleElec);
+	fChain->SetBranchAddress("IsoTrackDiLepMu", &IsoTrackDiLepMu, &b_IsoTrackDiLepMu);
+	fChain->SetBranchAddress("IsoTrackDiLepElec", &IsoTrackDiLepElec, &b_IsoTrackDiLepElec);
+	fChain->SetBranchAddress("GenMuWPt", &GenMuWPt, &b_GenMuWPt);
+	fChain->SetBranchAddress("GenMuWPhi", &GenMuWPhi, &b_GenMuWPhi);
+	fChain->SetBranchAddress("GenElecWPt", &GenElecWPt, &b_GenElecWPt);
+	fChain->SetBranchAddress("GenElecWPhi", &GenElecWPhi, &b_GenElecWPhi);
+	fChain->SetBranchAddress("GenBosonNum", &GenBosonNum, &b_GenBosonNum);
+	fChain->SetBranchAddress("GenBosonPt", GenBosonPt, &b_GenBosonPt);
+	fChain->SetBranchAddress("GenBosonPhi", GenBosonPhi, &b_GenBosonPhi);
 }
 
 Bool_t EffMaker::Notify()
 {
-  // The Notify() function is called when a new file is opened. This
-  // can be either for a new TTree in a TChain or when when a new TTree
-  // is started when using PROOF. It is normally not necessary to make changes
-  // to the generated code, but the routine can be extended by the
-  // user if needed. The return value is currently not used.
-  
-  return kTRUE;
+   // The Notify() function is called when a new file is opened. This
+   // can be either for a new TTree in a TChain or when when a new TTree
+   // is started when using PROOF. It is normally not necessary to make changes
+   // to the generated code, but the routine can be extended by the
+   // user if needed. The return value is currently not used.
+
+   return kTRUE;
 }
 
 #endif // #ifdef EffMaker_cxx
