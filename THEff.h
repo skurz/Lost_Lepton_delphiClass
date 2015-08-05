@@ -162,6 +162,7 @@ public:
 	{
 		name_=TString(name);
 		title_=TString(title);
+		nBinsy_=nbinsy;
 
 		PassTH2F_ = new TH2F(name_+"Pass", title_, nbinsx, xbins, nbinsy, ybins);
 		PassTH2F_->Sumw2();
@@ -179,14 +180,16 @@ public:
 	{
 		name_=TString(name);
 		title_=TString(title);
+		nBinsy_=nBinsy;
+
 		PassTH2F_ = new TH2F(name_+"Pass", title_, nBinsx, startBinx, endBinx, nBinsy, startBiny, endBiny);
 		PassTH2F_->Sumw2();
 		TotalTH2F_ = (TH2F*) PassTH2F_->Clone(name_+"Total");
 		RatioTH2F_ = (TH2F*) PassTH2F_->Clone(name_);
 
 		for(unsigned int i = 0; i < nBinsy; ++i){
-			PassTH1Fvec_.push_back(new TH1F(name_+"Pass_yBin"+std::to_string(i), title_, nBinsx, startBinx, endBinx));
-			TotalTH1Fvec_.push_back(new TH1F(name_+"Total_yBin"+std::to_string(i), title_, nBinsx, startBinx, endBinx));
+			PassTH1Fvec_.push_back(new TH1F(name_+"Pass_yBin"+std::to_string(i+1), title_, nBinsx, startBinx, endBinx));
+			TotalTH1Fvec_.push_back(new TH1F(name_+"Total_yBin"+std::to_string(i+1), title_, nBinsx, startBinx, endBinx));
 			RatioTGraphAsymmVec_.push_back(new TGraphAsymmErrors());
 		}
 	}
@@ -197,6 +200,11 @@ public:
 		TDirectory *effDir = (TDirectory*)MainDirectory->Get(name_);
 		effDir->cd();
 		RatioTH2F_ = (TH2F*) effDir->Get(name_);
+
+		for(int i = 0; i < RatioTH2F_->GetYaxis()->GetNbins(); ++i){
+			RatioTGraphAsymmVec_.push_back((TGraphAsymmErrors*) effDir->Get(name_+"_yBin"+std::to_string(i+1)));
+		}	
+		
 	}
 	void SetName(const char* name){
 		name_=TString(name);
@@ -227,6 +235,8 @@ private:
 
 	TString name_;
 	TString title_;
+
+	int nBinsy_;
 };
 
 void TH2Eff::Fill(Double_t x, Double_t y, Double_t Weight, bool passOrFail)
@@ -236,9 +246,18 @@ void TH2Eff::Fill(Double_t x, Double_t y, Double_t Weight, bool passOrFail)
 	if(passOrFail){
 		PassTH2F_->Fill(x, y, Weight);
 		TotalTH2F_->Fill(x, y, Weight);
-	//	PassTH1Fvec_.at(nyBin)
+		
+		if(nyBin > 0 && nyBin <= nBinsy_){
+			PassTH1Fvec_.at(nyBin-1)->Fill(x, Weight);
+			TotalTH1Fvec_.at(nyBin-1)->Fill(x, Weight);
+		}
+
 	}else{
 		TotalTH2F_->Fill(x, y, Weight);
+
+		if(nyBin > 0 && nyBin <= nBinsy_){
+			TotalTH1Fvec_.at(nyBin-1)->Fill(x, Weight);
+		}
 	}
 }
 
@@ -268,11 +287,20 @@ void TH2Eff::SaveEff(const char* title, TDirectory* MainDirectory)
 	gROOT->SetBatch(false);
 
 	RatioTH2F_->Write();
+
+	for(int i = 0; i < nBinsy_; ++i){
+		RatioTGraphAsymmVec_.at(i)->Divide(PassTH1Fvec_.at(i), TotalTH1Fvec_.at(i), "cl=0.683 b(1,1) mode");
+		RatioTGraphAsymmVec_.at(i)->SetName(name_+"_yBin"+std::to_string(i+1));
+		RatioTGraphAsymmVec_.at(i)->SetTitle(title);
+		RatioTGraphAsymmVec_.at(i)->Write();
+	}
 }
 
 double TH2Eff::GetEff(double xValue, double yValue, bool asymm)
 {
   double result = 0;
+  double resultAsymm = 0;
+
   if(xValue < RatioTH2F_->GetXaxis()->GetXmin() )
   {
     //std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<RatioTH2F_->GetName()<<std::endl;
@@ -302,11 +330,7 @@ double TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   int nxBin = RatioTH2F_->GetXaxis()->FindBin(xValue);
   int nyBin = RatioTH2F_->GetYaxis()->FindBin(yValue);
 
-  if(!asymm){
-  	result = RatioTH2F_->GetBinContent(nxBin, nyBin);
-  }else{
-  	result = RatioTH2F_->GetBinContent(nxBin, nyBin);
-  }
+  result = RatioTH2F_->GetBinContent(nxBin, nyBin);
 
   if(result<0.01)
   {
@@ -317,6 +341,12 @@ double TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   {
     std::cout<<"Warning efficiency is: "<<result<<" is bigger than 1 for histo: "<<RatioTH2F_->GetName()<<std::endl;
     result =0.99;
+  }
+
+  if(asymm && result>0.01){
+  	Double_t xValueAsymm;
+  	RatioTGraphAsymmVec_.at(nyBin-1)->GetPoint(nxBin-1, xValueAsymm, resultAsymm);
+  	return resultAsymm;
   }
 
   return result;

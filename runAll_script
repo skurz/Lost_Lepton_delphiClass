@@ -1,11 +1,12 @@
 echo "Removing old files"
 rm Efficiencies/*.pdf
 rm *.root
-#rm  ttbar/*.root
-#rm  wpj/*.root
-#rm singleTop/*.root
+rm ttbar/*.root
+rm wpj/*.root
+rm singlet/*.root
 wait
 echo "Done"
+
 echo "Running Lost-Lepton Package"
 root -l -b -q MakeExpectation.C+
 wait
@@ -14,3 +15,30 @@ wait
 root -l -b -q MakePrediction.C+
 wait
 echo "Done"
+
+echo "Copying files to nfs"
+mkdir /nfs/dust/cms/user/kurzsimo/LostLepton/Expectations_${1}/
+cp *.root /nfs/dust/cms/user/kurzsimo/LostLepton/Expectations_${1}/
+wait
+echo "Done"
+
+echo "Running ttbar/wpj/singlet"
+cd ttbar
+root -l -b -q MakeExpectation.C+
+wait
+cp Expectation.root /nfs/dust/cms/user/kurzsimo/LostLepton/Expectations_${1}/Expectation_ttjets.root
+wait
+cd ../wpj
+root -l -b -q MakeExpectation.C+
+wait
+cp Expectation.root /nfs/dust/cms/user/kurzsimo/LostLepton/Expectations_${1}/Expectation_wjets.root
+wait
+cd ../singlet
+root -l -b -q MakeExpectation.C+
+wait
+cp Expectation.root /nfs/dust/cms/user/kurzsimo/LostLepton/Expectations_${1}/Expectation_singlet.root
+wait
+cd ..
+echo "Done"
+
+echo "Script finished."
