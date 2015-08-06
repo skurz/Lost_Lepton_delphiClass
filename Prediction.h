@@ -112,6 +112,20 @@ public :
   Float_t muDiLepEffMTWAppliedEff_, elecDiLepEffMTWAppliedEff_;
   Float_t expectationReductionIsoTrackEff_;
   Float_t expectationReductionMuIsoTrackEff_,expectationReductionElecIsoTrackEff_,expectationReductionPionIsoTrackEff_, expectationReductionIsoTrackEffCombined_;
+
+  effVec muPurityCorrectionVec_;
+  effVec muMTWEffVec_, elecMTWEffVec_;
+  effVec muDiLepContributionMTWAppliedEffVec_;
+  effVec muIsoEffVec_;
+  effVec muRecoEffVec_;
+  effVec muAccEffVec_;
+  effVec elecPurityCorrectionVec_, elecDiLepContributionMTWAppliedEffVec_;
+  effVec elecIsoEffVec_;
+  effVec elecRecoEffVec_;
+  effVec elecAccEffVec_;
+  effVec muDiLepEffMTWAppliedEffVec_, elecDiLepEffMTWAppliedEffVec_;
+  effVec expectationReductionIsoTrackEffVec_;
+  effVec expectationReductionMuIsoTrackEffVec_,expectationReductionElecIsoTrackEffVec_,expectationReductionPionIsoTrackEffVec_, expectationReductionIsoTrackEffCombinedVec_;
   
   Float_t totalWeight_, totalWeightDiLep_, totalWeightDiLepIsoTrackReduced_,totalWeightDiLepIsoMuTrackReduced_,totalWeightDiLepIsoElecTrackReduced_,totalWeightDiLepIsoPionTrackReduced_,totalWeightDiLepIsoTrackReducedCombined_;
   Float_t         selectedIDIsoMuonsActivity[5];

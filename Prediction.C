@@ -245,11 +245,17 @@ Bool_t Prediction::Process(Long64_t entry)
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
 
   // get IsoTrack Effs
-  expectationReductionIsoTrackEff_= ExpectationReductionIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
-  expectationReductionMuIsoTrackEff_ = ExpectationReductionMuIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
-  expectationReductionElecIsoTrackEff_ = ExpectationReductionElecIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
-  expectationReductionPionIsoTrackEff_ = ExpectationReductionPionIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
+  //      expectationReductionIsoTrackEff_= ExpectationReductionIsoTrackNJetsEff_->GetEff(NJets, useAsymmErrors);
+  expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
+  expectationReductionMuIsoTrackEffVec_ = ExpectationReductionMuIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
+  expectationReductionElecIsoTrackEffVec_ = ExpectationReductionElecIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
+  expectationReductionPionIsoTrackEffVec_ = ExpectationReductionPionIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
 
+  //for compatibility
+  expectationReductionIsoTrackEff_ = expectationReductionIsoTrackEffVec_.eff;
+  expectationReductionMuIsoTrackEff_ = expectationReductionMuIsoTrackEffVec_.eff;
+  expectationReductionElecIsoTrackEff_ = expectationReductionElecIsoTrackEffVec_.eff;
+  expectationReductionPionIsoTrackEff_ = expectationReductionPionIsoTrackEffVec_.eff;
 
   if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0)
   {
@@ -262,29 +268,41 @@ Bool_t Prediction::Process(Long64_t entry)
     selectedIDIsoMuonsRelPTJet[0]=DeltaR_relPT.second;
 
     // get Efficiencies
-    muPurityCorrection_ =  MuPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
-    muMTWEff_ = MuMTWNJets_->GetEff(NJets, useAsymmErrors);
-    muDiLepContributionMTWAppliedEff_ = MuDiLepContributionMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
-    muDiLepEffMTWAppliedEff_ = MuDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
+    muPurityCorrectionVec_ =  MuPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
+    muMTWEffVec_ = MuMTWNJets_->GetEff(NJets, useAsymmErrors);
+    muDiLepContributionMTWAppliedEffVec_ = MuDiLepContributionMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
+    muDiLepEffMTWAppliedEffVec_ = MuDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
 
-    muIsoEff_ = MuIsoPTActivity_->GetEff( selectedIDIsoMuonsPt[0],selectedIDIsoMuonsActivity[0], useAsymmErrors);
-  //  muIsoEff_ = MuIsoRelPTDeltaRJet_->GetEff(selectedIDIsoMuonsRelPTJet[0], selectedIDIsoMuonsDeltaRJet[0], useAsymmErrors);
-    muRecoEff_ = MuRecoPTActivity_->GetEff(selectedIDIsoMuonsPt[0],selectedIDIsoMuonsActivity[0], useAsymmErrors);
-  //muAccEff_ = MuAccMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
-    if(NJets<6.5) muAccEff_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
-    else muAccEff_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+    muIsoEffVec_ = MuIsoPTActivity_->GetEff( selectedIDIsoMuonsPt[0],selectedIDIsoMuonsActivity[0], useAsymmErrors);
+  //  muIsoEffVec_ = MuIsoRelPTDeltaRJet_->GetEff(selectedIDIsoMuonsRelPTJet[0], selectedIDIsoMuonsDeltaRJet[0], useAsymmErrors);
+    muRecoEffVec_ = MuRecoPTActivity_->GetEff(selectedIDIsoMuonsPt[0],selectedIDIsoMuonsActivity[0], useAsymmErrors);
+  //muAccEffVec_ = MuAccMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
+    if(NJets<6.5) muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+    else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
 
-    //elecAccEff_ = ElecAccMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
-    if(NJets<6.5) elecAccEff_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
-    else elecAccEff_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
-    elecRecoEff_ = ElecRecoPTActivity_->GetEff(selectedIDIsoMuonsPt[0],elecActivity, useAsymmErrors);
-    elecIsoEff_ = ElecIsoPTActivity_->GetEff(selectedIDIsoMuonsPt[0],elecActivity, useAsymmErrors);
-    //elecIsoEff_ = ElecIsoRelPTDeltaRJet_->GetEff(selectedIDIsoMuonsRelPTJet[0], selectedIDIsoMuonsDeltaRJet[0], useAsymmErrors);
-
+    //elecAccEffVec_ = ElecAccMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
+    if(NJets<6.5) elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+    else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+    elecRecoEffVec_ = ElecRecoPTActivity_->GetEff(selectedIDIsoMuonsPt[0],elecActivity, useAsymmErrors);
+    elecIsoEffVec_ = ElecIsoPTActivity_->GetEff(selectedIDIsoMuonsPt[0],elecActivity, useAsymmErrors);
+    //elecIsoEffVec_ = ElecIsoRelPTDeltaRJet_->GetEff(selectedIDIsoMuonsRelPTJet[0], selectedIDIsoMuonsDeltaRJet[0], useAsymmErrors);
+/*
     if(UseTagAndProbeEffIso_)muIsoEff_ = getEff(MuIsoPTActivityTAPMC_, selectedIDIsoMuonsPt[0],selectedIDIsoMuonsActivity[0]); 
     if(UseTagAndProbeEffReco_)muRecoEff_ = getEff(MuRecoPTActivityTAPMC_, selectedIDIsoMuonsPt[0],selectedIDIsoMuonsActivity[0]); 
     if(UseTagAndProbeEffReco_)elecRecoEff_ = getEff(ElecRecoPTActivityTAPMC_, selectedIDIsoMuonsPt[0],elecActivity); 
     if(UseTagAndProbeEffIso_)elecIsoEff_ = getEff(ElecIsoPTActivityTAPMC_, selectedIDIsoMuonsPt[0],elecActivity); 
+*/
+    //for compatibility
+    muPurityCorrection_ = muPurityCorrectionVec_.eff;
+    muMTWEff_ = muMTWEffVec_.eff;
+    muDiLepContributionMTWAppliedEff_ = muDiLepContributionMTWAppliedEffVec_.eff;
+    muDiLepEffMTWAppliedEff_ = muDiLepEffMTWAppliedEffVec_.eff;
+    muIsoEff_ = muIsoEffVec_.eff;
+    muRecoEff_ = muRecoEffVec_.eff;
+    muAccEff_ = muAccEffVec_.eff;
+    elecAccEff_ = elecAccEffVec_.eff;
+    elecRecoEff_ = elecRecoEffVec_.eff;
+    elecIsoEff_ = elecIsoEffVec_.eff;
 
     // calculate Weights
     purityCorrectedWeight_ = Weight * muPurityCorrection_;
@@ -327,30 +345,42 @@ Bool_t Prediction::Process(Long64_t entry)
     selectedIDIsoElectronsRelPTJet[0]=DeltaR_relPT.second;
 
     // get Efficiencies
-    elecPurityCorrection_ =  ElecPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
-    elecMTWEff_ = ElecMTWNJets_->GetEff(NJets, useAsymmErrors);
-    elecDiLepContributionMTWAppliedEff_ = ElecDiLepContributionMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
-    elecDiLepEffMTWAppliedEff_ = ElecDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
+    elecPurityCorrectionVec_ =  ElecPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
+    elecMTWEffVec_ = ElecMTWNJets_->GetEff(NJets, useAsymmErrors);
+    elecDiLepContributionMTWAppliedEffVec_ = ElecDiLepContributionMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
+    elecDiLepEffMTWAppliedEffVec_ = ElecDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
 
-    elecIsoEff_ =  ElecIsoPTActivity_->GetEff(selectedIDIsoElectronsPt[0],selectedIDIsoElectronsActivity[0], useAsymmErrors);
-  //  elecIsoEff_ = ElecIsoRelPTDeltaRJet_->GetEff(selectedIDIsoElectronsRelPTJet[0], selectedIDIsoElectronsDeltaRJet[0], useAsymmErrors);
-    elecRecoEff_ = ElecRecoPTActivity_->GetEff(selectedIDIsoElectronsPt[0],selectedIDIsoElectronsActivity[0], useAsymmErrors);
-    //elecAccEff_ = ElecAccMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
-    if(NJets<6.5) elecAccEff_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
-    else elecAccEff_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+    elecIsoEffVec_ =  ElecIsoPTActivity_->GetEff(selectedIDIsoElectronsPt[0],selectedIDIsoElectronsActivity[0], useAsymmErrors);
+  //  elecIsoEffVec_ = ElecIsoRelPTDeltaRJet_->GetEff(selectedIDIsoElectronsRelPTJet[0], selectedIDIsoElectronsDeltaRJet[0], useAsymmErrors);
+    elecRecoEffVec_ = ElecRecoPTActivity_->GetEff(selectedIDIsoElectronsPt[0],selectedIDIsoElectronsActivity[0], useAsymmErrors);
+    //elecAccEffVec_ = ElecAccMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
+    if(NJets<6.5) elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+    else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
 
-    //muAccEff_ = MuAccMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
-    if(NJets<6.5) muAccEff_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
-    else muAccEff_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
-    muRecoEff_ = MuRecoPTActivity_->GetEff( selectedIDIsoElectronsPt[0], muActivity, useAsymmErrors);
-    muIsoEff_ = MuIsoPTActivity_->GetEff( selectedIDIsoElectronsPt[0], muActivity, useAsymmErrors);
-  //  muIsoEff_ = MuIsoRelPTDeltaRJet_->GetEff(selectedIDIsoElectronsRelPTJet[0], selectedIDIsoElectronsDeltaRJet[0], useAsymmErrors);
-
+    //muAccEffVec_ = MuAccMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
+    if(NJets<6.5) muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+    else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+    muRecoEffVec_ = MuRecoPTActivity_->GetEff( selectedIDIsoElectronsPt[0], muActivity, useAsymmErrors);
+    muIsoEffVec_ = MuIsoPTActivity_->GetEff( selectedIDIsoElectronsPt[0], muActivity, useAsymmErrors);
+  //  muIsoEffVec_ = MuIsoRelPTDeltaRJet_->GetEff(selectedIDIsoElectronsRelPTJet[0], selectedIDIsoElectronsDeltaRJet[0], useAsymmErrors);
+/*
     if(UseTagAndProbeEffIso_) elecIsoEff_ = getEff(ElecIsoPTActivityTAPMC_, selectedIDIsoMuonsPt[0], selectedIDIsoElectronsActivity[0]); 
     if(UseTagAndProbeEffReco_)elecRecoEff_ = getEff(ElecRecoPTActivityTAPMC_, selectedIDIsoMuonsPt[0], selectedIDIsoElectronsActivity[0]); 
     if(UseTagAndProbeEffReco_) muRecoEff_ = getEff(MuRecoPTActivityTAPMC_, selectedIDIsoMuonsPt[0], muActivity); 
     if(UseTagAndProbeEffIso_) muIsoEff_ = getEff(MuIsoPTActivityTAPMC_, selectedIDIsoMuonsPt[0], muActivity); 
-    
+*/    
+    //for compatibility
+    elecPurityCorrection_ = elecPurityCorrectionVec_.eff;
+    elecMTWEff_ = elecMTWEffVec_.eff;
+    elecDiLepContributionMTWAppliedEff_ = elecDiLepContributionMTWAppliedEffVec_.eff;
+    elecDiLepEffMTWAppliedEff_ = elecDiLepEffMTWAppliedEffVec_.eff;
+    elecIsoEff_ = elecIsoEffVec_.eff;
+    elecRecoEff_ = elecRecoEffVec_.eff;
+    elecAccEff_ = elecAccEffVec_.eff;
+    muAccEff_ = muAccEffVec_.eff;
+    muRecoEff_ = muRecoEffVec_.eff;
+    muIsoEff_ = muIsoEffVec_.eff;
+
     // calculate Weights
     purityCorrectedWeight_ = Weight * elecPurityCorrection_;
     mtwCorrectedWeight_ =  purityCorrectedWeight_ / elecMTWEff_;    
@@ -377,7 +407,7 @@ Bool_t Prediction::Process(Long64_t entry)
 
     // weights used for closure tests
     elecIsoOnlyWeight_ = Weight * (1 - elecIsoEff_) / elecIsoEff_ * elecPurityCorrection_ * elecDiLepContributionMTWAppliedEff_;  
-  }
+    }
 
   tPrediction_->Fill();
   return kTRUE;

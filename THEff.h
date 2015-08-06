@@ -17,6 +17,12 @@
 #include <iostream>
 #include <iomanip> 
 
+struct effVec{
+	double eff;
+	double errUp;
+	double errDown;
+};
+
 class TH1Eff
 {
 public:
@@ -65,8 +71,8 @@ public:
 	void SaveEff(TDirectory* MainDirectory){ SaveEff(title_, MainDirectory); }
 	void SaveEff(const char* title, TDirectory* MainDirectory);
 	void OpenEff(const char* name, TDirectory* MainDirectory);
-	double GetEff(double xValue){ return GetEff(xValue, false); }
-	double GetEff(double xValue, bool asymm);
+	effVec GetEff(double xValue){ return GetEff(xValue, false); }
+	effVec GetEff(double xValue, bool asymm);
 	~TH1Eff(){}
 private:
 	TH1F* PassTH1F_;
@@ -117,9 +123,12 @@ void TH1Eff::SaveEff(const char* title, TDirectory* MainDirectory)
 	RatioTGraphAsymm_->Write();
 }
 
-double TH1Eff::GetEff(double xValue, bool asymm)
+effVec TH1Eff::GetEff(double xValue, bool asymm)
 {
   	double result = 0;
+  	double resultAsymm = 0;
+  	double errUp_ = 0;
+  	double errDown_ = 0;  	
 
   	if(xValue < RatioTH1F_->GetXaxis()->GetXmin()){
 	    //std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<RatioTH1F_->GetName()<<std::endl;
@@ -134,13 +143,9 @@ double TH1Eff::GetEff(double xValue, bool asymm)
 
 	int nxBin = RatioTH1F_->GetXaxis()->FindBin(xValue);
 
-  	if(!asymm){
-		result = RatioTH1F_->GetBinContent(nxBin);
-	}else{
-		Double_t xValueAsymm;
-		RatioTGraphAsymm_->GetPoint(nxBin-1, xValueAsymm, result);
-	//	std::cout <<"TH1<->TGraphAsymmErrors:"<< RatioTH1F_->GetBinContent(nxBin) << "; " << result << std::endl;
-	}
+	result = RatioTH1F_->GetBinContent(nxBin);
+	errUp_ = RatioTH1F_->GetBinErrorUp(nxBin);
+	errDown_ = RatioTH1F_->GetBinErrorLow(nxBin);
 
 	if(result<0.01){
 		std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.01 for histo: "<<RatioTH1F_->GetName()<<std::endl;
@@ -151,7 +156,26 @@ double TH1Eff::GetEff(double xValue, bool asymm)
 		result =0.99;
 	}
 
-	return result;
+	if(asymm && result>0.01){
+		// empty bins in the end/beginning of the th's are removed when creating a tgraph..
+	  	int nEmpty = 0;
+	  	while(RatioTH1F_->GetBinContent(nEmpty+1) < 0.01){
+	  		nEmpty++;
+	  		if(nEmpty > RatioTH1F_->GetXaxis()->GetNbins()) break;
+	  	}
+
+		Double_t xValueAsymm;
+		RatioTGraphAsymm_->GetPoint(nxBin-1, xValueAsymm, resultAsymm);
+		errUp_ = RatioTGraphAsymm_->GetErrorYhigh(nxBin-1);
+		errDown_ = RatioTGraphAsymm_->GetErrorYlow(nxBin-1);
+
+		if(std::abs(resultAsymm-result)>0.01) std::cout<<"Efficiencies of TGraph "<<name_<<" doens't fit to THist!: "<<result<<"; "<<resultAsymm<<std::endl;
+		effVec effVec_ = {resultAsymm, errUp_, errDown_};
+        return effVec_;
+	}
+
+	effVec effVec_ = {result, errUp_, errDown_};
+	return effVec_;
 }
 
 class TH2Eff
@@ -221,8 +245,8 @@ public:
 	void SaveEff(TDirectory* MainDirectory){ SaveEff(title_, MainDirectory); }
 	void SaveEff(const char* title, TDirectory* MainDirectory);
 	void OpenEff(const char* name, TDirectory* MainDirectory);
-	double GetEff(double xValue, double yValue){ return GetEff(xValue, yValue, false); }
-	double GetEff(double xValue, double yValue, bool asymm);
+	effVec GetEff(double xValue, double yValue){ return GetEff(xValue, yValue, false); }
+	effVec GetEff(double xValue, double yValue, bool asymm);
 	~TH2Eff(){}
 private:
 	TH2F* PassTH2F_;
@@ -292,14 +316,19 @@ void TH2Eff::SaveEff(const char* title, TDirectory* MainDirectory)
 		RatioTGraphAsymmVec_.at(i)->Divide(PassTH1Fvec_.at(i), TotalTH1Fvec_.at(i), "cl=0.683 b(1,1) mode");
 		RatioTGraphAsymmVec_.at(i)->SetName(name_+"_yBin"+std::to_string(i+1));
 		RatioTGraphAsymmVec_.at(i)->SetTitle(title);
+		RatioTGraphAsymmVec_.at(i)->GetYaxis()->SetTitle("");
 		RatioTGraphAsymmVec_.at(i)->Write();
 	}
 }
 
-double TH2Eff::GetEff(double xValue, double yValue, bool asymm)
+effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
 {
   double result = 0;
+  double errUp_ = 0;
+  double errDown_ = 0;
   double resultAsymm = 0;
+  double errUpAsymm_ = 0;
+  double errDownAsymm_ = 0;
 
   if(xValue < RatioTH2F_->GetXaxis()->GetXmin() )
   {
@@ -331,6 +360,8 @@ double TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   int nyBin = RatioTH2F_->GetYaxis()->FindBin(yValue);
 
   result = RatioTH2F_->GetBinContent(nxBin, nyBin);
+  errUp_ = RatioTH2F_->GetBinErrorUp(nxBin, nyBin);
+  errDown_ = RatioTH2F_->GetBinErrorLow(nxBin, nyBin);
 
   if(result<0.01)
   {
@@ -344,14 +375,26 @@ double TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   }
 
   if(asymm && result>0.01){
+  	// empty bins in the end/beginning of the th's are removed when creating a tgraph..
+  	int nEmpty = 0;
+  	while(RatioTH2F_->GetBinContent(nEmpty+1, nyBin) < 0.01){
+  		nEmpty++;
+  		if(nEmpty > RatioTH2F_->GetXaxis()->GetNbins()) break;
+  	}
+
   	Double_t xValueAsymm;
-  	RatioTGraphAsymmVec_.at(nyBin-1)->GetPoint(nxBin-1, xValueAsymm, resultAsymm);
-  	return resultAsymm;
+  	RatioTGraphAsymmVec_.at(nyBin-1)->GetPoint(nxBin-1-nEmpty, xValueAsymm, resultAsymm);
+  	errUpAsymm_ = RatioTGraphAsymmVec_.at(nyBin-1)->GetErrorYhigh(nxBin-1-nEmpty);
+	errDownAsymm_ = RatioTGraphAsymmVec_.at(nyBin-1)->GetErrorYlow(nxBin-1-nEmpty);
+
+	if(std::abs(resultAsymm-result)>0.01) std::cout<<"Efficiencies of TGraph "<<name_<<" doens't fit to THist!: "<<result<<"; "<<resultAsymm<<std::endl;
+	effVec effVec_ = {resultAsymm, errUpAsymm_, errDownAsymm_};
+    return effVec_;
   }
 
-  return result;
+  effVec effVec_ = {result, errUp_, errDown_};
+  return effVec_;
 }
-
 
 class TH1Feff
 {
