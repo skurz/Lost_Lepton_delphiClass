@@ -228,18 +228,25 @@ Bool_t Prediction::Process(Long64_t entry)
   fChain->GetTree()->GetEntry(entry);
   
   if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_  ) return kTRUE;
-  if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ )return kTRUE;
+  if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ ) return kTRUE;
+  if(useDeltaPhiCut == -1) if(!(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_)) return kTRUE;
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
 
   if((selectedIDIsoMuonsNum+selectedIDIsoElectronsNum) !=1) return kTRUE;
 
-  if(useTrigger){
+  bool passTrigger = false;  
     for (std::vector<string>::iterator it = TriggerNames->begin() ; it != TriggerNames->end(); ++it){
       if(*it=="HLT_PFHT350_PFMET100_NoiseCleaned_v1"){
-        if(PassTrigger->at(it - TriggerNames->begin())<0.5) return kTRUE;
-     }
+        if(PassTrigger->at(it - TriggerNames->begin())>0.5) passTrigger = true;
+      }
+      if(*it=="HLT_PFHT800_v1"){
+        if(PassTrigger->at(it - TriggerNames->begin())>0.5) passTrigger = true;
+      }
+      if(*it=="HLT_PFMET170_NoiseCleaned_v2"){
+        if(PassTrigger->at(it - TriggerNames->begin())>0.5) passTrigger = true;
+      }
     }
-  }
+    if(useTrigger && !passTrigger) return kTRUE;
 
   isoTracks= isoElectronTracks + isoMuonTracks + isoPionTracks;
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
@@ -472,10 +479,10 @@ bool Prediction::FiltersPass()
 {
   bool result=true;
   if(useFilterData){
-    if(METFilters==1) result=false;;
     if(CSCTightHaloFilter==0) result=false;;
-    if(HBHENoiseFilter==1) result=false;;
-    if(EcalDeadCellTriggerPrimitiveFilter==0) result=false;
+    if(GoodVtx==0) result=false;;
+    if(eeBadScFilter==0) result=false;;
+    //if(HBHENoiseFilter==0) result=false;
   }
   if(!JetID) result=false;
   return result;

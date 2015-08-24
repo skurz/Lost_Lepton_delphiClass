@@ -1,4 +1,4 @@
-#include <SearchBins.h>
+#include "SearchBins.h"
 
 #include <TChain.h>
 #include <TROOT.h>

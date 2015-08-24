@@ -217,5 +217,10 @@ unsigned int SearchBins::GetBinNumber(double HT, double MHT, int NJets, int BTag
 
 void SearchBins::PrintUsed()
 {
-  for(unsigned int i=0; i< usedBin_.size();i++) std::cout<<"Bin["<<i<<"] has been used: "<<usedBin_[i]<<std::endl; 
+  int total = 0;
+  for(unsigned int i=0; i< usedBin_.size();i++){
+  	std::cout<<"Bin["<<i<<"] has been used: "<<usedBin_[i]<<std::endl;
+  	total+=usedBin_[i];;
+  }
+  std::cout<<"Total: "<<total<<std::endl;
 }
