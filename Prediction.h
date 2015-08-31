@@ -17,6 +17,7 @@
 #include <TSelector.h>
 #include <TH2F.h>
 #include <TH1F.h>
+#include <TProfile.h>
 #include "TVector2.h"
 #include <cmath>
 #include "TEfficiency.h"
@@ -27,6 +28,8 @@
 
 const bool useAsymmErrors = true;
 const bool useFilterData = true;
+const bool applyFilters_=true;
+const bool applyDiLepCorrection_=true;
 const bool useTrigger = false;
 
 // useDeltaPhiCut = 0: no deltaPhiCut
@@ -46,16 +49,58 @@ const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;
 const double deltaPhi3_=0.3;
 const double minDeltaPhiN_=4.0;
-const bool applyFilters_=true;
-const bool applyDiLepCorrection_=true;
 
 const UShort_t NJetsLow_=2;
 const UShort_t NJetsMedium_=5;
 const UShort_t NJetsMedium2_=7;
 const UShort_t NJetsHigh_=8;
 
+// TAP
+const bool UseTagAndProbeEffIso_=false; // warning overriges all other choices for isolation efficiency
+const bool UseTagAndProbeEffReco_=false; // warning overriges all other choices for reconstruction efficiency
+
+
 // uncertainties
+const double isoTrackUncertaintyUp_ = 20; // dummies as long as TAP is not available
+const double isoTrackUncertaintyDown_ = 20; // dummies as long as TAP is not available
+
+const double MuMTWUncertaintyUp_ = 40;
+const double MuMTWUncertaintyDown_ = 40;
+const double ElecMTWUncertaintyUp_ = 40;
+const double ElecMTWUncertaintyDown_ = 40;
+
+const double ElecPurityUncertaintyUp_ = 40; // no purity correction for muCS (>99%)
+const double ElecPurityUncertaintyDown_ = 40; // no purity correction for muCS (>99%)
+
+const double MuSingleLepPurityUp_ = 50;
+const double MuSingleLepPurityDown_ = 50;
+const double ElecSingleLepPurityUp_ = 50;
+const double ElecSingleLepPurityDown_ = 50;
+
+const double MuDiLepFoundUp_ = 20;
+const double MuDiLepFoundDown_ = 20;
+const double ElecDiLepFoundUp_ = 20;
+const double ElecDiLepFoundDown_ = 20;
+
+const double MuAccUncertaintyUp_ = 9;  // pdf
 const double MuAccUncertaintyDown_ = 9;  // pdf
+const double ElecAccUncertaintyUp_ = 9;  // pdf
+const double ElecAccUncertaintyDown_ = 9;  // pdf
+
+const double MuRecoUncertaintyUp_ = 10;  // dummies as long as TAP is not available
+const double MuRecoUncertaintyDown_ = 10;  // dummies as long as TAP is not available
+const double ElecRecoUncertaintyUp_ = 10;  // dummies as long as TAP is not available
+const double ElecRecoUncertaintyDown_ = 10;  // dummies as long as TAP is not available
+const double MuIsoUncertaintyUp_ = 10;  // dummies as long as TAP is not available
+const double MuIsoUncertaintyDown_ = 10;  // dummies as long as TAP is not available
+const double ElecIsoUncertaintyUp_ = 10;  // dummies as long as TAP is not available
+const double ElecIsoUncertaintyDown_ = 10;  // dummies as long as TAP is not available
+
+const double diBosonContributionUp_ = 3;
+const double diBosonContributionDown_ = 3;
+
+const double nonClosureLowNJets_ = 25;
+const double nonClosureHighNJets_ = 50;
 
 // input jet definitions
 const double jetCone_=0.4;
@@ -75,16 +120,6 @@ const double maxDiffPtRecoIsoMuToTack_ = 0.5;
 
 const double maxDeltaRRecoIsoElecToTack_ = 0.3;
 const double maxDiffPtRecoIsoElecToTack_ = 0.5;
-//using either oldschool th1/2 which have wrong error calculations or the updated tefficneices
-const bool UseUpdatedTEfficiencies_=false;
-const bool UseTagAndProbeEffIso_=false; // warning overriges all other choices for isolation efficiency
-const bool UseTagAndProbeEffReco_=false; // warning overriges all other choices for reconstruction efficiency
-
-const bool MuMTWSearchBinUse_=false; // warning overwrites UseUpdatedTEfficiencies_
-const bool MuDiLepContributionMTWAppliedEffSearchBinUse_=false;
-const bool MuIsoSearchBinUse_=false; 
-const bool MuRecoSearchBinUse_=false; 
-const bool MuAccSearchBinUse_=false;  
 
 
 class Prediction : public TSelector {
@@ -101,6 +136,7 @@ public :
   // output variables
   TTree *tPrediction_;
   SearchBins *SearchBins_;
+  SearchBins *SearchBinsQCD_;
 
   Int_t           isoTracks;
   Float_t mtw;
@@ -120,6 +156,62 @@ public :
   Float_t muDiLepEffMTWAppliedEff_, elecDiLepEffMTWAppliedEff_;
   Float_t expectationReductionIsoTrackEff_;
   Float_t expectationReductionMuIsoTrackEff_,expectationReductionElecIsoTrackEff_,expectationReductionPionIsoTrackEff_, expectationReductionIsoTrackEffCombined_;
+
+  // Uncertainties
+  Float_t isoTrackStatUp;
+  Float_t isoTrackStatDown;
+  Float_t MTWStatUp;
+  Float_t MTWStatDown;
+  Float_t purityStatUp;
+  Float_t purityStatDown;
+  Float_t singleLepPurityStatUp;
+  Float_t singleLepPurityStatDown;
+  Float_t diLepFoundStatUp;
+  Float_t diLepFoundStatDown;
+  Float_t muIsoStatUp;
+  Float_t muIsoStatDown;
+  Float_t muRecoStatUp;
+  Float_t muRecoStatDown;
+  Float_t muAccStatUp;
+  Float_t muAccStatDown;
+  Float_t elecIsoStatUp;
+  Float_t elecIsoStatDown;
+  Float_t elecRecoStatUp;
+  Float_t elecRecoStatDown;
+  Float_t elecAccStatUp;
+  Float_t elecAccStatDown;
+
+  Float_t isoTrackSysUp;
+  Float_t isoTrackSysDown;
+  Float_t MTWSysUp;
+  Float_t MTWSysDown;
+  Float_t puritySysUp;
+  Float_t puritySysDown;
+  Float_t singleLepPuritySysUp;
+  Float_t singleLepPuritySysDown;
+  Float_t diLepFoundSysUp;
+  Float_t diLepFoundSysDown;
+  Float_t muIsoSysUp;
+  Float_t muIsoSysDown;
+  Float_t muRecoSysUp;
+  Float_t muRecoSysDown;
+  Float_t muAccSysUp;
+  Float_t muAccSysDown;
+  Float_t elecIsoSysUp;
+  Float_t elecIsoSysDown;
+  Float_t elecRecoSysUp;
+  Float_t elecRecoSysDown;
+  Float_t elecAccSysUp;
+  Float_t elecAccSysDown;
+  
+  Float_t diBosonUp;
+  Float_t diBosonDown;
+  Float_t nonClosureUp;
+  Float_t nonClosureDown;
+
+  Float_t totalStat;
+  Float_t totalSys;
+  Float_t totalUnc;
 
   effVec muPurityCorrectionVec_;
   effVec muMTWEffVec_, elecMTWEffVec_;
@@ -143,13 +235,21 @@ public :
   Float_t         selectedIDIsoMuonsRelPTJet[400];
   Float_t         selectedIDIsoElectronsDeltaRJet[400];
   Float_t         selectedIDIsoElectronsRelPTJet[400];
-  UShort_t searchBin_, Bin_;
-  
-  // search bin definition
-  SearchBins* searchBinsRef_;
+
+  UShort_t Bin_, BinQCD_;
   
   // isolated track prediction
   bool IsolatedTracksMuMatched_, IsolatedTracksElecMatched_;
+
+  // TProfiles
+  TProfile *MuMeanWeight_;
+  TProfile *ElecMeanWeight_;
+  TProfile *CombinedMeanWeight_;
+
+  // TH1s for distributions of efficiencies per bin
+  TH1 *MuWeightPerBin_[300];
+  TH1 *ElecWeightPerBin_[300];
+  TH1 *CombinedWeightPerBin_[300];
   
   // Effiecineices
   // TAP
@@ -697,7 +797,7 @@ void Prediction::Init(TTree *tree)
    fChain->SetBranchStatus("Gen*",0);
    fChain->SetBranchStatus("gen*",0);
    fChain->SetBranchStatus("Tau*",0);
-   fChain->SetBranchStatus("tau*",0);
+   //fChain->SetBranchStatus("tau*",0);
 }
 
 Bool_t Prediction::Notify()

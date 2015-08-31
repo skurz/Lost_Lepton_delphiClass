@@ -26,7 +26,8 @@ private:
 class SearchBins
 {
 public:
-  SearchBins();
+  SearchBins() : SearchBins(false) {}
+  SearchBins(bool useQCDbinning);
   unsigned int GetBinNumber(double HT, double MHT, int NJets, int BTags);
   void PrintUsed();
   Bin* GetSearchBin(int i);
@@ -38,9 +39,9 @@ protected:
 };
 
 
-SearchBins::SearchBins()
+SearchBins::SearchBins(bool useQCDbinning)
 {
-	
+  if(!useQCDbinning){
 	// HTmin,HTmax,MHTmin,MHTmax,NJetsmin,NJetsmax,BTagsmin,BTagsmax
 	// NJets 4,6 BTags=0
 	// fixed ht Njets btags all MHT bins
@@ -170,6 +171,338 @@ SearchBins::SearchBins()
 	
 	bins_.push_back( Bin(800,99999,750,9999,9,9999,3,9999) );
 
+  }else{
+  	// HTmin,HTmax,MHTmin,MHTmax,NJetsmin,NJetsmax,BTagsmin,BTagsmax
+	// NJets 4
+	// fixed ht Njets btags all MHT bins
+	bins_.push_back( Bin(500,800,200,300,4,4,-1,0) );
+	bins_.push_back( Bin(800,1200,200,300,4,4,-1,0) );
+	bins_.push_back( Bin(1200,99999,200,300,4,4,-1,0) );
+
+	bins_.push_back( Bin(500,800,300,500,4,4,-1,0) );
+	bins_.push_back( Bin(800,1200,300,500,4,4,-1,0) );
+	bins_.push_back( Bin(1200,99999,300,500,4,4,-1,0) );
+	
+	bins_.push_back( Bin(500,800,500,750,4,4,-1,0) );
+	bins_.push_back( Bin(800,1200,500,750,4,4,-1,0) );
+	bins_.push_back( Bin(1200,99999,500,750,4,4,-1,0) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,4,4,-1,0) );
+	bins_.push_back( Bin(1200,99999,750,9999,4,4,-1,0) );
+
+
+	bins_.push_back( Bin(500,800,200,300,4,4,1,1) );
+	bins_.push_back( Bin(800,1200,200,300,4,4,1,1) );
+	bins_.push_back( Bin(1200,99999,200,300,4,4,1,1) );
+
+	bins_.push_back( Bin(500,800,300,500,4,4,1,1) );
+	bins_.push_back( Bin(800,1200,300,500,4,4,1,1) );
+	bins_.push_back( Bin(1200,99999,300,500,4,4,1,1) );
+	
+	bins_.push_back( Bin(500,800,500,750,4,4,1,1) );
+	bins_.push_back( Bin(800,1200,500,750,4,4,1,1) );
+	bins_.push_back( Bin(1200,99999,500,750,4,4,1,1) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,4,4,1,1) );
+	bins_.push_back( Bin(1200,99999,750,9999,4,4,1,1) );
+
+
+	bins_.push_back( Bin(500,800,200,300,4,4,2,2) );
+	bins_.push_back( Bin(800,1200,200,300,4,4,2,2) );
+	bins_.push_back( Bin(1200,99999,200,300,4,4,2,2) );
+
+	bins_.push_back( Bin(500,800,300,500,4,4,2,2) );
+	bins_.push_back( Bin(800,1200,300,500,4,4,2,2) );
+	bins_.push_back( Bin(1200,99999,300,500,4,4,2,2) );
+	
+	bins_.push_back( Bin(500,800,500,750,4,4,2,2) );
+	bins_.push_back( Bin(800,1200,500,750,4,4,2,2) );
+	bins_.push_back( Bin(1200,99999,500,750,4,4,2,2) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,4,4,2,2) );
+	bins_.push_back( Bin(1200,99999,750,9999,4,4,2,2) );
+
+
+	bins_.push_back( Bin(500,800,200,300,4,4,3,9999) );
+	bins_.push_back( Bin(800,1200,200,300,4,4,3,9999) );
+	bins_.push_back( Bin(1200,99999,200,300,4,4,3,9999) );
+
+	bins_.push_back( Bin(500,800,300,500,4,4,3,9999) );
+	bins_.push_back( Bin(800,1200,300,500,4,4,3,9999) );
+	bins_.push_back( Bin(1200,99999,300,500,4,4,3,9999) );
+	
+	bins_.push_back( Bin(500,800,500,750,4,4,3,9999) );
+	bins_.push_back( Bin(800,1200,500,750,4,4,3,9999) );
+	bins_.push_back( Bin(1200,99999,500,750,4,4,3,9999) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,4,4,3,9999) );
+	bins_.push_back( Bin(1200,99999,750,9999,4,4,3,9999) );
+
+
+	// NJets 5
+	// fixed ht Njets btags all MHT bins
+	bins_.push_back( Bin(500,800,200,300,5,5,-1,0) );
+	bins_.push_back( Bin(800,1200,200,300,5,5,-1,0) );
+	bins_.push_back( Bin(1200,99999,200,300,5,5,-1,0) );
+
+	bins_.push_back( Bin(500,800,300,500,5,5,-1,0) );
+	bins_.push_back( Bin(800,1200,300,500,5,5,-1,0) );
+	bins_.push_back( Bin(1200,99999,300,500,5,5,-1,0) );
+	
+	bins_.push_back( Bin(500,800,500,750,5,5,-1,0) );
+	bins_.push_back( Bin(800,1200,500,750,5,5,-1,0) );
+	bins_.push_back( Bin(1200,99999,500,750,5,5,-1,0) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,5,5,-1,0) );
+	bins_.push_back( Bin(1200,99999,750,9999,5,5,-1,0) );
+
+
+	bins_.push_back( Bin(500,800,200,300,5,5,1,1) );
+	bins_.push_back( Bin(800,1200,200,300,5,5,1,1) );
+	bins_.push_back( Bin(1200,99999,200,300,5,5,1,1) );
+
+	bins_.push_back( Bin(500,800,300,500,5,5,1,1) );
+	bins_.push_back( Bin(800,1200,300,500,5,5,1,1) );
+	bins_.push_back( Bin(1200,99999,300,500,5,5,1,1) );
+	
+	bins_.push_back( Bin(500,800,500,750,5,5,1,1) );
+	bins_.push_back( Bin(800,1200,500,750,5,5,1,1) );
+	bins_.push_back( Bin(1200,99999,500,750,5,5,1,1) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,5,5,1,1) );
+	bins_.push_back( Bin(1200,99999,750,9999,5,5,1,1) );
+
+
+	bins_.push_back( Bin(500,800,200,300,5,5,2,2) );
+	bins_.push_back( Bin(800,1200,200,300,5,5,2,2) );
+	bins_.push_back( Bin(1200,99999,200,300,5,5,2,2) );
+
+	bins_.push_back( Bin(500,800,300,500,5,5,2,2) );
+	bins_.push_back( Bin(800,1200,300,500,5,5,2,2) );
+	bins_.push_back( Bin(1200,99999,300,500,5,5,2,2) );
+	
+	bins_.push_back( Bin(500,800,500,750,5,5,2,2) );
+	bins_.push_back( Bin(800,1200,500,750,5,5,2,2) );
+	bins_.push_back( Bin(1200,99999,500,750,5,5,2,2) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,5,5,2,2) );
+	bins_.push_back( Bin(1200,99999,750,9999,5,5,2,2) );
+
+
+	bins_.push_back( Bin(500,800,200,300,5,5,3,9999) );
+	bins_.push_back( Bin(800,1200,200,300,5,5,3,9999) );
+	bins_.push_back( Bin(1200,99999,200,300,5,5,3,9999) );
+
+	bins_.push_back( Bin(500,800,300,500,5,5,3,9999) );
+	bins_.push_back( Bin(800,1200,300,500,5,5,3,9999) );
+	bins_.push_back( Bin(1200,99999,300,500,5,5,3,9999) );
+	
+	bins_.push_back( Bin(500,800,500,750,5,5,3,9999) );
+	bins_.push_back( Bin(800,1200,500,750,5,5,3,9999) );
+	bins_.push_back( Bin(1200,99999,500,750,5,5,3,9999) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,5,5,3,9999) );
+	bins_.push_back( Bin(1200,99999,750,9999,5,5,3,9999) );
+
+
+	// NJets 6
+	// fixed ht Njets btags all MHT bins
+	bins_.push_back( Bin(500,800,200,300,6,6,-1,0) );
+	bins_.push_back( Bin(800,1200,200,300,6,6,-1,0) );
+	bins_.push_back( Bin(1200,99999,200,300,6,6,-1,0) );
+
+	bins_.push_back( Bin(500,800,300,500,6,6,-1,0) );
+	bins_.push_back( Bin(800,1200,300,500,6,6,-1,0) );
+	bins_.push_back( Bin(1200,99999,300,500,6,6,-1,0) );
+	
+	bins_.push_back( Bin(500,800,500,750,6,6,-1,0) );
+	bins_.push_back( Bin(800,1200,500,750,6,6,-1,0) );
+	bins_.push_back( Bin(1200,99999,500,750,6,6,-1,0) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,6,6,-1,0) );
+	bins_.push_back( Bin(1200,99999,750,9999,6,6,-1,0) );
+
+
+	bins_.push_back( Bin(500,800,200,300,6,6,1,1) );
+	bins_.push_back( Bin(800,1200,200,300,6,6,1,1) );
+	bins_.push_back( Bin(1200,99999,200,300,6,6,1,1) );
+
+	bins_.push_back( Bin(500,800,300,500,6,6,1,1) );
+	bins_.push_back( Bin(800,1200,300,500,6,6,1,1) );
+	bins_.push_back( Bin(1200,99999,300,500,6,6,1,1) );
+	
+	bins_.push_back( Bin(500,800,500,750,6,6,1,1) );
+	bins_.push_back( Bin(800,1200,500,750,6,6,1,1) );
+	bins_.push_back( Bin(1200,99999,500,750,6,6,1,1) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,6,6,1,1) );
+	bins_.push_back( Bin(1200,99999,750,9999,6,6,1,1) );
+
+
+	bins_.push_back( Bin(500,800,200,300,6,6,2,2) );
+	bins_.push_back( Bin(800,1200,200,300,6,6,2,2) );
+	bins_.push_back( Bin(1200,99999,200,300,6,6,2,2) );
+
+	bins_.push_back( Bin(500,800,300,500,6,6,2,2) );
+	bins_.push_back( Bin(800,1200,300,500,6,6,2,2) );
+	bins_.push_back( Bin(1200,99999,300,500,6,6,2,2) );
+	
+	bins_.push_back( Bin(500,800,500,750,6,6,2,2) );
+	bins_.push_back( Bin(800,1200,500,750,6,6,2,2) );
+	bins_.push_back( Bin(1200,99999,500,750,6,6,2,2) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,6,6,2,2) );
+	bins_.push_back( Bin(1200,99999,750,9999,6,6,2,2) );
+
+
+	bins_.push_back( Bin(500,800,200,300,6,6,3,9999) );
+	bins_.push_back( Bin(800,1200,200,300,6,6,3,9999) );
+	bins_.push_back( Bin(1200,99999,200,300,6,6,3,9999) );
+
+	bins_.push_back( Bin(500,800,300,500,6,6,3,9999) );
+	bins_.push_back( Bin(800,1200,300,500,6,6,3,9999) );
+	bins_.push_back( Bin(1200,99999,300,500,6,6,3,9999) );
+	
+	bins_.push_back( Bin(500,800,500,750,6,6,3,9999) );
+	bins_.push_back( Bin(800,1200,500,750,6,6,3,9999) );
+	bins_.push_back( Bin(1200,99999,500,750,6,6,3,9999) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,6,6,3,9999) );
+	bins_.push_back( Bin(1200,99999,750,9999,6,6,3,9999) );
+
+
+	// NJets 7, 8
+	// fixed ht Njets btags all MHT bins
+	bins_.push_back( Bin(500,800,200,300,7,8,-1,0) );
+	bins_.push_back( Bin(800,1200,200,300,7,8,-1,0) );
+	bins_.push_back( Bin(1200,99999,200,300,7,8,-1,0) );
+
+	bins_.push_back( Bin(500,800,300,500,7,8,-1,0) );
+	bins_.push_back( Bin(800,1200,300,500,7,8,-1,0) );
+	bins_.push_back( Bin(1200,99999,300,500,7,8,-1,0) );
+	
+	bins_.push_back( Bin(500,800,500,750,7,8,-1,0) );
+	bins_.push_back( Bin(800,1200,500,750,7,8,-1,0) );
+	bins_.push_back( Bin(1200,99999,500,750,7,8,-1,0) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,7,8,-1,0) );
+	bins_.push_back( Bin(1200,99999,750,9999,7,8,-1,0) );
+
+
+	bins_.push_back( Bin(500,800,200,300,7,8,1,1) );
+	bins_.push_back( Bin(800,1200,200,300,7,8,1,1) );
+	bins_.push_back( Bin(1200,99999,200,300,7,8,1,1) );
+
+	bins_.push_back( Bin(500,800,300,500,7,8,1,1) );
+	bins_.push_back( Bin(800,1200,300,500,7,8,1,1) );
+	bins_.push_back( Bin(1200,99999,300,500,7,8,1,1) );
+	
+	bins_.push_back( Bin(500,800,500,750,7,8,1,1) );
+	bins_.push_back( Bin(800,1200,500,750,7,8,1,1) );
+	bins_.push_back( Bin(1200,99999,500,750,7,8,1,1) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,7,8,1,1) );
+	bins_.push_back( Bin(1200,99999,750,9999,7,8,1,1) );
+
+
+	bins_.push_back( Bin(500,800,200,300,7,8,2,2) );
+	bins_.push_back( Bin(800,1200,200,300,7,8,2,2) );
+	bins_.push_back( Bin(1200,99999,200,300,7,8,2,2) );
+
+	bins_.push_back( Bin(500,800,300,500,7,8,2,2) );
+	bins_.push_back( Bin(800,1200,300,500,7,8,2,2) );
+	bins_.push_back( Bin(1200,99999,300,500,7,8,2,2) );
+	
+	bins_.push_back( Bin(500,800,500,750,7,8,2,2) );
+	bins_.push_back( Bin(800,1200,500,750,7,8,2,2) );
+	bins_.push_back( Bin(1200,99999,500,750,7,8,2,2) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,7,8,2,2) );
+	bins_.push_back( Bin(1200,99999,750,9999,7,8,2,2) );
+
+
+	bins_.push_back( Bin(500,800,200,300,7,8,3,9999) );
+	bins_.push_back( Bin(800,1200,200,300,7,8,3,9999) );
+	bins_.push_back( Bin(1200,99999,200,300,7,8,3,9999) );
+
+	bins_.push_back( Bin(500,800,300,500,7,8,3,9999) );
+	bins_.push_back( Bin(800,1200,300,500,7,8,3,9999) );
+	bins_.push_back( Bin(1200,99999,300,500,7,8,3,9999) );
+	
+	bins_.push_back( Bin(500,800,500,750,7,8,3,9999) );
+	bins_.push_back( Bin(800,1200,500,750,7,8,3,9999) );
+	bins_.push_back( Bin(1200,99999,500,750,7,8,3,9999) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,7,8,3,9999) );
+	bins_.push_back( Bin(1200,99999,750,9999,7,8,3,9999) );
+
+
+	// NJets 9+
+	// fixed ht Njets btags all MHT bins
+	bins_.push_back( Bin(500,800,200,300,9,9999,-1,0) );
+	bins_.push_back( Bin(800,1200,200,300,9,9999,-1,0) );
+	bins_.push_back( Bin(1200,99999,200,300,9,9999,-1,0) );
+
+	bins_.push_back( Bin(500,800,300,500,9,9999,-1,0) );
+	bins_.push_back( Bin(800,1200,300,500,9,9999,-1,0) );
+	bins_.push_back( Bin(1200,99999,300,500,9,9999,-1,0) );
+	
+	bins_.push_back( Bin(500,800,500,750,9,9999,-1,0) );
+	bins_.push_back( Bin(800,1200,500,750,9,9999,-1,0) );
+	bins_.push_back( Bin(1200,99999,500,750,9,9999,-1,0) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,9,9999,-1,0) );
+	bins_.push_back( Bin(1200,99999,750,9999,9,9999,-1,0) );
+	
+	
+	bins_.push_back( Bin(500,800,200,300,9,9999,1,1) );
+	bins_.push_back( Bin(800,1200,200,300,9,9999,1,1) );
+	bins_.push_back( Bin(1200,99999,200,300,9,9999,1,1) );
+
+	bins_.push_back( Bin(500,800,300,500,9,9999,1,1) );
+	bins_.push_back( Bin(800,1200,300,500,9,9999,1,1) );
+	bins_.push_back( Bin(1200,99999,300,500,9,9999,1,1) );
+	
+	bins_.push_back( Bin(500,800,500,750,9,9999,1,1) );
+	bins_.push_back( Bin(800,1200,500,750,9,9999,1,1) );
+	bins_.push_back( Bin(1200,99999,500,750,9,9999,1,1) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,9,9999,1,1) );
+	bins_.push_back( Bin(1200,99999,750,9999,9,9999,1,1) );
+	
+	
+	bins_.push_back( Bin(500,800,200,300,9,9999,2,2) );
+	bins_.push_back( Bin(800,1200,200,300,9,9999,2,2) );
+	bins_.push_back( Bin(1200,99999,200,300,9,9999,2,2) );
+
+	bins_.push_back( Bin(500,800,300,500,9,9999,2,2) );
+	bins_.push_back( Bin(800,1200,300,500,9,9999,2,2) );
+	bins_.push_back( Bin(1200,99999,300,500,9,9999,2,2) );
+	
+	bins_.push_back( Bin(500,800,500,750,9,9999,2,2) );
+	bins_.push_back( Bin(800,1200,500,750,9,9999,2,2) );
+	bins_.push_back( Bin(1200,99999,500,750,9,9999,2,2) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,9,9999,2,2) );
+	bins_.push_back( Bin(1200,99999,750,9999,9,9999,2,2) );
+	
+	
+	bins_.push_back( Bin(500,800,200,300,9,9999,3,9999) );
+	bins_.push_back( Bin(800,1200,200,300,9,9999,3,9999) );
+	bins_.push_back( Bin(1200,99999,200,300,9,9999,3,9999) );
+
+	bins_.push_back( Bin(500,800,300,500,9,9999,3,9999) );
+	bins_.push_back( Bin(800,1200,300,500,9,9999,3,9999) );
+	bins_.push_back( Bin(1200,99999,300,500,9,9999,3,9999) );
+	
+	bins_.push_back( Bin(500,800,500,750,9,9999,3,9999) );
+	bins_.push_back( Bin(800,1200,500,750,9,9999,3,9999) );
+	bins_.push_back( Bin(1200,99999,500,750,9,9999,3,9999) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,9,9999,3,9999) );
+	bins_.push_back( Bin(1200,99999,750,9999,9,9999,3,9999) );
+  }
+
 	std::cout<<"Loaded bins: "<<bins_.size()<<std::endl;
 	for(unsigned int i=0; i<bins_.size();i++)
 	{
@@ -219,7 +552,7 @@ void SearchBins::PrintUsed()
 {
   int total = 0;
   for(unsigned int i=0; i< usedBin_.size();i++){
-  	std::cout<<"Bin["<<i<<"] has been used: "<<usedBin_[i]<<std::endl;
+  	std::cout<<"Bin["<<i+1<<"] has been used: "<<usedBin_[i]<<std::endl;
   	total+=usedBin_[i];;
   }
   std::cout<<"Total: "<<total<<std::endl;

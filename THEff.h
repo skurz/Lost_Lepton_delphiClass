@@ -396,6 +396,20 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   return effVec_;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+/// outdated! not to be used anymore!
+
+
 class TH1Feff
 {
 public:

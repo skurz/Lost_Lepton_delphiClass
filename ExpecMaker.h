@@ -110,7 +110,9 @@ public :
 	// Storing stuff
 	TTree	*tExpectation_;
 	
-	SearchBins *SearchBins_;
+   SearchBins *SearchBins_;
+	SearchBins *SearchBinsQCD_;
+
 	// eff variables fot the tree
 	UShort_t Expectation;
 	UShort_t ExpectationReductionIsoTrack;
@@ -179,7 +181,7 @@ public :
 	UShort_t elecActivityMethod, muActivityMethod, muIsoTrackActivityMethod, elecIsoTrackActivityMethod, pionIsoTrackActivityMethod;
 	bool DY;
 	
-	UShort_t Bin_;
+	UShort_t Bin_, BinQCD_;
 	
 	
 	UShort_t MuPurity_, ElecPurity_;

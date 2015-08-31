@@ -53,6 +53,7 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
 	DY=DY_;
 	tExpectation_->Branch("DY",&DY,"DY/b");
 	tExpectation_->Branch("Bin",&Bin_,"Bin/s");
+	tExpectation_->Branch("BinQCD",&BinQCD_,"BinQCD/s");
 	tExpectation_->Branch("NVtx",&NVtx,"NVtx/s");
 	tExpectation_->Branch("DeltaPhi1",&DeltaPhi1,"DeltaPhi1/F");
 	tExpectation_->Branch("DeltaPhi2",&DeltaPhi2,"DeltaPhi2/F");
@@ -234,7 +235,8 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
 	
 	GetOutputList()->Add(tExpectation_);
 	
-	SearchBins_ = new SearchBins();
+	SearchBins_ = new SearchBins(false); // 72 searchbins
+    SearchBinsQCD_ = new SearchBins(true); // 220 QCD binning
 	std::cout<<"Applying filters: "<<applyFilters_<<std::endl;
 }
 Bool_t ExpecMaker::Process(Long64_t entry)
@@ -265,6 +267,7 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     if(useTrigger && !passTrigger) return kTRUE;
 
 	Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
+	BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
 	isoTracks = IsolatedMuonTracksVetoNum + IsolatedPionTracksVetoNum + IsolatedElectronTracksVetoNum;
 	
 	// compute efficiencies 1 lepton
