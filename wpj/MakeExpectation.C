@@ -9,9 +9,9 @@ void MakeExpectation()
  	TChain *Effchain = new TChain("TreeMaker2/PreSelection");
 //	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
 
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning/WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning/WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning/WJetsToLNu_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning_JECv4/WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning_JECv4/WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning_JECv4/WJetsToLNu_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
 
 ////	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb/TBarToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola/*.root");
 ////	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb/TToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola/*.root");

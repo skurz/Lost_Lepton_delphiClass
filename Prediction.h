@@ -209,9 +209,13 @@ public :
   Float_t nonClosureUp;
   Float_t nonClosureDown;
 
-  Float_t totalStat;
-  Float_t totalSys;
-  Float_t totalUnc;
+  Float_t totalStatUp;
+  Float_t totalSysUp;
+  Float_t totalUncUp;
+
+  Float_t totalStatDown;
+  Float_t totalSysDown;
+  Float_t totalUncDown;
 
   effVec muPurityCorrectionVec_;
   effVec muMTWEffVec_, elecMTWEffVec_;
@@ -247,9 +251,9 @@ public :
   TProfile *CombinedMeanWeight_;
 
   // TH1s for distributions of efficiencies per bin
-  TH1 *MuWeightPerBin_[300];
-  TH1 *ElecWeightPerBin_[300];
-  TH1 *CombinedWeightPerBin_[300];
+  TH1 *MuWeightPerBin_[72];
+  TH1 *ElecWeightPerBin_[72];
+  TH1 *CombinedWeightPerBin_[72];
   
   // Effiecineices
   // TAP

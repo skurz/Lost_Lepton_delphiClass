@@ -7,7 +7,7 @@ void MakeExpectation()
 	bool useTProof = false;
 
  	TChain *Effchain = new TChain("TreeMaker2/PreSelection");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning_JECv4/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
 
 //	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning/WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
 //	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning/WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");

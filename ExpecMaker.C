@@ -941,7 +941,7 @@ bool ExpecMaker::FiltersPass()
     if(CSCTightHaloFilter==0) result=false;;
     if(GoodVtx==0) result=false;;
     if(eeBadScFilter==0) result=false;;
-    //if(HBHENoiseFilter==0) result=false;
+    if(HBHENoiseFilter==0) result=false;
   }
   if(!JetID) result=false;
   return result;
