@@ -110,8 +110,8 @@ const double maxDeltaRIsoTrackToElec_= 0.3;
 const double maxDiffPtIsoTrackToElec_= 0.5;
 
 
-class ExpecMaker {
- public :
+class ExpecMaker : public TSelector {
+public :
 
   void resetValues();
   bool FiltersPass();
@@ -121,7 +121,6 @@ class ExpecMaker {
   std::pair <double,double> minDeltaRLepJet(double lepPT, double lepEta, double lepPhi);
   
   TTree          *fChain;   //!pointer to the analyzed TTree or TChain
-  Int_t           fCurrent; //!current Tree number in a TChain
 
 
  // Storing stuff
@@ -233,7 +232,7 @@ class ExpecMaker {
   UInt_t          RunNum;
   UInt_t          LumiBlockNum;
   UInt_t          EvtNum;
-  std::vector<TLorentzVector> *bestPhoton;
+  std::vector<TLorentzVector> *bestPhoton=0;
   Int_t           BTags;
   Int_t           CSCTightHaloFilter;
   Double_t        DeltaPhi1;
@@ -244,42 +243,42 @@ class ExpecMaker {
   Double_t        DeltaPhiN3;
   Int_t           EcalDeadCellTriggerPrimitiveFilter;
   Int_t           eeBadScFilter;
-  std::vector<int>     *ElectronCharge;
-  std::vector<TLorentzVector> *Electrons;
-  std::vector<int>     *GenElec_GenElecFromTau;
-  std::vector<TLorentzVector> *GenEls;
-  std::vector<int>     *GenMu_GenMuFromTau;
-  std::vector<TLorentzVector> *GenMus;
-  std::vector<int>     *GenTau_GenTauHad;
-  std::vector<TLorentzVector> *GenTauNu;
-  std::vector<TLorentzVector> *GenTaus;
+  std::vector<int>     *ElectronCharge=0;
+  std::vector<TLorentzVector> *Electrons=0;
+  std::vector<int>     *GenElec_GenElecFromTau=0;
+  std::vector<TLorentzVector> *GenEls=0;
+  std::vector<int>     *GenMu_GenMuFromTau=0;
+  std::vector<TLorentzVector> *GenMus=0;
+  std::vector<int>     *GenTau_GenTauHad=0;
+  std::vector<TLorentzVector> *GenTauNu=0;
+  std::vector<TLorentzVector> *GenTaus=0;
   Bool_t          HBHENoiseFilter;
   Double_t        HT;
   Int_t           isoElectronTracks;
-  std::vector<TLorentzVector> *IsolatedElectronTracksVeto;
-  std::vector<double>  *IsolatedElectronTracksVeto_MTW;
-  std::vector<TLorentzVector> *IsolatedMuonTracksVeto;
-  std::vector<double>  *IsolatedMuonTracksVeto_MTW;
-  std::vector<TLorentzVector> *IsolatedPionTracksVeto;
-  std::vector<double>  *IsolatedPionTracksVeto_MTW;
+  std::vector<TLorentzVector> *IsolatedElectronTracksVeto=0;
+  std::vector<double>  *IsolatedElectronTracksVeto_MTW=0;
+  std::vector<TLorentzVector> *IsolatedMuonTracksVeto=0;
+  std::vector<double>  *IsolatedMuonTracksVeto_MTW=0;
+  std::vector<TLorentzVector> *IsolatedPionTracksVeto=0;
+  std::vector<double>  *IsolatedPionTracksVeto_MTW=0;
   Int_t           isoMuonTracks;
   Int_t           isoPionTracks;
   Bool_t          JetID;
-  std::vector<TLorentzVector> *Jets;
-  std::vector<double>  *Jets_bDiscriminatorCSV;
-  std::vector<double>  *Jets_bDiscriminatorMVA;
-  std::vector<double>  *Jets_chargedEmEnergyFraction;
-  std::vector<double>  *Jets_chargedHadronEnergyFraction;
-  std::vector<int>     *Jets_chargedHadronMultiplicity;
-  std::vector<int>     *Jets_electronMultiplicity;
-  std::vector<int>     *Jets_flavor;
-  std::vector<double>  *Jets_jetArea;
-  std::vector<double>  *Jets_muonEnergyFraction;
-  std::vector<int>     *Jets_muonMultiplicity;
-  std::vector<double>  *Jets_neutralEmEnergyFraction;
-  std::vector<int>     *Jets_neutralHadronMultiplicity;
-  std::vector<double>  *Jets_photonEnergyFraction;
-  std::vector<int>     *Jets_photonMultiplicity;
+  std::vector<TLorentzVector> *Jets=0;
+  std::vector<double>  *Jets_bDiscriminatorCSV=0;
+  std::vector<double>  *Jets_bDiscriminatorMVA=0;
+  std::vector<double>  *Jets_chargedEmEnergyFraction=0;
+  std::vector<double>  *Jets_chargedHadronEnergyFraction=0;
+  std::vector<int>     *Jets_chargedHadronMultiplicity=0;
+  std::vector<int>     *Jets_electronMultiplicity=0;
+  std::vector<int>     *Jets_flavor=0;
+  std::vector<double>  *Jets_jetArea=0;
+  std::vector<double>  *Jets_muonEnergyFraction=0;
+  std::vector<int>     *Jets_muonMultiplicity=0;
+  std::vector<double>  *Jets_neutralEmEnergyFraction=0;
+  std::vector<int>     *Jets_neutralHadronMultiplicity=0;
+  std::vector<double>  *Jets_photonEnergyFraction=0;
+  std::vector<int>     *Jets_photonMultiplicity=0;
   Int_t           Leptons;
   Int_t           METFilters;
   Double_t        METPhi;
@@ -287,174 +286,131 @@ class ExpecMaker {
   Double_t        MHT;
   Double_t        MHT_Phi;
   Double_t        minDeltaPhiN;
-  std::vector<int>     *MuonCharge;
-  std::vector<TLorentzVector> *Muons;
+  std::vector<int>     *MuonCharge=0;
+  std::vector<TLorentzVector> *Muons=0;
   Int_t           nAllVertices;
   Int_t           NJets;
   Int_t           NumPhotons;
   Int_t           NVtx;
-  std::vector<TLorentzVector> *selectedIDElectrons;
-  std::vector<double>  *selectedIDElectrons_MTW;
-  std::vector<TLorentzVector> *selectedIDIsoElectrons;
-  std::vector<double>  *selectedIDIsoElectrons_MTW;
-  std::vector<TLorentzVector> *selectedIDIsoMuons;
-  std::vector<double>  *selectedIDIsoMuons_MTW;
-  std::vector<TLorentzVector> *selectedIDMuons;
-  std::vector<double>  *selectedIDMuons_MTW;
+  std::vector<TLorentzVector> *selectedIDElectrons=0;
+  std::vector<double>  *selectedIDElectrons_MTW=0;
+  std::vector<TLorentzVector> *selectedIDIsoElectrons=0;
+  std::vector<double>  *selectedIDIsoElectrons_MTW=0;
+  std::vector<TLorentzVector> *selectedIDIsoMuons=0;
+  std::vector<double>  *selectedIDIsoMuons_MTW=0;
+  std::vector<TLorentzVector> *selectedIDMuons=0;
+  std::vector<double>  *selectedIDMuons_MTW=0;
   Int_t           TagLeptonHighPT;
-  std::vector<TLorentzVector> *TauDecayCands;
-  std::vector<int>     *TauDecayCands_pdgID;
-  std::vector<string>  *TriggerNames;
-  std::vector<bool>    *TriggerPass;
-  std::vector<int>     *TriggerPrescales;
+  std::vector<TLorentzVector> *TauDecayCands=0;
+  std::vector<int>     *TauDecayCands_pdgID=0;
+  std::vector<string>  *TriggerNames=0;
+  std::vector<bool>    *TriggerPass=0;
+  std::vector<int>     *TriggerPrescales=0;
   Double_t        Weight;
 
   // List of branches
-  TBranch        *b_RunNum;   //!
-  TBranch        *b_LumiBlockNum;   //!
-  TBranch        *b_EvtNum;   //!
-  TBranch        *b_bestPhoton;   //!
-  TBranch        *b_BTags;   //!
-  TBranch        *b_CSCTightHaloFilter;   //!
-  TBranch        *b_DeltaPhi1;   //!
-  TBranch        *b_DeltaPhi2;   //!
-  TBranch        *b_DeltaPhi3;   //!
-  TBranch        *b_DeltaPhiN1;   //!
-  TBranch        *b_DeltaPhiN2;   //!
-  TBranch        *b_DeltaPhiN3;   //!
-  TBranch        *b_EcalDeadCellTriggerPrimitiveFilter;   //!
-  TBranch        *b_eeBadScFilter;   //!
-  TBranch        *b_ElectronCharge;   //!
-  TBranch        *b_Electrons;   //!
-  TBranch        *b_GenElec_GenElecFromTau;   //!
-  TBranch        *b_GenEls;   //!
-  TBranch        *b_GenMu_GenMuFromTau;   //!
-  TBranch        *b_GenMus;   //!
-  TBranch        *b_GenTau_GenTauHad;   //!
-  TBranch        *b_GenTauNu;   //!
-  TBranch        *b_GenTaus;   //!
-  TBranch        *b_HBHENoiseFilter;   //!
-  TBranch        *b_HT;   //!
-  TBranch        *b_isoElectronTracks;   //!
-  TBranch        *b_IsolatedElectronTracksVeto;   //!
-  TBranch        *b_IsolatedElectronTracksVeto_MTW;   //!
-  TBranch        *b_IsolatedMuonTracksVeto;   //!
-  TBranch        *b_IsolatedMuonTracksVeto_MTW;   //!
-  TBranch        *b_IsolatedPionTracksVeto;   //!
-  TBranch        *b_IsolatedPionTracksVeto_MTW;   //!
-  TBranch        *b_isoMuonTracks;   //!
-  TBranch        *b_isoPionTracks;   //!
-  TBranch        *b_JetID;   //!
-  TBranch        *b_Jets;   //!
-  TBranch        *b_Jets_bDiscriminatorCSV;   //!
-  TBranch        *b_Jets_bDiscriminatorMVA;   //!
-  TBranch        *b_Jets_chargedEmEnergyFraction;   //!
-  TBranch        *b_Jets_chargedHadronEnergyFraction;   //!
-  TBranch        *b_Jets_chargedHadronMultiplicity;   //!
-  TBranch        *b_Jets_electronMultiplicity;   //!
-  TBranch        *b_Jets_flavor;   //!
-  TBranch        *b_Jets_jetArea;   //!
-  TBranch        *b_Jets_muonEnergyFraction;   //!
-  TBranch        *b_Jets_muonMultiplicity;   //!
-  TBranch        *b_Jets_neutralEmEnergyFraction;   //!
-  TBranch        *b_Jets_neutralHadronMultiplicity;   //!
-  TBranch        *b_Jets_photonEnergyFraction;   //!
-  TBranch        *b_Jets_photonMultiplicity;   //!
-  TBranch        *b_Leptons;   //!
-  TBranch        *b_METFilters;   //!
-  TBranch        *b_METPhi;   //!
-  TBranch        *b_METPt;   //!
-  TBranch        *b_MHT;   //!
-  TBranch        *b_MHT_Phi;   //!
-  TBranch        *b_minDeltaPhiN;   //!
-  TBranch        *b_MuonCharge;   //!
-  TBranch        *b_Muons;   //!
-  TBranch        *b_nAllVertices;   //!
-  TBranch        *b_NJets;   //!
-  TBranch        *b_NumPhotons;   //!
-  TBranch        *b_NVtx;   //!
-  TBranch        *b_selectedIDElectrons;   //!
-  TBranch        *b_selectedIDElectrons_MTW;   //!
-  TBranch        *b_selectedIDIsoElectrons;   //!
-  TBranch        *b_selectedIDIsoElectrons_MTW;   //!
-  TBranch        *b_selectedIDIsoMuons;   //!
-  TBranch        *b_selectedIDIsoMuons_MTW;   //!
-  TBranch        *b_selectedIDMuons;   //!
-  TBranch        *b_selectedIDMuons_MTW;   //!
-  TBranch        *b_TagLeptonHighPT;   //!
-  TBranch        *b_TauDecayCands;   //!
-  TBranch        *b_TauDecayCands_pdgID;   //!
-  TBranch        *b_TriggerNames;   //!
-  TBranch        *b_TriggerPass;   //!
-  TBranch        *b_TriggerPrescales;   //!
-  TBranch        *b_Weight;   //!
+  TBranch        *b_RunNum=0;   //!
+  TBranch        *b_LumiBlockNum=0;   //!
+  TBranch        *b_EvtNum=0;   //!
+  TBranch        *b_bestPhoton=0;   //!
+  TBranch        *b_BTags=0;   //!
+  TBranch        *b_CSCTightHaloFilter=0;   //!
+  TBranch        *b_DeltaPhi1=0;   //!
+  TBranch        *b_DeltaPhi2=0;   //!
+  TBranch        *b_DeltaPhi3=0;   //!
+  TBranch        *b_DeltaPhiN1=0;   //!
+  TBranch        *b_DeltaPhiN2=0;   //!
+  TBranch        *b_DeltaPhiN3=0;   //!
+  TBranch        *b_EcalDeadCellTriggerPrimitiveFilter=0;   //!
+  TBranch        *b_eeBadScFilter=0;   //!
+  TBranch        *b_ElectronCharge=0;   //!
+  TBranch        *b_Electrons=0;   //!
+  TBranch        *b_GenElec_GenElecFromTau=0;   //!
+  TBranch        *b_GenEls=0;   //!
+  TBranch        *b_GenMu_GenMuFromTau=0;   //!
+  TBranch        *b_GenMus=0;   //!
+  TBranch        *b_GenTau_GenTauHad=0;   //!
+  TBranch        *b_GenTauNu=0;   //!
+  TBranch        *b_GenTaus=0;   //!
+  TBranch        *b_HBHENoiseFilter=0;   //!
+  TBranch        *b_HT=0;   //!
+  TBranch        *b_isoElectronTracks=0;   //!
+  TBranch        *b_IsolatedElectronTracksVeto=0;   //!
+  TBranch        *b_IsolatedElectronTracksVeto_MTW=0;   //!
+  TBranch        *b_IsolatedMuonTracksVeto=0;   //!
+  TBranch        *b_IsolatedMuonTracksVeto_MTW=0;   //!
+  TBranch        *b_IsolatedPionTracksVeto=0;   //!
+  TBranch        *b_IsolatedPionTracksVeto_MTW=0;   //!
+  TBranch        *b_isoMuonTracks=0;   //!
+  TBranch        *b_isoPionTracks=0;   //!
+  TBranch        *b_JetID=0;   //!
+  TBranch        *b_Jets=0;   //!
+  TBranch        *b_Jets_bDiscriminatorCSV=0;   //!
+  TBranch        *b_Jets_bDiscriminatorMVA=0;   //!
+  TBranch        *b_Jets_chargedEmEnergyFraction=0;   //!
+  TBranch        *b_Jets_chargedHadronEnergyFraction=0;   //!
+  TBranch        *b_Jets_chargedHadronMultiplicity=0;   //!
+  TBranch        *b_Jets_electronMultiplicity=0;   //!
+  TBranch        *b_Jets_flavor=0;   //!
+  TBranch        *b_Jets_jetArea=0;   //!
+  TBranch        *b_Jets_muonEnergyFraction=0;   //!
+  TBranch        *b_Jets_muonMultiplicity=0;   //!
+  TBranch        *b_Jets_neutralEmEnergyFraction=0;   //!
+  TBranch        *b_Jets_neutralHadronMultiplicity=0;   //!
+  TBranch        *b_Jets_photonEnergyFraction=0;   //!
+  TBranch        *b_Jets_photonMultiplicity=0;   //!
+  TBranch        *b_Leptons=0;   //!
+  TBranch        *b_METFilters=0;   //!
+  TBranch        *b_METPhi=0;   //!
+  TBranch        *b_METPt=0;   //!
+  TBranch        *b_MHT=0;   //!
+  TBranch        *b_MHT_Phi=0;   //!
+  TBranch        *b_minDeltaPhiN=0;   //!
+  TBranch        *b_MuonCharge=0;   //!
+  TBranch        *b_Muons=0;   //!
+  TBranch        *b_nAllVertices=0;   //!
+  TBranch        *b_NJets=0;   //!
+  TBranch        *b_NumPhotons=0;   //!
+  TBranch        *b_NVtx=0;   //!
+  TBranch        *b_selectedIDElectrons=0;   //!
+  TBranch        *b_selectedIDElectrons_MTW=0;   //!
+  TBranch        *b_selectedIDIsoElectrons=0;   //!
+  TBranch        *b_selectedIDIsoElectrons_MTW=0;   //!
+  TBranch        *b_selectedIDIsoMuons=0;   //!
+  TBranch        *b_selectedIDIsoMuons_MTW=0;   //!
+  TBranch        *b_selectedIDMuons=0;   //!
+  TBranch        *b_selectedIDMuons_MTW=0;   //!
+  TBranch        *b_TagLeptonHighPT=0;   //!
+  TBranch        *b_TauDecayCands=0;   //!
+  TBranch        *b_TauDecayCands_pdgID=0;   //!
+  TBranch        *b_TriggerNames=0;   //!
+  TBranch        *b_TriggerPass=0;   //!
+  TBranch        *b_TriggerPrescales=0;   //!
+  TBranch        *b_Weight=0;   //!
 
-  ExpecMaker(TTree *tree=0);
-  virtual ~ExpecMaker();
-  virtual Int_t    Cut(Long64_t entry);
-  virtual Int_t    GetEntry(Long64_t entry);
-  virtual Long64_t LoadTree(Long64_t entry);
-  virtual void     Init(TTree *tree);
-  virtual void     Loop();
-  virtual Bool_t   Notify();
-  virtual void     Show(Long64_t entry = -1);
+ ExpecMaker(TTree * /*tree*/ =0) : fChain(0) { }
+  virtual ~ExpecMaker() { }
+  virtual Int_t   Version() const { return 2; }
+  virtual void    Begin(TTree *tree);
+  virtual void    SlaveBegin(TTree *tree);
+  virtual void    Init(TTree *tree);
+  virtual Bool_t  Notify();
+  virtual Bool_t  Process(Long64_t entry);
+  virtual Int_t   GetEntry(Long64_t entry, Int_t getall = 0) { return fChain ? fChain->GetTree()->GetEntry(entry, getall) : 0; }
+  virtual void    SetOption(const char *option) { fOption = option; }
+  virtual void    SetObject(TObject *obj) { fObject = obj; }
+  virtual void    SetInputList(TList *input) { fInput = input; }
+  virtual TList  *GetOutputList() const { return fOutput; }
+  virtual void    SlaveTerminate();
+  virtual void    Terminate();
+	
+  ClassDef(ExpecMaker,0);
+
 };
 
 #endif
 
 #ifdef ExpecMaker_cxx
-ExpecMaker::ExpecMaker(TTree *tree) : fChain(0) 
-{
-  // if parameter tree is not specified (or zero), connect the file
-  // used to generate this class and read the Tree.
-  if (tree == 0) {
-
-#ifdef SINGLE_TREE
-    // The following code should be used if you want this class to access
-    // a single tree instead of a chain
-    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("Memory Directory");
-    if (!f || !f->IsOpen()) {
-      f = new TFile("Memory Directory");
-    }
-    f->GetObject("TreeMaker2/PreSelection",tree);
-
-#else // SINGLE_TREE
-
-      // The following code should be used if you want this class to access a chain
-      // of trees.
-    TChain * chain = new TChain("TreeMaker2/PreSelection","");
-    chain->Add("/eos/uscms/store/user/jbradmil/lldev/13TeV_25ns20PU.TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_RunIISpring15DR74-Asympt25ns_MCRUN2_74_V9_ext1-v1_MINIAODSIM_1193.root/TreeMaker2/PreSelection");
-    tree = chain;
-#endif // SINGLE_TREE
-
-  }
-  Init(tree);
-}
-
-ExpecMaker::~ExpecMaker()
-{
-  if (!fChain) return;
-  delete fChain->GetCurrentFile();
-}
-
-Int_t ExpecMaker::GetEntry(Long64_t entry)
-{
-  // Read contents of entry.
-  if (!fChain) return 0;
-  return fChain->GetEntry(entry);
-}
-Long64_t ExpecMaker::LoadTree(Long64_t entry)
-{
-  // Set the environment to read one entry
-  if (!fChain) return -5;
-  Long64_t centry = fChain->LoadTree(entry);
-  if (centry < 0) return centry;
-  if (fChain->GetTreeNumber() != fCurrent) {
-    fCurrent = fChain->GetTreeNumber();
-    Notify();
-  }
-  return centry;
-}
 
 void ExpecMaker::Init(TTree *tree)
 {
@@ -465,60 +421,12 @@ void ExpecMaker::Init(TTree *tree)
   // code, but the routine can be extended by the user if needed.
   // Init() will be called many times when running on PROOF
   // (once per file to be processed).
-
-  // Set object pointer
-  bestPhoton = 0;
-  ElectronCharge = 0;
-  Electrons = 0;
-  GenElec_GenElecFromTau = 0;
-  GenEls = 0;
-  GenMu_GenMuFromTau = 0;
-  GenMus = 0;
-  GenTau_GenTauHad = 0;
-  GenTauNu = 0;
-  GenTaus = 0;
-  IsolatedElectronTracksVeto = 0;
-  IsolatedElectronTracksVeto_MTW = 0;
-  IsolatedMuonTracksVeto = 0;
-  IsolatedMuonTracksVeto_MTW = 0;
-  IsolatedPionTracksVeto = 0;
-  IsolatedPionTracksVeto_MTW = 0;
-  Jets = 0;
-  Jets_bDiscriminatorCSV = 0;
-  Jets_bDiscriminatorMVA = 0;
-  Jets_chargedEmEnergyFraction = 0;
-  Jets_chargedHadronEnergyFraction = 0;
-  Jets_chargedHadronMultiplicity = 0;
-  Jets_electronMultiplicity = 0;
-  Jets_flavor = 0;
-  Jets_jetArea = 0;
-  Jets_muonEnergyFraction = 0;
-  Jets_muonMultiplicity = 0;
-  Jets_neutralEmEnergyFraction = 0;
-  Jets_neutralHadronMultiplicity = 0;
-  Jets_photonEnergyFraction = 0;
-  Jets_photonMultiplicity = 0;
-  MuonCharge = 0;
-  Muons = 0;
-  selectedIDElectrons = 0;
-  selectedIDElectrons_MTW = 0;
-  selectedIDIsoElectrons = 0;
-  selectedIDIsoElectrons_MTW = 0;
-  selectedIDIsoMuons = 0;
-  selectedIDIsoMuons_MTW = 0;
-  selectedIDMuons = 0;
-  selectedIDMuons_MTW = 0;
-  TauDecayCands = 0;
-  TauDecayCands_pdgID = 0;
-  TriggerNames = 0;
-  TriggerPass = 0;
-  TriggerPrescales = 0;
+  
   // Set branch addresses and branch pointers
   if (!tree) return;
   fChain = tree;
-  fCurrent = -1;
   fChain->SetMakeClass(1);
-
+  
   fChain->SetBranchAddress("RunNum", &RunNum, &b_RunNum);
   fChain->SetBranchAddress("LumiBlockNum", &LumiBlockNum, &b_LumiBlockNum);
   fChain->SetBranchAddress("EvtNum", &EvtNum, &b_EvtNum);
@@ -597,7 +505,6 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("TriggerPass", &TriggerPass, &b_TriggerPass);
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
   fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
-  Notify();
 }
 
 Bool_t ExpecMaker::Notify()
@@ -607,22 +514,8 @@ Bool_t ExpecMaker::Notify()
   // is started when using PROOF. It is normally not necessary to make changes
   // to the generated code, but the routine can be extended by the
   // user if needed. The return value is currently not used.
-
+  
   return kTRUE;
 }
 
-void ExpecMaker::Show(Long64_t entry)
-{
-  // Print contents of entry.
-  // If entry is not specified, print current entry
-  if (!fChain) return;
-  fChain->Show(entry);
-}
-Int_t ExpecMaker::Cut(Long64_t entry)
-{
-  // This function may be called from Loop.
-  // returns  1 if entry is accepted.
-  // returns -1 otherwise.
-  return 1;
-}
 #endif // #ifdef ExpecMaker_cxx

@@ -12,12 +12,7 @@ using std::vector;
 
 void MakeEff()
 {
-    gSystem->Load("libPhysics.so");
-    gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
-    gROOT->ProcessLine(".L EffMaker.C+");
-    TChain *Effchain = new TChain("LostLeptonExpectation");
-    Effchain->Add("Expectation.root");
-
-    EffMaker* effmkr = new EffMaker(Effchain);
-    effmkr->Loop();
+  TChain *Effchain = new TChain("LostLeptonExpectation");
+  Effchain->Add("Expectation.root");
+  Effchain->Process("EffMaker.C+");
 }

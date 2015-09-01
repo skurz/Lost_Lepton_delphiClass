@@ -7,9 +7,23 @@
 #include <iostream>
 #include "TSystem.h"
 
-
-void EffMaker::Loop()
+void EffMaker::Begin(TTree * /*tree*/)
 {
+  // The Begin() function is called at the start of the query.
+  // When running with PROOF Begin() is only called on the client.
+  // The tree argument is deprecated (on PROOF 0 is passed).
+  
+  TString option = GetOption();
+
+  TH1::SetDefaultSumw2();
+
+  gSystem->mkdir("Efficiencies");
+
+}
+
+void EffMaker::SlaveBegin(TTree * /*tree*/)
+{
+  TString option = GetOption();
   TH1::SetDefaultSumw2();
 
   gSystem->mkdir("Efficiencies");	
@@ -334,784 +348,789 @@ void EffMaker::Loop()
   ElecRecoRelPTJet_ = new TH1Eff("ElecRecoRelPTJet","ElecRecoRelPTJet",oneDPTRel_-1,OneDPTRel_);
   ElecRecoDeltaRJet_ = new TH1Eff("ElecRecoDeltaRJet","ElecRecoDeltaRJet",oneDDeltaR_-1,OneDDeltaR_);
   ElecRecoRelPTDeltaRJet_ = new TH2Eff("ElecRecoRelPTDeltaRJet","ElecRecoRelPTDeltaRJet",oneDPTRel_-1,OneDPTRel_,oneDDeltaR_-1,OneDDeltaR_);
+  
+}
 
-  if (fChain == 0) return;
-  Long64_t nentries = fChain->GetEntries();
+Bool_t EffMaker::Process(Long64_t entry)
+{
 
-  Long64_t nbytes = 0, nb = 0;
-  // Begin event loop
-  printf("\n\n Looping over %llu events.\n\n", nentries ) ;
-  for (Long64_t jentry=0; jentry<nentries;jentry++) {
-    if ( jentry%(nentries/100) == 0 && jentry>0 ) { printf("  %9llu out of %9llu (%2lld%%)\n", jentry, nentries, ((100*jentry)/nentries)+1 ) ; fflush(stdout) ; }
-    Long64_t ientry = LoadTree(jentry);
-
-    //    printf("  %9llu out of %9llu (%2lld%%)\n", jentry, nentries, ((100*jentry)/nentries)+1 ) ; fflush(stdout) ;
-    if (ientry < 0) break;
-    nb = fChain->GetEntry(jentry);   nbytes += nb;
-
-    if(Expectation==1)totalExpectation_->Fill(HT,MHT,NJets,BTags,Weight);
+  fChain->GetTree()->GetEntry(entry);
+  // total expectation
+  if(Expectation==1)totalExpectation_->Fill(HT,MHT,NJets,BTags,Weight);
 	
-    // purity
-    // single muon control sample
-    // x-check
-    if(MuPurity==2)
-      {
-	//1D
-	MuPurityCheckBTag_->Fill(BTags,Weight,true);
-	MuPurityCheckNJets_->Fill(NJets,Weight,true);
-	MuPurityCheckHT_->Fill(HT,Weight,true);
-	MuPurityCheckMHT_->Fill(MHT,Weight,true);
-	//2D
-	MuonPurityCheckMHTNJet_->Fill(MHT,NJets,Weight,true);
-      }
-    if(MuPurity==0)
-      {
-	//1D
-	MuPurityCheckBTag_->Fill(BTags,Weight,false);
-	MuPurityCheckNJets_->Fill(NJets,Weight,false);
-	MuPurityCheckHT_->Fill(HT,Weight,false);
-	MuPurityCheckMHT_->Fill(MHT,Weight,false);
-	//2D
-	MuonPurityCheckMHTNJet_->Fill(MHT,NJets,Weight,false);
-      }
-    if(ElecPurity==2)
-      {
-	//1D
-	ElecPurityCheckBTag_->Fill(BTags,Weight,true);
-	ElecPurityCheckNJets_->Fill(NJets,Weight,true);
-	ElecPurityCheckHT_->Fill(HT,Weight,true);
-	ElecPurityCheckMHT_->Fill(MHT,Weight,true);
-	//2D
-	ElecPurityCheckMHTNJet_->Fill(MHT,NJets,Weight,true);
-      }
-    if(ElecPurity==0)
-      {
-	//1D
-	ElecPurityCheckBTag_->Fill(BTags,Weight,false);
-	ElecPurityCheckNJets_->Fill(NJets,Weight,false);
-	ElecPurityCheckHT_->Fill(HT,Weight,false);
-	ElecPurityCheckMHT_->Fill(MHT,Weight,false);
-	//2D
-	ElecPurityCheckMHTNJet_->Fill(MHT,NJets,Weight,false);
-      }
-    if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0)
-      {
-	//cout << "muon event" << endl;
-	if(RecoIsoMuonPromptMatched->at(0)==1)
-	  {
-	    // cout << "PromptMatched" << endl;
-	    //1D
-	    MuPurityBTag_->Fill(BTags,Weight,true);
-	    MuPurityNJets_->Fill(NJets,Weight,true);
-	    MuPurityHT_->Fill(HT,Weight,true);
-	    MuPurityMHT_->Fill(MHT,Weight,true);
-	    MuPurityPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,true);
-	    MuPurityActivity_->Fill(RecoIsoMuonActivity->at(0),Weight,true);
-	    //2D
-	    MuonPurityMHTNJet_->Fill(MHT,NJets,Weight,true);
-	  }
-	if(RecoIsoMuonPromptMatched->at(0)==0)
-	  {
-	    //1D
-	    MuPurityBTag_->Fill(BTags,Weight,false);
-	    MuPurityNJets_->Fill(NJets,Weight,false);
-	    MuPurityHT_->Fill(HT,Weight,false);
-	    MuPurityMHT_->Fill(MHT,Weight,false);
-	    MuPurityPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,false);
-	    MuPurityActivity_->Fill(RecoIsoMuonActivity->at(0),Weight,false);
-	    //2D
-	    MuonPurityMHTNJet_->Fill(MHT,NJets,Weight,false);
-	  }
-      }
-    // single elec control sample
-    if(selectedIDIsoMuonsNum==0 && selectedIDIsoElectronsNum==1)
-      {
-	if(RecoIsoElecPromptMatched->at(0)==1)
-	  {
-	    //1D
-	    ElecPurityBTag_->Fill(BTags,Weight,true);
-	    ElecPurityNJets_->Fill(NJets,Weight,true);
-	    ElecPurityHT_->Fill(HT,Weight,true);
-	    ElecPurityMHT_->Fill(MHT,Weight,true);
-	    ElecPurityPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,true);
-	    ElecPurityActivity_->Fill(RecoIsoElectronActivity->at(0),Weight,true);
-	    //2D
-	    ElecPurityMHTNJet_->Fill(MHT,NJets,Weight,true);
-	  }
-	if(RecoIsoElecPromptMatched->at(0)==0)
-	  {
-	    //1D
-	    ElecPurityBTag_->Fill(BTags,Weight,false);
-	    ElecPurityNJets_->Fill(NJets,Weight,false);
-	    ElecPurityHT_->Fill(HT,Weight,false);
-	    ElecPurityMHT_->Fill(MHT,Weight,false);
-	    ElecPurityPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,false);
-	    ElecPurityActivity_->Fill(RecoIsoElectronActivity->at(0),Weight,false);
-	    //2D
-	    ElecPurityMHTNJet_->Fill(MHT,NJets,Weight,false);
-	  }
-      }
-    // acceptance
-    // single muon control sample
-    if(muAcc==2)
-      {
-	//1D
-	MuAccBTag_->Fill(BTags,Weight,true);
-	MuAccNJets_->Fill(NJets,Weight,true);
-	MuAccHT_->Fill(HT,Weight,true);
-	MuAccMHT_->Fill(MHT,Weight,true);
-	MuAccPT_->Fill(GenMus->at(0).Pt(),Weight,true);
-	MuAccActivity_->Fill(GenMuonActivity->at(0),Weight,true);
-	//2D
-	MuAccHTNJets_->Fill(HT,NJets,Weight,true);
-	MuAccMHTNJets_->Fill(MHT,NJets,Weight,true);
-	MuAccHTMHT_->Fill(HT,MHT,Weight,true);
-	MuAccBTagNJets_->Fill(BTags,NJets,Weight,true);
-	if(BTags==0)
-	  {
-	    MuAccMHTNJetsB0_->Fill(MHT,NJets,Weight,true);
-	    MuAccHTMHTB0_->Fill(HT,MHT,Weight,true);
-	  }
-	else
-	  {
-	    MuAccMHTNJetsB1_Inf_->Fill(MHT,NJets,Weight,true);
-	    MuAccHTMHTB1_Inf_->Fill(HT,MHT,Weight,true);
-	  }
-	if(NJets<6.5)
-	  {
-	    MuAccHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
-	  }
-	else
-	  {
-	    MuAccHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
-	  }
-      }
-    if(muAcc==0)
-      {
-	//1D
-	MuAccBTag_->Fill(BTags,Weight,false);
-	MuAccNJets_->Fill(NJets,Weight,false);
-	MuAccHT_->Fill(HT,Weight,false);
-	MuAccMHT_->Fill(MHT,Weight,false);
-	MuAccPT_->Fill(GenMus->at(0).Pt(),Weight,false);
-	MuAccActivity_->Fill(GenMuonActivity->at(0),Weight,false);
-	//2D
-	MuAccHTNJets_->Fill(HT,NJets,Weight,false);
-	MuAccMHTNJets_->Fill(MHT,NJets,Weight,false);
-	MuAccHTMHT_->Fill(HT,MHT,Weight,false);
-	MuAccBTagNJets_->Fill(BTags,NJets,Weight,false);
-	if(BTags==0)
-	  {
-	    MuAccMHTNJetsB0_->Fill(MHT,NJets,Weight,false);
-	    MuAccHTMHTB0_->Fill(HT,MHT,Weight,false);
-	  }
-	else
-	  {
-	    MuAccMHTNJetsB1_Inf_->Fill(MHT,NJets,Weight,false);
-	    MuAccHTMHTB1_Inf_->Fill(HT,MHT,Weight,false);
-	  }
-        if(NJets<6.5)
-	  {
-	    MuAccHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
-	  }
-	else
-	  {
-	    MuAccHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
-	  }
-      }
+  // purity
+  // single muon control sample
+  // x-check
+  if(MuPurity==2)
+    {
+      //1D
+      MuPurityCheckBTag_->Fill(BTags,Weight,true);
+      MuPurityCheckNJets_->Fill(NJets,Weight,true);
+      MuPurityCheckHT_->Fill(HT,Weight,true);
+      MuPurityCheckMHT_->Fill(MHT,Weight,true);
+      //2D
+      MuonPurityCheckMHTNJet_->Fill(MHT,NJets,Weight,true);
+    }
+  if(MuPurity==0)
+    {
+      //1D
+      MuPurityCheckBTag_->Fill(BTags,Weight,false);
+      MuPurityCheckNJets_->Fill(NJets,Weight,false);
+      MuPurityCheckHT_->Fill(HT,Weight,false);
+      MuPurityCheckMHT_->Fill(MHT,Weight,false);
+      //2D
+      MuonPurityCheckMHTNJet_->Fill(MHT,NJets,Weight,false);
+    }
+  if(ElecPurity==2)
+    {
+      //1D
+      ElecPurityCheckBTag_->Fill(BTags,Weight,true);
+      ElecPurityCheckNJets_->Fill(NJets,Weight,true);
+      ElecPurityCheckHT_->Fill(HT,Weight,true);
+      ElecPurityCheckMHT_->Fill(MHT,Weight,true);
+      //2D
+      ElecPurityCheckMHTNJet_->Fill(MHT,NJets,Weight,true);
+    }
+  if(ElecPurity==0)
+    {
+      //1D
+      ElecPurityCheckBTag_->Fill(BTags,Weight,false);
+      ElecPurityCheckNJets_->Fill(NJets,Weight,false);
+      ElecPurityCheckHT_->Fill(HT,Weight,false);
+      ElecPurityCheckMHT_->Fill(MHT,Weight,false);
+      //2D
+      ElecPurityCheckMHTNJet_->Fill(MHT,NJets,Weight,false);
+    }
+  if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0)
+    {
+      //cout << "muon event" << endl;
+      if(RecoIsoMuonPromptMatched->at(0)==1)
+	{
+	  // cout << "PromptMatched" << endl;
+	  //1D
+	  MuPurityBTag_->Fill(BTags,Weight,true);
+	  MuPurityNJets_->Fill(NJets,Weight,true);
+	  MuPurityHT_->Fill(HT,Weight,true);
+	  MuPurityMHT_->Fill(MHT,Weight,true);
+	  MuPurityPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,true);
+	  MuPurityActivity_->Fill(RecoIsoMuonActivity->at(0),Weight,true);
+	  //2D
+	  MuonPurityMHTNJet_->Fill(MHT,NJets,Weight,true);
+	}
+      if(RecoIsoMuonPromptMatched->at(0)==0)
+	{
+	  //1D
+	  MuPurityBTag_->Fill(BTags,Weight,false);
+	  MuPurityNJets_->Fill(NJets,Weight,false);
+	  MuPurityHT_->Fill(HT,Weight,false);
+	  MuPurityMHT_->Fill(MHT,Weight,false);
+	  MuPurityPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,false);
+	  MuPurityActivity_->Fill(RecoIsoMuonActivity->at(0),Weight,false);
+	  //2D
+	  MuonPurityMHTNJet_->Fill(MHT,NJets,Weight,false);
+	}
+    }
+  // single elec control sample
+  if(selectedIDIsoMuonsNum==0 && selectedIDIsoElectronsNum==1)
+    {
+      if(RecoIsoElecPromptMatched->at(0)==1)
+	{
+	  //1D
+	  ElecPurityBTag_->Fill(BTags,Weight,true);
+	  ElecPurityNJets_->Fill(NJets,Weight,true);
+	  ElecPurityHT_->Fill(HT,Weight,true);
+	  ElecPurityMHT_->Fill(MHT,Weight,true);
+	  ElecPurityPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,true);
+	  ElecPurityActivity_->Fill(RecoIsoElectronActivity->at(0),Weight,true);
+	  //2D
+	  ElecPurityMHTNJet_->Fill(MHT,NJets,Weight,true);
+	}
+      if(RecoIsoElecPromptMatched->at(0)==0)
+	{
+	  //1D
+	  ElecPurityBTag_->Fill(BTags,Weight,false);
+	  ElecPurityNJets_->Fill(NJets,Weight,false);
+	  ElecPurityHT_->Fill(HT,Weight,false);
+	  ElecPurityMHT_->Fill(MHT,Weight,false);
+	  ElecPurityPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,false);
+	  ElecPurityActivity_->Fill(RecoIsoElectronActivity->at(0),Weight,false);
+	  //2D
+	  ElecPurityMHTNJet_->Fill(MHT,NJets,Weight,false);
+	}
+    }
+  // acceptance
+  // single muon control sample
+  if(muAcc==2)
+    {
+      //1D
+      MuAccBTag_->Fill(BTags,Weight,true);
+      MuAccNJets_->Fill(NJets,Weight,true);
+      MuAccHT_->Fill(HT,Weight,true);
+      MuAccMHT_->Fill(MHT,Weight,true);
+      MuAccPT_->Fill(GenMus->at(0).Pt(),Weight,true);
+      MuAccActivity_->Fill(GenMuonActivity->at(0),Weight,true);
+      //2D
+      MuAccHTNJets_->Fill(HT,NJets,Weight,true);
+      MuAccMHTNJets_->Fill(MHT,NJets,Weight,true);
+      MuAccHTMHT_->Fill(HT,MHT,Weight,true);
+      MuAccBTagNJets_->Fill(BTags,NJets,Weight,true);
+      if(BTags==0)
+	{
+	  MuAccMHTNJetsB0_->Fill(MHT,NJets,Weight,true);
+	  MuAccHTMHTB0_->Fill(HT,MHT,Weight,true);
+	}
+      else
+	{
+	  MuAccMHTNJetsB1_Inf_->Fill(MHT,NJets,Weight,true);
+	  MuAccHTMHTB1_Inf_->Fill(HT,MHT,Weight,true);
+	}
+      if(NJets<6.5)
+	{
+	  MuAccHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+	}
+      else
+	{
+	  MuAccHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
+	}
+    }
+  if(muAcc==0)
+    {
+      //1D
+      MuAccBTag_->Fill(BTags,Weight,false);
+      MuAccNJets_->Fill(NJets,Weight,false);
+      MuAccHT_->Fill(HT,Weight,false);
+      MuAccMHT_->Fill(MHT,Weight,false);
+      MuAccPT_->Fill(GenMus->at(0).Pt(),Weight,false);
+      MuAccActivity_->Fill(GenMuonActivity->at(0),Weight,false);
+      //2D
+      MuAccHTNJets_->Fill(HT,NJets,Weight,false);
+      MuAccMHTNJets_->Fill(MHT,NJets,Weight,false);
+      MuAccHTMHT_->Fill(HT,MHT,Weight,false);
+      MuAccBTagNJets_->Fill(BTags,NJets,Weight,false);
+      if(BTags==0)
+	{
+	  MuAccMHTNJetsB0_->Fill(MHT,NJets,Weight,false);
+	  MuAccHTMHTB0_->Fill(HT,MHT,Weight,false);
+	}
+      else
+	{
+	  MuAccMHTNJetsB1_Inf_->Fill(MHT,NJets,Weight,false);
+	  MuAccHTMHTB1_Inf_->Fill(HT,MHT,Weight,false);
+	}
+      if(NJets<6.5)
+	{
+	  MuAccHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+	}
+      else
+	{
+	  MuAccHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
+	}
+    }
   
-    // single elecon control sample
-    if(elecAcc==2)
-      {
-	//1D
-	ElecAccBTag_->Fill(BTags,Weight,true);
-	ElecAccNJets_->Fill(NJets,Weight,true);
-	ElecAccHT_->Fill(HT,Weight,true);
-	ElecAccMHT_->Fill(MHT,Weight,true);
-	ElecAccPT_->Fill(GenEls->at(0).Pt(),Weight,true);
-	ElecAccActivity_->Fill(GenElecActivity->at(0),Weight,true);
-	//2D
-	ElecAccHTNJets_->Fill(HT,NJets,Weight,true);
-	ElecAccMHTNJets_->Fill(MHT,NJets,Weight,true);
-	ElecAccHTMHT_->Fill(HT,MHT,Weight,true);
-	ElecAccBTagNJets_->Fill(BTags,NJets,Weight,true);
-	if(BTags==0)
-	  {
-	    ElecAccMHTNJetsB0_->Fill(MHT,NJets,Weight,true);
-	    ElecAccHTMHTB0_->Fill(HT,MHT,Weight,true);
-	  }
-	else
-	  {
-	    ElecAccMHTNJetsB1_Inf_->Fill(MHT,NJets,Weight,true);
-	    ElecAccHTMHTB1_Inf_->Fill(HT,MHT,Weight,true);
-	  }
-	if(NJets<6.5)
-	  {
-	    ElecAccHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
-	  }
-	else
-	  {
-	    ElecAccHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
-	  }
-      }
-    if(elecAcc==0)
-      {
-	//1D
-	ElecAccBTag_->Fill(BTags,Weight,false);
-	ElecAccNJets_->Fill(NJets,Weight,false);
-	ElecAccHT_->Fill(HT,Weight,false);
-	ElecAccMHT_->Fill(MHT,Weight,false);
-	ElecAccPT_->Fill(GenEls->at(0).Pt(),Weight,false);
-	ElecAccActivity_->Fill(GenElecActivity->at(0),Weight,false);
-	//2D
-	ElecAccHTNJets_->Fill(HT,NJets,Weight,false);
-	ElecAccMHTNJets_->Fill(MHT,NJets,Weight,false);
-	ElecAccHTMHT_->Fill(HT,MHT,Weight,false);
-	ElecAccBTagNJets_->Fill(BTags,NJets,Weight,false);
-	if(BTags==0)
-	  {
-	    ElecAccMHTNJetsB0_->Fill(MHT,NJets,Weight,false);
-	    ElecAccHTMHTB0_->Fill(HT,MHT,Weight,false);
-	  }
-	else
-	  {
-	    ElecAccMHTNJetsB1_Inf_->Fill(MHT,NJets,Weight,false);
-	    ElecAccHTMHTB1_Inf_->Fill(HT,MHT,Weight,false);
-	  }
-	if(NJets<6.5)
-	  {
-	    ElecAccHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
-	  }
-	else
-	  {
-	    ElecAccHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
-	  }
-      }
+  // single elecon control sample
+  if(elecAcc==2)
+    {
+      //1D
+      ElecAccBTag_->Fill(BTags,Weight,true);
+      ElecAccNJets_->Fill(NJets,Weight,true);
+      ElecAccHT_->Fill(HT,Weight,true);
+      ElecAccMHT_->Fill(MHT,Weight,true);
+      ElecAccPT_->Fill(GenEls->at(0).Pt(),Weight,true);
+      ElecAccActivity_->Fill(GenElecActivity->at(0),Weight,true);
+      //2D
+      ElecAccHTNJets_->Fill(HT,NJets,Weight,true);
+      ElecAccMHTNJets_->Fill(MHT,NJets,Weight,true);
+      ElecAccHTMHT_->Fill(HT,MHT,Weight,true);
+      ElecAccBTagNJets_->Fill(BTags,NJets,Weight,true);
+      if(BTags==0)
+	{
+	  ElecAccMHTNJetsB0_->Fill(MHT,NJets,Weight,true);
+	  ElecAccHTMHTB0_->Fill(HT,MHT,Weight,true);
+	}
+      else
+	{
+	  ElecAccMHTNJetsB1_Inf_->Fill(MHT,NJets,Weight,true);
+	  ElecAccHTMHTB1_Inf_->Fill(HT,MHT,Weight,true);
+	}
+      if(NJets<6.5)
+	{
+	  ElecAccHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+	}
+      else
+	{
+	  ElecAccHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
+	}
+    }
+  if(elecAcc==0)
+    {
+      //1D
+      ElecAccBTag_->Fill(BTags,Weight,false);
+      ElecAccNJets_->Fill(NJets,Weight,false);
+      ElecAccHT_->Fill(HT,Weight,false);
+      ElecAccMHT_->Fill(MHT,Weight,false);
+      ElecAccPT_->Fill(GenEls->at(0).Pt(),Weight,false);
+      ElecAccActivity_->Fill(GenElecActivity->at(0),Weight,false);
+      //2D
+      ElecAccHTNJets_->Fill(HT,NJets,Weight,false);
+      ElecAccMHTNJets_->Fill(MHT,NJets,Weight,false);
+      ElecAccHTMHT_->Fill(HT,MHT,Weight,false);
+      ElecAccBTagNJets_->Fill(BTags,NJets,Weight,false);
+      if(BTags==0)
+	{
+	  ElecAccMHTNJetsB0_->Fill(MHT,NJets,Weight,false);
+	  ElecAccHTMHTB0_->Fill(HT,MHT,Weight,false);
+	}
+      else
+	{
+	  ElecAccMHTNJetsB1_Inf_->Fill(MHT,NJets,Weight,false);
+	  ElecAccHTMHTB1_Inf_->Fill(HT,MHT,Weight,false);
+	}
+      if(NJets<6.5)
+	{
+	  ElecAccHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+	}
+      else
+	{
+	  ElecAccHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
+	}
+    }
   
-    // reconstruction
-    // single muon control sample
-    if(muReco==2)
-      {
-	//1D
-	MuRecoBTag_->Fill(BTags,Weight,true);
-	MuRecoNJets_->Fill(NJets,Weight,true);
-	MuRecoHT_->Fill(HT,Weight,true);
-	MuRecoMHT_->Fill(MHT,Weight,true);
-	MuRecoPT_->Fill(GenMus->at(0).Pt(),Weight,true);
-	MuRecoActivity_->Fill(GenMuonActivity->at(0),Weight,true);
-	MuRecoRelPTJet_->Fill(GenMuRelPTJet->at(0),Weight,true);
-	MuRecoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),Weight,true);
-	//2D
-	MuRecoPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,true);
-	MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),Weight,true);
-      }
-    if(muReco==0)
-      {
-	//1D
-	MuRecoBTag_->Fill(BTags,Weight,false);
-	MuRecoNJets_->Fill(NJets,Weight,false);
-	MuRecoHT_->Fill(HT,Weight,false);
-	MuRecoMHT_->Fill(MHT,Weight,false);
-	MuRecoPT_->Fill(GenMus->at(0).Pt(),Weight,false);
-	MuRecoActivity_->Fill(GenMuonActivity->at(0),Weight,false);
-	MuRecoRelPTJet_->Fill(GenMuRelPTJet->at(0),Weight,false);
-	MuRecoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),Weight,false);
-	//2D
-	MuRecoPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,false);
-	MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),Weight,false);
-      }
+  // reconstruction
+  // single muon control sample
+  if(muReco==2)
+    {
+      //1D
+      MuRecoBTag_->Fill(BTags,Weight,true);
+      MuRecoNJets_->Fill(NJets,Weight,true);
+      MuRecoHT_->Fill(HT,Weight,true);
+      MuRecoMHT_->Fill(MHT,Weight,true);
+      MuRecoPT_->Fill(GenMus->at(0).Pt(),Weight,true);
+      MuRecoActivity_->Fill(GenMuonActivity->at(0),Weight,true);
+      MuRecoRelPTJet_->Fill(GenMuRelPTJet->at(0),Weight,true);
+      MuRecoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),Weight,true);
+      //2D
+      MuRecoPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,true);
+      MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),Weight,true);
+    }
+  if(muReco==0)
+    {
+      //1D
+      MuRecoBTag_->Fill(BTags,Weight,false);
+      MuRecoNJets_->Fill(NJets,Weight,false);
+      MuRecoHT_->Fill(HT,Weight,false);
+      MuRecoMHT_->Fill(MHT,Weight,false);
+      MuRecoPT_->Fill(GenMus->at(0).Pt(),Weight,false);
+      MuRecoActivity_->Fill(GenMuonActivity->at(0),Weight,false);
+      MuRecoRelPTJet_->Fill(GenMuRelPTJet->at(0),Weight,false);
+      MuRecoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),Weight,false);
+      //2D
+      MuRecoPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,false);
+      MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),Weight,false);
+    }
   
-    // single elecon control sample
-    if(elecReco==2)
-      {
-	//1D
-	ElecRecoBTag_->Fill(BTags,Weight,true);
-	ElecRecoNJets_->Fill(NJets,Weight,true);
-	ElecRecoHT_->Fill(HT,Weight,true);
-	ElecRecoMHT_->Fill(MHT,Weight,true);
-	ElecRecoPT_->Fill(GenEls->at(0).Pt(),Weight,true);
-	ElecRecoActivity_->Fill(GenElecActivity->at(0),Weight,true);
-	ElecRecoRelPTJet_->Fill(GenElecRelPTJet->at(0),Weight,true);
-	ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),Weight,true);
-	//2D
-	ElecRecoPTActivity_->Fill(GenEls->at(0).Pt(),GenElecActivity->at(0),Weight,true);
-	ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,true);
-      }
-    if(elecReco==0)
-      {
-	//1D
-	ElecRecoBTag_->Fill(BTags,Weight,false);
-	ElecRecoNJets_->Fill(NJets,Weight,false);
-	ElecRecoHT_->Fill(HT,Weight,false);
-	ElecRecoMHT_->Fill(MHT,Weight,false);
-	ElecRecoPT_->Fill(GenEls->at(0).Pt(),Weight,false);
-	ElecRecoActivity_->Fill(GenElecActivity->at(0),Weight,false);
-	ElecRecoRelPTJet_->Fill(GenElecRelPTJet->at(0),Weight,false);
-	ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),Weight,false);
-	//2D
-	ElecRecoPTActivity_->Fill(GenEls->at(0).Pt(),GenElecActivity->at(0),Weight,false);
-	ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,false);
-      }
+  // single elecon control sample
+  if(elecReco==2)
+    {
+      //1D
+      ElecRecoBTag_->Fill(BTags,Weight,true);
+      ElecRecoNJets_->Fill(NJets,Weight,true);
+      ElecRecoHT_->Fill(HT,Weight,true);
+      ElecRecoMHT_->Fill(MHT,Weight,true);
+      ElecRecoPT_->Fill(GenEls->at(0).Pt(),Weight,true);
+      ElecRecoActivity_->Fill(GenElecActivity->at(0),Weight,true);
+      ElecRecoRelPTJet_->Fill(GenElecRelPTJet->at(0),Weight,true);
+      ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),Weight,true);
+      //2D
+      ElecRecoPTActivity_->Fill(GenEls->at(0).Pt(),GenElecActivity->at(0),Weight,true);
+      ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,true);
+    }
+  if(elecReco==0)
+    {
+      //1D
+      ElecRecoBTag_->Fill(BTags,Weight,false);
+      ElecRecoNJets_->Fill(NJets,Weight,false);
+      ElecRecoHT_->Fill(HT,Weight,false);
+      ElecRecoMHT_->Fill(MHT,Weight,false);
+      ElecRecoPT_->Fill(GenEls->at(0).Pt(),Weight,false);
+      ElecRecoActivity_->Fill(GenElecActivity->at(0),Weight,false);
+      ElecRecoRelPTJet_->Fill(GenElecRelPTJet->at(0),Weight,false);
+      ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),Weight,false);
+      //2D
+      ElecRecoPTActivity_->Fill(GenEls->at(0).Pt(),GenElecActivity->at(0),Weight,false);
+      ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,false);
+    }
   
-    // isolation
-    // single muon control sample
-    if(muIso==2)
-      {
-	//1D
-	MuIsoBTag_->Fill(BTags,Weight,true);
-	MuIsoNJets_->Fill(NJets,Weight,true);
-	MuIsoHT_->Fill(HT,Weight,true);
-	MuIsoMHT_->Fill(MHT,Weight,true);
-	MuIsoPT_->Fill(GenMus->at(0).Pt(),Weight,true);
-	MuIsoActivity_->Fill(GenMuonActivity->at(0),Weight,true);
-	MuIsoRelPTJet_->Fill(GenMuRelPTJet->at(0),Weight,true);
-	MuIsoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),Weight,true);
-	//2D
-	MuIsoPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,true);
-	MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),Weight,true);
-      }
-    if(muIso==0)
-      {
-	//1D
-	MuIsoBTag_->Fill(BTags,Weight,false);
-	MuIsoNJets_->Fill(NJets,Weight,false);
-	MuIsoHT_->Fill(HT,Weight,false);
-	MuIsoMHT_->Fill(MHT,Weight,false);
-	MuIsoPT_->Fill(GenMus->at(0).Pt(),Weight,false);
-	MuIsoActivity_->Fill(GenMuonActivity->at(0),Weight,false);
-	MuIsoRelPTJet_->Fill(GenMuRelPTJet->at(0),Weight,false);
-	MuIsoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),Weight,false);
-	//2D
-	MuIsoPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,false);
-	MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),Weight,false);
-      }
+  // isolation
+  // single muon control sample
+  if(muIso==2)
+    {
+      //1D
+      MuIsoBTag_->Fill(BTags,Weight,true);
+      MuIsoNJets_->Fill(NJets,Weight,true);
+      MuIsoHT_->Fill(HT,Weight,true);
+      MuIsoMHT_->Fill(MHT,Weight,true);
+      MuIsoPT_->Fill(GenMus->at(0).Pt(),Weight,true);
+      MuIsoActivity_->Fill(GenMuonActivity->at(0),Weight,true);
+      MuIsoRelPTJet_->Fill(GenMuRelPTJet->at(0),Weight,true);
+      MuIsoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),Weight,true);
+      //2D
+      MuIsoPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,true);
+      MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),Weight,true);
+    }
+  if(muIso==0)
+    {
+      //1D
+      MuIsoBTag_->Fill(BTags,Weight,false);
+      MuIsoNJets_->Fill(NJets,Weight,false);
+      MuIsoHT_->Fill(HT,Weight,false);
+      MuIsoMHT_->Fill(MHT,Weight,false);
+      MuIsoPT_->Fill(GenMus->at(0).Pt(),Weight,false);
+      MuIsoActivity_->Fill(GenMuonActivity->at(0),Weight,false);
+      MuIsoRelPTJet_->Fill(GenMuRelPTJet->at(0),Weight,false);
+      MuIsoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),Weight,false);
+      //2D
+      MuIsoPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,false);
+      MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),Weight,false);
+    }
   
-    // single elecon control sample
-    if(elecIso==2)
-      {
-	//1D
-	ElecIsoBTag_->Fill(BTags,Weight,true);
-	ElecIsoNJets_->Fill(NJets,Weight,true);
-	ElecIsoHT_->Fill(HT,Weight,true);
-	ElecIsoMHT_->Fill(MHT,Weight,true);
-	ElecIsoPT_->Fill(GenEls->at(0).Pt(),Weight,true);
-	ElecIsoActivity_->Fill(GenElecActivity->at(0),Weight,true);
-	ElecIsoRelPTJet_->Fill(GenElecRelPTJet->at(0),Weight,true);
-	ElecIsoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),Weight,true);
-	//2D
-	ElecIsoPTActivity_->Fill(GenEls->at(0).Pt(),GenElecActivity->at(0),Weight,true);
-	ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,true);
-      }
-    if(elecIso==0)
-      {
-	//1D
-	ElecIsoBTag_->Fill(BTags,Weight,false);
-	ElecIsoNJets_->Fill(NJets,Weight,false);
-	ElecIsoHT_->Fill(HT,Weight,false);
-	ElecIsoMHT_->Fill(MHT,Weight,false);
-	ElecIsoPT_->Fill(GenEls->at(0).Pt(),Weight,false);
-	ElecIsoActivity_->Fill(GenElecActivity->at(0),Weight,false);
-	ElecIsoRelPTJet_->Fill(GenElecRelPTJet->at(0),Weight,false);
-	ElecIsoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),Weight,false);
-	//2D
-	ElecIsoPTActivity_->Fill(GenEls->at(0).Pt(),GenElecActivity->at(0),Weight,false);
-	ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,false);
-      }
-    // mtw
-    // single muon control sample
-    if(muIso==2 && MTW < mtwCut_)
-      {
-	// 1D
-	MuMTWBTag_->Fill(BTags,Weight,true);
-	MuMTWNJets_->Fill(NJets,Weight,true);
-	MuMTWHT_->Fill(HT,Weight,true);
-	MuMTWMHT_->Fill(MHT,Weight,true);
-	MuMTWPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,true);
-	MuMTWActivity_->Fill(RecoIsoMuonActivity->at(0),Weight,true);
-	MuMTWPTActivity_->Fill(selectedIDIsoMuons->at(0).Pt(),RecoIsoMuonActivity->at(0),Weight,true);
-      }
-    if(muIso==2 && MTW > mtwCut_)
-      {
-	// 1D
-	MuMTWBTag_->Fill(BTags,Weight,false);
-	MuMTWNJets_->Fill(NJets,Weight,false);
-	MuMTWHT_->Fill(HT,Weight,false);
-	MuMTWMHT_->Fill(MHT,Weight,false);
-	MuMTWPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,false);
-	MuMTWActivity_->Fill(RecoIsoMuonActivity->at(0),Weight,false);
-	MuMTWPTActivity_->Fill(selectedIDIsoMuons->at(0).Pt(),RecoIsoMuonActivity->at(0),Weight,false);
-      }
+  // single elecon control sample
+  if(elecIso==2)
+    {
+      //1D
+      ElecIsoBTag_->Fill(BTags,Weight,true);
+      ElecIsoNJets_->Fill(NJets,Weight,true);
+      ElecIsoHT_->Fill(HT,Weight,true);
+      ElecIsoMHT_->Fill(MHT,Weight,true);
+      ElecIsoPT_->Fill(GenEls->at(0).Pt(),Weight,true);
+      ElecIsoActivity_->Fill(GenElecActivity->at(0),Weight,true);
+      ElecIsoRelPTJet_->Fill(GenElecRelPTJet->at(0),Weight,true);
+      ElecIsoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),Weight,true);
+      //2D
+      ElecIsoPTActivity_->Fill(GenEls->at(0).Pt(),GenElecActivity->at(0),Weight,true);
+      ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,true);
+    }
+  if(elecIso==0)
+    {
+      //1D
+      ElecIsoBTag_->Fill(BTags,Weight,false);
+      ElecIsoNJets_->Fill(NJets,Weight,false);
+      ElecIsoHT_->Fill(HT,Weight,false);
+      ElecIsoMHT_->Fill(MHT,Weight,false);
+      ElecIsoPT_->Fill(GenEls->at(0).Pt(),Weight,false);
+      ElecIsoActivity_->Fill(GenElecActivity->at(0),Weight,false);
+      ElecIsoRelPTJet_->Fill(GenElecRelPTJet->at(0),Weight,false);
+      ElecIsoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),Weight,false);
+      //2D
+      ElecIsoPTActivity_->Fill(GenEls->at(0).Pt(),GenElecActivity->at(0),Weight,false);
+      ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,false);
+    }
+  // mtw
+  // single muon control sample
+  if(muIso==2 && MTW < mtwCut_)
+    {
+      // 1D
+      MuMTWBTag_->Fill(BTags,Weight,true);
+      MuMTWNJets_->Fill(NJets,Weight,true);
+      MuMTWHT_->Fill(HT,Weight,true);
+      MuMTWMHT_->Fill(MHT,Weight,true);
+      MuMTWPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,true);
+      MuMTWActivity_->Fill(RecoIsoMuonActivity->at(0),Weight,true);
+      MuMTWPTActivity_->Fill(selectedIDIsoMuons->at(0).Pt(),RecoIsoMuonActivity->at(0),Weight,true);
+    }
+  if(muIso==2 && MTW > mtwCut_)
+    {
+      // 1D
+      MuMTWBTag_->Fill(BTags,Weight,false);
+      MuMTWNJets_->Fill(NJets,Weight,false);
+      MuMTWHT_->Fill(HT,Weight,false);
+      MuMTWMHT_->Fill(MHT,Weight,false);
+      MuMTWPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,false);
+      MuMTWActivity_->Fill(RecoIsoMuonActivity->at(0),Weight,false);
+      MuMTWPTActivity_->Fill(selectedIDIsoMuons->at(0).Pt(),RecoIsoMuonActivity->at(0),Weight,false);
+    }
   
-    // single elec control sample
-    if(elecIso==2 && MTW < mtwCut_)
-      {
-	// 1D
-	ElecMTWBTag_->Fill(BTags,Weight,true);
-	ElecMTWNJets_->Fill(NJets,Weight,true);
-	ElecMTWHT_->Fill(HT,Weight,true);
-	ElecMTWMHT_->Fill(MHT,Weight,true);
-	ElecMTWPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,true);
-	ElecMTWActivity_->Fill(RecoIsoElectronActivity->at(0),Weight,true);
-	ElecMTWPTActivity_->Fill(selectedIDIsoElectrons->at(0).Pt(),RecoIsoElectronActivity->at(0),Weight,true);
-      }
-    if(elecIso==2 && MTW > mtwCut_)
-      {
-	// 1D
-	ElecMTWBTag_->Fill(BTags,Weight,false);
-	ElecMTWNJets_->Fill(NJets,Weight,false);
-	ElecMTWHT_->Fill(HT,Weight,false);
-	ElecMTWMHT_->Fill(MHT,Weight,false);
-	ElecMTWPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,false);
-	ElecMTWActivity_->Fill(RecoIsoElectronActivity->at(0),Weight,false);
-	ElecMTWPTActivity_->Fill(selectedIDIsoElectrons->at(0).Pt(),RecoIsoElectronActivity->at(0),Weight,false);
-      }
-    // di lep contribution
-    if(MuDiLepControlSample==2)
-      {
-	// 1D
-	MuDiLepBTag_->Fill(BTags,Weight,true);
-	MuDiLepNJets_->Fill(NJets,Weight,true);
-	MuDiLepHT_->Fill(HT,Weight,true);
-	MuDiLepMHT_->Fill(MHT,Weight,true);
-	if(MTW <mtwCut_)
-	  {
-	    // 1D
-	    MuDiLepMTWBTag_->Fill(BTags,Weight,true);
-	    MuDiLepMTWNJets_->Fill(NJets,Weight,true);
-	    MuDiLepMTWHT_->Fill(HT,Weight,true);
-	    MuDiLepMTWMHT_->Fill(MHT,Weight,true);
-	  }
-	// 1D
-	MuDiLepContributionBTag_->Fill(BTags,Weight,true);
-	MuDiLepContributionNJets_->Fill(NJets,Weight,true);
-	MuDiLepContributionHT_->Fill(HT,Weight,true);
-	MuDiLepContributionMHT_->Fill(MHT,Weight,true);
-	if(MTW <mtwCut_)
-	  {
-	    // 1D
-	    MuDiLepContributionMTWBTag_->Fill(BTags,Weight,true);
-	    MuDiLepContributionMTWNJets_->Fill(NJets,Weight,true);
-	    MuDiLepContributionMTWHT_->Fill(HT,Weight,true);
-	    MuDiLepContributionMTWMHT_->Fill(MHT,Weight,true);
-	  }
+  // single elec control sample
+  if(elecIso==2 && MTW < mtwCut_)
+    {
+      // 1D
+      ElecMTWBTag_->Fill(BTags,Weight,true);
+      ElecMTWNJets_->Fill(NJets,Weight,true);
+      ElecMTWHT_->Fill(HT,Weight,true);
+      ElecMTWMHT_->Fill(MHT,Weight,true);
+      ElecMTWPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,true);
+      ElecMTWActivity_->Fill(RecoIsoElectronActivity->at(0),Weight,true);
+      ElecMTWPTActivity_->Fill(selectedIDIsoElectrons->at(0).Pt(),RecoIsoElectronActivity->at(0),Weight,true);
+    }
+  if(elecIso==2 && MTW > mtwCut_)
+    {
+      // 1D
+      ElecMTWBTag_->Fill(BTags,Weight,false);
+      ElecMTWNJets_->Fill(NJets,Weight,false);
+      ElecMTWHT_->Fill(HT,Weight,false);
+      ElecMTWMHT_->Fill(MHT,Weight,false);
+      ElecMTWPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,false);
+      ElecMTWActivity_->Fill(RecoIsoElectronActivity->at(0),Weight,false);
+      ElecMTWPTActivity_->Fill(selectedIDIsoElectrons->at(0).Pt(),RecoIsoElectronActivity->at(0),Weight,false);
+    }
+  // di lep contribution
+  if(MuDiLepControlSample==2)
+    {
+      // 1D
+      MuDiLepBTag_->Fill(BTags,Weight,true);
+      MuDiLepNJets_->Fill(NJets,Weight,true);
+      MuDiLepHT_->Fill(HT,Weight,true);
+      MuDiLepMHT_->Fill(MHT,Weight,true);
+      if(MTW <mtwCut_)
+	{
+	  // 1D
+	  MuDiLepMTWBTag_->Fill(BTags,Weight,true);
+	  MuDiLepMTWNJets_->Fill(NJets,Weight,true);
+	  MuDiLepMTWHT_->Fill(HT,Weight,true);
+	  MuDiLepMTWMHT_->Fill(MHT,Weight,true);
+	}
+      // 1D
+      MuDiLepContributionBTag_->Fill(BTags,Weight,true);
+      MuDiLepContributionNJets_->Fill(NJets,Weight,true);
+      MuDiLepContributionHT_->Fill(HT,Weight,true);
+      MuDiLepContributionMHT_->Fill(MHT,Weight,true);
+      if(MTW <mtwCut_)
+	{
+	  // 1D
+	  MuDiLepContributionMTWBTag_->Fill(BTags,Weight,true);
+	  MuDiLepContributionMTWNJets_->Fill(NJets,Weight,true);
+	  MuDiLepContributionMTWHT_->Fill(HT,Weight,true);
+	  MuDiLepContributionMTWMHT_->Fill(MHT,Weight,true);
+	}
     
-      }
-    if(MuDiLepControlSample==0)
-      {
+    }
+  if(MuDiLepControlSample==0)
+    {
 
-	// 1D
-	MuDiLepContributionBTag_->Fill(BTags,Weight,false);
-	MuDiLepContributionNJets_->Fill(NJets,Weight,false);
-	MuDiLepContributionHT_->Fill(HT,Weight,false);
-	MuDiLepContributionMHT_->Fill(MHT,Weight,false);
-	if(MTW <mtwCut_)
-	  {
-	    // 1D
-	    MuDiLepContributionMTWBTag_->Fill(BTags,Weight,false);
-	    MuDiLepContributionMTWNJets_->Fill(NJets,Weight,false);
-	    MuDiLepContributionMTWHT_->Fill(HT,Weight,false);
-	    MuDiLepContributionMTWMHT_->Fill(MHT,Weight,false);
-	  }
-      }
-    if(MuDiLepControlSample==0)
-      {
-	// 1D
-	MuDiLepBTag_->Fill(BTags,Weight,false);
-	MuDiLepNJets_->Fill(NJets,Weight,false);
-	MuDiLepHT_->Fill(HT,Weight,false);
-	MuDiLepMHT_->Fill(MHT,Weight,false);
+      // 1D
+      MuDiLepContributionBTag_->Fill(BTags,Weight,false);
+      MuDiLepContributionNJets_->Fill(NJets,Weight,false);
+      MuDiLepContributionHT_->Fill(HT,Weight,false);
+      MuDiLepContributionMHT_->Fill(MHT,Weight,false);
+      if(MTW <mtwCut_)
+	{
+	  // 1D
+	  MuDiLepContributionMTWBTag_->Fill(BTags,Weight,false);
+	  MuDiLepContributionMTWNJets_->Fill(NJets,Weight,false);
+	  MuDiLepContributionMTWHT_->Fill(HT,Weight,false);
+	  MuDiLepContributionMTWMHT_->Fill(MHT,Weight,false);
+	}
+    }
+  if(MuDiLepControlSample==0)
+    {
+      // 1D
+      MuDiLepBTag_->Fill(BTags,Weight,false);
+      MuDiLepNJets_->Fill(NJets,Weight,false);
+      MuDiLepHT_->Fill(HT,Weight,false);
+      MuDiLepMHT_->Fill(MHT,Weight,false);
     
-	// 1D
-	MuDiLepMTWBTag_->Fill(BTags,Weight,false);
-	MuDiLepMTWNJets_->Fill(NJets,Weight,false);
-	MuDiLepMTWHT_->Fill(HT,Weight,false);
-	MuDiLepMTWMHT_->Fill(MHT,Weight,false);
-      }
+      // 1D
+      MuDiLepMTWBTag_->Fill(BTags,Weight,false);
+      MuDiLepMTWNJets_->Fill(NJets,Weight,false);
+      MuDiLepMTWHT_->Fill(HT,Weight,false);
+      MuDiLepMTWMHT_->Fill(MHT,Weight,false);
+    }
   
-    if(ElecDiLepControlSample==2)
-      {
-	// 1D
-	ElecDiLepBTag_->Fill(BTags,Weight,true);
-	ElecDiLepNJets_->Fill(NJets,Weight,true);
-	ElecDiLepHT_->Fill(HT,Weight,true);
-	ElecDiLepMHT_->Fill(MHT,Weight,true);
-	if(MTW <mtwCut_)
-	  {
-	    // 1D
-	    ElecDiLepMTWBTag_->Fill(BTags,Weight,true);
-	    ElecDiLepMTWNJets_->Fill(NJets,Weight,true);
-	    ElecDiLepMTWHT_->Fill(HT,Weight,true);
-	    ElecDiLepMTWMHT_->Fill(MHT,Weight,true);
-	  }
-	// 1D
-	ElecDiLepContributionBTag_->Fill(BTags,Weight,true);
-	ElecDiLepContributionNJets_->Fill(NJets,Weight,true);
-	ElecDiLepContributionHT_->Fill(HT,Weight,true);
-	ElecDiLepContributionMHT_->Fill(MHT,Weight,true);
-	if(MTW <mtwCut_)
-	  {
-	    // 1D
-	    ElecDiLepContributionMTWBTag_->Fill(BTags,Weight,true);
-	    ElecDiLepContributionMTWNJets_->Fill(NJets,Weight,true);
-	    ElecDiLepContributionMTWHT_->Fill(HT,Weight,true);
-	    ElecDiLepContributionMTWMHT_->Fill(MHT,Weight,true);
-	  }
+  if(ElecDiLepControlSample==2)
+    {
+      // 1D
+      ElecDiLepBTag_->Fill(BTags,Weight,true);
+      ElecDiLepNJets_->Fill(NJets,Weight,true);
+      ElecDiLepHT_->Fill(HT,Weight,true);
+      ElecDiLepMHT_->Fill(MHT,Weight,true);
+      if(MTW <mtwCut_)
+	{
+	  // 1D
+	  ElecDiLepMTWBTag_->Fill(BTags,Weight,true);
+	  ElecDiLepMTWNJets_->Fill(NJets,Weight,true);
+	  ElecDiLepMTWHT_->Fill(HT,Weight,true);
+	  ElecDiLepMTWMHT_->Fill(MHT,Weight,true);
+	}
+      // 1D
+      ElecDiLepContributionBTag_->Fill(BTags,Weight,true);
+      ElecDiLepContributionNJets_->Fill(NJets,Weight,true);
+      ElecDiLepContributionHT_->Fill(HT,Weight,true);
+      ElecDiLepContributionMHT_->Fill(MHT,Weight,true);
+      if(MTW <mtwCut_)
+	{
+	  // 1D
+	  ElecDiLepContributionMTWBTag_->Fill(BTags,Weight,true);
+	  ElecDiLepContributionMTWNJets_->Fill(NJets,Weight,true);
+	  ElecDiLepContributionMTWHT_->Fill(HT,Weight,true);
+	  ElecDiLepContributionMTWMHT_->Fill(MHT,Weight,true);
+	}
     
-      }
-    if(ElecDiLepControlSample==0)
-      {
+    }
+  if(ElecDiLepControlSample==0)
+    {
     
-	// 1D
-	ElecDiLepContributionBTag_->Fill(BTags,Weight,false);
-	ElecDiLepContributionNJets_->Fill(NJets,Weight,false);
-	ElecDiLepContributionHT_->Fill(HT,Weight,false);
-	ElecDiLepContributionMHT_->Fill(MHT,Weight,false);
-	if(MTW <mtwCut_)
-	  {
-	    // 1D
-	    ElecDiLepContributionMTWBTag_->Fill(BTags,Weight,false);
-	    ElecDiLepContributionMTWNJets_->Fill(NJets,Weight,false);
-	    ElecDiLepContributionMTWHT_->Fill(HT,Weight,false);
-	    ElecDiLepContributionMTWMHT_->Fill(MHT,Weight,false);
-	  }
-      }
+      // 1D
+      ElecDiLepContributionBTag_->Fill(BTags,Weight,false);
+      ElecDiLepContributionNJets_->Fill(NJets,Weight,false);
+      ElecDiLepContributionHT_->Fill(HT,Weight,false);
+      ElecDiLepContributionMHT_->Fill(MHT,Weight,false);
+      if(MTW <mtwCut_)
+	{
+	  // 1D
+	  ElecDiLepContributionMTWBTag_->Fill(BTags,Weight,false);
+	  ElecDiLepContributionMTWNJets_->Fill(NJets,Weight,false);
+	  ElecDiLepContributionMTWHT_->Fill(HT,Weight,false);
+	  ElecDiLepContributionMTWMHT_->Fill(MHT,Weight,false);
+	}
+    }
   
-    if(ElecDiLepControlSample==0)
-      {
-	// 1D
-	ElecDiLepBTag_->Fill(BTags,Weight,false);
-	ElecDiLepNJets_->Fill(NJets,Weight,false);
-	ElecDiLepHT_->Fill(HT,Weight,false);
-	ElecDiLepMHT_->Fill(MHT,Weight,false);
+  if(ElecDiLepControlSample==0)
+    {
+      // 1D
+      ElecDiLepBTag_->Fill(BTags,Weight,false);
+      ElecDiLepNJets_->Fill(NJets,Weight,false);
+      ElecDiLepHT_->Fill(HT,Weight,false);
+      ElecDiLepMHT_->Fill(MHT,Weight,false);
     
-	// 1D
-	ElecDiLepMTWBTag_->Fill(BTags,Weight,false);
-	ElecDiLepMTWNJets_->Fill(NJets,Weight,false);
-	ElecDiLepMTWHT_->Fill(HT,Weight,false);
-	ElecDiLepMTWMHT_->Fill(MHT,Weight,false);
-      }
+      // 1D
+      ElecDiLepMTWBTag_->Fill(BTags,Weight,false);
+      ElecDiLepMTWNJets_->Fill(NJets,Weight,false);
+      ElecDiLepMTWHT_->Fill(HT,Weight,false);
+      ElecDiLepMTWMHT_->Fill(MHT,Weight,false);
+    }
   
-    // isoalted track
-    // muon
-    if(GenMuNum==1 && GenElecNum==0)
-      {
-	if(muIsoTrack==2)
-	  {
-	    // 1D
-	    IsoTrackMuBTag_->Fill(BTags,Weight,true);
-	    IsoTrackMuNJets_->Fill(NJets,Weight,true);
-	    IsoTrackMuHT_->Fill(HT,Weight,true);
-	    IsoTrackMuMHT_->Fill(MHT,Weight,true);
-	    //2d
-	    IsoTrackMuPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,true);
+  // isoalted track
+  // muon
+  if(GenMuNum==1 && GenElecNum==0)
+    {
+      if(muIsoTrack==2)
+	{
+	  // 1D
+	  IsoTrackMuBTag_->Fill(BTags,Weight,true);
+	  IsoTrackMuNJets_->Fill(NJets,Weight,true);
+	  IsoTrackMuHT_->Fill(HT,Weight,true);
+	  IsoTrackMuMHT_->Fill(MHT,Weight,true);
+	  //2d
+	  IsoTrackMuPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,true);
 
-	  }
-	if (muIsoTrack==0)
-	  {
-	    // 1D
-	    IsoTrackMuBTag_->Fill(BTags,Weight,false);
-	    IsoTrackMuNJets_->Fill(NJets,Weight,false);
-	    IsoTrackMuHT_->Fill(HT,Weight,false);
-	    IsoTrackMuMHT_->Fill(MHT,Weight,false);
-	    //2d
-	    IsoTrackMuPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,false);
-	  }
-      }
+	}
+      if (muIsoTrack==0)
+	{
+	  // 1D
+	  IsoTrackMuBTag_->Fill(BTags,Weight,false);
+	  IsoTrackMuNJets_->Fill(NJets,Weight,false);
+	  IsoTrackMuHT_->Fill(HT,Weight,false);
+	  IsoTrackMuMHT_->Fill(MHT,Weight,false);
+	  //2d
+	  IsoTrackMuPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,false);
+	}
+    }
   
   	
-    // ExpectationReductionIsoTrack
-    if(Expectation==1 && ExpectationReductionIsoTrack==0)
-      {
-	//	cout << "Event not rejected by iso track veto" << endl;
-	ExpectationReductionIsoTrackBTagEff_->Fill(BTags,Weight,false);
-	ExpectationReductionIsoTrackNJetsEff_->Fill(NJets,Weight,false);
-	ExpectationReductionIsoTrackHTEff_->Fill(HT,Weight,false);
-	ExpectationReductionIsoTrackMHTEff_->Fill(MHT,Weight,false);
-	if(GenMuNum>0)
-	  {
-	    //  cout << "Muon event" << endl;
-	    ExpectationReductionIsoTrackPTEff_->Fill(GenMus->at(0).Pt(),Weight,false);
-	    ExpectationReductionIsoTrackActivityEff_->Fill(GenMuonActivity->at(0),Weight,false);
-	  }
-	else if(GenElecNum>0)
-	  {
-	    // cout << "Electron event" << endl;
-	    ExpectationReductionIsoTrackPTEff_->Fill(GenEls->at(0).Pt(),Weight,false);
-	    ExpectationReductionIsoTrackActivityEff_->Fill(GenElecActivity->at(0),Weight,false);
-	  }
-	else if(GenTauNum>0)
-	  {
-	    // cout << "Tau event" << endl;
-	    ExpectationReductionIsoTrackPTEff_->Fill(GenTaus->at(0).Pt(),Weight,false);
-	    ExpectationReductionIsoTrackActivityEff_->Fill(GenTauActivity->at(0),Weight,false);
-	  }
-	else std::cout<<"No gen lepton found to fail..."<<std::endl;
+  // ExpectationReductionIsoTrack
+  if(Expectation==1 && ExpectationReductionIsoTrack==0)
+    {
+      //	cout << "Event not rejected by iso track veto" << endl;
+      ExpectationReductionIsoTrackBTagEff_->Fill(BTags,Weight,false);
+      ExpectationReductionIsoTrackNJetsEff_->Fill(NJets,Weight,false);
+      ExpectationReductionIsoTrackHTEff_->Fill(HT,Weight,false);
+      ExpectationReductionIsoTrackMHTEff_->Fill(MHT,Weight,false);
+      if(GenMuNum>0)
+	{
+	  //  cout << "Muon event" << endl;
+	  ExpectationReductionIsoTrackPTEff_->Fill(GenMus->at(0).Pt(),Weight,false);
+	  ExpectationReductionIsoTrackActivityEff_->Fill(GenMuonActivity->at(0),Weight,false);
+	}
+      else if(GenElecNum>0)
+	{
+	  // cout << "Electron event" << endl;
+	  ExpectationReductionIsoTrackPTEff_->Fill(GenEls->at(0).Pt(),Weight,false);
+	  ExpectationReductionIsoTrackActivityEff_->Fill(GenElecActivity->at(0),Weight,false);
+	}
+      else if(GenTauNum>0)
+	{
+	  // cout << "Tau event" << endl;
+	  ExpectationReductionIsoTrackPTEff_->Fill(GenTaus->at(0).Pt(),Weight,false);
+	  ExpectationReductionIsoTrackActivityEff_->Fill(GenTauActivity->at(0),Weight,false);
+	}
+      else std::cout<<"No gen lepton found to fail..."<<std::endl;
 
-	//2D
-	IsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
-	IsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
-	IsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
-	if(GenMuNum>0)
-	  {
-	    IsoTrackReductionPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,false);
-	  }
-	else if(GenElecNum>0)
-	  {
-	    IsoTrackReductionPTActivity_->Fill(GenEls->at(0).Pt(),GenElecActivity->at(0),Weight,false);
-	  }
-	else if(GenTauNum>0)
-	  {
-	    IsoTrackReductionPTActivity_->Fill(GenTaus->at(0).Pt(),GenTauActivity->at(0),Weight,false);
-	  }
-	// cout << "Done with these efficiencies" << endl;
-      }
+      //2D
+      IsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
+      IsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
+      IsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
+      if(GenMuNum>0)
+	{
+	  IsoTrackReductionPTActivity_->Fill(GenMus->at(0).Pt(),GenMuonActivity->at(0),Weight,false);
+	}
+      else if(GenElecNum>0)
+	{
+	  IsoTrackReductionPTActivity_->Fill(GenEls->at(0).Pt(),GenElecActivity->at(0),Weight,false);
+	}
+      else if(GenTauNum>0)
+	{
+	  IsoTrackReductionPTActivity_->Fill(GenTaus->at(0).Pt(),GenTauActivity->at(0),Weight,false);
+	}
+      // cout << "Done with these efficiencies" << endl;
+    }
 	
-    if(Expectation==1 && ExpectationReductionIsoTrack==1)
-      {
-	// cout << "Event rejected by iso track veto" << endl;
-	ExpectationReductionIsoTrackBTagEff_->Fill(BTags,Weight,true);
-	ExpectationReductionIsoTrackNJetsEff_->Fill(NJets,Weight,true);
-	ExpectationReductionIsoTrackHTEff_->Fill(HT,Weight,true);
-	ExpectationReductionIsoTrackMHTEff_->Fill(MHT,Weight,true);
-	if(IsolatedMuonTracksVeto->size()>0)
-	  {
-	    ExpectationReductionIsoTrackPTEff_->Fill(IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
-	    ExpectationReductionIsoTrackActivityEff_->Fill(IsolatedMuonTracksVetoActivity->at(0),Weight,true);
-	  }
-	else if(IsolatedElectronTracksVeto->size()>0)
-	  {
-	    ExpectationReductionIsoTrackPTEff_->Fill(IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
-	    ExpectationReductionIsoTrackActivityEff_->Fill(IsolatedElectronTracksVetoActivity->at(0),Weight,true);
-	  }
-	else if(IsolatedPionTracksVeto->size()>0)
-	  {
-	    ExpectationReductionIsoTrackPTEff_->Fill(IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
-	    ExpectationReductionIsoTrackActivityEff_->Fill(IsolatedPionTracksVetoActivity->at(0),Weight,true);
-	  }
-	//2D
-	IsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
-	IsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
-	IsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
-	if(IsolatedMuonTracksVeto->size()>0)
-	  {
-	    IsoTrackReductionPTActivity_->Fill(IsolatedMuonTracksVeto->at(0).Pt(),IsolatedMuonTracksVetoActivity->at(0),Weight,true);
-	  } 
-	else if(IsolatedElectronTracksVeto->size()>0)
-	  {
-	    IsoTrackReductionPTActivity_->Fill(IsolatedElectronTracksVeto->at(0).Pt(),IsolatedElectronTracksVetoActivity->at(0),Weight,true);
-	  }
-	else if(IsolatedPionTracksVeto->size()>0)
-	  {
-	    IsoTrackReductionPTActivity_->Fill(IsolatedPionTracksVeto->at(0).Pt(),IsolatedPionTracksVetoActivity->at(0),Weight,true);
-	  }
+  if(Expectation==1 && ExpectationReductionIsoTrack==1)
+    {
+      // cout << "Event rejected by iso track veto" << endl;
+      ExpectationReductionIsoTrackBTagEff_->Fill(BTags,Weight,true);
+      ExpectationReductionIsoTrackNJetsEff_->Fill(NJets,Weight,true);
+      ExpectationReductionIsoTrackHTEff_->Fill(HT,Weight,true);
+      ExpectationReductionIsoTrackMHTEff_->Fill(MHT,Weight,true);
+      if(isoMuonTracks>0)
+	{
+	  ExpectationReductionIsoTrackPTEff_->Fill(IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
+	  ExpectationReductionIsoTrackActivityEff_->Fill(IsolatedMuonTracksVetoActivity->at(0),Weight,true);
+	}
+      else if(isoElectronTracks>0)
+	{
+	  ExpectationReductionIsoTrackPTEff_->Fill(IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
+	  ExpectationReductionIsoTrackActivityEff_->Fill(IsolatedElectronTracksVetoActivity->at(0),Weight,true);
+	}
+      else if(isoPionTracks>0)
+	{
+	  ExpectationReductionIsoTrackPTEff_->Fill(IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
+	  ExpectationReductionIsoTrackActivityEff_->Fill(IsolatedPionTracksVetoActivity->at(0),Weight,true);
+	}
+      //2D
+      IsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
+      IsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
+      IsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
+      if(isoMuonTracks>0)
+	{
+	  IsoTrackReductionPTActivity_->Fill(IsolatedMuonTracksVeto->at(0).Pt(),IsolatedMuonTracksVetoActivity->at(0),Weight,true);
+	} 
+      else if(isoElectronTracks>0)
+	{
+	  IsoTrackReductionPTActivity_->Fill(IsolatedElectronTracksVeto->at(0).Pt(),IsolatedElectronTracksVetoActivity->at(0),Weight,true);
+	}
+      else if(isoPionTracks>0)
+	{
+	  IsoTrackReductionPTActivity_->Fill(IsolatedPionTracksVeto->at(0).Pt(),IsolatedPionTracksVetoActivity->at(0),Weight,true);
+	}
 
-      }
-    // muon iso tracks
-    if(Expectation==1 && IsolatedMuonTracksVeto->size()==0)
-      {
-	// cout << "Muon tracks not found...";
-	ExpectationReductionMuIsoTrackBTagEff_->Fill(BTags,Weight,false);
-	ExpectationReductionMuIsoTrackNJetsEff_->Fill(NJets,Weight,false);
-	ExpectationReductionMuIsoTrackHTEff_->Fill(HT,Weight,false);
-	ExpectationReductionMuIsoTrackMHTEff_->Fill(MHT,Weight,false);
-	// JACK -- placeholders
-	ExpectationReductionMuIsoTrackPTEff_->Fill(0,Weight,false);
-	ExpectationReductionMuIsoTrackActivityEff_->Fill(0,Weight,false);
-	//2D
-	MuIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
-	MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
-	MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
-	MuIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
-	// cout << "DONE" << endl;
-      }
-    if(Expectation==1 && IsolatedMuonTracksVeto->size()>0)
-      {
-	// cout << "Muon tracks found...";
-	ExpectationReductionMuIsoTrackBTagEff_->Fill(BTags,Weight,true);
-	ExpectationReductionMuIsoTrackNJetsEff_->Fill(NJets,Weight,true);
-	ExpectationReductionMuIsoTrackHTEff_->Fill(HT,Weight,true);
-	ExpectationReductionMuIsoTrackMHTEff_->Fill(MHT,Weight,true);
-	ExpectationReductionMuIsoTrackPTEff_->Fill(IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
-	ExpectationReductionMuIsoTrackActivityEff_->Fill(IsolatedMuonTracksVetoActivity->at(0),Weight,true);
+    }
+  // muon iso tracks
+  if(Expectation==1 && isoMuonTracks==0)
+    {
+      // cout << "Muon tracks not found...";
+      ExpectationReductionMuIsoTrackBTagEff_->Fill(BTags,Weight,false);
+      ExpectationReductionMuIsoTrackNJetsEff_->Fill(NJets,Weight,false);
+      ExpectationReductionMuIsoTrackHTEff_->Fill(HT,Weight,false);
+      ExpectationReductionMuIsoTrackMHTEff_->Fill(MHT,Weight,false);
+      // JACK -- placeholders
+      ExpectationReductionMuIsoTrackPTEff_->Fill(0,Weight,false);
+      ExpectationReductionMuIsoTrackActivityEff_->Fill(0,Weight,false);
+      //2D
+      MuIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
+      MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
+      MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
+      MuIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
+      // cout << "DONE" << endl;
+    }
+  if(Expectation==1 && isoMuonTracks>0)
+    {
+      // cout << "Muon tracks found...";
+      ExpectationReductionMuIsoTrackBTagEff_->Fill(BTags,Weight,true);
+      ExpectationReductionMuIsoTrackNJetsEff_->Fill(NJets,Weight,true);
+      ExpectationReductionMuIsoTrackHTEff_->Fill(HT,Weight,true);
+      ExpectationReductionMuIsoTrackMHTEff_->Fill(MHT,Weight,true);
+      ExpectationReductionMuIsoTrackPTEff_->Fill(IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
+      ExpectationReductionMuIsoTrackActivityEff_->Fill(IsolatedMuonTracksVetoActivity->at(0),Weight,true);
 		
-	//2D
-	MuIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
-	MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
-	MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
-	MuIsoTrackReductionPTActivity_->Fill(IsolatedMuonTracksVeto->at(0).Pt(),IsolatedMuonTracksVetoActivity->at(0),Weight,true);
-	// cout << "DONE" << endl;
-      }
+      //2D
+      MuIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
+      MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
+      MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
+      MuIsoTrackReductionPTActivity_->Fill(IsolatedMuonTracksVeto->at(0).Pt(),IsolatedMuonTracksVetoActivity->at(0),Weight,true);
+      // cout << "DONE" << endl;
+    }
 	
 	
-    // elec iso tracks
-    if(Expectation==1 && IsolatedElectronTracksVeto->size()==0)
-      {
-	// cout << "Electron tracks not found...";
-	ExpectationReductionElecIsoTrackBTagEff_->Fill(BTags,Weight,false);
-	ExpectationReductionElecIsoTrackNJetsEff_->Fill(NJets,Weight,false);
-	ExpectationReductionElecIsoTrackHTEff_->Fill(HT,Weight,false);
-	ExpectationReductionElecIsoTrackMHTEff_->Fill(MHT,Weight,false);
-	ExpectationReductionElecIsoTrackPTEff_->Fill(0,Weight,false);
-	ExpectationReductionElecIsoTrackActivityEff_->Fill(0,Weight,false);
-	//2D
-	ElecIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
-	ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
-	ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
-	ElecIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
-	// cout << "DONE" << endl;		
-      }
-    if(Expectation==1 && IsolatedElectronTracksVeto->size()>0)
-      {
-	// cout << "Electron tracks found...";
-	ExpectationReductionElecIsoTrackBTagEff_->Fill(BTags,Weight,true);
-	ExpectationReductionElecIsoTrackNJetsEff_->Fill(NJets,Weight,true);
-	ExpectationReductionElecIsoTrackHTEff_->Fill(HT,Weight,true);
-	ExpectationReductionElecIsoTrackMHTEff_->Fill(MHT,Weight,true);
-	ExpectationReductionElecIsoTrackPTEff_->Fill(IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
-	ExpectationReductionElecIsoTrackActivityEff_->Fill(IsolatedElectronTracksVetoActivity->at(0),Weight,true);
+  // elec iso tracks
+  if(Expectation==1 && isoElectronTracks==0)
+    {
+      // cout << "Electron tracks not found...";
+      ExpectationReductionElecIsoTrackBTagEff_->Fill(BTags,Weight,false);
+      ExpectationReductionElecIsoTrackNJetsEff_->Fill(NJets,Weight,false);
+      ExpectationReductionElecIsoTrackHTEff_->Fill(HT,Weight,false);
+      ExpectationReductionElecIsoTrackMHTEff_->Fill(MHT,Weight,false);
+      ExpectationReductionElecIsoTrackPTEff_->Fill(0,Weight,false);
+      ExpectationReductionElecIsoTrackActivityEff_->Fill(0,Weight,false);
+      //2D
+      ElecIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
+      ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
+      ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
+      ElecIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
+      // cout << "DONE" << endl;		
+    }
+  if(Expectation==1 && isoElectronTracks>0)
+    {
+      // cout << "Electron tracks found...";
+      ExpectationReductionElecIsoTrackBTagEff_->Fill(BTags,Weight,true);
+      ExpectationReductionElecIsoTrackNJetsEff_->Fill(NJets,Weight,true);
+      ExpectationReductionElecIsoTrackHTEff_->Fill(HT,Weight,true);
+      ExpectationReductionElecIsoTrackMHTEff_->Fill(MHT,Weight,true);
+      ExpectationReductionElecIsoTrackPTEff_->Fill(IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
+      ExpectationReductionElecIsoTrackActivityEff_->Fill(IsolatedElectronTracksVetoActivity->at(0),Weight,true);
 		
-	//2D
-	ElecIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
-	ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
-	ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
-	ElecIsoTrackReductionPTActivity_->Fill(IsolatedElectronTracksVeto->at(0).Pt(),IsolatedElectronTracksVetoActivity->at(0),Weight,true);
-	// cout << "DONE" << endl;		
-      }
-    // pion iso tracks
-    if(Expectation==1 && IsolatedPionTracksVeto->size()==0)
-      {
-	// cout << "Pion tracks not found...";
-	ExpectationReductionPionIsoTrackBTagEff_->Fill(BTags,Weight,false);
-	ExpectationReductionPionIsoTrackNJetsEff_->Fill(NJets,Weight,false);
-	ExpectationReductionPionIsoTrackHTEff_->Fill(HT,Weight,false);
-	ExpectationReductionPionIsoTrackMHTEff_->Fill(MHT,Weight,false);
-	ExpectationReductionPionIsoTrackPTEff_->Fill(0,Weight,false);
-	ExpectationReductionPionIsoTrackActivityEff_->Fill(0,Weight,false);
-	//2D
-	PionIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
-	PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
-	PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
-	PionIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
-	// cout << "DONE" << endl;		
-      }
-    if(Expectation==1 && IsolatedPionTracksVeto->size()>0)
-      {
-	// cout << "Pion tracks found...";
-	ExpectationReductionPionIsoTrackBTagEff_->Fill(BTags,Weight,true);
-	ExpectationReductionPionIsoTrackNJetsEff_->Fill(NJets,Weight,true);
-	ExpectationReductionPionIsoTrackHTEff_->Fill(HT,Weight,true);
-	ExpectationReductionPionIsoTrackMHTEff_->Fill(MHT,Weight,true);
-	ExpectationReductionPionIsoTrackPTEff_->Fill(IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
-	ExpectationReductionPionIsoTrackActivityEff_->Fill(IsolatedPionTracksVetoActivity->at(0),Weight,true);
+      //2D
+      ElecIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
+      ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
+      ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
+      ElecIsoTrackReductionPTActivity_->Fill(IsolatedElectronTracksVeto->at(0).Pt(),IsolatedElectronTracksVetoActivity->at(0),Weight,true);
+      // cout << "DONE" << endl;		
+    }
+  // pion iso tracks
+  if(Expectation==1 && isoPionTracks==0)
+    {
+      // cout << "Pion tracks not found...";
+      ExpectationReductionPionIsoTrackBTagEff_->Fill(BTags,Weight,false);
+      ExpectationReductionPionIsoTrackNJetsEff_->Fill(NJets,Weight,false);
+      ExpectationReductionPionIsoTrackHTEff_->Fill(HT,Weight,false);
+      ExpectationReductionPionIsoTrackMHTEff_->Fill(MHT,Weight,false);
+      ExpectationReductionPionIsoTrackPTEff_->Fill(0,Weight,false);
+      ExpectationReductionPionIsoTrackActivityEff_->Fill(0,Weight,false);
+      //2D
+      PionIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
+      PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
+      PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
+      PionIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
+      // cout << "DONE" << endl;		
+    }
+  if(Expectation==1 && isoPionTracks>0)
+    {
+      // cout << "Pion tracks found...";
+      ExpectationReductionPionIsoTrackBTagEff_->Fill(BTags,Weight,true);
+      ExpectationReductionPionIsoTrackNJetsEff_->Fill(NJets,Weight,true);
+      ExpectationReductionPionIsoTrackHTEff_->Fill(HT,Weight,true);
+      ExpectationReductionPionIsoTrackMHTEff_->Fill(MHT,Weight,true);
+      ExpectationReductionPionIsoTrackPTEff_->Fill(IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
+      ExpectationReductionPionIsoTrackActivityEff_->Fill(IsolatedPionTracksVetoActivity->at(0),Weight,true);
 		
-	//2D
-	PionIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
-	PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
-	PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
-	PionIsoTrackReductionPTActivity_->Fill(IsolatedPionTracksVeto->at(0).Pt(),IsolatedPionTracksVetoActivity->at(0),Weight,true);
-	// cout << "DONE" << endl;		
-      }
-  } // end event loop
+      //2D
+      PionIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
+      PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
+      PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
+      PionIsoTrackReductionPTActivity_->Fill(IsolatedPionTracksVeto->at(0).Pt(),IsolatedPionTracksVetoActivity->at(0),Weight,true);
+      // cout << "DONE" << endl;		
+    }
+  return kTRUE;
+}
+
+void EffMaker::SlaveTerminate()
+{
+  // The SlaveTerminate() function is called after all entries or objects
+  // have been processed. When running with PROOF SlaveTerminate() is called
+  // on each slave server.
+  
+}
+
+void EffMaker::Terminate()
+{
 
 	
   TFile *outPutFile = new TFile("Efficiencies.root","RECREATE"); 

@@ -15,14 +15,22 @@ using std::vector;
 void MakeExpectation()
 {
 
+  bool useTProof = false;
+  TProof *proof = NULL;
+  
   gSystem->Load("libPhysics.so");
   gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
-  gROOT->ProcessLine(".L ExpecMaker.C+");
   
   TChain *Effchain = new TChain("TreeMaker2/PreSelection");
   Effchain->Add("/eos/uscms/store/user/jbradmil/lldev/13TeV_25ns20PU.TTJets_SingleLeptFromTbar*ext*SIM_90*.root");
-  
-  ExpecMaker* expmkr = new ExpecMaker(Effchain);
-  expmkr->Loop();
+
+  if(useTProof){
+    proof = TProof::Open("workers=10");
+    Effchain->SetProof();     	
+  }
+
+  Effchain->Process("ExpecMaker.C++g");
+
+  delete proof;
 
 }
