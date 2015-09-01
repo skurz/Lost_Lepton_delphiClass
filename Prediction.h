@@ -797,11 +797,11 @@ void Prediction::Init(TTree *tree)
    fChain->SetBranchAddress("PassTrigger", &PassTrigger, &b_PassTrigger);
    fChain->SetBranchAddress("TriggerNames", &TriggerNames, &b_TriggerNames);
    fChain->SetBranchAddress("bestPhoton", &bestPhoton, &b_bestPhoton);
-
+/*
    fChain->SetBranchStatus("Gen*",0);
    fChain->SetBranchStatus("gen*",0);
    fChain->SetBranchStatus("Tau*",0);
-   //fChain->SetBranchStatus("tau*",0);
+*/   //fChain->SetBranchStatus("tau*",0);
 }
 
 Bool_t Prediction::Notify()

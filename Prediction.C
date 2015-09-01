@@ -289,6 +289,10 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("totalSysDown", &totalSysDown, "totalSysDown/F");
   tPrediction_->Branch("totalUncDown", &totalUncDown, "totalUncDown/F");
 
+  tPrediction_->Branch("PassTrigger", &PassTrigger);
+  tPrediction_->Branch("TriggerNames", &TriggerNames);
+  tPrediction_->Branch("bestPhoton", &bestPhoton);
+
   GetOutputList()->Add(tPrediction_);
   SearchBins_ = new SearchBins(false); // 72 searchbins
   SearchBinsQCD_ = new SearchBins(true); // 220 QCD binning
@@ -305,7 +309,7 @@ Bool_t Prediction::Process(Long64_t entry)
 {
   resetValues();
   fChain->GetTree()->GetEntry(entry);
-  
+ 
   if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_  ) return kTRUE;
   if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ ) return kTRUE;
   if(useDeltaPhiCut == -1) if(!(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_)) return kTRUE;
