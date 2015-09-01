@@ -146,15 +146,15 @@ public :
   std::vector<UShort_t> muIsoTrackMatchedToGenSingleProngTau, elecIsoTrackMatchedToGenSingleProngTau, pionIsoTrackMatchedToGenSingleProngTau;
   std::vector<Float_t> IsolatedMuonTracksVetoActivity,IsolatedElectronTracksVetoActivity,IsolatedPionTracksVetoActivity;
   std::vector<Float_t> IsolatedMuonTracksVetoMTW,IsolatedElectronTracksVetoMTW,IsolatedPionTracksVetoMTW;
-  std::vector<UShort_t>         RecoIsoMuonPromptMatched;
-  std::vector<Float_t>         RecoIsoMuonPromptMatchedDeltaR;
-  std::vector<Float_t>         RecoIsoMuonPromptMatchedRelPt;
-  std::vector<UShort_t>         RecoIsoElecPromptMatched;
-  std::vector<Float_t>         RecoIsoElecPromptMatchedDeltaR;
-  std::vector<Float_t>         RecoIsoElecPromptMatchedRelPt;
+  std::vector<UShort_t>         selectedIDIsoMuonsPromptMatched;
+  std::vector<Float_t>         selectedIDIsoMuonsPromptMatchedDeltaR;
+  std::vector<Float_t>         selectedIDIsoMuonsPromptMatchedRelPt;
+  std::vector<UShort_t>         selectedIDIsoElectronsPromptMatched;
+  std::vector<Float_t>         selectedIDIsoElectronsPromptMatchedDeltaR;
+  std::vector<Float_t>         selectedIDIsoElectronsPromptMatchedRelPt;
   // isolated track studies
-  std::vector<UShort_t> GenMuonIsoTrackMatched, RecoIsoMuonIsoTrackMatched;
-  std::vector<UShort_t> GenElecIsoTrackMatched, RecoIsoElecIsoTrackMatched;
+  std::vector<UShort_t> GenMuonIsoTrackMatched, selectedIDIsoMuonsIsoTrackMatched;
+  std::vector<UShort_t> GenElecIsoTrackMatched, selectedIDIsoElectronsIsoTrackMatched;
   std::vector<Float_t> GenMuDeltaRJet_, GenMuRelPTJet_;
   std::vector<Float_t> GenElecDeltaRJet_, GenElecRelPTJet_;
   std::vector<UShort_t> GenTauIsoTrackMatched;
@@ -162,23 +162,23 @@ public :
   std::vector<Float_t> SelectedIsoTracksMatchedToGenDeltaR, SelectedIsoTracksMatchedToGenRelPT;
   std::vector<Float_t> SelectedIsoTracksMatchedToRecoIsoDeltaR, SelectedIsoTracksMatchedToRecoIsoRelPT;
 	
-  std::vector<UShort_t> GenMuonIsolatedTracksPT10Matched, RecoIsoMuonIsolatedTracksPT10Matched;
-  std::vector<UShort_t> GenElecIsolatedTracksPT10Matched, RecoIsoElecIsolatedTracksPT10Matched;
+  std::vector<UShort_t> GenMuonIsolatedTracksPT10Matched, selectedIDIsoMuonsIsolatedTracksPT10Matched;
+  std::vector<UShort_t> GenElecIsolatedTracksPT10Matched, selectedIDIsoElectronsIsolatedTracksPT10Matched;
   std::vector<UShort_t> GenTauIsolatedTracksPT10Matched;
   std::vector<UShort_t> IsolatedTracksPT10MatchedToGenLepton, IsolatedTracksPT10MatchedToRecoIsoLepton;
   std::vector<Float_t> IsolatedTracksPT10MatchedToGenDeltaR, IsolatedTracksPT10MatchedToGenRelPT;
   std::vector<Float_t> IsolatedTracksPT10MatchedToRecoIsoDeltaR, IsolatedTracksPT10MatchedToRecoIsoRelPT;
 	
-  std::vector<UShort_t> GenMuonIsolatedTracksPT10IsoCut08Matched, RecoIsoMuonIsolatedTracksPT10IsoCut08Matched;
-  std::vector<UShort_t> GenElecIsolatedTracksPT10IsoCut08Matched, RecoIsoElecIsolatedTracksPT10IsoCut08Matched;
+  std::vector<UShort_t> GenMuonIsolatedTracksPT10IsoCut08Matched, selectedIDIsoMuonsIsolatedTracksPT10IsoCut08Matched;
+  std::vector<UShort_t> GenElecIsolatedTracksPT10IsoCut08Matched, selectedIDIsoElectronsIsolatedTracksPT10IsoCut08Matched;
   std::vector<UShort_t> GenTauIsolatedTracksPT10IsoCut08Matched;
   std::vector<UShort_t> IsolatedTracksPT10IsoCut08MatchedToGenLepton, IsolatedTracksPT10IsoCut08MatchedToRecoIsoLepton;
   std::vector<Float_t> IsolatedTracksPT10IsoCut08MatchedToGenDeltaR, IsolatedTracksPT10IsoCut08MatchedToGenRelPT;
   std::vector<Float_t> IsolatedTracksPT10IsoCut08MatchedToRecoIsoDeltaR, IsolatedTracksPT10IsoCut08MatchedToRecoIsoRelPT;
 	
 	
-  std::vector<UShort_t> GenMuonIsolatedTracksPT10IsoCut12Matched, RecoIsoMuonIsolatedTracksPT10IsoCut12Matched;
-  std::vector<UShort_t> GenElecIsolatedTracksPT10IsoCut12Matched, RecoIsoElecIsolatedTracksPT10IsoCut12Matched;
+  std::vector<UShort_t> GenMuonIsolatedTracksPT10IsoCut12Matched, selectedIDIsoMuonsIsolatedTracksPT10IsoCut12Matched;
+  std::vector<UShort_t> GenElecIsolatedTracksPT10IsoCut12Matched, selectedIDIsoElectronsIsolatedTracksPT10IsoCut12Matched;
   std::vector<UShort_t> GenTauIsolatedTracksPT10IsoCut12Matched;
   std::vector<UShort_t> IsolatedTracksPT10IsoCut12MatchedToGenLepton, IsolatedTracksPT10IsoCut12MatchedToRecoIsoLepton;
   std::vector<Float_t> IsolatedTracksPT10IsoCut12MatchedToGenDeltaR, IsolatedTracksPT10IsoCut12MatchedToGenRelPT;
@@ -192,8 +192,8 @@ public :
   UShort_t IsoTrackDiLepControlSampleElec_, IsoTrackDiLepControlSampleMu_, IsoTrackDiLepElec_, IsoTrackDiLepMu_;
 	
   // activity resetValues
-  std::vector<Float_t>         RecoIsoMuonActivity, RecoMuonActivity, GenMuonActivity;
-  std::vector<Float_t>         RecoIsoElectronActivity, RecoElectronActivity, GenElecActivity;
+  std::vector<Float_t>         selectedIDIsoMuonsActivity, selectedIDMuonsActivity, GenMuonActivity;
+  std::vector<Float_t>         selectedIDIsoElectronsActivity, selectedIDElectronsActivity, GenElecActivity;
 	
   std::vector<Float_t> IsoTrackActivity, GenTauActivity;
   UShort_t elecActivityMethod, muActivityMethod, muIsoTrackActivityMethod, elecIsoTrackActivityMethod, pionIsoTrackActivityMethod;

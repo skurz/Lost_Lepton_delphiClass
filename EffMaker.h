@@ -526,31 +526,31 @@ class EffMaker : public TSelector {
   UShort_t        selectedIDIsoMuonsNum;
   std::vector<TLorentzVector> *selectedIDIsoMuons=0;
   std::vector<unsigned short> *muIsoMatched=0;
-  std::vector<unsigned short> *RecoIsoMuonPromptMatched=0;
-  std::vector<float>   *RecoIsoMuonPromptMatchedDeltaR=0;
-  std::vector<float>   *RecoIsoMuonPromptMatchedRelPt=0;
+  std::vector<unsigned short> *selectedIDIsoMuonsPromptMatched=0;
+  std::vector<float>   *selectedIDIsoMuonsPromptMatchedDeltaR=0;
+  std::vector<float>   *selectedIDIsoMuonsPromptMatchedRelPt=0;
   std::vector<double>  *selectedIDIsoMuons_MTW=0;
-  std::vector<float>   *RecoIsoMuonActivity=0;
+  std::vector<float>   *selectedIDIsoMuonsActivity=0;
   UShort_t        selectedIDMuonsNum;
   std::vector<TLorentzVector> *selectedIDMuons=0;
   std::vector<unsigned short> *selectedIDMuonsMatched=0;
   std::vector<double>  *selectedIDMuons_MTW=0;
-  std::vector<float>   *RecoMuonActivity=0;
-  std::vector<unsigned short> *RecoIsoMuonIsoTrackMatched=0;
+  std::vector<float>   *selectedIDMuonsActivity=0;
+  std::vector<unsigned short> *selectedIDIsoMuonsIsoTrackMatched=0;
   UShort_t        selectedIDIsoElectronsNum;
   std::vector<TLorentzVector> *selectedIDIsoElectrons=0;
   std::vector<unsigned short> *elecIsoMatched=0;
-  std::vector<unsigned short> *RecoIsoElecPromptMatched=0;
-  std::vector<float>   *RecoIsoElecPromptMatchedDeltaR=0;
-  std::vector<float>   *RecoIsoElecPromptMatchedRelPt=0;
+  std::vector<unsigned short> *selectedIDIsoElectronsPromptMatched=0;
+  std::vector<float>   *selectedIDIsoElectronsPromptMatchedDeltaR=0;
+  std::vector<float>   *selectedIDIsoElectronsPromptMatchedRelPt=0;
   std::vector<double>  *selectedIDIsoElectrons_MTW=0;
-  std::vector<float>   *RecoIsoElectronActivity=0;
-  std::vector<unsigned short> *RecoIsoElecIsoTrackMatched=0;
+  std::vector<float>   *selectedIDIsoElectronsActivity=0;
+  std::vector<unsigned short> *selectedIDIsoElectronsIsoTrackMatched=0;
   UShort_t        selectedIDElectronsNum;
   std::vector<TLorentzVector> *selectedIDElectrons=0;
   std::vector<unsigned short> *selectedIDElectronsMatched=0;
   std::vector<double>  *selectedIDElectrons_MTW=0;
-  std::vector<float>   *RecoElectronActivity=0;
+  std::vector<float>   *selectedIDElectronsActivity=0;
   Int_t           isoElectronTracks;
   std::vector<TLorentzVector> *IsolatedElectronTracksVeto=0;
   std::vector<float>   *IsolatedElectronTracksVetoActivity=0;
@@ -664,31 +664,31 @@ class EffMaker : public TSelector {
   TBranch        *b_selectedIDIsoMuonsNum=0;   //!
   TBranch        *b_selectedIDIsoMuons=0;   //!
   TBranch        *b_muIsoMatched=0;   //!
-  TBranch        *b_RecoIsoMuonPromptMatched=0;   //!
-  TBranch        *b_RecoIsoMuonPromptMatchedDeltaR=0;   //!
-  TBranch        *b_RecoIsoMuonPromptMatchedRelPt=0;   //!
+  TBranch        *b_selectedIDIsoMuonsPromptMatched=0;   //!
+  TBranch        *b_selectedIDIsoMuonsPromptMatchedDeltaR=0;   //!
+  TBranch        *b_selectedIDIsoMuonsPromptMatchedRelPt=0;   //!
   TBranch        *b_selectedIDIsoMuons_MTW=0;   //!
-  TBranch        *b_RecoIsoMuonActivity=0;   //!
+  TBranch        *b_selectedIDIsoMuonsActivity=0;   //!
   TBranch        *b_selectedIDMuonsNum=0;   //!
   TBranch        *b_selectedIDMuons=0;   //!
   TBranch        *b_selectedIDMuonsMatched=0;   //!
   TBranch        *b_selectedIDMuons_MTW=0;   //!
-  TBranch        *b_RecoMuonActivity=0;   //!
-  TBranch        *b_RecoIsoMuonIsoTrackMatched=0;   //!
+  TBranch        *b_selectedIDMuonsActivity=0;   //!
+  TBranch        *b_selectedIDIsoMuonsIsoTrackMatched=0;   //!
   TBranch        *b_selectedIDIsoElectronsNum=0;   //!
   TBranch        *b_selectedIDIsoElectrons=0;   //!
   TBranch        *b_elecIsoMatched=0;   //!
-  TBranch        *b_RecoIsoElecPromptMatched=0;   //!
-  TBranch        *b_RecoIsoElecPromptMatchedDeltaR=0;   //!
-  TBranch        *b_RecoIsoElecPromptMatchedRelPt=0;   //!
+  TBranch        *b_selectedIDIsoElectronsPromptMatched=0;   //!
+  TBranch        *b_selectedIDIsoElectronsPromptMatchedDeltaR=0;   //!
+  TBranch        *b_selectedIDIsoElectronsPromptMatchedRelPt=0;   //!
   TBranch        *b_selectedIDIsoElectrons_MTW=0;   //!
-  TBranch        *b_RecoIsoElectronActivity=0;   //!
-  TBranch        *b_RecoIsoElecIsoTrackMatched=0;   //!
+  TBranch        *b_selectedIDIsoElectronsActivity=0;   //!
+  TBranch        *b_selectedIDIsoElectronsIsoTrackMatched=0;   //!
   TBranch        *b_selectedIDElectronsNum=0;   //!
   TBranch        *b_selectedIDElectrons=0;   //!
   TBranch        *b_selectedIDElectronsMatched=0;   //!
   TBranch        *b_selectedIDElectrons_MTW=0;   //!
-  TBranch        *b_RecoElectronActivity=0;   //!
+  TBranch        *b_selectedIDElectronsActivity=0;   //!
   TBranch        *b_isoElectronTracks=0;   //!
   TBranch        *b_IsolatedElectronTracksVeto=0;   //!
   TBranch        *b_IsolatedElectronTracksVetoActivity=0;   //!
@@ -841,31 +841,31 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("selectedIDIsoMuonsNum", &selectedIDIsoMuonsNum, &b_selectedIDIsoMuonsNum);
   fChain->SetBranchAddress("selectedIDIsoMuons", &selectedIDIsoMuons, &b_selectedIDIsoMuons);
   fChain->SetBranchAddress("muIsoMatched", &muIsoMatched, &b_muIsoMatched);
-  fChain->SetBranchAddress("RecoIsoMuonPromptMatched", &RecoIsoMuonPromptMatched, &b_RecoIsoMuonPromptMatched);
-  fChain->SetBranchAddress("RecoIsoMuonPromptMatchedDeltaR", &RecoIsoMuonPromptMatchedDeltaR, &b_RecoIsoMuonPromptMatchedDeltaR);
-  fChain->SetBranchAddress("RecoIsoMuonPromptMatchedRelPt", &RecoIsoMuonPromptMatchedRelPt, &b_RecoIsoMuonPromptMatchedRelPt);
+  fChain->SetBranchAddress("selectedIDIsoMuonsPromptMatched", &selectedIDIsoMuonsPromptMatched, &b_selectedIDIsoMuonsPromptMatched);
+  fChain->SetBranchAddress("selectedIDIsoMuonsPromptMatchedDeltaR", &selectedIDIsoMuonsPromptMatchedDeltaR, &b_selectedIDIsoMuonsPromptMatchedDeltaR);
+  fChain->SetBranchAddress("selectedIDIsoMuonsPromptMatchedRelPt", &selectedIDIsoMuonsPromptMatchedRelPt, &b_selectedIDIsoMuonsPromptMatchedRelPt);
   fChain->SetBranchAddress("selectedIDIsoMuons_MTW", &selectedIDIsoMuons_MTW, &b_selectedIDIsoMuons_MTW);
-  fChain->SetBranchAddress("RecoIsoMuonActivity", &RecoIsoMuonActivity, &b_RecoIsoMuonActivity);
+  fChain->SetBranchAddress("selectedIDIsoMuonsActivity", &selectedIDIsoMuonsActivity, &b_selectedIDIsoMuonsActivity);
   fChain->SetBranchAddress("selectedIDMuonsNum", &selectedIDMuonsNum, &b_selectedIDMuonsNum);
   fChain->SetBranchAddress("selectedIDMuons", &selectedIDMuons, &b_selectedIDMuons);
   fChain->SetBranchAddress("selectedIDMuonsMatched", &selectedIDMuonsMatched, &b_selectedIDMuonsMatched);
   fChain->SetBranchAddress("selectedIDMuons_MTW", &selectedIDMuons_MTW, &b_selectedIDMuons_MTW);
-  fChain->SetBranchAddress("RecoMuonActivity", &RecoMuonActivity, &b_RecoMuonActivity);
-  fChain->SetBranchAddress("RecoIsoMuonIsoTrackMatched", &RecoIsoMuonIsoTrackMatched, &b_RecoIsoMuonIsoTrackMatched);
+  fChain->SetBranchAddress("selectedIDMuonsActivity", &selectedIDMuonsActivity, &b_selectedIDMuonsActivity);
+  fChain->SetBranchAddress("selectedIDIsoMuonsIsoTrackMatched", &selectedIDIsoMuonsIsoTrackMatched, &b_selectedIDIsoMuonsIsoTrackMatched);
   fChain->SetBranchAddress("selectedIDIsoElectronsNum", &selectedIDIsoElectronsNum, &b_selectedIDIsoElectronsNum);
   fChain->SetBranchAddress("selectedIDIsoElectrons", &selectedIDIsoElectrons, &b_selectedIDIsoElectrons);
   fChain->SetBranchAddress("elecIsoMatched", &elecIsoMatched, &b_elecIsoMatched);
-  fChain->SetBranchAddress("RecoIsoElecPromptMatched", &RecoIsoElecPromptMatched, &b_RecoIsoElecPromptMatched);
-  fChain->SetBranchAddress("RecoIsoElecPromptMatchedDeltaR", &RecoIsoElecPromptMatchedDeltaR, &b_RecoIsoElecPromptMatchedDeltaR);
-  fChain->SetBranchAddress("RecoIsoElecPromptMatchedRelPt", &RecoIsoElecPromptMatchedRelPt, &b_RecoIsoElecPromptMatchedRelPt);
+  fChain->SetBranchAddress("selectedIDIsoElectronsPromptMatched", &selectedIDIsoElectronsPromptMatched, &b_selectedIDIsoElectronsPromptMatched);
+  fChain->SetBranchAddress("selectedIDIsoElectronsPromptMatchedDeltaR", &selectedIDIsoElectronsPromptMatchedDeltaR, &b_selectedIDIsoElectronsPromptMatchedDeltaR);
+  fChain->SetBranchAddress("selectedIDIsoElectronsPromptMatchedRelPt", &selectedIDIsoElectronsPromptMatchedRelPt, &b_selectedIDIsoElectronsPromptMatchedRelPt);
   fChain->SetBranchAddress("selectedIDIsoElectrons_MTW", &selectedIDIsoElectrons_MTW, &b_selectedIDIsoElectrons_MTW);
-  fChain->SetBranchAddress("RecoIsoElectronActivity", &RecoIsoElectronActivity, &b_RecoIsoElectronActivity);
-  fChain->SetBranchAddress("RecoIsoElecIsoTrackMatched", &RecoIsoElecIsoTrackMatched, &b_RecoIsoElecIsoTrackMatched);
+  fChain->SetBranchAddress("selectedIDIsoElectronsActivity", &selectedIDIsoElectronsActivity, &b_selectedIDIsoElectronsActivity);
+  fChain->SetBranchAddress("selectedIDIsoElectronsIsoTrackMatched", &selectedIDIsoElectronsIsoTrackMatched, &b_selectedIDIsoElectronsIsoTrackMatched);
   fChain->SetBranchAddress("selectedIDElectronsNum", &selectedIDElectronsNum, &b_selectedIDElectronsNum);
   fChain->SetBranchAddress("selectedIDElectrons", &selectedIDElectrons, &b_selectedIDElectrons);
   fChain->SetBranchAddress("selectedIDElectronsMatched", &selectedIDElectronsMatched, &b_selectedIDElectronsMatched);
   fChain->SetBranchAddress("selectedIDElectrons_MTW", &selectedIDElectrons_MTW, &b_selectedIDElectrons_MTW);
-  fChain->SetBranchAddress("RecoElectronActivity", &RecoElectronActivity, &b_RecoElectronActivity);
+  fChain->SetBranchAddress("selectedIDElectronsActivity", &selectedIDElectronsActivity, &b_selectedIDElectronsActivity);
   fChain->SetBranchAddress("isoElectronTracks", &isoElectronTracks, &b_isoElectronTracks);
   fChain->SetBranchAddress("IsolatedElectronTracksVeto", &IsolatedElectronTracksVeto, &b_IsolatedElectronTracksVeto);
   fChain->SetBranchAddress("IsolatedElectronTracksVetoActivity", &IsolatedElectronTracksVetoActivity, &b_IsolatedElectronTracksVetoActivity);

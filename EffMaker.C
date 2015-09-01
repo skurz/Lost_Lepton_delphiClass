@@ -404,7 +404,7 @@ Bool_t EffMaker::Process(Long64_t entry)
   if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0)
     {
       //cout << "muon event" << endl;
-      if(RecoIsoMuonPromptMatched->at(0)==1)
+      if(selectedIDIsoMuonsPromptMatched->at(0)==1)
 	{
 	  // cout << "PromptMatched" << endl;
 	  //1D
@@ -413,11 +413,11 @@ Bool_t EffMaker::Process(Long64_t entry)
 	  MuPurityHT_->Fill(HT,Weight,true);
 	  MuPurityMHT_->Fill(MHT,Weight,true);
 	  MuPurityPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,true);
-	  MuPurityActivity_->Fill(RecoIsoMuonActivity->at(0),Weight,true);
+	  MuPurityActivity_->Fill(selectedIDIsoMuonsActivity->at(0),Weight,true);
 	  //2D
 	  MuonPurityMHTNJet_->Fill(MHT,NJets,Weight,true);
 	}
-      if(RecoIsoMuonPromptMatched->at(0)==0)
+      if(selectedIDIsoMuonsPromptMatched->at(0)==0)
 	{
 	  //1D
 	  MuPurityBTag_->Fill(BTags,Weight,false);
@@ -425,7 +425,7 @@ Bool_t EffMaker::Process(Long64_t entry)
 	  MuPurityHT_->Fill(HT,Weight,false);
 	  MuPurityMHT_->Fill(MHT,Weight,false);
 	  MuPurityPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,false);
-	  MuPurityActivity_->Fill(RecoIsoMuonActivity->at(0),Weight,false);
+	  MuPurityActivity_->Fill(selectedIDIsoMuonsActivity->at(0),Weight,false);
 	  //2D
 	  MuonPurityMHTNJet_->Fill(MHT,NJets,Weight,false);
 	}
@@ -433,7 +433,7 @@ Bool_t EffMaker::Process(Long64_t entry)
   // single elec control sample
   if(selectedIDIsoMuonsNum==0 && selectedIDIsoElectronsNum==1)
     {
-      if(RecoIsoElecPromptMatched->at(0)==1)
+      if(selectedIDIsoElectronsPromptMatched->at(0)==1)
 	{
 	  //1D
 	  ElecPurityBTag_->Fill(BTags,Weight,true);
@@ -441,11 +441,11 @@ Bool_t EffMaker::Process(Long64_t entry)
 	  ElecPurityHT_->Fill(HT,Weight,true);
 	  ElecPurityMHT_->Fill(MHT,Weight,true);
 	  ElecPurityPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,true);
-	  ElecPurityActivity_->Fill(RecoIsoElectronActivity->at(0),Weight,true);
+	  ElecPurityActivity_->Fill(selectedIDIsoElectronsActivity->at(0),Weight,true);
 	  //2D
 	  ElecPurityMHTNJet_->Fill(MHT,NJets,Weight,true);
 	}
-      if(RecoIsoElecPromptMatched->at(0)==0)
+      if(selectedIDIsoElectronsPromptMatched->at(0)==0)
 	{
 	  //1D
 	  ElecPurityBTag_->Fill(BTags,Weight,false);
@@ -453,7 +453,7 @@ Bool_t EffMaker::Process(Long64_t entry)
 	  ElecPurityHT_->Fill(HT,Weight,false);
 	  ElecPurityMHT_->Fill(MHT,Weight,false);
 	  ElecPurityPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,false);
-	  ElecPurityActivity_->Fill(RecoIsoElectronActivity->at(0),Weight,false);
+	  ElecPurityActivity_->Fill(selectedIDIsoElectronsActivity->at(0),Weight,false);
 	  //2D
 	  ElecPurityMHTNJet_->Fill(MHT,NJets,Weight,false);
 	}
@@ -734,8 +734,8 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuMTWHT_->Fill(HT,Weight,true);
       MuMTWMHT_->Fill(MHT,Weight,true);
       MuMTWPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,true);
-      MuMTWActivity_->Fill(RecoIsoMuonActivity->at(0),Weight,true);
-      MuMTWPTActivity_->Fill(selectedIDIsoMuons->at(0).Pt(),RecoIsoMuonActivity->at(0),Weight,true);
+      MuMTWActivity_->Fill(selectedIDIsoMuonsActivity->at(0),Weight,true);
+      MuMTWPTActivity_->Fill(selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity->at(0),Weight,true);
     }
   if(muIso==2 && MTW > mtwCut_)
     {
@@ -745,8 +745,8 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuMTWHT_->Fill(HT,Weight,false);
       MuMTWMHT_->Fill(MHT,Weight,false);
       MuMTWPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,false);
-      MuMTWActivity_->Fill(RecoIsoMuonActivity->at(0),Weight,false);
-      MuMTWPTActivity_->Fill(selectedIDIsoMuons->at(0).Pt(),RecoIsoMuonActivity->at(0),Weight,false);
+      MuMTWActivity_->Fill(selectedIDIsoMuonsActivity->at(0),Weight,false);
+      MuMTWPTActivity_->Fill(selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity->at(0),Weight,false);
     }
   
   // single elec control sample
@@ -758,8 +758,8 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecMTWHT_->Fill(HT,Weight,true);
       ElecMTWMHT_->Fill(MHT,Weight,true);
       ElecMTWPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,true);
-      ElecMTWActivity_->Fill(RecoIsoElectronActivity->at(0),Weight,true);
-      ElecMTWPTActivity_->Fill(selectedIDIsoElectrons->at(0).Pt(),RecoIsoElectronActivity->at(0),Weight,true);
+      ElecMTWActivity_->Fill(selectedIDIsoElectronsActivity->at(0),Weight,true);
+      ElecMTWPTActivity_->Fill(selectedIDIsoElectrons->at(0).Pt(),selectedIDIsoElectronsActivity->at(0),Weight,true);
     }
   if(elecIso==2 && MTW > mtwCut_)
     {
@@ -769,8 +769,8 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecMTWHT_->Fill(HT,Weight,false);
       ElecMTWMHT_->Fill(MHT,Weight,false);
       ElecMTWPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,false);
-      ElecMTWActivity_->Fill(RecoIsoElectronActivity->at(0),Weight,false);
-      ElecMTWPTActivity_->Fill(selectedIDIsoElectrons->at(0).Pt(),RecoIsoElectronActivity->at(0),Weight,false);
+      ElecMTWActivity_->Fill(selectedIDIsoElectronsActivity->at(0),Weight,false);
+      ElecMTWPTActivity_->Fill(selectedIDIsoElectrons->at(0).Pt(),selectedIDIsoElectronsActivity->at(0),Weight,false);
     }
   // di lep contribution
   if(MuDiLepControlSample==2)

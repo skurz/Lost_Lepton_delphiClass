@@ -91,31 +91,31 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum_);
   tExpectation_->Branch("selectedIDIsoMuons", "std::vector<TLorentzVector>", &selectedIDIsoMuons, 32000, 0);
   tExpectation_->Branch("muIsoMatched", &muIsoMatched);
-  tExpectation_->Branch("RecoIsoMuonPromptMatched", &RecoIsoMuonPromptMatched);
-  tExpectation_->Branch("RecoIsoMuonPromptMatchedDeltaR", &RecoIsoMuonPromptMatchedDeltaR);
-  tExpectation_->Branch("RecoIsoMuonPromptMatchedRelPt", &RecoIsoMuonPromptMatchedRelPt);
+  tExpectation_->Branch("selectedIDIsoMuonsPromptMatched", &selectedIDIsoMuonsPromptMatched);
+  tExpectation_->Branch("selectedIDIsoMuonsPromptMatchedDeltaR", &selectedIDIsoMuonsPromptMatchedDeltaR);
+  tExpectation_->Branch("selectedIDIsoMuonsPromptMatchedRelPt", &selectedIDIsoMuonsPromptMatchedRelPt);
   tExpectation_->Branch("selectedIDIsoMuons_MTW", &selectedIDIsoMuons_MTW);
-  tExpectation_->Branch("RecoIsoMuonActivity", &RecoIsoMuonActivity);
+  tExpectation_->Branch("selectedIDIsoMuonsActivity", &selectedIDIsoMuonsActivity);
   tExpectation_->Branch("selectedIDMuonsNum",&selectedIDMuonsNum_);
   tExpectation_->Branch("selectedIDMuons", "std::vector<TLorentzVector>", &selectedIDMuons, 32000, 0);
   tExpectation_->Branch("selectedIDMuonsMatched", &muRecoMatched);
   tExpectation_->Branch("selectedIDMuons_MTW", &selectedIDMuons_MTW);
-  tExpectation_->Branch("RecoMuonActivity", &RecoMuonActivity);
-  tExpectation_->Branch("RecoIsoMuonIsoTrackMatched", &RecoIsoMuonIsoTrackMatched);  
+  tExpectation_->Branch("selectedIDMuonsActivity", &selectedIDMuonsActivity);
+  tExpectation_->Branch("selectedIDIsoMuonsIsoTrackMatched", &selectedIDIsoMuonsIsoTrackMatched);  
   tExpectation_->Branch("selectedIDIsoElectronsNum",&selectedIDIsoElectronsNum_);
   tExpectation_->Branch("selectedIDIsoElectrons", "std::vector<TLorentzVector>", &selectedIDIsoElectrons, 32000, 0);
   tExpectation_->Branch("elecIsoMatched", &elecIsoMatched);
-  tExpectation_->Branch("RecoIsoElecPromptMatched", &RecoIsoElecPromptMatched);
-  tExpectation_->Branch("RecoIsoElecPromptMatchedDeltaR", &RecoIsoElecPromptMatchedDeltaR);
-  tExpectation_->Branch("RecoIsoElecPromptMatchedRelPt", &RecoIsoElecPromptMatchedRelPt);
+  tExpectation_->Branch("selectedIDIsoElectronsPromptMatched", &selectedIDIsoElectronsPromptMatched);
+  tExpectation_->Branch("selectedIDIsoElectronsPromptMatchedDeltaR", &selectedIDIsoElectronsPromptMatchedDeltaR);
+  tExpectation_->Branch("selectedIDIsoElectronsPromptMatchedRelPt", &selectedIDIsoElectronsPromptMatchedRelPt);
   tExpectation_->Branch("selectedIDIsoElectrons_MTW", &selectedIDIsoElectrons_MTW);
-  tExpectation_->Branch("RecoIsoElectronActivity", &RecoIsoElectronActivity);
-  tExpectation_->Branch("RecoIsoElecIsoTrackMatched", &RecoIsoElecIsoTrackMatched);
+  tExpectation_->Branch("selectedIDIsoElectronsActivity", &selectedIDIsoElectronsActivity);
+  tExpectation_->Branch("selectedIDIsoElectronsIsoTrackMatched", &selectedIDIsoElectronsIsoTrackMatched);
   tExpectation_->Branch("selectedIDElectronsNum",&selectedIDElectronsNum_);
   tExpectation_->Branch("selectedIDElectrons", "std::vector<TLorentzVector>", &selectedIDElectrons, 32000, 0);
   tExpectation_->Branch("selectedIDElectronsMatched", &elecRecoMatched);
   tExpectation_->Branch("selectedIDElectrons_MTW", &selectedIDElectrons_MTW);
-  tExpectation_->Branch("RecoElectronActivity", &RecoElectronActivity);
+  tExpectation_->Branch("selectedIDElectronsActivity", &selectedIDElectronsActivity);
 	
   if(!DY_)
     {
@@ -391,11 +391,11 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     }
   for(unsigned int i=0; i< selectedIDMuonsNum_;i++)
     {
-      RecoMuonActivity.push_back(MuActivity(selectedIDMuons->at(i).Eta(),selectedIDMuons->at(i).Phi(),muActivityMethod_));
+      selectedIDMuonsActivity.push_back(MuActivity(selectedIDMuons->at(i).Eta(),selectedIDMuons->at(i).Phi(),muActivityMethod_));
     }
   for(unsigned int i=0; i< selectedIDIsoMuonsNum_;i++)
     {
-      RecoIsoMuonActivity.push_back(MuActivity(selectedIDIsoMuons->at(i).Eta(),selectedIDIsoMuons->at(i).Phi(),muActivityMethod_));
+      selectedIDIsoMuonsActivity.push_back(MuActivity(selectedIDIsoMuons->at(i).Eta(),selectedIDIsoMuons->at(i).Phi(),muActivityMethod_));
     }
   for(unsigned int i=0; i< GenElecNum_;i++)
     {
@@ -407,11 +407,11 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     }
   for(unsigned int i=0; i< selectedIDElectronsNum_;i++)
     {
-      RecoElectronActivity.push_back(ElecActivity(selectedIDElectrons->at(i).Eta(),selectedIDElectrons->at(i).Phi(),elecActivityMethod_));
+      selectedIDElectronsActivity.push_back(ElecActivity(selectedIDElectrons->at(i).Eta(),selectedIDElectrons->at(i).Phi(),elecActivityMethod_));
     }
   for(unsigned int i=0; i< selectedIDIsoElectronsNum_;i++)
     {
-      RecoIsoElectronActivity.push_back(ElecActivity(selectedIDIsoElectrons->at(i).Eta(),selectedIDIsoElectrons->at(i).Phi(),elecActivityMethod_));
+      selectedIDIsoElectronsActivity.push_back(ElecActivity(selectedIDIsoElectrons->at(i).Eta(),selectedIDIsoElectrons->at(i).Phi(),elecActivityMethod_));
     }
   if(DY_)
     {
@@ -568,96 +568,96 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   for (UShort_t i=0; i< selectedIDIsoMuonsNum_;i++)
     {
       if(selectedIDIsoMuonsNum_>1 || MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi())>mtwCut_) {
-	RecoIsoMuonPromptMatched.push_back(-1);
-	RecoIsoMuonPromptMatchedDeltaR.push_back(-999.);
-	RecoIsoMuonPromptMatchedRelPt.push_back(-999.);
+	selectedIDIsoMuonsPromptMatched.push_back(-1);
+	selectedIDIsoMuonsPromptMatchedDeltaR.push_back(-999.);
+	selectedIDIsoMuonsPromptMatchedRelPt.push_back(-999.);
 	continue;
       }
       bool matched=false;
       //	int matchedPromptMuon_=-1;
       double best_score=999.;
-      double RecoIsoMuonPromptMatchedDeltaR_=999., RecoIsoMuonPromptMatchedRelPt_=999.;
+      double selectedIDIsoMuonsPromptMatchedDeltaR_=999., selectedIDIsoMuonsPromptMatchedRelPt_=999.;
       TVector3 recoMu3(selectedIDIsoMuons->at(i).Px(), selectedIDIsoMuons->at(i).Py(), selectedIDIsoMuons->at(i).Pz());
       for(UShort_t ii=0; ii<GenMuNum_;ii++)
 	{
 	  TVector3 genMu3(GenMus->at(ii).Px(), GenMus->at(ii).Py(), GenMus->at(ii).Pz());
 	  double this_score=(recoMu3-genMu3).Mag2();
-	  RecoIsoMuonPromptMatchedDeltaR_=deltaR(selectedIDIsoMuons->at(i).Eta(),selectedIDIsoMuons->at(i).Phi(),GenMus->at(ii).Eta(),GenMus->at(ii).Phi());
-	  RecoIsoMuonPromptMatchedRelPt_=(selectedIDIsoMuons->at(i).Pt()-GenMus->at(ii).Pt())/selectedIDIsoMuons->at(i).Pt();
-	  if(this_score<best_score&&RecoIsoMuonPromptMatchedDeltaR_<maxDeltaRIsoToGenMu_ && RecoIsoMuonPromptMatchedRelPt_<maxDiffPtIsoToGenMu_)
+	  selectedIDIsoMuonsPromptMatchedDeltaR_=deltaR(selectedIDIsoMuons->at(i).Eta(),selectedIDIsoMuons->at(i).Phi(),GenMus->at(ii).Eta(),GenMus->at(ii).Phi());
+	  selectedIDIsoMuonsPromptMatchedRelPt_=(selectedIDIsoMuons->at(i).Pt()-GenMus->at(ii).Pt())/selectedIDIsoMuons->at(i).Pt();
+	  if(this_score<best_score&&selectedIDIsoMuonsPromptMatchedDeltaR_<maxDeltaRIsoToGenMu_ && selectedIDIsoMuonsPromptMatchedRelPt_<maxDiffPtIsoToGenMu_)
 	    {
 	      //		matchedPromptMuon=ii;
 	      matched=true;
 	    }
 	}
       if (matched) {
-	RecoIsoMuonPromptMatched.push_back(1);
+	selectedIDIsoMuonsPromptMatched.push_back(1);
       }
       else
 	{
-	  RecoIsoMuonPromptMatched.push_back(0);
+	  selectedIDIsoMuonsPromptMatched.push_back(0);
 	}
       if (GenMuNum_>0) {
-	RecoIsoMuonPromptMatchedDeltaR.push_back(RecoIsoMuonPromptMatchedDeltaR_);
-	RecoIsoMuonPromptMatchedRelPt.push_back(RecoIsoMuonPromptMatchedRelPt_);
+	selectedIDIsoMuonsPromptMatchedDeltaR.push_back(selectedIDIsoMuonsPromptMatchedDeltaR_);
+	selectedIDIsoMuonsPromptMatchedRelPt.push_back(selectedIDIsoMuonsPromptMatchedRelPt_);
       }
       else 
 	{
-	  RecoIsoMuonPromptMatchedDeltaR.push_back(-1);
-	  RecoIsoMuonPromptMatchedRelPt.push_back(-100);
+	  selectedIDIsoMuonsPromptMatchedDeltaR.push_back(-1);
+	  selectedIDIsoMuonsPromptMatchedRelPt.push_back(-100);
 	}
     }
   for (UShort_t i=0; i< selectedIDIsoElectronsNum_;i++)
     {
       if(selectedIDIsoElectronsNum_>1 || MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi())>mtwCut_) {
-	RecoIsoElecPromptMatched.push_back(-1);
-	RecoIsoElecPromptMatchedDeltaR.push_back(-999.);
-	RecoIsoElecPromptMatchedRelPt.push_back(-999.);
+	selectedIDIsoElectronsPromptMatched.push_back(-1);
+	selectedIDIsoElectronsPromptMatchedDeltaR.push_back(-999.);
+	selectedIDIsoElectronsPromptMatchedRelPt.push_back(-999.);
 	continue;
       }
       bool matched=false;
       //	int matchedPromptElec_=-1;
       double best_score=999.;
-      double RecoIsoElecPromptMatchedDeltaR_=999., RecoIsoElecPromptMatchedRelPt_=999.;
+      double selectedIDIsoElectronsPromptMatchedDeltaR_=999., selectedIDIsoElectronsPromptMatchedRelPt_=999.;
       TVector3 recoEl3(selectedIDIsoElectrons->at(i).Px(), selectedIDIsoElectrons->at(i).Py(), selectedIDIsoElectrons->at(i).Pz());
       for(UShort_t ii=0; ii<GenElecNum_;ii++)
 	{
 	  TVector3 genEl3(GenEls->at(ii).Px(), GenEls->at(ii).Py(), GenEls->at(ii).Pz());
 	  double this_score=(recoEl3-genEl3).Mag2();
-	  RecoIsoElecPromptMatchedDeltaR_=deltaR(selectedIDIsoElectrons->at(i).Eta(),selectedIDIsoElectrons->at(i).Phi(),GenEls->at(ii).Eta(),GenEls->at(ii).Phi());
-	  RecoIsoElecPromptMatchedRelPt_=(selectedIDIsoElectrons->at(i).Pt()-GenEls->at(ii).Pt())/selectedIDIsoElectrons->at(i).Pt();
-	  if(this_score<best_score&&RecoIsoElecPromptMatchedDeltaR_<maxDeltaRIsoToGenElec_ && RecoIsoElecPromptMatchedRelPt_<maxDiffPtIsoToGenElec_)
+	  selectedIDIsoElectronsPromptMatchedDeltaR_=deltaR(selectedIDIsoElectrons->at(i).Eta(),selectedIDIsoElectrons->at(i).Phi(),GenEls->at(ii).Eta(),GenEls->at(ii).Phi());
+	  selectedIDIsoElectronsPromptMatchedRelPt_=(selectedIDIsoElectrons->at(i).Pt()-GenEls->at(ii).Pt())/selectedIDIsoElectrons->at(i).Pt();
+	  if(this_score<best_score&&selectedIDIsoElectronsPromptMatchedDeltaR_<maxDeltaRIsoToGenElec_ && selectedIDIsoElectronsPromptMatchedRelPt_<maxDiffPtIsoToGenElec_)
 	    {
 	      //		matchedPromptElectron=ii;
 	      matched=true;
 	    }
 	}
       if (matched) {
-	RecoIsoElecPromptMatched.push_back(1);
+	selectedIDIsoElectronsPromptMatched.push_back(1);
       }
       else
 	{
-	  RecoIsoElecPromptMatched.push_back(0);
+	  selectedIDIsoElectronsPromptMatched.push_back(0);
 	}
       if (GenMuNum_>0) {
-	RecoIsoElecPromptMatchedDeltaR.push_back(RecoIsoElecPromptMatchedDeltaR_);
-	RecoIsoElecPromptMatchedRelPt.push_back(RecoIsoElecPromptMatchedRelPt_);
+	selectedIDIsoElectronsPromptMatchedDeltaR.push_back(selectedIDIsoElectronsPromptMatchedDeltaR_);
+	selectedIDIsoElectronsPromptMatchedRelPt.push_back(selectedIDIsoElectronsPromptMatchedRelPt_);
       }
       else 
 	{
-	  RecoIsoElecPromptMatchedDeltaR.push_back(-1);
-	  RecoIsoElecPromptMatchedRelPt.push_back(-100);
+	  selectedIDIsoElectronsPromptMatchedDeltaR.push_back(-1);
+	  selectedIDIsoElectronsPromptMatchedRelPt.push_back(-100);
 	}
     }
   // check if false lepton veto will be applied
   int temp=0;
   for(unsigned int i=0; i< selectedIDIsoElectronsNum_;i++)
     {
-      if(RecoIsoElecPromptMatched[i]==0)temp=1;
+      if(selectedIDIsoElectronsPromptMatched[i]==0)temp=1;
     }
   for(unsigned int i=0; i< selectedIDIsoMuonsNum_;i++)
     {
-      if(RecoIsoMuonPromptMatched[i]==0)temp=1;
+      if(selectedIDIsoMuonsPromptMatched[i]==0)temp=1;
     }
   if(temp==1)FallsVetoLep=1;
 	
@@ -872,16 +872,16 @@ void ExpecMaker::resetValues()
   muRecoMatched.clear();
   elecIsoMatched.clear();
   elecRecoMatched.clear();
-  RecoIsoMuonPromptMatched.clear();
-  RecoIsoMuonPromptMatchedDeltaR.clear();
-  RecoIsoMuonPromptMatchedRelPt.clear();
-  RecoIsoElecPromptMatched.clear();
-  RecoIsoElecPromptMatchedDeltaR.clear();
-  RecoIsoElecPromptMatchedRelPt.clear();
+  selectedIDIsoMuonsPromptMatched.clear();
+  selectedIDIsoMuonsPromptMatchedDeltaR.clear();
+  selectedIDIsoMuonsPromptMatchedRelPt.clear();
+  selectedIDIsoElectronsPromptMatched.clear();
+  selectedIDIsoElectronsPromptMatchedDeltaR.clear();
+  selectedIDIsoElectronsPromptMatchedRelPt.clear();
   GenMuonIsoTrackMatched.clear();
-  RecoIsoMuonIsoTrackMatched.clear();
+  selectedIDIsoMuonsIsoTrackMatched.clear();
   GenElecIsoTrackMatched.clear();
-  RecoIsoElecIsoTrackMatched.clear();
+  selectedIDIsoElectronsIsoTrackMatched.clear();
   GenTauIsoTrackMatched.clear();
   SelectedIsoTracksMatchedToGenLepton.clear();
   SelectedIsoTracksMatchedToRecoIsoLepton.clear();
@@ -892,9 +892,9 @@ void ExpecMaker::resetValues()
 		
 		
   GenMuonIsolatedTracksPT10Matched.clear();
-  RecoIsoMuonIsolatedTracksPT10Matched.clear();
+  selectedIDIsoMuonsIsolatedTracksPT10Matched.clear();
   GenElecIsolatedTracksPT10Matched.clear();
-  RecoIsoElecIsolatedTracksPT10Matched.clear();
+  selectedIDIsoElectronsIsolatedTracksPT10Matched.clear();
   GenTauIsolatedTracksPT10Matched.clear();
   IsolatedTracksPT10MatchedToGenLepton.clear();
   IsolatedTracksPT10MatchedToRecoIsoLepton.clear();
@@ -904,9 +904,9 @@ void ExpecMaker::resetValues()
   IsolatedTracksPT10MatchedToRecoIsoRelPT.clear();
 		
   GenMuonIsolatedTracksPT10IsoCut08Matched.clear();
-  RecoIsoMuonIsolatedTracksPT10IsoCut08Matched.clear();
+  selectedIDIsoMuonsIsolatedTracksPT10IsoCut08Matched.clear();
   GenElecIsolatedTracksPT10IsoCut08Matched.clear();
-  RecoIsoElecIsolatedTracksPT10IsoCut08Matched.clear();
+  selectedIDIsoElectronsIsolatedTracksPT10IsoCut08Matched.clear();
   GenTauIsolatedTracksPT10IsoCut08Matched.clear();
   IsolatedTracksPT10IsoCut08MatchedToGenLepton.clear();
   IsolatedTracksPT10IsoCut08MatchedToRecoIsoLepton.clear();
@@ -916,9 +916,9 @@ void ExpecMaker::resetValues()
   IsolatedTracksPT10IsoCut08MatchedToRecoIsoRelPT.clear();
 		
   GenMuonIsolatedTracksPT10IsoCut12Matched.clear();
-  RecoIsoMuonIsolatedTracksPT10IsoCut12Matched.clear();
+  selectedIDIsoMuonsIsolatedTracksPT10IsoCut12Matched.clear();
   GenElecIsolatedTracksPT10IsoCut12Matched.clear();
-  RecoIsoElecIsolatedTracksPT10IsoCut12Matched.clear();
+  selectedIDIsoElectronsIsolatedTracksPT10IsoCut12Matched.clear();
   GenTauIsolatedTracksPT10IsoCut12Matched.clear();
   IsolatedTracksPT10IsoCut12MatchedToGenLepton.clear();
   IsolatedTracksPT10IsoCut12MatchedToRecoIsoLepton.clear();
@@ -945,15 +945,15 @@ void ExpecMaker::resetValues()
   IsolatedPionTracksVetoActivity.clear();
   IsolatedPionTracksVetoMTW.clear();
 		
-  RecoIsoMuonActivity.clear(); 
-  RecoMuonActivity.clear(); 
+  selectedIDIsoMuonsActivity.clear(); 
+  selectedIDMuonsActivity.clear(); 
   GenMuonActivity.clear();
   GenMuDeltaRJet_.clear();
   GenMuRelPTJet_.clear();
   GenElecDeltaRJet_.clear();
   GenElecRelPTJet_.clear();
-  RecoIsoElectronActivity.clear(); 
-  RecoElectronActivity.clear(); 
+  selectedIDIsoElectronsActivity.clear(); 
+  selectedIDElectronsActivity.clear(); 
   GenElecActivity.clear();
 		
   IsoTrackActivity.clear(); 
@@ -970,9 +970,9 @@ bool ExpecMaker::FiltersPass()
 {
   bool result=true;
   if(useFilterData){
-    if(CSCTightHaloFilter==0) result=false;;
-    if(NVtx==0) result=false;;
-    if(eeBadScFilter==0) result=false;;
+    if(CSCTightHaloFilter==0) result=false;
+    if(NVtx==0) result=false;
+    if(eeBadScFilter==0) result=false;
     if(HBHENoiseFilter==0) result=false;
   }
   if(!JetID) result=false;
