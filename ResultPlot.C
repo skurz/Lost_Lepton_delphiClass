@@ -527,14 +527,14 @@ void ResultPlot()
 		double N_predicted = h_pred->GetBinContent(i);
 		double N_expected = h_exp->GetBinContent(i);
 
-		double weight_mu = MuMeanWeight_->GetBinContent(i+1);
-		double weight_elec = ElecMeanWeight_->GetBinContent(i+1);		
+		double weight_mu = MuMeanWeight_->GetBinContent(i);
+		double weight_elec = ElecMeanWeight_->GetBinContent(i);		
 
-		double weight_mu_err = MuMeanWeight_->GetBinError(i+1);
-		double weight_elec_err = ElecMeanWeight_->GetBinError(i+1);
+		double weight_mu_err = MuMeanWeight_->GetBinError(i);
+		double weight_elec_err = ElecMeanWeight_->GetBinError(i);
 
-		double weight_combined = CombinedMeanWeight_->GetBinContent(i+1);
-		double weight_combined_err = CombinedMeanWeight_->GetBinError(i+1);
+		double weight_combined = CombinedMeanWeight_->GetBinContent(i);
+		double weight_combined_err = CombinedMeanWeight_->GetBinError(i);
 
 		double N_cs_mu = h_cs_mu->GetBinContent(i);
 		double N_cs_elec = h_cs_elec->GetBinContent(i);
@@ -661,14 +661,15 @@ void ResultPlot()
 		if(SearchBins_->GetSearchBin(i-1)->MHTmax_<9999) std::cout<<SearchBins_->GetSearchBin(i-1)->MHTmax_<<" & ";
 		else std::cout<<"Inf"<<" & ";
 
-		std::cout<<0.1*((int)((N_cs_mu+N_cs_elec)*10))<<" & ";//<<" ("<<CombinedWeightDiLepPerBin_[i-1]->GetEntries()<<") & ";
+		std::cout<<0.1*((int)((N_cs_mu+N_cs_elec)*10))<<" & "<<" ("<<CombinedWeightPerBin_[i-1]->GetEntries()<<") & ";
+		//std::cout<<0.1*((int)((N_cs_mu+N_cs_elec)*10))<<" & ";
 
 		std::cout.precision(3);
 		std::cout<<"$"<<weight_combined<<"\\pm"<<0.001*((int)(weight_combined_err*1000))<<"^{+"<<fullWeightSysUp_LL_->GetBinContent(i)<<"}_{-"<<fullWeightSysDown_LL_->GetBinContent(i)<<"}$ & ";
 		std::cout.precision(5);
  //		std::cout<<CombinedWeightDiLepPerBin_[i-1]->GetRMS()<<" ("<<CombinedWeightDiLepPerBin_[i-1]->GetBinCenter(CombinedWeightDiLepPerBin_[i-1]->FindFirstBinAbove())<<"/"<<CombinedWeightDiLepPerBin_[i-1]->GetBinCenter(CombinedWeightDiLepPerBin_[i-1]->FindLastBinAbove())<<") & ";
 //		std::cout<<N_predicted<<"+-"<<sqrt(Err_pred_ges*Err_pred_ges+0.4*0.4*N_predicted*N_predicted)<<" \\\\"<<std::endl;
-	if(N_predicted>0.00001)	std::cout<<"$"<<0.1*((int)(N_predicted*10))<<"\\pm"<<0.1*((int)(sqrt(N_predicted*N_predicted/(N_cs_mu+N_cs_elec))*10))<<"^{+"<<0.1*((int)(0.3*N_predicted*10))<<"}_{-"<<0.1*((int)(0.3*N_predicted*10))<<"}$ \\\\"<<std::endl;
+	if(N_cs_mu+N_cs_elec>0.00001) std::cout<<"$"<<0.1*((int)(N_predicted*10))<<"\\pm"<<0.1*((int)(sqrt(N_predicted*N_predicted/(N_cs_mu+N_cs_elec))*10))<<"^{+"<<0.1*((int)(0.3*N_predicted*10))<<"}_{-"<<0.1*((int)(0.3*N_predicted*10))<<"}$ \\\\"<<std::endl;
 	else	std::cout<<"$"<<0<<"\\pm"<<0<<"^{+"<<0<<"}_{-"<<0<<"}$ \\\\"<<std::endl;
 
 		fullCS_LL_->SetBinContent(i,N_cs_mu+N_cs_elec);

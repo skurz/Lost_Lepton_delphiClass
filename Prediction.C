@@ -45,9 +45,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   // The SlaveBegin() function is called after the Begin() function.
   // When running with PROOF SlaveBegin() is called on each slave server.
   // The tree argument is deprecated (on PROOF 0 is passed).
-  
   TFile *effInput = new TFile("Efficiencies.root","UPDATE");
-  TDirectory *EffInputFolder =   (TDirectory*)effInput->Get("Efficiencies");
+  TDirectory *EffInputFolder =   (TDirectory*)effInput->Get("Efficiencies"); 
 
   if(UseTagAndProbeEffIso_)
   {
@@ -291,11 +290,23 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
 
   tPrediction_->Branch("PassTrigger", &PassTrigger);
   tPrediction_->Branch("TriggerNames", &TriggerNames);
-  tPrediction_->Branch("bestPhoton", &bestPhoton);
 
   GetOutputList()->Add(tPrediction_);
+/*
+  GetOutputList()->Add(CombinedMeanWeight_);
+  GetOutputList()->Add(MuMeanWeight_);
+  GetOutputList()->Add(ElecMeanWeight_);
+
+  for(int b = 0; b <72; b++){
+    GetOutputList()->Add(MuWeightPerBin_[b]);
+    GetOutputList()->Add(ElecWeightPerBin_[b]);
+    GetOutputList()->Add(CombinedWeightPerBin_[b]);
+  }
+*/
+
   SearchBins_ = new SearchBins(false); // 72 searchbins
   SearchBinsQCD_ = new SearchBins(true); // 220 QCD binning
+
   std::cout<<"Applying filters: "<<applyFilters_<<std::endl;
   std::cout<<"Use MET filters: "<<useFilterData<<std::endl;
   std::cout<<"----------------"<<std::endl;
@@ -422,11 +433,11 @@ Bool_t Prediction::Process(Long64_t entry)
     totalWeightDiLepIsoTrackReducedCombined_ = totalWeightDiLep_ * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_));
 
     MuMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight, Weight);
-    CombinedMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight, Weight);
+    CombinedMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight/2, Weight);
 
     if(Bin_<72){
       MuWeightPerBin_[Bin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/Weight,Weight);
-      CombinedWeightPerBin_[Bin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/Weight,Weight);
+      CombinedWeightPerBin_[Bin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/Weight/2,Weight);
     }
 
     // weights used for closure tests
@@ -475,31 +486,69 @@ Bool_t Prediction::Process(Long64_t entry)
     elecAccStatDown = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*(elecAccEff_+elecAccEffVec_.errUp) + (1-elecRecoEff_)*(elecAccEff_+elecAccEffVec_.errUp) + (1-elecAccEff_-elecAccEffVec_.errUp)) + w4) - wGes;
     elecAccStatUp = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*(elecAccEff_-elecAccEffVec_.errDown) + (1-elecRecoEff_)*(elecAccEff_-elecAccEffVec_.errDown) + (1-elecAccEff_+elecAccEffVec_.errDown)) + w4) - wGes;
 
-
-    isoTrackSysDown = Weight * (1 - expectationReductionIsoTrackEff_ *(1 + 0.01 * isoTrackUncertaintyUp_)) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
-    isoTrackSysUp  = Weight * (1 - expectationReductionIsoTrackEff_ *(1 - 0.01 * isoTrackUncertaintyDown_)) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
-    MTWSysDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/(muMTWEff_ + (1-muMTWEff_) * 0.01 * MuMTWUncertaintyUp_) * (w2 * (w3a+w3b) + w4) - wGes;
-    MTWSysUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/(muMTWEff_ - (1-muMTWEff_) * 0.01 * MuMTWUncertaintyDown_) * (w2 * (w3a+w3b) + w4) - wGes;
-    puritySysUp = 0; // no purity correction for muCS (>99%)
-    puritySysDown = 0; // no purity correction for muCS (>99%)
-    singleLepPuritySysUp = w1 * ((muDiLepContributionMTWAppliedEff_ + (1-muDiLepContributionMTWAppliedEff_) * 0.01 * MuSingleLepPurityUp_) * 1/(muIsoEff_*muRecoEff_*muAccEff_) * (w3a+w3b) + (1 - muDiLepContributionMTWAppliedEff_ + (1-muDiLepContributionMTWAppliedEff_) * 0.01 * MuSingleLepPurityUp_) * (1-muDiLepEffMTWAppliedEff_)/muDiLepEffMTWAppliedEff_) - wGes;
-    singleLepPuritySysDown = w1 * ((muDiLepContributionMTWAppliedEff_ - (1-muDiLepContributionMTWAppliedEff_) * 0.01 * MuSingleLepPurityDown_) * 1/(muIsoEff_*muRecoEff_*muAccEff_) * (w3a+w3b) + (1 - muDiLepContributionMTWAppliedEff_ - (1-muDiLepContributionMTWAppliedEff_) * 0.01 * MuSingleLepPurityDown_) * (1-muDiLepEffMTWAppliedEff_)/muDiLepEffMTWAppliedEff_) - wGes;
-    diLepFoundSysDown = w1 * (w2 * (w3a+w3b) + (1-muDiLepContributionMTWAppliedEff_) * (1-muDiLepEffMTWAppliedEff_ *(1 + 0.01 * MuDiLepFoundUp_))/(muDiLepEffMTWAppliedEff_ *(1 + 0.01 * MuDiLepFoundUp_))) - wGes;
-    diLepFoundSysUp = w1 * (w2 * (w3a+w3b) + (1-muDiLepContributionMTWAppliedEff_) * (1-muDiLepEffMTWAppliedEff_ *(1 - 0.01 * MuDiLepFoundDown_))/(muDiLepEffMTWAppliedEff_ *(1 - 0.01 * MuDiLepFoundDown_))) - wGes;
+    //cut of systematics so that efficiencies are <=1
+    double isoTrackMax = expectationReductionIsoTrackEff_ *(1 + 0.01 * isoTrackUncertaintyUp_);
+    if(isoTrackMax > 1) isoTrackMax = 1;
+    isoTrackSysDown = Weight * (1 - isoTrackMax) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
+    double isoTrackMin = expectationReductionIsoTrackEff_ *(1 - 0.01 * isoTrackUncertaintyDown_);
+    isoTrackSysUp  = Weight * (1 - isoTrackMin) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
     
-    muIsoSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/((muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_))*muRecoEff_*muAccEff_) * ((1-muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_))*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
-    muIsoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/((muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_))*muRecoEff_*muAccEff_) * ((1-muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_))*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
-    muRecoSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*(muRecoEff_ *(1 + 0.01 * MuRecoUncertaintyUp_))*muAccEff_) * ((1-muIsoEff_)*(muRecoEff_  *(1 + 0.01 * MuRecoUncertaintyUp_))*muAccEff_ + (1-muRecoEff_ *(1 + 0.01 * MuRecoUncertaintyUp_))*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
-    muRecoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*(muRecoEff_ *(1 - 0.01 * MuRecoUncertaintyDown_))*muAccEff_) * ((1-muIsoEff_)*(muRecoEff_  *(1 - 0.01 * MuRecoUncertaintyDown_))*muAccEff_ + (1-muRecoEff_ *(1 - 0.01 * MuRecoUncertaintyDown_))*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
-    muAccSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*(muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_))) * ((1-muIsoEff_)*muRecoEff_*(muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_)) + (1-muRecoEff_)*(muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_)) + (1-muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_)) +w3b) + w4) - wGes;
-    muAccSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*(muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_))) * ((1-muIsoEff_)*muRecoEff_*(muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_)) + (1-muRecoEff_)*(muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_)) + (1-muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_)) +w3b) + w4) - wGes;
+    double MTWMax = muMTWEff_ + (1-muMTWEff_) * 0.01 * MuMTWUncertaintyUp_;
+    if(MTWMax > 1) MTWMax = 1;
+    MTWSysDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/MTWMax * (w2 * (w3a+w3b) + w4) - wGes;
+    double MTWMin = muMTWEff_ - (1-muMTWEff_) * 0.01 * MuMTWUncertaintyDown_;
+    MTWSysUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/MTWMin * (w2 * (w3a+w3b) + w4) - wGes;
+    
+    puritySysUp = 0; // no purity correction for muCS (>99%)    
+    puritySysDown = 0; // no purity correction for muCS (>99%)
+    
+    double singleLepPurityMax = muDiLepContributionMTWAppliedEff_ + (1-muDiLepContributionMTWAppliedEff_) * 0.01 * MuSingleLepPurityUp_;
+    if(singleLepPurityMax > 1) singleLepPurityMax = 1;
+    singleLepPuritySysUp = w1 * (singleLepPurityMax * 1/(muIsoEff_*muRecoEff_*muAccEff_) * (w3a+w3b) + (1 - singleLepPurityMax) * (1-muDiLepEffMTWAppliedEff_)/muDiLepEffMTWAppliedEff_) - wGes;
+    double singleLepPurityMin = muDiLepContributionMTWAppliedEff_ - (1-muDiLepContributionMTWAppliedEff_) * 0.01 * MuSingleLepPurityDown_;
+    singleLepPuritySysDown = w1 * (singleLepPurityMin * 1/(muIsoEff_*muRecoEff_*muAccEff_) * (w3a+w3b) + (1 - singleLepPurityMin) * (1-muDiLepEffMTWAppliedEff_)/muDiLepEffMTWAppliedEff_) - wGes;
+    
+    double diLepFoundMax = muDiLepEffMTWAppliedEff_ *(1 + 0.01 * MuDiLepFoundUp_);
+    if(diLepFoundMax > 1) diLepFoundMax = 1;
+    diLepFoundSysDown = w1 * (w2 * (w3a+w3b) + (1-muDiLepContributionMTWAppliedEff_) * (1-diLepFoundMax)/diLepFoundMax) - wGes;
+    double diLepFoundMin = muDiLepEffMTWAppliedEff_ *(1 - 0.01 * MuDiLepFoundDown_);
+    diLepFoundSysUp = w1 * (w2 * (w3a+w3b) + (1-muDiLepContributionMTWAppliedEff_) * (1-diLepFoundMin)/diLepFoundMin) - wGes;
+    
+    double muIsoMax = muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_);
+    if(muIsoMax > 1) muIsoMax = 1;
+    muIsoSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoMax*muRecoEff_*muAccEff_) * ((1-muIsoMax)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
+    double muIsoMin = muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_);
+    muIsoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoMin*muRecoEff_*muAccEff_) * ((1-muIsoMin)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
+    
+    double muRecoMax = muRecoEff_ *(1 + 0.01 * MuRecoUncertaintyUp_);
+    if(muRecoMax > 1) muRecoMax = 1;
+    muRecoSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoMax*muAccEff_) * ((1-muIsoEff_)*muRecoMax*muAccEff_ + (1-muRecoMax)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
+    double muRecoMin = muRecoEff_ *(1 - 0.01 * MuRecoUncertaintyDown_);
+    muRecoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoMin*muAccEff_) * ((1-muIsoEff_)*muRecoMin*muAccEff_ + (1-muRecoMin)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
+    
+    double muAccMax = muAccEff_ *(1 + 0.01 * MuAccUncertaintyUp_);
+    if(muAccMax > 1) muAccMax = 1;
+    muAccSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccMax) * ((1-muIsoEff_)*muRecoEff_*muAccMax + (1-muRecoEff_)*muAccMax + (1-muAccMax) +w3b) + w4) - wGes;
+    double muAccMin = muAccEff_ *(1 - 0.01 * MuAccUncertaintyDown_);
+    muAccSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccMin) * ((1-muIsoEff_)*muRecoEff_*muAccMin + (1-muRecoEff_)*muAccMin + (1-muAccMin) +w3b) + w4) - wGes;
 
-    elecIsoSysDown = w1 * (w2 * (w3a + (1-elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_))*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
-    elecIsoSysUp = w1 * (w2 * (w3a + (1-elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_))*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
-    elecRecoSysDown = w1 * (w2 * (w3a + (1-elecIsoEff_)*(elecRecoEff_*(1 + 0.01 * ElecRecoUncertaintyUp_))*elecAccEff_ + (1-elecRecoEff_*(1 + 0.01 * ElecRecoUncertaintyUp_))*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
-    elecRecoSysUp = w1 * (w2 * (w3a + (1-elecIsoEff_)*(elecRecoEff_*(1 - 0.01 * ElecRecoUncertaintyDown_))*elecAccEff_ + (1-elecRecoEff_*(1 - 0.01 * ElecRecoUncertaintyDown_))*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
-    elecAccSysDown = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*(elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_)) + (1-elecRecoEff_)*(elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_)) + (1-elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_))) + w4) - wGes;
-    elecAccSysUp = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*(elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_)) + (1-elecRecoEff_)*(elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_)) + (1-elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_))) + w4) - wGes;
+    double elecIsoMax = elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_);
+    if(elecIsoMax > 1) elecIsoMax = 1;
+    elecIsoSysDown = w1 * (w2 * (w3a + (1-elecIsoMax)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
+    double elecIsoMin = elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_);
+    elecIsoSysUp = w1 * (w2 * (w3a + (1-elecIsoMin)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
+    
+    double elecRecoMax = elecRecoEff_*(1 + 0.01 * ElecRecoUncertaintyUp_);
+    if(elecRecoMax > 1) elecRecoMax = 1;
+    elecRecoSysDown = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoMax*elecAccEff_ + (1-elecRecoMax)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
+    double elecRecoMin = elecRecoEff_*(1 - 0.01 * ElecRecoUncertaintyDown_);
+    elecRecoSysUp = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoMin*elecAccEff_ + (1-elecRecoMin)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
+    
+    double elecAccMax = elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_);
+    if(elecAccMax > 1) elecAccMax = 1;
+    elecAccSysDown = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*elecAccMax + (1-elecRecoEff_)*elecAccMax + (1-elecAccMax)) + w4) - wGes;
+    double elecAccMin = elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_);
+    elecAccSysUp = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*elecAccMin + (1-elecRecoEff_)*elecAccMin + (1-elecAccMin)) + w4) - wGes;
   
     diBosonUp = wGes * 0.01 * diBosonContributionUp_;
     diBosonDown = - wGes * 0.01 * diBosonContributionDown_;
@@ -525,7 +574,7 @@ Bool_t Prediction::Process(Long64_t entry)
   {
     mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectronsPt[0], selectedIDIsoElectronsPhi[0]);
     selectedIDIsoElectronsActivity[0]=ElecActivity(selectedIDIsoElectronsEta[0], selectedIDIsoElectronsPhi[0],elecActivityMethod_);
-    double muActivity = MuActivity(selectedIDIsoMuonsEta[0], selectedIDIsoMuonsPhi[0],elecActivityMethod_);
+    double muActivity = MuActivity(selectedIDIsoElectronsEta[0], selectedIDIsoElectronsPhi[0],muActivityMethod_);
 
     std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(selectedIDIsoElectronsPt[0], selectedIDIsoElectronsEta[0], selectedIDIsoElectronsPhi[0]);
     selectedIDIsoElectronsDeltaRJet[0]=DeltaR_relPT.first;
@@ -593,11 +642,11 @@ Bool_t Prediction::Process(Long64_t entry)
     totalWeightDiLepIsoTrackReducedCombined_ = totalWeightDiLep_ * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_));
 
     ElecMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight, Weight);
-    CombinedMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight, Weight);
+    CombinedMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight/2, Weight);
 
     if(Bin_<72){
       ElecWeightPerBin_[Bin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/Weight,Weight);
-      CombinedWeightPerBin_[Bin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/Weight,Weight);
+      CombinedWeightPerBin_[Bin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/Weight/2,Weight);
     }
 
     // weights used for closure tests
@@ -638,32 +687,74 @@ Bool_t Prediction::Process(Long64_t entry)
     muAccStatDown = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*(muAccEff_+muAccEffVec_.errUp) + (1-muRecoEff_)*(muAccEff_+muAccEffVec_.errUp) + (1-muAccEff_-muAccEffVec_.errUp)) + w4) - wGes;
     muAccStatUp = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*(muAccEff_-muAccEffVec_.errDown) + (1-muRecoEff_)*(muAccEff_-muAccEffVec_.errDown) + (1-muAccEff_+muAccEffVec_.errDown)) + w4) - wGes;
 
-
-    isoTrackSysDown = Weight * (1 - expectationReductionIsoTrackEff_ *(1 + 0.01 * isoTrackUncertaintyUp_)) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
-    isoTrackSysUp  = Weight * (1 - expectationReductionIsoTrackEff_ *(1 - 0.01 * isoTrackUncertaintyDown_)) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
-    MTWSysDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/(elecMTWEff_ + (1-elecMTWEff_) * 0.01 * ElecMTWUncertaintyUp_) * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
-    MTWSysUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/(elecMTWEff_ - (1-elecMTWEff_) * 0.01 * ElecMTWUncertaintyDown_) * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
-    puritySysUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/elecMTWEff_ * (elecPurityCorrection_ + (1-elecPurityCorrection_) * 0.01 * ElecPurityUncertaintyUp_) * (w2 * (w3a+w3b) + w4) - wGes; 
-    puritySysDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/elecMTWEff_ * (elecPurityCorrection_ - (1-elecPurityCorrection_) * 0.01 * ElecPurityUncertaintyDown_) * (w2 * (w3a+w3b) + w4) - wGes;
-    singleLepPuritySysUp = w1 * ((elecDiLepContributionMTWAppliedEff_ + (1-elecDiLepContributionMTWAppliedEff_) * 0.01 * ElecSingleLepPurityUp_) * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_) * (w3a+w3b) + (1 - elecDiLepContributionMTWAppliedEff_ + (1-elecDiLepContributionMTWAppliedEff_) * 0.01 * ElecSingleLepPurityUp_) * (1-elecDiLepEffMTWAppliedEff_)/elecDiLepEffMTWAppliedEff_) - wGes;
-    singleLepPuritySysDown = w1 * ((elecDiLepContributionMTWAppliedEff_ - (1-elecDiLepContributionMTWAppliedEff_) * 0.01 * ElecSingleLepPurityDown_) * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_) * (w3a+w3b) + (1 - elecDiLepContributionMTWAppliedEff_ - (1-elecDiLepContributionMTWAppliedEff_) * 0.01 * ElecSingleLepPurityDown_) * (1-elecDiLepEffMTWAppliedEff_)/elecDiLepEffMTWAppliedEff_) - wGes;
-    diLepFoundSysDown = w1 * (w2 * (w3a+w3b) + (1-elecDiLepContributionMTWAppliedEff_) * (1-elecDiLepEffMTWAppliedEff_ *(1 + 0.01 * ElecDiLepFoundUp_))/(elecDiLepEffMTWAppliedEff_ *(1 + 0.01 * ElecDiLepFoundUp_))) - wGes;
-    diLepFoundSysUp = w1 * (w2 * (w3a+w3b) + (1-elecDiLepContributionMTWAppliedEff_) * (1-elecDiLepEffMTWAppliedEff_ *(1 - 0.01 * ElecDiLepFoundDown_))/(elecDiLepEffMTWAppliedEff_ *(1 - 0.01 * ElecDiLepFoundDown_))) - wGes;
+    //cut of systematics so that efficiencies are <=1
+    double isoTrackMax = expectationReductionIsoTrackEff_ *(1 + 0.01 * isoTrackUncertaintyUp_);
+    if(isoTrackMax > 1) isoTrackMax = 1;
+    isoTrackSysDown = Weight * (1 - isoTrackMax) * 1/elecMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
+    double isoTrackMin = expectationReductionIsoTrackEff_ *(1 - 0.01 * isoTrackUncertaintyDown_);
+    isoTrackSysUp  = Weight * (1 - isoTrackMin) * 1/elecMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
     
-    elecIsoSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/((elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_))*elecRecoEff_*elecAccEff_) * ((1-elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_))*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
-    elecIsoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/((elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_))*elecRecoEff_*elecAccEff_) * ((1-elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_))*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
-    elecRecoSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*(elecRecoEff_ *(1 + 0.01 * ElecRecoUncertaintyUp_))*elecAccEff_) * ((1-elecIsoEff_)*(elecRecoEff_  *(1 + 0.01 * ElecRecoUncertaintyUp_))*elecAccEff_ + (1-elecRecoEff_ *(1 + 0.01 * ElecRecoUncertaintyUp_))*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
-    elecRecoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*(elecRecoEff_ *(1 - 0.01 * ElecRecoUncertaintyDown_))*elecAccEff_) * ((1-elecIsoEff_)*(elecRecoEff_  *(1 - 0.01 * ElecRecoUncertaintyDown_))*elecAccEff_ + (1-elecRecoEff_ *(1 - 0.01 * ElecRecoUncertaintyDown_))*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
-    elecAccSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*(elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_))) * ((1-elecIsoEff_)*elecRecoEff_*(elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_)) + (1-elecRecoEff_)*(elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_)) + (1-elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_)) +w3b) + w4) - wGes;
-    elecAccSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*(elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_))) * ((1-elecIsoEff_)*elecRecoEff_*(elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_)) + (1-elecRecoEff_)*(elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_)) + (1-elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_)) +w3b) + w4) - wGes;
+    double MTWMax = elecMTWEff_ + (1-elecMTWEff_) * 0.01 * ElecMTWUncertaintyUp_;
+    if(MTWMax > 1) MTWMax = 1;
+    MTWSysDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/MTWMax * (w2 * (w3a+w3b) + w4) - wGes;
+    double MTWMin = elecMTWEff_ - (1-elecMTWEff_) * 0.01 * ElecMTWUncertaintyDown_;
+    MTWSysUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/MTWMin * (w2 * (w3a+w3b) + w4) - wGes;
+    
+    double purityMax = elecPurityCorrection_ + (1-elecPurityCorrection_) * 0.01 * ElecPurityUncertaintyUp_;
+    if(purityMax > 1) purityMax = 1;
+    puritySysUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/elecMTWEff_ * purityMax * (w2 * (w3a+w3b) + w4) - wGes;
+    double purityMin = elecPurityCorrection_ - (1-elecPurityCorrection_) * 0.01 * ElecPurityUncertaintyDown_;
+    puritySysDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/elecMTWEff_ * purityMin * (w2 * (w3a+w3b) + w4) - wGes;
+    
+    double singleLepPurityMax = elecDiLepContributionMTWAppliedEff_ + (1-elecDiLepContributionMTWAppliedEff_) * 0.01 * ElecSingleLepPurityUp_;
+    if(singleLepPurityMax > 1) singleLepPurityMax = 1;
+    singleLepPuritySysUp = w1 * (singleLepPurityMax * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_) * (w3a+w3b) + (1 - singleLepPurityMax) * (1-elecDiLepEffMTWAppliedEff_)/elecDiLepEffMTWAppliedEff_) - wGes;
+    double singleLepPurityMin = elecDiLepContributionMTWAppliedEff_ - (1-elecDiLepContributionMTWAppliedEff_) * 0.01 * ElecSingleLepPurityDown_;
+    singleLepPuritySysDown = w1 * (singleLepPurityMin * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_) * (w3a+w3b) + (1 - singleLepPurityMin) * (1-elecDiLepEffMTWAppliedEff_)/elecDiLepEffMTWAppliedEff_) - wGes;
+    
+    double diLepFoundMax = elecDiLepEffMTWAppliedEff_ *(1 + 0.01 * ElecDiLepFoundUp_);
+    if(diLepFoundMax > 1) diLepFoundMax = 1;
+    diLepFoundSysDown = w1 * (w2 * (w3a+w3b) + (1-elecDiLepContributionMTWAppliedEff_) * (1-diLepFoundMax)/diLepFoundMax) - wGes;
+    double diLepFoundMin = elecDiLepEffMTWAppliedEff_ *(1 - 0.01 * ElecDiLepFoundDown_);
+    diLepFoundSysUp = w1 * (w2 * (w3a+w3b) + (1-elecDiLepContributionMTWAppliedEff_) * (1-diLepFoundMin)/diLepFoundMin) - wGes;
+    
+    double elecIsoMax = elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_);
+    if(elecIsoMax > 1) elecIsoMax = 1;
+    elecIsoSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoMax*elecRecoEff_*elecAccEff_) * ((1-elecIsoMax)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
+    double elecIsoMin = elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_);
+    elecIsoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoMin*elecRecoEff_*elecAccEff_) * ((1-elecIsoMin)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
+    
+    double elecRecoMax = elecRecoEff_ *(1 + 0.01 * ElecRecoUncertaintyUp_);
+    if(elecRecoMax > 1) elecRecoMax = 1;
+    elecRecoSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoMax*elecAccEff_) * ((1-elecIsoEff_)*elecRecoMax*elecAccEff_ + (1-elecRecoMax)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
+    double elecRecoMin = elecRecoEff_ *(1 - 0.01 * ElecRecoUncertaintyDown_);
+    elecRecoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoMin*elecAccEff_) * ((1-elecIsoEff_)*elecRecoMin*elecAccEff_ + (1-elecRecoMin)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
+    
+    double elecAccMax = elecAccEff_ *(1 + 0.01 * ElecAccUncertaintyUp_);
+    if(elecAccMax > 1) elecAccMax = 1;
+    elecAccSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*elecAccMax) * ((1-elecIsoEff_)*elecRecoEff_*elecAccMax + (1-elecRecoEff_)*elecAccMax + (1-elecAccMax) +w3b) + w4) - wGes;
+    double elecAccMin = elecAccEff_ *(1 - 0.01 * ElecAccUncertaintyDown_);
+    elecAccSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*elecAccMin) * ((1-elecIsoEff_)*elecRecoEff_*elecAccMin + (1-elecRecoEff_)*elecAccMin + (1-elecAccMin) +w3b) + w4) - wGes;
 
-    muIsoSysDown = w1 * (w2 * (w3a + (1-muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_))*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
-    muIsoSysUp = w1 * (w2 * (w3a + (1-muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_))*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
-    muRecoSysDown = w1 * (w2 * (w3a + (1-muIsoEff_)*(muRecoEff_*(1 + 0.01 * MuRecoUncertaintyUp_))*muAccEff_ + (1-muRecoEff_*(1 + 0.01 * MuRecoUncertaintyUp_))*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
-    muRecoSysUp = w1 * (w2 * (w3a + (1-muIsoEff_)*(muRecoEff_*(1 - 0.01 * MuRecoUncertaintyDown_))*muAccEff_ + (1-muRecoEff_*(1 - 0.01 * MuRecoUncertaintyDown_))*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
-    muAccSysDown = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*(muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_)) + (1-muRecoEff_)*(muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_)) + (1-muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_))) + w4) - wGes;
-    muAccSysUp = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*(muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_)) + (1-muRecoEff_)*(muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_)) + (1-muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_))) + w4) - wGes;
-  
+    double muIsoMax = muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_);
+    if(muIsoMax > 1) muIsoMax = 1;
+    muIsoSysDown = w1 * (w2 * (w3a + (1-muIsoMax)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
+    double muIsoMin = muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_);
+    muIsoSysUp = w1 * (w2 * (w3a + (1-muIsoMin)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
+    
+    double muRecoMax = muRecoEff_*(1 + 0.01 * MuRecoUncertaintyUp_);
+    if(muRecoMax > 1) muRecoMax = 1;
+    muRecoSysDown = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoMax*muAccEff_ + (1-muRecoMax)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
+    double muRecoMin = muRecoEff_*(1 - 0.01 * MuRecoUncertaintyDown_);
+    muRecoSysUp = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoMin*muAccEff_ + (1-muRecoMin)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
+    
+    double muAccMax = muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_);
+    if(muAccMax > 1) muAccMax = 1;
+    muAccSysDown = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*muAccMax + (1-muRecoEff_)*muAccMax + (1-muAccMax)) + w4) - wGes;
+    double muAccMin = muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_);
+    muAccSysUp = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*muAccMin + (1-muRecoEff_)*muAccMin + (1-muAccMin)) + w4) - wGes;
+
+
     diBosonUp = wGes * 0.01 * diBosonContributionUp_;
     diBosonDown = - wGes * 0.01 * diBosonContributionDown_;
 
@@ -705,6 +796,11 @@ void Prediction::Terminate()
   // The Terminate() function is the last function to be called during
   // a query. It always runs on the client, it can be used to present
   // the results graphically or save the results to file.
+
+  //GetOutputList()->Print();
+  tPrediction_ = dynamic_cast<TTree*>(GetOutputList()->FindObject("LostLeptonPrediction"));
+
+
   TFile *outPutFile = new TFile("Prediction.root","RECREATE"); ;
   outPutFile->cd();
   tPrediction_->Write();

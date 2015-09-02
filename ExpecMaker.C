@@ -780,10 +780,10 @@ void ExpecMaker::SlaveTerminate()
 }
 void ExpecMaker::Terminate()
 {
-	GetOutputList()->Print();
-	std::cout << "tExpectation_:" << tExpectation_ << '\n';
+	//GetOutputList()->Print();
+	//std::cout << "tExpectation_:" << tExpectation_ << '\n';
 	tExpectation_ = dynamic_cast<TTree*>(GetOutputList()->FindObject("LostLeptonExpectation"));
-	std::cout << "tExpectation_:" << tExpectation_ << '\n';
+	//std::cout << "tExpectation_:" << tExpectation_ << '\n';
 	
 	TFile *outPutFile = new TFile("Expectation.root","RECREATE"); 
 	outPutFile->cd();

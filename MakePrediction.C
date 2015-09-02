@@ -23,7 +23,7 @@ void MakePrediction()
 	TProof *proof = NULL;
 
     if(useTProof){
-    	proof = TProof::Open("workers=10");
+    	proof = TProof::Open("workers=2");
     	Effchain->SetProof();     	
     }
 
