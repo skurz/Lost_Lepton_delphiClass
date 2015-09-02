@@ -21,7 +21,7 @@ void MakePrediction()
   gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
   
   TChain *Effchain = new TChain("TreeMaker2/PreSelection");
-  Effchain->Add("/eos/uscms/store/user/jbradmil/lldev/13TeV_25ns20PU.TTJets_SingleLeptFromTbar*ext*SIM_9*.root");
+  Effchain->Add("/eos/uscms/store/user/jbradmil/lldev/13TeV_25ns20PU.TTJets_SingleLeptFromTbar*.root");
 
   if(useTProof){
     proof = TProof::Open("workers=10");

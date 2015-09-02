@@ -142,6 +142,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("selectedIDIsoElectronsRelPTJet", &selectedIDIsoElectronsRelPTJet);
   tPrediction_->Branch("selectedIDIsoElectronsDeltaRJet", &selectedIDIsoElectronsDeltaRJet);
   tPrediction_->Branch("MTW",&mtw);
+  tPrediction_->Branch("PTW",&ptw);
+  //  tPrediction_->Branch("GenPTW",&genptw);
   muActivityMethod=muActivityMethod_;
   elecActivityMethod=elecActivityMethod_;
   isoTrackActivityMethod=isoTrackActivityMethod_;
@@ -272,6 +274,7 @@ Bool_t Prediction::Process(Long64_t entry)
 {
   resetValues();
   fChain->GetTree()->GetEntry(entry);
+
   
   if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_  ) return kTRUE;
   if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ ) return kTRUE;
@@ -324,6 +327,7 @@ Bool_t Prediction::Process(Long64_t entry)
     {
       // cout << "Single muon event...";
       mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
+      ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
       selectedIDIsoMuonsActivity.push_back(MuActivity(selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi(),muActivityMethod_));
       double elecActivity = ElecActivity(selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi(),elecActivityMethod_);
 
@@ -499,8 +503,9 @@ Bool_t Prediction::Process(Long64_t entry)
       // cout << "Single electron event...";
       // cout << "get MTW...";
       mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
+      ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
       selectedIDIsoElectronsActivity.push_back(ElecActivity(selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi(),elecActivityMethod_));
-      // JACK--below line was using muon eta and phi--didn't make sense.
+
       double muActivity = MuActivity(selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi(),elecActivityMethod_);
 
       std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi());

@@ -143,6 +143,7 @@ class Prediction : public TSelector {
   UShort_t selectedIDMuonsNum_, selectedIDIsoMuonsNum_;
   UShort_t selectedIDElectronsNum_, selectedIDIsoElectronsNum_;
   Float_t mtw;
+  Float_t ptw;
   Float_t muPurityCorrection_;
   Float_t muMTWEff_, elecMTWEff_, mtwCorrectedWeight_;
   Float_t muDiLepContributionMTWAppliedEff_, mtwDiLepCorrectedWeight_;
@@ -512,7 +513,8 @@ void Prediction::Init(TTree *tree)
   if (!tree) return;
   fChain = tree;
   fChain->SetMakeClass(1);
-  
+
+ 
   fChain->SetBranchAddress("RunNum", &RunNum, &b_RunNum);
   fChain->SetBranchAddress("LumiBlockNum", &LumiBlockNum, &b_LumiBlockNum);
   fChain->SetBranchAddress("EvtNum", &EvtNum, &b_EvtNum);

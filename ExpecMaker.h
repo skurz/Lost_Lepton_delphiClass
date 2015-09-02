@@ -205,6 +205,7 @@ public :
 	
 	
   Float_t mtw, isoTrackMTW_;
+  Float_t ptw, gen_ptw;
 	
   // w pt spectrum extrapolation studies
   Float_t GenMuWPt_, GenElecWPt_;

@@ -44,8 +44,11 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("Weight", &Weight);
   tExpectation_->Branch("MET",&METPt);
   tExpectation_->Branch("METPhi",&METPhi);
+  tExpectation_->Branch("PTW",&ptw);  
+  tExpectation_->Branch("GenPTW",&gen_ptw);
   tExpectation_->Branch("GenMuNum",&GenMuNum_);
   tExpectation_->Branch("GenMus", "std::vector<TLorentzVector>", &GenMus,32000,0);
+  tExpectation_->Branch("GenMuWPt",&GenMuWPt_);
   tExpectation_->Branch("GenMuFromTau", &GenMu_GenMuFromTau);
   tExpectation_->Branch("GenMuDeltaRJet",&GenMuDeltaRJet_);
   tExpectation_->Branch("GenMuRelPTJet",&GenMuRelPTJet_);
@@ -53,6 +56,7 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("GenMuonActivity", &GenMuonActivity);
   tExpectation_->Branch("GenElecNum",&GenElecNum_);
   tExpectation_->Branch("GenEls", "std::vector<TLorentzVector>", &GenEls, 32000, 0);
+  tExpectation_->Branch("GenElecWPt",&GenElecWPt_);
   tExpectation_->Branch("GenElecFromTau", &GenElec_GenElecFromTau);
   tExpectation_->Branch("GenElecDeltaRJet", &GenElecDeltaRJet_);
   tExpectation_->Branch("GenElecRelPTJet", &GenElecRelPTJet_);
@@ -187,23 +191,6 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 
   resetValues();
   fChain->GetTree()->GetEntry(entry);
-  
-  // if (fChain == 0) return;
-  // Long64_t nentries = fChain->GetEntries();
-
-  // Long64_t nbytes = 0, nb = 0;
-  // // Begin event loop
-  // printf("\n\n Looping over %llu events.\n\n", nentries ) ;
-  // for (Long64_t jentry=0; jentry<nentries;jentry++) {
-  //   if ( jentry%(nentries/100) == 0 && jentry>0 ) { printf("  %9llu out of %9llu (%2lld%%)\n", jentry, nentries, ((100*jentry)/nentries)+1 ) ; fflush(stdout) ; }
-
-  //   // std::cout << "resetValues()" << std::endl;
-  //   resetValues();
-  //   Long64_t ientry = LoadTree(jentry);
-  //   if (ientry < 0) break;
-  //   nb = fChain->GetEntry(jentry);   nbytes += nb;
-  //   // if (Cut(ientry) < 0) continue;
-
 
   // std::cout << "Applying skim cuts..." << std::endl;
   if(!DY_ && (HT<minHT_ || MHT< minMHT_ || NJets < minNJets_)) return kTRUE;
@@ -252,7 +239,7 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     {
       // compute W pt from gen lepton and reco MET
       GenMuWPt_ = GenMus->at(0).Pt() + MHT * deltaR(0,METPhi,0,GenMus->at(0).Phi());
-		
+      gen_ptw = GenMuWPt_;	
       if ( GenMus->at(0).Pt() < minMuPt_ || std::abs(GenMus->at(0).Eta()) > maxMuEta_)
 	{
 	  muAcc=0;
@@ -286,7 +273,10 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 			  muIso=2;
 			  muIsoMatched.push_back(1);
 			  Expectation=2;
-			  if(!DY_)mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi());
+			  if(!DY_) {
+			    mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi());
+			    ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi());
+			  }
 			  MuDiLepControlSample_=2;
 			}
 		      else 
@@ -319,6 +309,7 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     {
       // compute W pt from gen lepton and reco MET
       GenElecWPt_ = GenEls->at(0).Pt() + MHT * deltaR(0,METPhi,0,GenEls->at(0).Phi());
+      gen_ptw = GenElecWPt_;
       if ( GenEls->at(0).Pt() < minElecPt_ || std::abs(GenEls->at(0).Eta()) > maxElecEta_)
 	{
 	  elecAcc=0;
@@ -350,7 +341,10 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 			  elecIso=2;
 			  elecIsoMatched.push_back(1);
 			  Expectation=2;
-			  if(!DY_) mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi());
+			  if(!DY_) {
+			    mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi());
+			    ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi());
+			  }
 			  ElecDiLepControlSample_=2;
 			}
 		      else 
@@ -430,12 +424,14 @@ Bool_t ExpecMaker::Process(Long64_t entry)
       if(selectedIDIsoMuonsNum_==1 && selectedIDIsoElectronsNum_==0)
 	{
 	  mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
+	  ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
 	  MuDiLepControlSample_=0;
 	}
       if(selectedIDIsoMuonsNum_==0 && selectedIDIsoElectronsNum_==1)
 	{
 	  ElecDiLepControlSample_=0;
 	  mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
+	  ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
 	}
     }
   // isotrack
@@ -965,6 +961,9 @@ void ExpecMaker::resetValues()
   GenMuWPhi_=-1.;
   GenElecWPt_=-1.;
   GenElecWPhi_=-1.;
+
+  mtw=-1.;
+  ptw=-1.;
 }
 bool ExpecMaker::FiltersPass()
 {
