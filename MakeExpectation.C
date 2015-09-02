@@ -15,7 +15,7 @@ using std::vector;
 void MakeExpectation()
 {
 
-  bool useTProof = true;
+  bool useTProof = false;
   TProof *proof = NULL;
   
   gSystem->Load("libPhysics.so");

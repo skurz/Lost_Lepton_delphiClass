@@ -538,7 +538,7 @@ unsigned int SearchBins::GetBinNumber(double HT, double MHT, int NJets, int BTag
   }
   if(match==-1)
   {
-    std::cout<<"Error event fits in no bin! HT: "<<HT<<", MHT: "<<MHT<<", NJets: "<<NJets<<", BTags: "<<BTags<<std::endl;
+    if (MHT>200) std::cout<<"Error event fits in no bin! HT: "<<HT<<", MHT: "<<MHT<<", NJets: "<<NJets<<", BTags: "<<BTags<<std::endl;
     result=999;
   }
   if(match>0)
