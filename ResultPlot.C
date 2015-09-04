@@ -252,6 +252,7 @@ void ResultPlot()
   }
   TTree* LostLeptonPrediction = (TTree*) f1->Get("LostLeptonPrediction");
 	
+
   Float_t         MTW;
   UShort_t        selectedIDIsoMuonsNum;
   UShort_t        selectedIDIsoElectronsNum;
@@ -266,6 +267,13 @@ void ResultPlot()
   Float_t         elecAccWeight;
   Float_t         elecRecoWeight;
   Float_t         elecIsoWeight;
+
+  Float_t         totalStatUp;
+  Float_t         totalStatDown;
+  Float_t         totalSysUp;
+  Float_t         totalSysDown;
+  Float_t         totalUncUp;
+  Float_t         totalUncDown;
 	
 	
 	
@@ -274,6 +282,7 @@ void ResultPlot()
   LostLeptonPrediction->SetBranchAddress("NJets",&NJets);
   LostLeptonPrediction->SetBranchAddress("BTags",&BTags);
   LostLeptonPrediction->SetBranchAddress("Weight",&Weight);
+  LostLeptonPrediction->SetBranchAddress("Bin",&Bin);
 	
   LostLeptonPrediction->SetBranchAddress("MTW",&MTW);
   LostLeptonPrediction->SetBranchAddress("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum);
@@ -288,6 +297,14 @@ void ResultPlot()
   LostLeptonPrediction->SetBranchAddress("elecAccWeight",&elecAccWeight);
   LostLeptonPrediction->SetBranchAddress("elecRecoWeight",&elecRecoWeight);
   LostLeptonPrediction->SetBranchAddress("elecIsoWeight",&elecIsoWeight);
+
+  LostLeptonPrediction->SetBranchAddress("totalStatUp", &totalStatUp);
+  LostLeptonPrediction->SetBranchAddress("totalSysUp", &totalSysUp);
+  LostLeptonPrediction->SetBranchAddress("totalUncUp", &totalUncUp);
+
+  LostLeptonPrediction->SetBranchAddress("totalStatDown", &totalStatDown);
+  LostLeptonPrediction->SetBranchAddress("totalSysDown", &totalSysDown);
+  LostLeptonPrediction->SetBranchAddress("totalUncDown", &totalUncDown);
 
   TDirectory *EffInputFolder =   (TDirectory*)f1->Get("MeanWeight");
   TProfile *CombinedMeanWeight_ = (TProfile*) EffInputFolder->Get("CombinedMeanWeight");
@@ -304,6 +321,36 @@ void ResultPlot()
     CombinedWeightPerBin_[b] = (TH1D*) EffperBinInputFolder->Get(TString("CombinedWeightPerBin_")+TString(to_string(b+1)));
   }
 
+  TH1F* totalPred_LL_ = new TH1F("totalPred_LL","totalPred_LL", 72, 1, 73);
+  TH1F* totalPredStatUp_LL_ = new TH1F("totalPredStatUp_LL","totalPredStatUp_LL", 72, 1, 73);
+  TH1F* totalPredStatDown_LL_ = new TH1F("totalPredStatDown_LL","totalPredStatDown_LL", 72, 1, 73);
+  TH1F* totalPredSysUp_LL_ = new TH1F("totalPredSysUp_LL","totalPredSysUp_LL", 72, 1, 73);
+  TH1F* totalPredSysDown_LL_ = new TH1F("totalPredSysDown_LL","totalPredSysDown_LL", 72, 1, 73);
+
+  TH1F* totalCS_LL_ = new TH1F("totalCS_LL","totalCS_LL", 72, 1, 73);
+  TH1F* nEvtsCS_LL_ = new TH1F("nEvtsCS_LL","nEvtsCS_LL", 72, 1, 73);
+
+  TProfile* avgWeight_LL_ = new TProfile("avgWeight_LL","avgWeight_LL", 72, 1, 73);
+  TProfile* avgWeightStatUp_LL_ = new TProfile("avgWeightStatUp_LL","avgWeightStatUp_LL", 72, 1, 73);
+  TProfile* avgWeightStatDown_LL_ = new TProfile("avgWeightStatDown_LL","avgWeightStatDown_LL", 72, 1, 73);
+  TProfile* avgWeightSysUp_LL_ = new TProfile("avgWeightSysUp_LL","avgWeightSysUp_LL", 72, 1, 73);
+  TProfile* avgWeightSysDown_LL_ = new TProfile("avgWeightSysDown_LL","avgWeightSysDown_LL", 72, 1, 73);
+
+  totalPred_LL_->Sumw2();
+  totalPredStatUp_LL_->Sumw2();
+  totalPredStatDown_LL_->Sumw2();
+  totalPredSysUp_LL_->Sumw2();
+  totalPredSysDown_LL_->Sumw2();
+
+  totalCS_LL_->Sumw2();
+
+  avgWeight_LL_->Sumw2();
+  avgWeightStatUp_LL_->Sumw2();
+  avgWeightStatDown_LL_->Sumw2();
+  avgWeightSysUp_LL_->Sumw2();
+  avgWeightSysDown_LL_->Sumw2();
+
+
   std::cout<<"Loop on Prediction"<<std::endl;
 	
   nentries = LostLeptonPrediction->GetEntries();
@@ -312,94 +359,109 @@ void ResultPlot()
     nbytes += LostLeptonPrediction->GetEntry(i);
     // total expectation
     if(MTW>100 || NJets<3.7)continue;
-    Bin = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
-    Weight_=Weight;
+    //Bin = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
+    //Weight_=Weight;
     selectedIDIsoMuonsNum_=selectedIDIsoMuonsNum;
     selectedIDIsoElectronsNum_=selectedIDIsoElectronsNum;
     if(selectedIDIsoMuonsNum+selectedIDIsoElectronsNum!=1)continue;
-    if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0)
-      {
-	ControlSampleMu_->Fill(HT,MHT,NJets,BTags,Weight);
-			
-	totalPrediction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLep/2);
-	totalPredictionMu_->Fill(HT,MHT,NJets,BTags,totalWeightDiLep);
-	totalPre+=totalWeightDiLep;
-	totalPreError+= totalWeightDiLep*totalWeightDiLep;
-	totalPreMu+=totalWeightDiLep;
-	totalPreMuError+= totalWeightDiLep*totalWeightDiLep;
-	// isotrackveto applied
-	totalPredictionIsoTrackReduction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLepIsoTrackReduced/2);
-	totalPredictionMuIsoTrackReduction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLepIsoTrackReduced);
-	totalPreIsoTrack+=totalWeightDiLepIsoTrackReduced;
-	totalPreIsoTrackError+=totalWeightDiLepIsoTrackReduced*totalWeightDiLepIsoTrackReduced;
-	totalPreIsoTrackMu+=totalWeightDiLepIsoTrackReduced;
-	totalPreIsoTrackMuError+=totalWeightDiLepIsoTrackReduced*totalWeightDiLepIsoTrackReduced;
+    if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0){
 
-	// separted closure
-	totalPredictionMuCSMuAcc_->Fill(HT,MHT,NJets,BTags,muAccWeight);
-	totalPredictionMuCSMuReco_->Fill(HT,MHT,NJets,BTags,muRecoWeight);
-	totalPredictionMuCSMuIso_->Fill(HT,MHT,NJets,BTags,muIsoWeight);
-	totalPreMuAcc+=muAccWeight/2;
-	totalPreMuReco+=muRecoWeight/2;
-	totalPreMuIso+=muIsoWeight/2;
-	totalPreMuMuAcc+=muAccWeight;
-	totalPreMuMuReco+=muRecoWeight;
-	totalPreMuMuIso+=muIsoWeight;
-			
-	totalPredictionMuCSElecAcc_->Fill(HT,MHT,NJets,BTags,elecAccWeight);
-	totalPredictionMuCSElecReco_->Fill(HT,MHT,NJets,BTags,elecRecoWeight);
-	totalPredictionMuCSElecIso_->Fill(HT,MHT,NJets,BTags,elecIsoWeight);
-	totalPreElecAcc+=elecAccWeight/2;
-	totalPreElecReco+=elecRecoWeight/2;
-	totalPreElecIso+=elecIsoWeight/2;
-	totalPreMuElecAcc+=elecAccWeight;
-	totalPreMuElecReco+=elecRecoWeight;
-	totalPreMuElecIso+=elecIsoWeight;
+      totalPred_LL_->Fill(Bin, totalWeightDiLepIsoTrackReduced/2);
+      totalPredStatUp_LL_->Fill(Bin, totalStatUp/2);
+      totalPredStatDown_LL_->Fill(Bin, totalStatDown/2);
+      totalPredSysUp_LL_->Fill(Bin, totalSysUp/2);
+      totalPredSysDown_LL_->Fill(Bin, totalSysDown/2);
 
-	muIsoWeight_=muIsoWeight; muRecoWeight_=muRecoWeight; muAccWeight_=muAccWeight;  elecIsoWeight_=elecIsoWeight; elecRecoWeight_=elecRecoWeight; elecAccWeight_=elecAccWeight; 
-	PredictionWeight_= totalWeightDiLep;
-	OutPutTreePre_->Fill();
-      }
-    if(selectedIDIsoMuonsNum==0 && selectedIDIsoElectronsNum==1)
-      {
-	ControlSampleElec_->Fill(HT,MHT,NJets,BTags,Weight);
-			
-	totalPrediction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLep/2);
-	totalPredictionElec_->Fill(HT,MHT,NJets,BTags,totalWeightDiLep);
-	totalPre+=totalWeightDiLep;
-	totalPreError+= totalWeightDiLep*totalWeightDiLep;
-	totalPreElec+=totalWeightDiLep;
-	totalPreElecError+= totalWeightDiLep*totalWeightDiLep;
-	// isotrackveto applied
-	totalPredictionIsoTrackReduction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLepIsoTrackReduced/2);
-	totalPredictionElecIsoTrackReduction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLepIsoTrackReduced);
-	totalPreIsoTrack+=totalWeightDiLepIsoTrackReduced;
-	totalPreIsoTrackError+=totalWeightDiLepIsoTrackReduced*totalWeightDiLepIsoTrackReduced;
-	totalPreIsoTrackElec+=totalWeightDiLepIsoTrackReduced;
-	totalPreIsoTrackElecError+=totalWeightDiLepIsoTrackReduced*totalWeightDiLepIsoTrackReduced;
-	// separted closure
-	totalPredictionElecCSMuAcc_->Fill(HT,MHT,NJets,BTags,muAccWeight);
-	totalPredictionElecCSMuReco_->Fill(HT,MHT,NJets,BTags,muRecoWeight);
-	totalPredictionElecCSMuIso_->Fill(HT,MHT,NJets,BTags,muIsoWeight);
-	totalPreMuAcc+=muAccWeight/2;
-	totalPreMuReco+=muRecoWeight/2;
-	totalPreMuIso+=muIsoWeight/2;
-	totalPreElecMuAcc+=muAccWeight;
-	totalPreElecMuReco+=muRecoWeight;
-	totalPreElecMuIso+=muIsoWeight;
-			
-	totalPredictionElecCSElecAcc_->Fill(HT,MHT,NJets,BTags,elecAccWeight);
-	totalPredictionElecCSElecReco_->Fill(HT,MHT,NJets,BTags,elecRecoWeight);
-	totalPredictionElecCSElecIso_->Fill(HT,MHT,NJets,BTags,elecIsoWeight);
-	totalPreElecAcc+=elecAccWeight/2;
-	totalPreElecReco+=elecRecoWeight/2;
-	totalPreElecIso+=elecIsoWeight/2;
-	totalPreElecElecAcc+=elecAccWeight;
-	totalPreElecElecReco+=elecRecoWeight;
-	totalPreElecElecIso+=elecIsoWeight;
+      totalCS_LL_->Fill(Bin, Weight);
+      nEvtsCS_LL_->Fill(Bin);
 
-	PredictionWeight_= totalWeightDiLep;
-	OutPutTreePre_->Fill();
+      avgWeight_LL_->Fill(Bin, totalWeightDiLepIsoTrackReduced/2);
+      avgWeightStatUp_LL_->Fill(Bin, totalStatUp/2);
+      avgWeightStatDown_LL_->Fill(Bin, totalStatDown/2);
+      avgWeightSysUp_LL_->Fill(Bin, totalSysUp/2);
+      avgWeightSysDown_LL_->Fill(Bin, totalSysDown/2);
+
+    	ControlSampleMu_->Fill(HT,MHT,NJets,BTags,Weight);
+    			
+    	totalPrediction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLep/2);
+    	totalPredictionMu_->Fill(HT,MHT,NJets,BTags,totalWeightDiLep);
+    	totalPre+=totalWeightDiLep;
+    	totalPreError+= totalWeightDiLep*totalWeightDiLep;
+    	totalPreMu+=totalWeightDiLep;
+    	totalPreMuError+= totalWeightDiLep*totalWeightDiLep;
+    	// isotrackveto applied
+    	totalPredictionIsoTrackReduction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLepIsoTrackReduced/2);
+    	totalPredictionMuIsoTrackReduction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLepIsoTrackReduced);
+    	totalPreIsoTrack+=totalWeightDiLepIsoTrackReduced;
+    	totalPreIsoTrackError+=totalWeightDiLepIsoTrackReduced*totalWeightDiLepIsoTrackReduced;
+    	totalPreIsoTrackMu+=totalWeightDiLepIsoTrackReduced;
+    	totalPreIsoTrackMuError+=totalWeightDiLepIsoTrackReduced*totalWeightDiLepIsoTrackReduced;
+
+    	// separted closure
+    	totalPredictionMuCSMuAcc_->Fill(HT,MHT,NJets,BTags,muAccWeight);
+    	totalPredictionMuCSMuReco_->Fill(HT,MHT,NJets,BTags,muRecoWeight);
+    	totalPredictionMuCSMuIso_->Fill(HT,MHT,NJets,BTags,muIsoWeight);
+    	totalPreMuAcc+=muAccWeight/2;
+    	totalPreMuReco+=muRecoWeight/2;
+    	totalPreMuIso+=muIsoWeight/2;
+    	totalPreMuMuAcc+=muAccWeight;
+    	totalPreMuMuReco+=muRecoWeight;
+    	totalPreMuMuIso+=muIsoWeight;
+    			
+    	totalPredictionMuCSElecAcc_->Fill(HT,MHT,NJets,BTags,elecAccWeight);
+    	totalPredictionMuCSElecReco_->Fill(HT,MHT,NJets,BTags,elecRecoWeight);
+    	totalPredictionMuCSElecIso_->Fill(HT,MHT,NJets,BTags,elecIsoWeight);
+    	totalPreElecAcc+=elecAccWeight/2;
+    	totalPreElecReco+=elecRecoWeight/2;
+    	totalPreElecIso+=elecIsoWeight/2;
+    	totalPreMuElecAcc+=elecAccWeight;
+    	totalPreMuElecReco+=elecRecoWeight;
+    	totalPreMuElecIso+=elecIsoWeight;
+
+    	muIsoWeight_=muIsoWeight; muRecoWeight_=muRecoWeight; muAccWeight_=muAccWeight;  elecIsoWeight_=elecIsoWeight; elecRecoWeight_=elecRecoWeight; elecAccWeight_=elecAccWeight; 
+    	PredictionWeight_= totalWeightDiLep;
+    	OutPutTreePre_->Fill();
+    }
+  if(selectedIDIsoMuonsNum==0 && selectedIDIsoElectronsNum==1)
+    {
+    	ControlSampleElec_->Fill(HT,MHT,NJets,BTags,Weight);
+    			
+    	totalPrediction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLep/2);
+    	totalPredictionElec_->Fill(HT,MHT,NJets,BTags,totalWeightDiLep);
+    	totalPre+=totalWeightDiLep;
+    	totalPreError+= totalWeightDiLep*totalWeightDiLep;
+    	totalPreElec+=totalWeightDiLep;
+    	totalPreElecError+= totalWeightDiLep*totalWeightDiLep;
+    	// isotrackveto applied
+    	totalPredictionIsoTrackReduction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLepIsoTrackReduced/2);
+    	totalPredictionElecIsoTrackReduction_->Fill(HT,MHT,NJets,BTags,totalWeightDiLepIsoTrackReduced);
+    	totalPreIsoTrack+=totalWeightDiLepIsoTrackReduced;
+    	totalPreIsoTrackError+=totalWeightDiLepIsoTrackReduced*totalWeightDiLepIsoTrackReduced;
+    	totalPreIsoTrackElec+=totalWeightDiLepIsoTrackReduced;
+    	totalPreIsoTrackElecError+=totalWeightDiLepIsoTrackReduced*totalWeightDiLepIsoTrackReduced;
+    	// separted closure
+    	totalPredictionElecCSMuAcc_->Fill(HT,MHT,NJets,BTags,muAccWeight);
+    	totalPredictionElecCSMuReco_->Fill(HT,MHT,NJets,BTags,muRecoWeight);
+    	totalPredictionElecCSMuIso_->Fill(HT,MHT,NJets,BTags,muIsoWeight);
+    	totalPreMuAcc+=muAccWeight/2;
+    	totalPreMuReco+=muRecoWeight/2;
+    	totalPreMuIso+=muIsoWeight/2;
+    	totalPreElecMuAcc+=muAccWeight;
+    	totalPreElecMuReco+=muRecoWeight;
+    	totalPreElecMuIso+=muIsoWeight;
+    			
+    	totalPredictionElecCSElecAcc_->Fill(HT,MHT,NJets,BTags,elecAccWeight);
+    	totalPredictionElecCSElecReco_->Fill(HT,MHT,NJets,BTags,elecRecoWeight);
+    	totalPredictionElecCSElecIso_->Fill(HT,MHT,NJets,BTags,elecIsoWeight);
+    	totalPreElecAcc+=elecAccWeight/2;
+    	totalPreElecReco+=elecRecoWeight/2;
+    	totalPreElecIso+=elecIsoWeight/2;
+    	totalPreElecElecAcc+=elecAccWeight;
+    	totalPreElecElecReco+=elecRecoWeight;
+    	totalPreElecElecIso+=elecIsoWeight;
+
+    	PredictionWeight_= totalWeightDiLep;
+    	OutPutTreePre_->Fill();
       }
   }
 
@@ -515,14 +577,6 @@ void ResultPlot()
   TH1F* h_cs_mu = (TH1F*) ControlSampleMu_->getFullTH1F();
   TH1F* h_cs_elec = (TH1F*) ControlSampleElec_->getFullTH1F();
 
-  TH1F* fullPred_LL_ = new TH1F("fullPred_LL","fullPred_LL", 220, 1, 221);
-  TH1F* fullPredSysUp_LL_ = new TH1F("fullPredSysUp_LL","fullPredSysUp_LL", 220, 1, 221);
-  TH1F* fullPredSysDown_LL_ = new TH1F("fullPredSysDown_LL","fullPredSysDown_LL", 220, 1, 221);
-  TH1F* fullCS_LL_ = new TH1F("fullCS_LL","fullCS_LL", 220, 1, 221);
-  TH1F* fullWeight_LL_ = new TH1F("fullWeight_LL","fullWeight_LL", 220, 1, 221);
-  TH1F* fullWeightSysUp_LL_ = new TH1F("fullWeightSysUp_LL","fullWeightSysUp_LL", 220, 1, 221);
-  TH1F* fullWeightSysDown_LL_ = new TH1F("fullWeightSysDown_LL","fullWeightSysDown_LL", 220, 1, 221);
-
   for(int i = 1; i<h_pred->GetNbinsX()+1; ++i){
     double N_predicted = h_pred->GetBinContent(i);
     double N_expected = h_exp->GetBinContent(i);
@@ -540,90 +594,7 @@ void ResultPlot()
     double N_cs_elec = h_cs_elec->GetBinContent(i);
     double Err_cs_mu = sqrt(N_cs_mu);
     double Err_cs_elec = sqrt(N_cs_elec);
-    /*
-      if(CombinedWeightDiLepPerBin_[i-1]->GetEntries()<0.5 && i > 37){
-      weight_combined = CombinedMeanWeight_->GetBinContent(i+1-18);
-      weight_combined_err = CombinedMeanWeight_->GetBinError(i+1-18);
-      fullWeightSysUp_LL_->SetBinContent(i,weight_combined*0.2);
-      fullWeightSysDown_LL_->SetBinContent(i,weight_combined*0.2);
-      if(i > 55 && CombinedWeightDiLepPerBin_[i-1-18]->GetEntries()<0.5){
-      weight_combined = CombinedMeanWeight_->GetBinContent(i+1-18);
-      weight_combined_err = CombinedMeanWeight_->GetBinError(i+1-18);
-      fullWeightSysUp_LL_->SetBinContent(i,weight_combined*0.3);
-      fullWeightSysDown_LL_->SetBinContent(i,weight_combined*0.3);
-      }
-      }else{
-      fullWeightSysUp_LL_->SetBinContent(i,0);
-      fullWeightSysDown_LL_->SetBinContent(i,0);
-      }
-
-
-      if(CombinedWeightDiLepPerBin_[i-1]->GetEntries()<0.5 && i > 56){
-      weight_combined = fullWeight_LL_->GetBinContent(i+1-55);
-      weight_combined_err = fullWeight_LL_->GetBinError(i+1-55);
-      fullWeightSysUp_LL_->SetBinContent(i,weight_combined*0.2);
-      fullWeightSysDown_LL_->SetBinContent(i,weight_combined*0.2);
-      if(CombinedWeightDiLepPerBin_[i-1-55]->GetEntries()<0.5 && i > 111){
-      weight_combined = fullWeight_LL_->GetBinContent(i+1-110);
-      weight_combined_err = fullWeight_LL_->GetBinError(i+1-110);
-      fullWeightSysUp_LL_->SetBinContent(i,weight_combined*0.3);
-      fullWeightSysDown_LL_->SetBinContent(i,weight_combined*0.3);
-      if(CombinedWeightDiLepPerBin_[i-1-110]->GetEntries()<0.5 && i > 166){
-      weight_combined = fullWeight_LL_->GetBinContent(i+1-165);
-      weight_combined_err = fullWeight_LL_->GetBinError(i+1-165);
-      fullWeightSysUp_LL_->SetBinContent(i,weight_combined*0.5);
-      fullWeightSysDown_LL_->SetBinContent(i,weight_combined*0.5);
-      }
-      }
-      }else{
-      fullWeightSysUp_LL_->SetBinContent(i,0);
-      fullWeightSysDown_LL_->SetBinContent(i,0);
-      }
-      if(weight_combined<0.01 && i < 220){
-      weight_combined = CombinedMeanWeight_->GetBinContent(i+1+1);
-      weight_combined_err = CombinedMeanWeight_->GetBinError(i+1+1);
-      fullWeightSysUp_LL_->SetBinContent(i,weight_combined*0.3);
-      fullWeightSysDown_LL_->SetBinContent(i,weight_combined*0.3);
-      }
-    */
-    //std::cout<<weight_combined<<"; "<<CombinedWeightDiLepPerBin_[i-1]->GetMean()<<std::endl;
-    /*
-      if(weight_mu < 0.1){
-      if(i > 19) weight_mu = MuMeanWeight_->GetBinContent(i-18);
-      else std::cout<<"Mu: Error using weight from lower N_BJets"<<std::endl;
-      if(weight_mu < 0.1){
-      if(i > 37) weight_mu = MuMeanWeight_->GetBinContent(i-18);
-      else std::cout<<"Mu: Error using weight from 2xlower N_BJets"<<std::endl;
-      }
-      if(weight_mu < 0.1) weight_mu = 0.1;
-      }
-
-      if(N_cs_mu < 1.0){
-      Err_cs_mu = 1.84;
-      }
-
-      double Err_pred_mu = Err_cs_mu * weight_mu;
-
-
-      if(weight_elec < 0.1){
-      if(i > 19) weight_elec = ElecMeanWeight_->GetBinContent(i-18);
-      else std::cout<<"El: Error using weight from lower N_BJets"<<std::endl;
-      if(weight_elec < 0.1){
-      if(i > 37) weight_elec = ElecMeanWeight_->GetBinContent(i-18);
-      else std::cout<<"El: Error using weight from 2xlower N_BJets"<<std::endl;
-      }
-      if(weight_elec < 0.1) weight_elec = 0.1;
-      }
-
-      if(N_cs_elec < 1.0){
-      Err_cs_elec = 1.84;
-      }
-
-      double Err_pred_elec = Err_cs_elec * weight_elec;
-
-
-      double Err_pred_ges = (Err_pred_mu + Err_pred_elec) / 2;
-    */
+   
     /*std::cout<<"Bin["<<i<<"]:"<<std::endl;
       std::cout<<"   HT: "<<SearchBins_->GetSearchBin(i-1)->HTmin_<<"-"<<SearchBins_->GetSearchBin(i-1)->HTmax_;
       std::cout<<"   MHT: "<<SearchBins_->GetSearchBin(i-1)->MHTmin_<<"-"<<SearchBins_->GetSearchBin(i-1)->MHTmax_;
@@ -632,6 +603,7 @@ void ResultPlot()
       std::cout<<std::endl;
       std::cout<<"   "<<N_predicted<<"+-"<<sqrt(Err_pred_ges*Err_pred_ges+0.4*0.4*N_predicted*N_predicted)<<std::endl;
     */
+
     std::cout.unsetf ( std::ios::floatfield );
     std::cout.precision(5);
     //std::cout<<i<<" & ";
@@ -664,23 +636,24 @@ void ResultPlot()
     std::cout<<0.1*((int)((N_cs_mu+N_cs_elec)*10))<<" & "<<" ("<<CombinedWeightPerBin_[i-1]->GetEntries()<<") & ";
  
     std::cout.precision(3);
-    std::cout<<"$"<<weight_combined<<"\\pm"<<0.001*((int)(weight_combined_err*1000))<<"^{+"<<fullWeightSysUp_LL_->GetBinContent(i)<<"}_{-"<<fullWeightSysDown_LL_->GetBinContent(i)<<"}$ & ";
+    std::cout<<"$"<<weight_combined<<"\\pm"<<0.001*((int)(weight_combined_err*1000))<<"^{+"<<avgWeightSysUp_LL_->GetBinContent(i)<<"}_{-"<<avgWeightSysDown_LL_->GetBinContent(i)<<"}$ & ";
     std::cout.precision(5);
     //		std::cout<<CombinedWeightDiLepPerBin_[i-1]->GetRMS()<<" ("<<CombinedWeightDiLepPerBin_[i-1]->GetBinCenter(CombinedWeightDiLepPerBin_[i-1]->FindFirstBinAbove())<<"/"<<CombinedWeightDiLepPerBin_[i-1]->GetBinCenter(CombinedWeightDiLepPerBin_[i-1]->FindLastBinAbove())<<") & ";
     //		std::cout<<N_predicted<<"+-"<<sqrt(Err_pred_ges*Err_pred_ges+0.4*0.4*N_predicted*N_predicted)<<" \\\\"<<std::endl;
     if(N_cs_mu+N_cs_elec>0.00001) std::cout<<"$"<<0.1*((int)(N_predicted*10))<<"\\pm"<<0.1*((int)(sqrt(N_predicted*N_predicted/(N_cs_mu+N_cs_elec))*10))<<"^{+"<<0.1*((int)(0.3*N_predicted*10))<<"}_{-"<<0.1*((int)(0.3*N_predicted*10))<<"}$ \\\\"<<std::endl;
     else std::cout<<"$"<<0<<"\\pm"<<0<<"^{+"<<0<<"}_{-"<<0<<"}$ \\\\"<<std::endl;
 
-    fullCS_LL_->SetBinContent(i,N_cs_mu+N_cs_elec);
+/*
+    totalCS_LL_->SetBinContent(i,N_cs_mu+N_cs_elec);
 
-    fullWeight_LL_->SetBinContent(i,weight_combined);
-    fullWeight_LL_->SetBinError(i,weight_combined_err);
+    avgWeight_LL_->SetBinContent(i,weight_combined);
+    avgWeight_LL_->SetBinError(i,weight_combined_err);
 
-    fullPred_LL_->SetBinContent(i,N_predicted);
-    if((N_cs_mu+N_cs_elec)>0) fullPred_LL_->SetBinError(i,sqrt(N_predicted*N_predicted/(N_cs_mu+N_cs_elec)));
-    if((N_cs_mu+N_cs_elec)>0) fullPredSysUp_LL_->SetBinContent(i,0.3*N_predicted);
-    if((N_cs_mu+N_cs_elec)>0) fullPredSysDown_LL_->SetBinContent(i,0.3*N_predicted);
-
+    totalPred_LL_->SetBinContent(i,N_predicted);
+    if((N_cs_mu+N_cs_elec)>0) totalPred_LL_->SetBinError(i,sqrt(N_predicted*N_predicted/(N_cs_mu+N_cs_elec)));
+    if((N_cs_mu+N_cs_elec)>0) totalPredSysUp_LL_->SetBinContent(i,0.3*N_predicted);
+    if((N_cs_mu+N_cs_elec)>0) totalPredSysDown_LL_->SetBinContent(i,0.3*N_predicted);
+*/
     //std::cout<<"Bin["<<i<<"]: "<<N_predicted<<"+-"<<Err_pred_ges<<std::endl;
     //std::cout<<"Bin["<<i<<"]: "<<N_predicted<<"+-"<<sqrt(Err_pred_ges*Err_pred_ges+0.4*0.4*N_predicted*N_predicted)<<std::endl;
   }
@@ -725,13 +698,13 @@ void ResultPlot()
 
   TFile *LLoutPutFile = new TFile("LLPrediction.root","RECREATE"); 
   LLoutPutFile->cd();
-  fullPred_LL_->Write();
-  fullCS_LL_->Write();
-  fullWeight_LL_->Write();
-  fullPredSysUp_LL_->Write();
-  fullPredSysDown_LL_->Write();
-  fullWeightSysUp_LL_->Write();
-  fullWeightSysDown_LL_->Write();
+  totalPred_LL_->Write();
+  totalCS_LL_->Write();
+  avgWeight_LL_->Write();
+  totalPredSysUp_LL_->Write();
+  totalPredSysDown_LL_->Write();
+  avgWeightSysUp_LL_->Write();
+  avgWeightSysDown_LL_->Write();
   LLoutPutFile->Close();
 	
 }
