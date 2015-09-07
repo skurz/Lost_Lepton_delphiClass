@@ -355,10 +355,10 @@ Bool_t Prediction::Process(Long64_t entry)
       elecIsoEffVec_ = ElecIsoPTActivity_->GetEff(selectedIDIsoMuons->at(0).Pt(),elecActivity, useAsymmErrors);
       //elecIsoEffVec_ = ElecIsoRelPTDeltaRJet_->GetEff(selectedIDIsoMuonsRelPTJet->at(0), selectedIDIsoMuonsDeltaRJet->at(0), useAsymmErrors);
       /*
-	if(UseTagAndProbeEffIso_)muIsoEff_ = getEff(MuIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0]); 
-	if(UseTagAndProbeEffReco_)muRecoEff_ = getEff(MuRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0]); 
-	if(UseTagAndProbeEffReco_)elecRecoEff_ = getEff(ElecRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),elecActivity); 
-	if(UseTagAndProbeEffIso_)elecIsoEff_ = getEff(ElecIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),elecActivity); 
+    	if(UseTagAndProbeEffIso_)muIsoEff_ = getEff(MuIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0]); 
+    	if(UseTagAndProbeEffReco_)muRecoEff_ = getEff(MuRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0]); 
+    	if(UseTagAndProbeEffReco_)elecRecoEff_ = getEff(ElecRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),elecActivity); 
+    	if(UseTagAndProbeEffIso_)elecIsoEff_ = getEff(ElecIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),elecActivity); 
       */
       //for compatibility
       muPurityCorrection_ = muPurityCorrectionVec_.eff;
@@ -398,12 +398,14 @@ Bool_t Prediction::Process(Long64_t entry)
       totalWeightDiLepIsoPionTrackReduced_ = totalWeightDiLep_ * (1 - expectationReductionPionIsoTrackEff_);
       totalWeightDiLepIsoTrackReducedCombined_ = totalWeightDiLep_ * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_));
 
-      MuMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight, Weight);
-      CombinedMeanWeight_->Fill(Bin_+0.01, 0.5*(totalWeightDiLepIsoTrackReduced_/Weight), Weight);
+      if(mtw<100){
+        MuMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight, Weight);
+        CombinedMeanWeight_->Fill(Bin_+0.01, 0.5*(totalWeightDiLepIsoTrackReduced_/Weight), Weight);
 
-      if(Bin_<72){
-	MuWeightPerBin_[Bin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/Weight,Weight);
-	CombinedWeightPerBin_[Bin_-1]->Fill(0.5*(totalWeightDiLepIsoTrackReduced_/Weight),Weight);
+        if(Bin_<72){
+        	MuWeightPerBin_[Bin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/Weight,Weight);
+        	CombinedWeightPerBin_[Bin_-1]->Fill(0.5*(totalWeightDiLepIsoTrackReduced_/Weight),Weight);
+        }
       }
 
       // weights used for closure tests
@@ -522,11 +524,11 @@ Bool_t Prediction::Process(Long64_t entry)
       diBosonDown = - wGes * 0.01 * diBosonContributionDown_;
 
       if(NJets < 6.5){
-	nonClosureUp = wGes * 0.01 * nonClosureLowNJets_;
-	nonClosureDown = - wGes * 0.01 * nonClosureLowNJets_;
+        nonClosureUp = wGes * 0.01 * nonClosureLowNJets_;
+        nonClosureDown = - wGes * 0.01 * nonClosureLowNJets_;
       }else{
-	nonClosureUp = wGes * 0.01 * nonClosureHighNJets_;
-	nonClosureDown = - wGes * 0.01 * nonClosureHighNJets_;
+        nonClosureUp = wGes * 0.01 * nonClosureHighNJets_;
+        nonClosureDown = - wGes * 0.01 * nonClosureHighNJets_;
       }
 
       totalStatUp = sqrt(isoTrackStatUp*isoTrackStatUp+MTWStatUp*MTWStatUp+purityStatUp*purityStatUp+singleLepPurityStatUp*singleLepPurityStatUp+diLepFoundStatUp*diLepFoundStatUp+muIsoStatUp*muIsoStatUp+muRecoStatUp*muRecoStatUp+muAccStatUp*muAccStatUp+elecIsoStatUp*elecIsoStatUp+elecRecoStatUp*elecRecoStatUp+elecAccStatUp*elecAccStatUp);
@@ -574,10 +576,10 @@ Bool_t Prediction::Process(Long64_t entry)
       muIsoEffVec_ = MuIsoPTActivity_->GetEff( selectedIDIsoElectrons->at(0).Pt(), muActivity, useAsymmErrors);
       //  muIsoEffVec_ = MuIsoRelPTDeltaRJet_->GetEff(selectedIDIsoElectronsRelPTJet->at(0), selectedIDIsoElectronsDeltaRJet->at(0), useAsymmErrors);
       /*
-	if(UseTagAndProbeEffIso_) elecIsoEff_ = getEff(ElecIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoElectronsActivity[0]); 
-	if(UseTagAndProbeEffReco_)elecRecoEff_ = getEff(ElecRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoElectronsActivity[0]); 
-	if(UseTagAndProbeEffReco_) muRecoEff_ = getEff(MuRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), muActivity); 
-	if(UseTagAndProbeEffIso_) muIsoEff_ = getEff(MuIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), muActivity); 
+    	if(UseTagAndProbeEffIso_) elecIsoEff_ = getEff(ElecIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoElectronsActivity[0]); 
+    	if(UseTagAndProbeEffReco_)elecRecoEff_ = getEff(ElecRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoElectronsActivity[0]); 
+    	if(UseTagAndProbeEffReco_) muRecoEff_ = getEff(MuRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), muActivity); 
+    	if(UseTagAndProbeEffIso_) muIsoEff_ = getEff(MuIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), muActivity); 
       */    
       //for compatibility
       elecPurityCorrection_ = elecPurityCorrectionVec_.eff;
@@ -616,12 +618,14 @@ Bool_t Prediction::Process(Long64_t entry)
       totalWeightDiLepIsoPionTrackReduced_ = totalWeightDiLep_ * (1 - expectationReductionPionIsoTrackEff_);
       totalWeightDiLepIsoTrackReducedCombined_ = totalWeightDiLep_ * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_));
 
-      ElecMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight, Weight);
-      CombinedMeanWeight_->Fill(Bin_+0.01, 0.5*(totalWeightDiLepIsoTrackReduced_/Weight), Weight);
+      if(mtw<100){
+        ElecMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight, Weight);
+        CombinedMeanWeight_->Fill(Bin_+0.01, 0.5*(totalWeightDiLepIsoTrackReduced_/Weight), Weight);
 
-      if(Bin_<72){
-	ElecWeightPerBin_[Bin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/Weight,Weight);
-	CombinedWeightPerBin_[Bin_-1]->Fill(0.5*(totalWeightDiLepIsoTrackReduced_/Weight),Weight);
+        if(Bin_<72){
+        	ElecWeightPerBin_[Bin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/Weight,Weight);
+        	CombinedWeightPerBin_[Bin_-1]->Fill(0.5*(totalWeightDiLepIsoTrackReduced_/Weight),Weight);
+        }
       }
 
       // weights used for closure tests
@@ -734,11 +738,11 @@ Bool_t Prediction::Process(Long64_t entry)
       diBosonDown = - wGes * 0.01 * diBosonContributionDown_;
 
       if(NJets < 6.5){
-	nonClosureUp = wGes * 0.01 * nonClosureLowNJets_;
-	nonClosureDown = - wGes * 0.01 * nonClosureLowNJets_;
+      	nonClosureUp = wGes * 0.01 * nonClosureLowNJets_;
+      	nonClosureDown = - wGes * 0.01 * nonClosureLowNJets_;
       }else{
-	nonClosureUp = wGes * 0.01 * nonClosureHighNJets_;
-	nonClosureDown = - wGes * 0.01 * nonClosureHighNJets_;
+      	nonClosureUp = wGes * 0.01 * nonClosureHighNJets_;
+      	nonClosureDown = - wGes * 0.01 * nonClosureHighNJets_;
       }
 
       totalStatUp = sqrt(isoTrackStatUp*isoTrackStatUp+MTWStatUp*MTWStatUp+purityStatUp*purityStatUp+singleLepPurityStatUp*singleLepPurityStatUp+diLepFoundStatUp*diLepFoundStatUp+muIsoStatUp*muIsoStatUp+muRecoStatUp*muRecoStatUp+muAccStatUp*muAccStatUp+elecIsoStatUp*elecIsoStatUp+elecRecoStatUp*elecRecoStatUp+elecAccStatUp*elecAccStatUp);

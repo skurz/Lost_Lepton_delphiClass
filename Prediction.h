@@ -96,7 +96,7 @@ const double MuIsoUncertaintyDown_ = 10;  // dummies as long as TAP is not avail
 const double ElecIsoUncertaintyUp_ = 10;  // dummies as long as TAP is not available
 const double ElecIsoUncertaintyDown_ = 10;  // dummies as long as TAP is not available
 
-const double diBosonContributionUp_ = 3;
+const double diBosonContributionUp_ = 0;
 const double diBosonContributionDown_ = 3;
 
 const double nonClosureLowNJets_ = 25;
