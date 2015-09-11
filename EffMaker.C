@@ -27,8 +27,6 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   TH1::SetDefaultSumw2();
 
   gSystem->mkdir("Efficiencies");	
-  // total event count for expecation	
-  totalExpectation_ = new SearchBinEventCount("TotalLostLeptonExpecation");
 
   // purity
 
@@ -355,8 +353,8 @@ Bool_t EffMaker::Process(Long64_t entry)
 {
 
   fChain->GetTree()->GetEntry(entry);
-  // total expectation
-  if(Expectation==1)totalExpectation_->Fill(HT,MHT,NJets,BTags,Weight);
+
+  if(Weight<0) return kTRUE;
 	
   // purity
   // single muon control sample
@@ -1392,12 +1390,5 @@ void EffMaker::Terminate()
   PionIsoTrackReductionBTagNJets_->SaveEff("#pi iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
   PionIsoTrackReductionPTActivity_->SaveEff("#pi iso track expec. reduction; p_{T} [GeV]; Activity [GeV]", dEfficiencies);   
 
-
-  outPutFile->cd();
-  outPutFile->mkdir("Expectation");
-  TDirectory *dExpectation = (TDirectory*)outPutFile->Get("Expectation");
-  dExpectation->cd();
-  totalExpectation_->saveResults(dExpectation);
-  
   outPutFile->Close();
 }

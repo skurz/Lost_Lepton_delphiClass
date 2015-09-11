@@ -102,7 +102,7 @@ void TH1Eff::SaveEff(const char* title, TDirectory* MainDirectory)
 
 	RatioTH1F_->Divide(PassTH1F_, TotalTH1F_, 1, 1, "B");
 	RatioTH1F_->SetName(name_);
-	RatioTH1F_->SetTitle(TString("Simulation, L=4 fb^{-1}, #sqrt{s}=13 TeV ") + TString(title));
+	RatioTH1F_->SetTitle(TString("Simulation, L=3 fb^{-1}, #sqrt{s}=13 TeV ") + TString(title));
 	RatioTH1F_->SetMarkerSize(2.0);
   	RatioTH1F_->UseCurrentStyle();
 
@@ -294,7 +294,7 @@ void TH2Eff::SaveEff(const char* title, TDirectory* MainDirectory)
 
 	RatioTH2F_->Divide(PassTH2F_, TotalTH2F_, 1, 1, "B");
 	RatioTH2F_->SetName(name_);
-	RatioTH2F_->SetTitle(TString("Simulation, L=4 fb^{-1}, #sqrt{s}=13 TeV ") + TString(title));
+	RatioTH2F_->SetTitle(TString("Simulation, L=3 fb^{-1}, #sqrt{s}=13 TeV ") + TString(title));
 	RatioTH2F_->SetMarkerSize(2.0);
   	RatioTH2F_->UseCurrentStyle();
 
