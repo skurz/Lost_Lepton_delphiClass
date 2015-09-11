@@ -8,7 +8,9 @@
 #define ExpecMaker_h
 
 #include "SearchBins.h"
+//#include "/afs/desy.de/user/k/kurzsimo/xxl-af-cms/Lost_Lepton_delphiClass/SearchBins.h"
 #include "LLTools.h"
+//#include "/afs/desy.de/user/k/kurzsimo/xxl-af-cms/Lost_Lepton_delphiClass/LLTools.h"
 
 #include <iostream>
 #include <vector>
@@ -23,6 +25,8 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TLorentzVector.h"
+#include "TProofServ.h"
+#include "TProof.h"
 
 using std::vector;
 using std::cout;
@@ -124,7 +128,7 @@ public :
 
 
  // Storing stuff
-  TTree	*tExpectation_;
+  TTree	*tExpectation_ = 0;
 
   //  template<> void TreeObject<TLorentzVector>::AddBranch() { tree->Branch(nameInTree.c_str(),nameInTree.c_str(),&value); }
 	
@@ -427,11 +431,90 @@ void ExpecMaker::Init(TTree *tree)
   if (!tree) return;
   fChain = tree;
   fChain->SetMakeClass(1);
+
+  fChain->SetBranchStatus("*",0);
+  fChain->SetBranchStatus("RunNum", 1);
+  fChain->SetBranchStatus("LumiBlockNum", 1);
+  fChain->SetBranchStatus("EvtNum", 1);
+  fChain->SetBranchStatus("BTags", 1);
+  fChain->SetBranchStatus("CSCTightHaloFilter", 1);
+  fChain->SetBranchStatus("DeltaPhi1", 1);
+  fChain->SetBranchStatus("DeltaPhi2", 1);
+  fChain->SetBranchStatus("DeltaPhi3", 1);
+  fChain->SetBranchStatus("DeltaPhiN1", 1);
+  fChain->SetBranchStatus("DeltaPhiN2", 1);
+  fChain->SetBranchStatus("DeltaPhiN3", 1);
+  fChain->SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter", 1);
+  fChain->SetBranchStatus("eeBadScFilter", 1);
+  fChain->SetBranchStatus("ElectronCharge", 1);
+  fChain->SetBranchStatus("Electrons", 1);
+  fChain->SetBranchStatus("GenElec_GenElecFromTau", 1);
+  fChain->SetBranchStatus("GenEls", 1);
+  fChain->SetBranchStatus("GenMu_GenMuFromTau", 1);
+  fChain->SetBranchStatus("GenMus", 1);
+  fChain->SetBranchStatus("GenTau_GenTauHad", 1);
+  fChain->SetBranchStatus("GenTauNu", 1);
+  fChain->SetBranchStatus("GenTaus", 1);
+  fChain->SetBranchStatus("HBHENoiseFilter", 1);
+  fChain->SetBranchStatus("HT", 1);
+  fChain->SetBranchStatus("isoElectronTracks", 1);
+  fChain->SetBranchStatus("IsolatedElectronTracksVeto", 1);
+  fChain->SetBranchStatus("IsolatedElectronTracksVeto_MTW", 1);
+  fChain->SetBranchStatus("IsolatedMuonTracksVeto", 1);
+  fChain->SetBranchStatus("IsolatedMuonTracksVeto_MTW", 1);
+  fChain->SetBranchStatus("IsolatedPionTracksVeto", 1);
+  fChain->SetBranchStatus("IsolatedPionTracksVeto_MTW", 1);
+  fChain->SetBranchStatus("isoMuonTracks", 1);
+  fChain->SetBranchStatus("isoPionTracks", 1);
+  fChain->SetBranchStatus("JetID", 1);
+  fChain->SetBranchStatus("Jets", 1);
+  fChain->SetBranchStatus("Jets_bDiscriminatorCSV", 1);
+  fChain->SetBranchStatus("Jets_bDiscriminatorMVA", 1);
+  fChain->SetBranchStatus("Jets_chargedEmEnergyFraction", 1);
+  fChain->SetBranchStatus("Jets_chargedHadronEnergyFraction", 1);
+  fChain->SetBranchStatus("Jets_chargedHadronMultiplicity", 1);
+  fChain->SetBranchStatus("Jets_electronMultiplicity", 1);
+  fChain->SetBranchStatus("Jets_flavor", 1);
+  fChain->SetBranchStatus("Jets_jetArea", 1);
+  fChain->SetBranchStatus("Jets_muonEnergyFraction", 1);
+  fChain->SetBranchStatus("Jets_muonMultiplicity", 1);
+  fChain->SetBranchStatus("Jets_neutralEmEnergyFraction", 1);
+  fChain->SetBranchStatus("Jets_neutralHadronMultiplicity", 1);
+  fChain->SetBranchStatus("Jets_photonEnergyFraction", 1);
+  fChain->SetBranchStatus("Jets_photonMultiplicity", 1);
+  fChain->SetBranchStatus("Leptons", 1);
+  fChain->SetBranchStatus("METFilters", 1);
+  fChain->SetBranchStatus("METPhi", 1);
+  fChain->SetBranchStatus("METPt", 1);
+  fChain->SetBranchStatus("MHT", 1);
+  fChain->SetBranchStatus("MHT_Phi", 1);
+  fChain->SetBranchStatus("minDeltaPhiN", 1);
+  fChain->SetBranchStatus("MuonCharge", 1);
+  fChain->SetBranchStatus("Muons", 1);
+  fChain->SetBranchStatus("nAllVertices", 1);
+  fChain->SetBranchStatus("NJets", 1);
+  fChain->SetBranchStatus("NumPhotons", 1);
+  fChain->SetBranchStatus("NVtx", 1);
+  fChain->SetBranchStatus("selectedIDElectrons", 1);
+  fChain->SetBranchStatus("selectedIDElectrons_MTW", 1);
+  fChain->SetBranchStatus("selectedIDIsoElectrons", 1);
+  fChain->SetBranchStatus("selectedIDIsoElectrons_MTW", 1);
+  fChain->SetBranchStatus("selectedIDIsoMuons", 1);
+  fChain->SetBranchStatus("selectedIDIsoMuons_MTW", 1);
+  fChain->SetBranchStatus("selectedIDMuons", 1);
+  fChain->SetBranchStatus("selectedIDMuons_MTW", 1);
+  fChain->SetBranchStatus("TagLeptonHighPT", 1);
+  fChain->SetBranchStatus("TauDecayCands", 1);
+  fChain->SetBranchStatus("TauDecayCands_pdgID", 1);
+  fChain->SetBranchStatus("TriggerNames", 1);
+  fChain->SetBranchStatus("TriggerPass", 1);
+  fChain->SetBranchStatus("TriggerPrescales", 1);
+  fChain->SetBranchStatus("Weight", 1);
+
   
   fChain->SetBranchAddress("RunNum", &RunNum, &b_RunNum);
   fChain->SetBranchAddress("LumiBlockNum", &LumiBlockNum, &b_LumiBlockNum);
   fChain->SetBranchAddress("EvtNum", &EvtNum, &b_EvtNum);
-  fChain->SetBranchAddress("bestPhoton", &bestPhoton, &b_bestPhoton);
   fChain->SetBranchAddress("BTags", &BTags, &b_BTags);
   fChain->SetBranchAddress("CSCTightHaloFilter", &CSCTightHaloFilter, &b_CSCTightHaloFilter);
   fChain->SetBranchAddress("DeltaPhi1", &DeltaPhi1, &b_DeltaPhi1);

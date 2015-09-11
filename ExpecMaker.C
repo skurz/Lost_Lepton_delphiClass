@@ -4,6 +4,7 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include "TSystem.h"
 
 void ExpecMaker::Begin(TTree * /*tree*/)
 {
@@ -12,7 +13,7 @@ void ExpecMaker::Begin(TTree * /*tree*/)
   // The tree argument is deprecated (on PROOF 0 is passed).
 	
   TString option = GetOption();
-  tExpectation_=NULL;
+
 }
 
 void ExpecMaker::SlaveBegin(TTree * /*tree*/)
@@ -180,10 +181,11 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
       //   tExpectation_->Branch("maxDeltaRElecActivity",&maxDeltaRElecActivity_,"maxDeltaRElecActivity/F");
     }
 
-  GetOutputList()->Add(tExpectation_);
   SearchBins_ = new SearchBins();
   SearchBinsQCD_ = new SearchBins(true); // 220 QCD binning
   std::cout<<"Applying filters: "<<applyFilters_<<std::endl;
+  
+  GetOutputList()->Add(tExpectation_);
 }
 
 Bool_t ExpecMaker::Process(Long64_t entry)
@@ -802,20 +804,23 @@ void ExpecMaker::SlaveTerminate()
   // The SlaveTerminate() function is called after all entries or objects
   // have been processed. When running with PROOF SlaveTerminate() is called
   // on each slave server.
-	
+
 }
 
 void ExpecMaker::Terminate()
 {
-  //  GetOutputList()->Print();
-  // std::cout << "tExpectation_:" << tExpectation_ << '\n';
+  GetOutputList()->Print();
+  //std::cout << "tExpectation_:" << tExpectation_ << '\n';
   tExpectation_ = dynamic_cast<TTree*>(GetOutputList()->FindObject("LostLeptonExpectation"));
-	
-  TFile *outPutFile = new TFile("Expectation.root","RECREATE"); 
-  outPutFile->cd();
-  tExpectation_->Write();
-	
-  outPutFile->Close();
+  //std::cout << "tExpectation_:" << tExpectation_ << '\n';
+
+  if(!tExpectation_) Error("Terminate", "TTree object missing in output list");
+  else{
+    TFile *outPutFile = new TFile("Expectation.root","RECREATE"); 
+    outPutFile->cd();
+    tExpectation_->Write();
+    outPutFile->Close();
+  }
 	
 }
 
