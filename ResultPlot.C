@@ -534,11 +534,11 @@ void ResultPlot()
     totalCS_LL_->Fill(Bin, scaledWeight/scaleMC);
     nEvtsCS_LL_->Fill(Bin);
 
-    avgWeight_LL_->Fill(Bin, totalWeightDiLepIsoTrackReduced/Weight/2/scaleMC);
-    avgWeightStatUp_LL_->Fill(Bin, totalStatUp/Weight/2/scaleMC);
-    avgWeightStatDown_LL_->Fill(Bin, totalStatDown/Weight/2/scaleMC);
-    avgWeightSysUp_LL_->Fill(Bin, totalSysUp/Weight/2/scaleMC);
-    avgWeightSysDown_LL_->Fill(Bin, totalSysDown/Weight/2/scaleMC);
+    avgWeight_LL_->Fill(Bin, totalWeightDiLepIsoTrackReduced/Weight/2);
+    avgWeightStatUp_LL_->Fill(Bin, totalStatUp/Weight/2);
+    avgWeightStatDown_LL_->Fill(Bin, totalStatDown/Weight/2);
+    avgWeightSysUp_LL_->Fill(Bin, totalSysUp/Weight/2);
+    avgWeightSysDown_LL_->Fill(Bin, totalSysDown/Weight/2);
 
     if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0){
 
@@ -749,7 +749,7 @@ void ResultPlot()
 
   if(InputPath_Prediction_Data == InputPath_Prediction) std::cout<<"ATTENTION: Full MC statistics used to do prediction! Only approx. stat. unc. (~sqrt(n)) shown on prediction!"<<std::endl;
 
-  printf("Bin & NJets & BTags & HT & MHT & CS_MC (nEvts) & avg. weight (MC) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff.] & CS_data & avg. weight (data) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff.] & Prediction [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff.] & Expectation \n");
+  printf("Bin & NJets & BTags & HT & MHT & CS\\_MC (nEntries) & avg. weight (MC) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff.] & CS\\_data & avg. weight (data) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff.] & Prediction [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff.] & Expectation \\\\\n");
 
   for(int i = 1; i<totalPred_LL_->GetNbinsX()+1; ++i){
 
@@ -784,20 +784,20 @@ void ResultPlot()
     printf("%3.3f (%1.0f) & ", totalCS_LL_MC_->GetBinContent(i), nEvtsCS_LL_MC_->GetBinContent(i));
  
     // Average weight per Bin (MC)
-    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}^{+%3.3f}_{-%3.3f}$ & ", avgWeight_LL_MC_->GetBinContent(i), avgWeight_LL_MC_->GetBinError(i), avgWeightStatUp_LL_MC_->GetBinContent(i), avgWeightStatDown_LL_MC_->GetBinContent(i), avgWeightSysUp_LL_MC_->GetBinContent(i), avgWeightSysDown_LL_MC_->GetBinContent(i));
+    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}$ & ", avgWeight_LL_MC_->GetBinContent(i), avgWeight_LL_MC_->GetBinError(i), avgWeightStatUp_LL_MC_->GetBinContent(i), avgWeightStatDown_LL_MC_->GetBinContent(i), avgWeightSysUp_LL_MC_->GetBinContent(i), avgWeightSysDown_LL_MC_->GetBinContent(i));
     
     // CS events (data)
     printf("%1.0f & ", totalCS_LL_->GetBinContent(i));
 
     // Average weight per Bin (data)
-    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}^{+%3.3f}_{-%3.3f}$ & ", avgWeight_LL_->GetBinContent(i), avgWeight_LL_->GetBinError(i), avgWeightStatUp_LL_->GetBinContent(i), avgWeightStatDown_LL_->GetBinContent(i), avgWeightSysUp_LL_->GetBinContent(i), avgWeightSysDown_LL_->GetBinContent(i));
+    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}$ & ", avgWeight_LL_->GetBinContent(i), avgWeight_LL_->GetBinError(i), avgWeightStatUp_LL_->GetBinContent(i), avgWeightStatDown_LL_->GetBinContent(i), avgWeightSysUp_LL_->GetBinContent(i), avgWeightSysDown_LL_->GetBinContent(i));
 
     // Prediction
     // Correct estimate of stat. uncertainty on prediction only possible if data is used or limited MC statistics (e.g. number of events corresponding to 3fb-1)
     // For approximation of stat. uncertainty on prediction using full MC statistics use:
     if(InputPath_Prediction_Data == InputPath_Prediction) if(totalCS_LL_->GetBinContent(i)>0.00001) totalPred_LL_->SetBinError(i, sqrt(totalPred_LL_->GetBinContent(i)*totalPred_LL_->GetBinContent(i)/totalCS_LL_->GetBinContent(i)));
 
-    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}^{+%3.3f}_{-%3.3f}$ & ", totalPred_LL_->GetBinContent(i), totalPred_LL_->GetBinError(i), totalPredStatUp_LL_->GetBinContent(i), totalPredStatDown_LL_->GetBinContent(i), totalPredSysUp_LL_->GetBinContent(i), totalPredSysDown_LL_->GetBinContent(i));
+    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}$ & ", totalPred_LL_->GetBinContent(i), totalPred_LL_->GetBinError(i), totalPredStatUp_LL_->GetBinContent(i), totalPredStatDown_LL_->GetBinContent(i), totalPredSysUp_LL_->GetBinContent(i), totalPredSysDown_LL_->GetBinContent(i));
 
     // Expectation
     printf("$%3.3f\\pm%3.3f$ \\\\\n", totalExp_LL_->GetBinContent(i), totalExp_LL_->GetBinError(i));
