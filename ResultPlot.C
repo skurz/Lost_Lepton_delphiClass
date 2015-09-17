@@ -47,11 +47,19 @@ void ResultPlot()
   // Prepare Code for Extrapolation Method
   bool doExtrapolation = false; 
 
+  // Present output in QCD binning
+  bool doQCDbinning = true;
+
+  int nSearchBinsTotal = 72;
+  if(doQCDbinning) nSearchBinsTotal = 220;
+  UShort_t         SearchBin=0;
+
 
   //Declaration of leaves types for both trees (Expectation/Prediction)
   UShort_t         Bin;
-  Double_t          Weight;
-  Double_t          scaledWeight;
+  UShort_t         BinQCD;
+  Double_t         Weight;
+  Double_t         scaledWeight;
   Double_t         HT;
   Double_t         MHT;
   Int_t            NJets;
@@ -119,63 +127,62 @@ void ResultPlot()
   double totalPreElecMuAcc=0, totalPreElecMuReco=0, totalPreElecMuIso=0;
   double totalPreElecElecAcc=0, totalPreElecElecReco=0, totalPreElecElecIso=0;
 	
-  TH1F* ControlSampleMu_ = new TH1F("ControlSampleMu", "ControlSampleMu", 72, 1., 73.);
-  TH1F* ControlSampleElec_ = new TH1F("ControlSampleElec", "ControlSampleElec", 72, 1., 73.);
+  TH1F* ControlSampleMu_ = new TH1F("ControlSampleMu", "ControlSampleMu", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* ControlSampleElec_ = new TH1F("ControlSampleElec", "ControlSampleElec", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 	
-  TH1F* totalExpectation_ = new TH1F("TotalLostLeptonExpecation", "TotalLostLeptonExpecation", 72, 1., 73.);
-  TH1F* totalPrediction_ = new TH1F("TotalLostLeptonPrediction", "TotalLostLeptonPrediction", 72, 1., 73.);
-  TH1F* totalPredictionMu_ = new TH1F("TotalLostLeptonPredictionMu", "TotalLostLeptonPredictionMu", 72, 1., 73.);
-  TH1F* totalPredictionElec_ = new TH1F("TotalLostLeptonPredictionElec", "TotalLostLeptonPredictionElec", 72, 1., 73.);
+  TH1F* totalExpectation_ = new TH1F("TotalLostLeptonExpecation", "TotalLostLeptonExpecation", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPrediction_ = new TH1F("TotalLostLeptonPrediction", "TotalLostLeptonPrediction", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionMu_ = new TH1F("TotalLostLeptonPredictionMu", "TotalLostLeptonPredictionMu", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionElec_ = new TH1F("TotalLostLeptonPredictionElec", "TotalLostLeptonPredictionElec", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 	
-  TH1F* totalExpectationIsoTrackReduction_ = new TH1F("TotalLostLeptonExpecationIsoTrackReduction", "TotalLostLeptonExpecationIsoTrackReduction", 72, 1., 73.);
-  TH1F* totalPredictionIsoTrackReduction_ = new TH1F("TotalLostLeptonPredictionIsoTrackReduction", "TotalLostLeptonPredictionIsoTrackReduction", 72, 1., 73.);
-  TH1F* totalPredictionMuIsoTrackReduction_ = new TH1F("TotalLostLeptonPredictionMuIsoTrackReduction", "TotalLostLeptonPredictionMuIsoTrackReduction", 72, 1., 73.);
-  TH1F* totalPredictionElecIsoTrackReduction_ = new TH1F("TotalLostLeptonPredictionElecIsoTrackReduction", "TotalLostLeptonPredictionElecIsoTrackReduction", 72, 1., 73.);
+  TH1F* totalExpectationIsoTrackReduction_ = new TH1F("TotalLostLeptonExpecationIsoTrackReduction", "TotalLostLeptonExpecationIsoTrackReduction", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionIsoTrackReduction_ = new TH1F("TotalLostLeptonPredictionIsoTrackReduction", "TotalLostLeptonPredictionIsoTrackReduction", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionMuIsoTrackReduction_ = new TH1F("TotalLostLeptonPredictionMuIsoTrackReduction", "TotalLostLeptonPredictionMuIsoTrackReduction", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionElecIsoTrackReduction_ = new TH1F("TotalLostLeptonPredictionElecIsoTrackReduction", "TotalLostLeptonPredictionElecIsoTrackReduction", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 	
   // separted closure
-  TH1F* totalExpectationMuAcc_ = new TH1F("TotalLostLeptonExpecationMuAcc", "TotalLostLeptonExpecationMuAcc", 72, 1., 73.);
-  TH1F* totalPredictionMuCSMuAcc_ = new TH1F("TotalLostLeptonPredictionMuCSMuAcc", "TotalLostLeptonPredictionMuCSMuAcc", 72, 1., 73.);
-  TH1F* totalPredictionElecCSMuAcc_ = new TH1F("TotalLostLeptonPredictionElecCSMuAcc", "TotalLostLeptonPredictionElecCSMuAcc", 72, 1., 73.);
+  TH1F* totalExpectationMuAcc_ = new TH1F("TotalLostLeptonExpecationMuAcc", "TotalLostLeptonExpecationMuAcc", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionMuCSMuAcc_ = new TH1F("TotalLostLeptonPredictionMuCSMuAcc", "TotalLostLeptonPredictionMuCSMuAcc", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionElecCSMuAcc_ = new TH1F("TotalLostLeptonPredictionElecCSMuAcc", "TotalLostLeptonPredictionElecCSMuAcc", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 	
-  TH1F* totalExpectationMuReco_ = new TH1F("TotalLostLeptonExpecationMuReco", "TotalLostLeptonExpecationMuReco", 72, 1., 73.);
-  TH1F* totalPredictionMuCSMuReco_ = new TH1F("TotalLostLeptonPredictionMuCSMuReco", "TotalLostLeptonPredictionMuCSMuReco", 72, 1., 73.);
-  TH1F* totalPredictionElecCSMuReco_ = new TH1F("TotalLostLeptonPredictionElecCSMuReco", "TotalLostLeptonPredictionElecCSMuReco", 72, 1., 73.);
+  TH1F* totalExpectationMuReco_ = new TH1F("TotalLostLeptonExpecationMuReco", "TotalLostLeptonExpecationMuReco", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionMuCSMuReco_ = new TH1F("TotalLostLeptonPredictionMuCSMuReco", "TotalLostLeptonPredictionMuCSMuReco", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionElecCSMuReco_ = new TH1F("TotalLostLeptonPredictionElecCSMuReco", "TotalLostLeptonPredictionElecCSMuReco", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 	
-  TH1F* totalExpectationMuIso_ = new TH1F("TotalLostLeptonExpecationMuIso", "TotalLostLeptonExpecationMuIso", 72, 1., 73.);
-  TH1F* totalPredictionMuCSMuIso_ = new TH1F("TotalLostLeptonPredictionMuCSMuIso", "TotalLostLeptonPredictionMuCSMuIso", 72, 1., 73.);
-  TH1F* totalPredictionElecCSMuIso_ = new TH1F("TotalLostLeptonPredictionElecCSMuIso", "TotalLostLeptonPredictionElecCSMuIso", 72, 1., 73.);	
+  TH1F* totalExpectationMuIso_ = new TH1F("TotalLostLeptonExpecationMuIso", "TotalLostLeptonExpecationMuIso", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionMuCSMuIso_ = new TH1F("TotalLostLeptonPredictionMuCSMuIso", "TotalLostLeptonPredictionMuCSMuIso", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionElecCSMuIso_ = new TH1F("TotalLostLeptonPredictionElecCSMuIso", "TotalLostLeptonPredictionElecCSMuIso", nSearchBinsTotal, 1, nSearchBinsTotal+1);	
 	
-  TH1F* totalExpectationElecAcc_ = new TH1F("TotalLostLeptonExpecationElecAcc", "TotalLostLeptonExpecationElecAcc", 72, 1., 73.);
-  TH1F* totalPredictionMuCSElecAcc_ = new TH1F("TotalLostLeptonPredictionMuCSElecAcc", "TotalLostLeptonPredictionMuCSElecAcc", 72, 1., 73.);
-  TH1F* totalPredictionElecCSElecAcc_ = new TH1F("TotalLostLeptonPredictionElecCSElecAcc", "TotalLostLeptonPredictionElecCSElecAcc", 72, 1., 73.);
+  TH1F* totalExpectationElecAcc_ = new TH1F("TotalLostLeptonExpecationElecAcc", "TotalLostLeptonExpecationElecAcc", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionMuCSElecAcc_ = new TH1F("TotalLostLeptonPredictionMuCSElecAcc", "TotalLostLeptonPredictionMuCSElecAcc", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionElecCSElecAcc_ = new TH1F("TotalLostLeptonPredictionElecCSElecAcc", "TotalLostLeptonPredictionElecCSElecAcc", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 	
-  TH1F* totalExpectationElecReco_ = new TH1F("TotalLostLeptonExpecationElecReco", "TotalLostLeptonExpecationElecReco", 72, 1., 73.);
-  TH1F* totalPredictionMuCSElecReco_ = new TH1F("TotalLostLeptonPredictionMuCSElecReco", "TotalLostLeptonPredictionMuCSElecReco", 72, 1., 73.);
-  TH1F* totalPredictionElecCSElecReco_ = new TH1F("TotalLostLeptonPredictionElecCSElecReco", "TotalLostLeptonPredictionElecCSElecReco", 72, 1., 73.);
+  TH1F* totalExpectationElecReco_ = new TH1F("TotalLostLeptonExpecationElecReco", "TotalLostLeptonExpecationElecReco", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionMuCSElecReco_ = new TH1F("TotalLostLeptonPredictionMuCSElecReco", "TotalLostLeptonPredictionMuCSElecReco", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionElecCSElecReco_ = new TH1F("TotalLostLeptonPredictionElecCSElecReco", "TotalLostLeptonPredictionElecCSElecReco", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 	
-  TH1F* totalExpectationElecIso_ = new TH1F("TotalLostLeptonExpecationElecIso", "TotalLostLeptonExpecationElecIso", 72, 1., 73.);
-  TH1F* totalPredictionMuCSElecIso_ = new TH1F("TotalLostLeptonPredictionMuCSElecIso", "TotalLostLeptonPredictionMuCSElecIso", 72, 1., 73.);
-  TH1F* totalPredictionElecCSElecIso_ = new TH1F("TotalLostLeptonPredictionElecCSElecIso", "TotalLostLeptonPredictionElecCSElecIso", 72, 1., 73.);
-
+  TH1F* totalExpectationElecIso_ = new TH1F("TotalLostLeptonExpecationElecIso", "TotalLostLeptonExpecationElecIso", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionMuCSElecIso_ = new TH1F("TotalLostLeptonPredictionMuCSElecIso", "TotalLostLeptonPredictionMuCSElecIso", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredictionElecCSElecIso_ = new TH1F("TotalLostLeptonPredictionElecCSElecIso", "TotalLostLeptonPredictionElecCSElecIso", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
 
   // Define histrograms to do totalPrediction per SearchBin
-  TH1F* totalExp_LL_ = new TH1F("totalExp_LL","totalExp_LL", 72, 1, 73);
+  TH1F* totalExp_LL_ = new TH1F("totalExp_LL","totalExp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
-  TH1F* totalPred_LL_ = new TH1F("totalPred_LL","totalPred_LL", 72, 1, 73);
-  TH1F* totalPredStatUp_LL_ = new TH1F("totalPredStatUp_LL","totalPredStatUp_LL", 72, 1, 73);
-  TH1F* totalPredStatDown_LL_ = new TH1F("totalPredStatDown_LL","totalPredStatDown_LL", 72, 1, 73);
-  TH1F* totalPredSysUp_LL_ = new TH1F("totalPredSysUp_LL","totalPredSysUp_LL", 72, 1, 73);
-  TH1F* totalPredSysDown_LL_ = new TH1F("totalPredSysDown_LL","totalPredSysDown_LL", 72, 1, 73);
+  TH1F* totalPred_LL_ = new TH1F("totalPred_LL","totalPred_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredStatUp_LL_ = new TH1F("totalPredStatUp_LL","totalPredStatUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredStatDown_LL_ = new TH1F("totalPredStatDown_LL","totalPredStatDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredSysUp_LL_ = new TH1F("totalPredSysUp_LL","totalPredSysUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredSysDown_LL_ = new TH1F("totalPredSysDown_LL","totalPredSysDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
-  TH1F* totalCS_LL_ = new TH1F("totalCS_LL","totalCS_LL", 72, 1, 73);
-  TH1F* nEvtsCS_LL_ = new TH1F("nEvtsCS_LL","nEvtsCS_LL", 72, 1, 73);
+  TH1F* totalCS_LL_ = new TH1F("totalCS_LL","totalCS_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* nEvtsCS_LL_ = new TH1F("nEvtsCS_LL","nEvtsCS_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
-  TProfile* avgWeight_LL_ = new TProfile("avgWeight_LL","avgWeight_LL", 72, 1, 73);
-  TProfile* avgWeightStatUp_LL_ = new TProfile("avgWeightStatUp_LL","avgWeightStatUp_LL", 72, 1, 73);
-  TProfile* avgWeightStatDown_LL_ = new TProfile("avgWeightStatDown_LL","avgWeightStatDown_LL", 72, 1, 73);
-  TProfile* avgWeightSysUp_LL_ = new TProfile("avgWeightSysUp_LL","avgWeightSysUp_LL", 72, 1, 73);
-  TProfile* avgWeightSysDown_LL_ = new TProfile("avgWeightSysDown_LL","avgWeightSysDown_LL", 72, 1, 73);
+  TProfile* avgWeight_LL_ = new TProfile("avgWeight_LL","avgWeight_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightStatUp_LL_ = new TProfile("avgWeightStatUp_LL","avgWeightStatUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightStatDown_LL_ = new TProfile("avgWeightStatDown_LL","avgWeightStatDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightSysUp_LL_ = new TProfile("avgWeightSysUp_LL","avgWeightSysUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightSysDown_LL_ = new TProfile("avgWeightSysDown_LL","avgWeightSysDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
   totalPred_LL_->Sumw2();
   totalPredStatUp_LL_->Sumw2();
@@ -192,22 +199,22 @@ void ResultPlot()
   avgWeightSysDown_LL_->Sumw2();
 
   // Define histrograms to do totalPrediction per SearchBin (MC)
-  TH1F* totalExp_LL_MC_ = new TH1F("totalExp_LL_MC","totalExp_LL_MC", 72, 1, 73);
+  TH1F* totalExp_LL_MC_ = new TH1F("totalExp_LL_MC","totalExp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
-  TH1F* totalPred_LL_MC_ = new TH1F("totalPred_LL_MC","totalPred_LL_MC", 72, 1, 73);
-  TH1F* totalPredStatUp_LL_MC_ = new TH1F("totalPredStatUp_LL_MC","totalPredStatUp_LL_MC", 72, 1, 73);
-  TH1F* totalPredStatDown_LL_MC_ = new TH1F("totalPredStatDown_LL_MC","totalPredStatDown_LL_MC", 72, 1, 73);
-  TH1F* totalPredSysUp_LL_MC_ = new TH1F("totalPredSysUp_LL_MC","totalPredSysUp_LL_MC", 72, 1, 73);
-  TH1F* totalPredSysDown_LL_MC_ = new TH1F("totalPredSysDown_LL_MC","totalPredSysDown_LL_MC", 72, 1, 73);
+  TH1F* totalPred_LL_MC_ = new TH1F("totalPred_LL_MC","totalPred_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredStatUp_LL_MC_ = new TH1F("totalPredStatUp_LL_MC","totalPredStatUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredStatDown_LL_MC_ = new TH1F("totalPredStatDown_LL_MC","totalPredStatDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredSysUp_LL_MC_ = new TH1F("totalPredSysUp_LL_MC","totalPredSysUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredSysDown_LL_MC_ = new TH1F("totalPredSysDown_LL_MC","totalPredSysDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
-  TH1F* totalCS_LL_MC_ = new TH1F("totalCS_LL_MC","totalCS_LL_MC", 72, 1, 73);
-  TH1F* nEvtsCS_LL_MC_ = new TH1F("nEvtsCS_LL_MC","nEvtsCS_LL_MC", 72, 1, 73);
+  TH1F* totalCS_LL_MC_ = new TH1F("totalCS_LL_MC","totalCS_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* nEvtsCS_LL_MC_ = new TH1F("nEvtsCS_LL_MC","nEvtsCS_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
-  TProfile* avgWeight_LL_MC_ = new TProfile("avgWeight_LL_MC","avgWeight_LL_MC", 72, 1, 73);
-  TProfile* avgWeightStatUp_LL_MC_ = new TProfile("avgWeightStatUp_LL_MC","avgWeightStatUp_LL_MC", 72, 1, 73);
-  TProfile* avgWeightStatDown_LL_MC_ = new TProfile("avgWeightStatDown_LL_MC","avgWeightStatDown_LL_MC", 72, 1, 73);
-  TProfile* avgWeightSysUp_LL_MC_ = new TProfile("avgWeightSysUp_LL_MC","avgWeightSysUp_LL_MC", 72, 1, 73);
-  TProfile* avgWeightSysDown_LL_MC_ = new TProfile("avgWeightSysDown_LL_MC","avgWeightSysDown_LL_MC", 72, 1, 73);
+  TProfile* avgWeight_LL_MC_ = new TProfile("avgWeight_LL_MC","avgWeight_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightStatUp_LL_MC_ = new TProfile("avgWeightStatUp_LL_MC","avgWeightStatUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightStatDown_LL_MC_ = new TProfile("avgWeightStatDown_LL_MC","avgWeightStatDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightSysUp_LL_MC_ = new TProfile("avgWeightSysUp_LL_MC","avgWeightSysUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightSysDown_LL_MC_ = new TProfile("avgWeightSysDown_LL_MC","avgWeightSysDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
   totalPred_LL_MC_->Sumw2();
   totalPredStatUp_LL_MC_->Sumw2();
@@ -243,6 +250,7 @@ void ResultPlot()
   LostLeptonExpectation->SetBranchStatus("BTags",1);
   LostLeptonExpectation->SetBranchStatus("Weight",1);
   LostLeptonExpectation->SetBranchStatus("Bin",1);
+  LostLeptonExpectation->SetBranchStatus("BinQCD",1);
   LostLeptonExpectation->SetBranchStatus("Expectation",1);
   LostLeptonExpectation->SetBranchStatus("ExpectationReductionIsoTrack",1);
   LostLeptonExpectation->SetBranchStatus("muAcc",1);
@@ -261,6 +269,7 @@ void ResultPlot()
   LostLeptonExpectation->SetBranchAddress("BTags",&BTags);
   LostLeptonExpectation->SetBranchAddress("Weight",&Weight);
   LostLeptonExpectation->SetBranchAddress("Bin",&Bin);
+  LostLeptonExpectation->SetBranchAddress("BinQCD",&BinQCD);
 	
   LostLeptonExpectation->SetBranchAddress("Expectation",&Expectation);
   LostLeptonExpectation->SetBranchAddress("ExpectationReductionIsoTrack",&ExpectationReductionIsoTrack);
@@ -283,53 +292,57 @@ void ResultPlot()
   Long64_t nbytes = 0;
   for (Long64_t i=0; i<nentries;i++) {
     nbytes += LostLeptonExpectation->GetEntry(i);
+
+    if(doQCDbinning) SearchBin = BinQCD;
+    else SearchBin = Bin;
+
     // total expectation
-    if(doExtrapolation || Bin > 900) continue;
+    if(doExtrapolation || SearchBin > 900) continue;
 
     scaledWeight = Weight * scaleFactorWeight;
 
     if(Expectation==1 && NJets>3.1)
     {
-    	totalExpectation_->Fill(Bin, scaledWeight);
+    	totalExpectation_->Fill(SearchBin, scaledWeight);
     	totalExp+=scaledWeight;
     	totalExpError+= scaledWeight*scaledWeight;
     }
     if(Expectation==1 && ExpectationReductionIsoTrack==0 && NJets>3.1)
     {
-    	totalExpectationIsoTrackReduction_->Fill(Bin, scaledWeight);
+    	totalExpectationIsoTrackReduction_->Fill(SearchBin, scaledWeight);
     	totalExpIsoTrack+=scaledWeight;
     	totalExpIsoTrackError+= scaledWeight*scaledWeight;
-      totalExp_LL_->Fill(Bin, scaledWeight);
+      totalExp_LL_->Fill(SearchBin, scaledWeight);
     }
     if(muAcc==0)
     {
-    	totalExpectationMuAcc_->Fill(Bin, scaledWeight);
+    	totalExpectationMuAcc_->Fill(SearchBin, scaledWeight);
     	totalExpMuAcc+=scaledWeight;
     }
     if(muReco==0)
     {
-    	totalExpectationMuReco_->Fill(Bin, scaledWeight);
+    	totalExpectationMuReco_->Fill(SearchBin, scaledWeight);
     	totalExpMuReco+=scaledWeight;
     }
     if(muIso==0)
     {
-    	totalExpectationMuIso_->Fill(Bin, scaledWeight);
+    	totalExpectationMuIso_->Fill(SearchBin, scaledWeight);
     	totalExpMuIso+=scaledWeight;
     }
 					
     if(elecAcc==0)
     {
-    	totalExpectationElecAcc_->Fill(Bin, scaledWeight);
+    	totalExpectationElecAcc_->Fill(SearchBin, scaledWeight);
     	totalExpElecAcc+=scaledWeight;
     }
     if(elecReco==0)
     {
-    	totalExpectationElecReco_->Fill(Bin, scaledWeight);
+    	totalExpectationElecReco_->Fill(SearchBin, scaledWeight);
     	totalExpElecReco+=scaledWeight;
     }
     if(elecIso==0)
     {
-    	totalExpectationElecIso_->Fill(Bin, scaledWeight);
+    	totalExpectationElecIso_->Fill(SearchBin, scaledWeight);
     	totalExpElecIso+=scaledWeight;
     }
   }
@@ -351,6 +364,7 @@ void ResultPlot()
   LostLeptonPrediction->SetBranchStatus("BTags",1);
   LostLeptonPrediction->SetBranchStatus("Weight",1);
   LostLeptonPrediction->SetBranchStatus("Bin",1);
+  LostLeptonPrediction->SetBranchStatus("BinQCD",1);
   LostLeptonPrediction->SetBranchStatus("MTW",1);
   LostLeptonPrediction->SetBranchStatus("selectedIDIsoMuonsNum",1);
   LostLeptonPrediction->SetBranchStatus("selectedIDIsoElectronsNum",1);
@@ -375,6 +389,7 @@ void ResultPlot()
   LostLeptonPrediction->SetBranchAddress("BTags",&BTags);
   LostLeptonPrediction->SetBranchAddress("Weight",&Weight);
   LostLeptonPrediction->SetBranchAddress("Bin",&Bin);
+  LostLeptonPrediction->SetBranchAddress("BinQCD",&BinQCD);
   
   LostLeptonPrediction->SetBranchAddress("MTW",&MTW);
   LostLeptonPrediction->SetBranchAddress("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum);
@@ -405,27 +420,30 @@ void ResultPlot()
   nbytes = 0;
   for (Long64_t i=0; i<nentries;i++) {
     nbytes += LostLeptonPrediction->GetEntry(i);
+
+    if(doQCDbinning) SearchBin = BinQCD;
+    else SearchBin = Bin;
     
-    if(doExtrapolation || Bin > 900) continue;
+    if(doExtrapolation || SearchBin > 900) continue;
     if(MTW>100)continue;
     if(selectedIDIsoMuonsNum+selectedIDIsoElectronsNum!=1)continue;
 
     scaledWeight = Weight * scaleFactorWeight;
 
-    totalPred_LL_MC_->Fill(Bin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2);
-    totalPredStatUp_LL_MC_->Fill(Bin, totalStatUp*scaleFactorWeight/2);
-    totalPredStatDown_LL_MC_->Fill(Bin, totalStatDown*scaleFactorWeight/2);
-    totalPredSysUp_LL_MC_->Fill(Bin, totalSysUp*scaleFactorWeight/2);
-    totalPredSysDown_LL_MC_->Fill(Bin, totalSysDown*scaleFactorWeight/2);
+    totalPred_LL_MC_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2);
+    totalPredStatUp_LL_MC_->Fill(SearchBin, totalStatUp*scaleFactorWeight/2);
+    totalPredStatDown_LL_MC_->Fill(SearchBin, totalStatDown*scaleFactorWeight/2);
+    totalPredSysUp_LL_MC_->Fill(SearchBin, totalSysUp*scaleFactorWeight/2);
+    totalPredSysDown_LL_MC_->Fill(SearchBin, totalSysDown*scaleFactorWeight/2);
 
-    totalCS_LL_MC_->Fill(Bin, scaledWeight);
-    nEvtsCS_LL_MC_->Fill(Bin);
+    totalCS_LL_MC_->Fill(SearchBin, scaledWeight);
+    nEvtsCS_LL_MC_->Fill(SearchBin);
 
-    avgWeight_LL_MC_->Fill(Bin, totalWeightDiLepIsoTrackReduced/Weight/2);
-    avgWeightStatUp_LL_MC_->Fill(Bin, totalStatUp/Weight/2);
-    avgWeightStatDown_LL_MC_->Fill(Bin, totalStatDown/Weight/2);
-    avgWeightSysUp_LL_MC_->Fill(Bin, totalSysUp/Weight/2);
-    avgWeightSysDown_LL_MC_->Fill(Bin, totalSysDown/Weight/2);
+    avgWeight_LL_MC_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced/Weight/2);
+    avgWeightStatUp_LL_MC_->Fill(SearchBin, totalStatUp/Weight/2);
+    avgWeightStatDown_LL_MC_->Fill(SearchBin, totalStatDown/Weight/2);
+    avgWeightSysUp_LL_MC_->Fill(SearchBin, totalSysUp/Weight/2);
+    avgWeightSysDown_LL_MC_->Fill(SearchBin, totalSysDown/Weight/2);
   }
 
   std::cout<<"Finished"<<std::endl;
@@ -445,6 +463,7 @@ void ResultPlot()
   LostLeptonPredictionData->SetBranchStatus("BTags",1);
   LostLeptonPredictionData->SetBranchStatus("Weight",1);
   LostLeptonPredictionData->SetBranchStatus("Bin",1);
+  LostLeptonPredictionData->SetBranchStatus("BinQCD",1);
   LostLeptonPredictionData->SetBranchStatus("MTW",1);
   LostLeptonPredictionData->SetBranchStatus("selectedIDIsoMuonsNum",1);
   LostLeptonPredictionData->SetBranchStatus("selectedIDIsoElectronsNum",1);
@@ -469,6 +488,7 @@ void ResultPlot()
   LostLeptonPredictionData->SetBranchAddress("BTags",&BTags);
   LostLeptonPredictionData->SetBranchAddress("Weight",&Weight);
   LostLeptonPredictionData->SetBranchAddress("Bin",&Bin);
+  LostLeptonPredictionData->SetBranchAddress("BinQCD",&BinQCD);
 	
   LostLeptonPredictionData->SetBranchAddress("MTW",&MTW);
   LostLeptonPredictionData->SetBranchAddress("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum);
@@ -516,8 +536,11 @@ void ResultPlot()
   scaleFactorWeight = 1.0;
   for (Long64_t i=0; i<nentries;i++) {
     nbytes += LostLeptonPredictionData->GetEntry(i);
+
+    if(doQCDbinning) SearchBin = BinQCD;
+    else SearchBin = Bin;
     
-    if(doExtrapolation || Bin > 900) continue;
+    if(doExtrapolation || SearchBin > 900) continue;
     if(MTW>100)continue;
     if(selectedIDIsoMuonsNum+selectedIDIsoElectronsNum!=1)continue;
 
@@ -525,43 +548,43 @@ void ResultPlot()
 
     if(InputPath_Prediction_Data != InputPath_Prediction) scaleMC = Weight;
 
-    totalPred_LL_->Fill(Bin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC);
-    totalPredStatUp_LL_->Fill(Bin, totalStatUp*scaleFactorWeight/2/scaleMC);
-    totalPredStatDown_LL_->Fill(Bin, totalStatDown*scaleFactorWeight/2/scaleMC);
-    totalPredSysUp_LL_->Fill(Bin, totalSysUp*scaleFactorWeight/2/scaleMC);
-    totalPredSysDown_LL_->Fill(Bin, totalSysDown*scaleFactorWeight/2/scaleMC);
+    totalPred_LL_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC);
+    totalPredStatUp_LL_->Fill(SearchBin, totalStatUp*scaleFactorWeight/2/scaleMC);
+    totalPredStatDown_LL_->Fill(SearchBin, totalStatDown*scaleFactorWeight/2/scaleMC);
+    totalPredSysUp_LL_->Fill(SearchBin, totalSysUp*scaleFactorWeight/2/scaleMC);
+    totalPredSysDown_LL_->Fill(SearchBin, totalSysDown*scaleFactorWeight/2/scaleMC);
 
-    totalCS_LL_->Fill(Bin, scaledWeight/scaleMC);
-    nEvtsCS_LL_->Fill(Bin);
+    totalCS_LL_->Fill(SearchBin, scaledWeight/scaleMC);
+    nEvtsCS_LL_->Fill(SearchBin);
 
-    avgWeight_LL_->Fill(Bin, totalWeightDiLepIsoTrackReduced/Weight/2);
-    avgWeightStatUp_LL_->Fill(Bin, totalStatUp/Weight/2);
-    avgWeightStatDown_LL_->Fill(Bin, totalStatDown/Weight/2);
-    avgWeightSysUp_LL_->Fill(Bin, totalSysUp/Weight/2);
-    avgWeightSysDown_LL_->Fill(Bin, totalSysDown/Weight/2);
+    avgWeight_LL_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced/Weight/2);
+    avgWeightStatUp_LL_->Fill(SearchBin, totalStatUp/Weight/2);
+    avgWeightStatDown_LL_->Fill(SearchBin, totalStatDown/Weight/2);
+    avgWeightSysUp_LL_->Fill(SearchBin, totalSysUp/Weight/2);
+    avgWeightSysDown_LL_->Fill(SearchBin, totalSysDown/Weight/2);
 
     if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0){
 
-    	ControlSampleMu_->Fill(Bin, scaledWeight/scaleMC);
+    	ControlSampleMu_->Fill(SearchBin, scaledWeight/scaleMC);
     			
-    	totalPrediction_->Fill(Bin, totalWeightDiLep*scaleFactorWeight/2/scaleMC);
+    	totalPrediction_->Fill(SearchBin, totalWeightDiLep*scaleFactorWeight/2/scaleMC);
     	totalPre+=totalWeightDiLep*scaleFactorWeight/2/scaleMC;
     	totalPreError+= totalWeightDiLep*scaleFactorWeight/2*totalWeightDiLep*scaleFactorWeight/2/scaleMC/scaleMC;
-      totalPredictionMu_->Fill(Bin, totalWeightDiLep*scaleFactorWeight/scaleMC);
+      totalPredictionMu_->Fill(SearchBin, totalWeightDiLep*scaleFactorWeight/scaleMC);
     	totalPreMu+=totalWeightDiLep*scaleFactorWeight/scaleMC;
     	totalPreMuError+= totalWeightDiLep*scaleFactorWeight*totalWeightDiLep*scaleFactorWeight/scaleMC/scaleMC;
     	// isotrackveto applied
-    	totalPredictionIsoTrackReduction_->Fill(Bin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC);
+    	totalPredictionIsoTrackReduction_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC);
       totalPreIsoTrack+=totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC;
       totalPreIsoTrackError+=totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2*totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC/scaleMC;
-    	totalPredictionMuIsoTrackReduction_->Fill(Bin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC);
+    	totalPredictionMuIsoTrackReduction_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC);
     	totalPreIsoTrackMu+=totalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC;
     	totalPreIsoTrackMuError+=totalWeightDiLepIsoTrackReduced*scaleFactorWeight*totalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC/scaleMC;
 
     	// separted closure
-    	totalPredictionMuCSMuAcc_->Fill(Bin, muAccWeight*scaleFactorWeight/scaleMC);
-    	totalPredictionMuCSMuReco_->Fill(Bin, muRecoWeight*scaleFactorWeight/scaleMC);
-    	totalPredictionMuCSMuIso_->Fill(Bin, muIsoWeight*scaleFactorWeight/scaleMC);
+    	totalPredictionMuCSMuAcc_->Fill(SearchBin, muAccWeight*scaleFactorWeight/scaleMC);
+    	totalPredictionMuCSMuReco_->Fill(SearchBin, muRecoWeight*scaleFactorWeight/scaleMC);
+    	totalPredictionMuCSMuIso_->Fill(SearchBin, muIsoWeight*scaleFactorWeight/scaleMC);
     	totalPreMuAcc+=muAccWeight*scaleFactorWeight/2/scaleMC;
     	totalPreMuReco+=muRecoWeight*scaleFactorWeight/2/scaleMC;
     	totalPreMuIso+=muIsoWeight*scaleFactorWeight/2/scaleMC;
@@ -569,9 +592,9 @@ void ResultPlot()
     	totalPreMuMuReco+=muRecoWeight*scaleFactorWeight/scaleMC;
     	totalPreMuMuIso+=muIsoWeight*scaleFactorWeight/scaleMC;
     			
-    	totalPredictionMuCSElecAcc_->Fill(Bin, elecAccWeight*scaleFactorWeight/scaleMC);
-    	totalPredictionMuCSElecReco_->Fill(Bin, elecRecoWeight*scaleFactorWeight/scaleMC);
-    	totalPredictionMuCSElecIso_->Fill(Bin, elecIsoWeight*scaleFactorWeight/scaleMC);
+    	totalPredictionMuCSElecAcc_->Fill(SearchBin, elecAccWeight*scaleFactorWeight/scaleMC);
+    	totalPredictionMuCSElecReco_->Fill(SearchBin, elecRecoWeight*scaleFactorWeight/scaleMC);
+    	totalPredictionMuCSElecIso_->Fill(SearchBin, elecIsoWeight*scaleFactorWeight/scaleMC);
     	totalPreElecAcc+=elecAccWeight*scaleFactorWeight/2/scaleMC;
     	totalPreElecReco+=elecRecoWeight*scaleFactorWeight/2/scaleMC;
     	totalPreElecIso+=elecIsoWeight*scaleFactorWeight/2/scaleMC;
@@ -581,26 +604,26 @@ void ResultPlot()
     }
     if(selectedIDIsoMuonsNum==0 && selectedIDIsoElectronsNum==1)
     {
-    	ControlSampleElec_->Fill(Bin, scaledWeight/scaleMC);
+    	ControlSampleElec_->Fill(SearchBin, scaledWeight/scaleMC);
           
-      totalPrediction_->Fill(Bin, totalWeightDiLep*scaleFactorWeight/2/scaleMC);
+      totalPrediction_->Fill(SearchBin, totalWeightDiLep*scaleFactorWeight/2/scaleMC);
       totalPre+=totalWeightDiLep*scaleFactorWeight/2/scaleMC;
       totalPreError+= totalWeightDiLep*scaleFactorWeight/2*totalWeightDiLep*scaleFactorWeight/2/scaleMC/scaleMC;
-      totalPredictionElec_->Fill(Bin, totalWeightDiLep*scaleFactorWeight/scaleMC);
+      totalPredictionElec_->Fill(SearchBin, totalWeightDiLep*scaleFactorWeight/scaleMC);
       totalPreElec+=totalWeightDiLep*scaleFactorWeight/scaleMC;
       totalPreElecError+= totalWeightDiLep*scaleFactorWeight*totalWeightDiLep*scaleFactorWeight/scaleMC/scaleMC;
       // isotrackveto applied
-      totalPredictionIsoTrackReduction_->Fill(Bin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC);
+      totalPredictionIsoTrackReduction_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC);
       totalPreIsoTrack+=totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC;
       totalPreIsoTrackError+=totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2*totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC/scaleMC;
-      totalPredictionElecIsoTrackReduction_->Fill(Bin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC);
+      totalPredictionElecIsoTrackReduction_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC);
       totalPreIsoTrackElec+=totalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC;
       totalPreIsoTrackElecError+=totalWeightDiLepIsoTrackReduced*scaleFactorWeight*totalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC/scaleMC;
 
       // separted closure
-      totalPredictionElecCSElecAcc_->Fill(Bin, elecAccWeight*scaleFactorWeight/scaleMC);
-      totalPredictionElecCSElecReco_->Fill(Bin, elecRecoWeight*scaleFactorWeight/scaleMC);
-      totalPredictionElecCSElecIso_->Fill(Bin, elecIsoWeight*scaleFactorWeight/scaleMC);
+      totalPredictionElecCSElecAcc_->Fill(SearchBin, elecAccWeight*scaleFactorWeight/scaleMC);
+      totalPredictionElecCSElecReco_->Fill(SearchBin, elecRecoWeight*scaleFactorWeight/scaleMC);
+      totalPredictionElecCSElecIso_->Fill(SearchBin, elecIsoWeight*scaleFactorWeight/scaleMC);
       totalPreElecAcc+=elecAccWeight*scaleFactorWeight/2/scaleMC;
       totalPreElecReco+=elecRecoWeight*scaleFactorWeight/2/scaleMC;
       totalPreElecIso+=elecIsoWeight*scaleFactorWeight/2/scaleMC;
@@ -608,9 +631,9 @@ void ResultPlot()
       totalPreElecElecReco+=elecRecoWeight*scaleFactorWeight/scaleMC;
       totalPreElecElecIso+=elecIsoWeight*scaleFactorWeight/scaleMC;
           
-      totalPredictionElecCSMuAcc_->Fill(Bin, muAccWeight*scaleFactorWeight/scaleMC);
-      totalPredictionElecCSMuReco_->Fill(Bin, muRecoWeight*scaleFactorWeight/scaleMC);
-      totalPredictionElecCSMuIso_->Fill(Bin, muIsoWeight*scaleFactorWeight/scaleMC);
+      totalPredictionElecCSMuAcc_->Fill(SearchBin, muAccWeight*scaleFactorWeight/scaleMC);
+      totalPredictionElecCSMuReco_->Fill(SearchBin, muRecoWeight*scaleFactorWeight/scaleMC);
+      totalPredictionElecCSMuIso_->Fill(SearchBin, muIsoWeight*scaleFactorWeight/scaleMC);
       totalPreMuAcc+=muAccWeight*scaleFactorWeight/2/scaleMC;
       totalPreMuReco+=muRecoWeight*scaleFactorWeight/2/scaleMC;
       totalPreMuIso+=muIsoWeight*scaleFactorWeight/2/scaleMC;
@@ -738,7 +761,7 @@ void ResultPlot()
   ControlSampleElec_->Write();
 
 
-  SearchBins *SearchBins_ = new SearchBins();
+  SearchBins *SearchBins_ = new SearchBins(doQCDbinning);
 
   double LLexpErr = 0;
   double LLexp = totalExp_LL_->IntegralAndError(1, 72, LLexpErr);
