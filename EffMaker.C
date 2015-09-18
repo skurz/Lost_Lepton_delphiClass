@@ -13,8 +13,6 @@ void EffMaker::Begin(TTree * /*tree*/)
   // When running with PROOF Begin() is only called on the client.
   // The tree argument is deprecated (on PROOF 0 is passed).
   
-  TString option = GetOption();
-
   TH1::SetDefaultSumw2();
 
   gSystem->mkdir("Efficiencies");
@@ -23,7 +21,6 @@ void EffMaker::Begin(TTree * /*tree*/)
 
 void EffMaker::SlaveBegin(TTree * /*tree*/)
 {
-  TString option = GetOption();
   TH1::SetDefaultSumw2();
 
   gSystem->mkdir("Efficiencies");	
@@ -1130,8 +1127,10 @@ void EffMaker::SlaveTerminate()
 void EffMaker::Terminate()
 {
 
-	
-  TFile *outPutFile = new TFile("Efficiencies.root","RECREATE"); 
+	TString option = GetOption();
+  if(option=="") option = "Efficiencies.root";
+
+  TFile *outPutFile = new TFile(option,"RECREATE"); 
   outPutFile->cd();
   outPutFile->mkdir("Efficiencies");
   TDirectory *dEfficiencies = (TDirectory*)outPutFile->Get("Efficiencies");

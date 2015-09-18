@@ -11,10 +11,7 @@ void Prediction::Begin(TTree * /*tree*/)
   // The Begin() function is called at the start of the query.
   // When running with PROOF Begin() is only called on the client.
   // The tree argument is deprecated (on PROOF 0 is passed).
-  
-  TString option = GetOption();
-  
-  
+
 }
 
 void Prediction::SlaveBegin(TTree * /*tree*/)
@@ -776,8 +773,17 @@ void Prediction::Terminate()
   // The Terminate() function is the last function to be called during
   // a query. It always runs on the client, it can be used to present
   // the results graphically or save the results to file.
+
+  TString option = GetOption();
+  if(option=="") option = "Prediction.root";
+/*
+  TObjArray *tx = option.Tokenize("/");
+  for (Int_t i = 0; i < tx->GetEntries()-1; i++){
+    std::cout << ((TObjString *)(tx->At(i)))->String() << std::endl;
+  }
+*/
   tPrediction_ = dynamic_cast<TTree*>(GetOutputList()->FindObject("LostLeptonPrediction"));
-  TFile *outPutFile = new TFile("Prediction.root","RECREATE"); ;
+  TFile *outPutFile = new TFile(option,"RECREATE"); ;
   outPutFile->cd();
   tPrediction_->Write();
 

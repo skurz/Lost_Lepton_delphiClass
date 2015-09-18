@@ -48,7 +48,7 @@ void ResultPlot()
   bool doExtrapolation = false; 
 
   // Present output in QCD binning
-  bool doQCDbinning = true;
+  bool doQCDbinning = false;
 
   int nSearchBinsTotal = 72;
   if(doQCDbinning) nSearchBinsTotal = 220;

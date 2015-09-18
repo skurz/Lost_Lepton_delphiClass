@@ -14,5 +14,5 @@ void MakeEff()
 {
   TChain *Effchain = new TChain("LostLeptonExpectation");
   Effchain->Add("Expectation.root");
-  Effchain->Process("EffMaker.C+");
+  Effchain->Process("EffMaker.C+","Efficiencies.root"); //specify output path/file here // folder already has to exist for the time beeing...
 }

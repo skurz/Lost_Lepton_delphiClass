@@ -11,16 +11,11 @@ void ExpecMaker::Begin(TTree * /*tree*/)
   // The Begin() function is called at the start of the query.
   // When running with PROOF Begin() is only called on the client.
   // The tree argument is deprecated (on PROOF 0 is passed).
-	
-  TString option = GetOption();
 
 }
 
 void ExpecMaker::SlaveBegin(TTree * /*tree*/)
-{
-  TString option = GetOption();
-
-	
+{	
   tExpectation_ = new TTree("LostLeptonExpectation","a simple Tree with simple variables");
 
   tExpectation_->Branch("EvtNum",&EvtNum,"EvtNum/i");
@@ -814,9 +809,12 @@ void ExpecMaker::Terminate()
   tExpectation_ = dynamic_cast<TTree*>(GetOutputList()->FindObject("LostLeptonExpectation"));
   //std::cout << "tExpectation_:" << tExpectation_ << '\n';
 
+  TString option = GetOption();
+  if(option=="") option = "Expectation.root";
+
   if(!tExpectation_) Error("Terminate", "TTree object missing in output list");
   else{
-    TFile *outPutFile = new TFile("Expectation.root","RECREATE"); 
+    TFile *outPutFile = new TFile(option,"RECREATE"); 
     outPutFile->cd();
     tExpectation_->Write();
     outPutFile->Close();
