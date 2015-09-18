@@ -339,18 +339,16 @@ Bool_t Prediction::Process(Long64_t entry)
       muDiLepEffMTWAppliedEffVec_ = MuDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
 
       muIsoEffVec_ = MuIsoPTActivity_->GetEff( selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0], useAsymmErrors);
-      //  muIsoEffVec_ = MuIsoRelPTDeltaRJet_->GetEff(selectedIDIsoMuonsRelPTJet->at(0), selectedIDIsoMuonsDeltaRJet->at(0), useAsymmErrors);
       muRecoEffVec_ = MuRecoPTActivity_->GetEff(selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0], useAsymmErrors);
-      //muAccEffVec_ = MuAccMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
+      //muAccEffVec_ = MuAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5) muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
       else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
 
-      //elecAccEffVec_ = ElecAccMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
+      //elecAccEffVec_ = ElecAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5) elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
       else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
       elecRecoEffVec_ = ElecRecoPTActivity_->GetEff(selectedIDIsoMuons->at(0).Pt(),elecActivity, useAsymmErrors);
       elecIsoEffVec_ = ElecIsoPTActivity_->GetEff(selectedIDIsoMuons->at(0).Pt(),elecActivity, useAsymmErrors);
-      //elecIsoEffVec_ = ElecIsoRelPTDeltaRJet_->GetEff(selectedIDIsoMuonsRelPTJet->at(0), selectedIDIsoMuonsDeltaRJet->at(0), useAsymmErrors);
       /*
     	if(UseTagAndProbeEffIso_)muIsoEff_ = getEff(MuIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0]); 
     	if(UseTagAndProbeEffReco_)muRecoEff_ = getEff(MuRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0]); 
@@ -559,19 +557,17 @@ Bool_t Prediction::Process(Long64_t entry)
 
       // cout << "get isolation efficiency...";
       elecIsoEffVec_ =  ElecIsoPTActivity_->GetEff(selectedIDIsoElectrons->at(0).Pt(),selectedIDIsoElectronsActivity[0], useAsymmErrors);
-      //  elecIsoEffVec_ = ElecIsoRelPTDeltaRJet_->GetEff(selectedIDIsoElectronsRelPTJet->at(0), selectedIDIsoElectronsDeltaRJet->at(0), useAsymmErrors);
       elecRecoEffVec_ = ElecRecoPTActivity_->GetEff(selectedIDIsoElectrons->at(0).Pt(),selectedIDIsoElectronsActivity[0], useAsymmErrors);
-      //elecAccEffVec_ = ElecAccMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
+      //elecAccEffVec_ = ElecAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5) elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
       else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
 
       // cout << "get acceptance efficiency...";
-      //muAccEffVec_ = MuAccMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
+      //muAccEffVec_ = MuAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5) muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
       else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
       muRecoEffVec_ = MuRecoPTActivity_->GetEff( selectedIDIsoElectrons->at(0).Pt(), muActivity, useAsymmErrors);
       muIsoEffVec_ = MuIsoPTActivity_->GetEff( selectedIDIsoElectrons->at(0).Pt(), muActivity, useAsymmErrors);
-      //  muIsoEffVec_ = MuIsoRelPTDeltaRJet_->GetEff(selectedIDIsoElectronsRelPTJet->at(0), selectedIDIsoElectronsDeltaRJet->at(0), useAsymmErrors);
       /*
     	if(UseTagAndProbeEffIso_) elecIsoEff_ = getEff(ElecIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoElectronsActivity[0]); 
     	if(UseTagAndProbeEffReco_)elecRecoEff_ = getEff(ElecRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoElectronsActivity[0]); 

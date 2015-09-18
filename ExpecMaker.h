@@ -28,6 +28,8 @@
 #include "TProofServ.h"
 #include "TProof.h"
 
+TFile *outPutFile = 0;
+
 using std::vector;
 using std::cout;
 using std::cerr;
