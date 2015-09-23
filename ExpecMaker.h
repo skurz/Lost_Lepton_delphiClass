@@ -45,7 +45,7 @@ const int useDeltaPhiCut = 1;
 
 // cuts baseline
 const double minHT_=500;
-const double minMHT_=150;
+const double minMHT_=200;
 const double minNJets_=3.4;
 const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;

@@ -345,7 +345,7 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   }
   else if(xValue > RatioTH2D_->GetXaxis()->GetXmax() )
   {
-    std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<RatioTH2D_->GetName()<<" which is: "<<RatioTH2D_->GetXaxis()->GetXmax();
+    std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<RatioTH2D_->GetName()<<" which is: "<<RatioTH2D_->GetXaxis()->GetXmax()<<std::endl;
     xValue= RatioTH2D_->GetXaxis()->GetXmax()-0.01;
     //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
   }
@@ -382,7 +382,7 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   }
 
   if(asymm && result>0.01){
-  	// empty bins in the end/beginning of the th's are removed when creating a tgraph..
+  	// empty bins in the end/beginning of the th's are removed when creating a tgraph.. WORKAROUND:
   	int nEmpty = 0;
   	while(RatioTH2D_->GetBinContent(nEmpty+1, nyBin) < 0.01){
   		nEmpty++;
@@ -390,6 +390,13 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   	}
 
   	Double_t xValueAsymm;
+  	Double_t yValueAsymm = 1;
+  	for(int i = 0; i < RatioTH2D_->GetNbinsX(); ++i){
+  		RatioTGraphAsymmVec_.at(nyBin-1)->GetPoint(i, xValueAsymm, yValueAsymm);
+  		if(yValueAsymm < 0.01) nEmpty--;
+  		else break;
+  	}
+
   	RatioTGraphAsymmVec_.at(nyBin-1)->GetPoint(nxBin-1-nEmpty, xValueAsymm, resultAsymm);
   	errUpAsymm_ = RatioTGraphAsymmVec_.at(nyBin-1)->GetErrorYhigh(nxBin-1-nEmpty);
 	errDownAsymm_ = RatioTGraphAsymmVec_.at(nyBin-1)->GetErrorYlow(nxBin-1-nEmpty);

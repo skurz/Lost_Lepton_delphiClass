@@ -107,7 +107,6 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
     
   
   tPrediction_ = new TTree("LostLeptonPrediction","a simple Tree with simple variables");
-  tPrediction_ = new TTree("LostLeptonPrediction","a simple Tree with simple variables");
   tPrediction_->Branch("HT",&HT);
   tPrediction_->Branch("MHT",&MHT);
   tPrediction_->Branch("NJets",&NJets);
@@ -308,7 +307,6 @@ Bool_t Prediction::Process(Long64_t entry)
   if(useTrigger && !passTrigger) return kTRUE;
 
 
-
   // get IsoTrack Effs
   expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackHTNJetsEff_->GetEff(HT, NJets, useAsymmErrors);
   //expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
@@ -321,6 +319,7 @@ Bool_t Prediction::Process(Long64_t entry)
   expectationReductionMuIsoTrackEff_ = expectationReductionMuIsoTrackEffVec_.eff;
   expectationReductionElecIsoTrackEff_ = expectationReductionElecIsoTrackEffVec_.eff;
   expectationReductionPionIsoTrackEff_ = expectationReductionPionIsoTrackEffVec_.eff;
+
 
   if(selectedIDIsoMuonsNum_==1 && selectedIDIsoElectronsNum_==0)
     {
@@ -338,7 +337,7 @@ Bool_t Prediction::Process(Long64_t entry)
       muPurityCorrectionVec_ =  MuPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
       muMTWEffVec_ = MuMTWNJets_->GetEff(NJets, useAsymmErrors);
       muDiLepContributionMTWAppliedEffVec_ = MuDiLepContributionMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
-      muDiLepEffMTWAppliedEffVec_ = MuDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
+      muDiLepEffMTWAppliedEffVec_ = MuDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);      
 
       muIsoEffVec_ = MuIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
       muRecoEffVec_ = MuRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
@@ -367,7 +366,7 @@ Bool_t Prediction::Process(Long64_t entry)
       muAccEff_ = muAccEffVec_.eff;
       elecAccEff_ = elecAccEffVec_.eff;
       elecRecoEff_ = elecRecoEffVec_.eff;
-      elecIsoEff_ = elecIsoEffVec_.eff;
+      elecIsoEff_ = elecIsoEffVec_.eff;      
 
       // calculate Weights
       // muCS >99% purity
@@ -539,7 +538,7 @@ Bool_t Prediction::Process(Long64_t entry)
       totalSysDown = -sqrt(isoTrackSysDown*isoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown);
       totalUncDown = -sqrt(totalStatDown*totalStatDown+totalSysDown*totalSysDown+nonClosureDown*nonClosureDown+diBosonDown*diBosonDown);
       // cout <<"DONE"<<endl;
-    }       
+    } 
   else if(selectedIDIsoMuonsNum_==0 && selectedIDIsoElectronsNum_==1)
     {
       // cout << "Single electron event...";
@@ -560,8 +559,9 @@ Bool_t Prediction::Process(Long64_t entry)
       elecDiLepEffMTWAppliedEffVec_ = ElecDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
 
       // cout << "get isolation efficiency...";
-      elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
-      elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
+      elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
+      elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
+
       //elecAccEffVec_ = ElecAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5) elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
       else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
@@ -570,8 +570,8 @@ Bool_t Prediction::Process(Long64_t entry)
       //muAccEffVec_ = MuAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5) muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
       else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
-      muIsoEffVec_ = MuIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
-      muRecoEffVec_ = MuRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
+      muIsoEffVec_ = MuIsoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
+      muRecoEffVec_ = MuRecoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
       
       /*
     	if(UseTagAndProbeEffIso_) elecIsoEff_ = getEff(ElecIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoElectronsActivity[0]); 
@@ -628,6 +628,7 @@ Bool_t Prediction::Process(Long64_t entry)
 
       // weights used for closure tests
       elecIsoOnlyWeight_ = Weight * (1 - elecIsoEff_) / elecIsoEff_ * elecPurityCorrection_ * elecDiLepContributionMTWAppliedEff_;  
+      
 
       // Uncertainties
       // For explanation see muons

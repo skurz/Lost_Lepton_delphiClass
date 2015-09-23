@@ -58,10 +58,10 @@ double OneDPTRel_[oneDPTRel_]={0, 0.2 ,0.4 ,0.6 ,0.8 ,1.0 , 10.0};
 // const int oneDActivity_=9;
 // double OneDActivity_[oneDActivity_]={0,5,10,20,40,60,80,100,1600};
 // used to compare with tag and probe eff.
-const int oneDPT_=7;
-double OneDPT_[oneDPT_]={10,20,25,30,40,50,200};
+const int oneDPT_=8;
+double OneDPT_[oneDPT_]={10,20,25,30,40,50,200,500};
 const int oneDActivity_=6;
-double OneDActivity_[oneDActivity_]={0, 0.02, 0.05, 0.2, 1., 5.};
+double OneDActivity_[oneDActivity_]={0, 0.02, 0.05, 0.2, 1., 10.};
 
 const int oneDActivityOld_=6;
 double OneDActivityOld_[oneDActivityOld_]={0,20,40,60,150,1600};
