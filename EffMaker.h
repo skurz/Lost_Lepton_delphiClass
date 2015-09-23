@@ -11,8 +11,8 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <TSelector.h>
-#include <TH2F.h>
-#include <TH1F.h>
+#include <TH2D.h>
+#include <TH1D.h>
 #include "TVector2.h"
 #include <cmath>
 #include "TCanvas.h"
@@ -61,7 +61,11 @@ double OneDPTRel_[oneDPTRel_]={0, 0.2 ,0.4 ,0.6 ,0.8 ,1.0 , 10.0};
 const int oneDPT_=7;
 double OneDPT_[oneDPT_]={10,20,25,30,40,50,200};
 const int oneDActivity_=6;
-double OneDActivity_[oneDActivity_]={0,20,40,60,150,1600};
+double OneDActivity_[oneDActivity_]={0, 0.02, 0.05, 0.2, 1., 5.};
+
+const int oneDActivityOld_=6;
+double OneDActivityOld_[oneDActivityOld_]={0,20,40,60,150,1600};
+
 
 // purity
 //mu
@@ -108,13 +112,13 @@ double elecAccNJets_ [elecaccNJets_] = {4,5,6,8,11,20};
 // 2D
 const int muMTWPT2D_=9;
 double MuMTWPT2D_[muMTWPT2D_]={10,30,40,50,60,70,90,110,1900};
-const int muMTWActivity2D_=9;
-double MuMTWActivity2D_[muMTWActivity2D_]={0,5,10,20,40,60,80,100,1600};
+const int muMTWActivity2D_=5;
+double MuMTWActivity2D_[muMTWActivity2D_]={0, 0.02, 0.05, 0.2, 1.};
 
 const int elecMTWPT2D_=9;
 double ElecMTWPT2D_[elecMTWPT2D_]={10,30,40,50,60,70,90,110,1900};
-const int elecMTWActivity2D_=9;
-double ElecMTWActivity2D_[elecMTWActivity2D_]={0,5,10,20,40,60,80,100,1600};
+const int elecMTWActivity2D_=5;
+double ElecMTWActivity2D_[elecMTWActivity2D_]={0, 0.02, 0.05, 0.2, 1.};
 
 // isotrack reduction
 // 1D
@@ -128,8 +132,8 @@ const int isotrackreductionNJets_ = 6;
 double isoTrackReductionNJets_ [isotrackreductionNJets_] = {4,5,6,8,11,20};
 const int isotrackreductionPT_ = 8;
 double isoTrackReductionPT_ [isotrackreductionPT_] = {5,10,20,25,30,40,50,200};
-const int isotrackreductionActivity_ = 6;
-double isoTrackReductionActivity_ [isotrackreductionActivity_] = {0,20,40,60,150,1600};
+const int isotrackreductionActivity_ = 5;
+double isoTrackReductionActivity_ [isotrackreductionActivity_] = {0, 0.02, 0.05, 0.2, 1.};
 // 2D
 const int isotrackreductionBTags2D_ = 3;
 double isoTrackReductionBTags2D_[isotrackreductionBTags2D_] = {0,1,10};
@@ -137,8 +141,10 @@ const int isotrackreductionNJets2D_ = 4;
 double isoTrackReductionNJets2D_ [isotrackreductionNJets2D_] = {4,6,7,20};
 const int isotrackreductionPT2D_ = 8;
 double isoTrackReductionPT2D_[isotrackreductionPT2D_] = {5,10,20,25,30,40,50,200};
-const int isotrackreductionActivity2D_ = 6;
-double isoTrackReductionActivity2D_ [isotrackreductionActivity2D_] = {0,20,40,60,150,1600};
+const int isotrackreductionActivity2D_ = 5;
+double isoTrackReductionActivity2D_ [isotrackreductionActivity2D_] = {0, 0.02, 0.05, 0.2, 1.};
+const int isotrackreductionActivity2DOld_ = 6;
+double isoTrackReductionActivity2DOld_ [isotrackreductionActivity2DOld_] = {0,20,40,60,150,1600};
 
 
 
@@ -146,7 +152,7 @@ class EffMaker : public TSelector {
  public :
   
   TTree          *fChain;   //!pointer to the analyzed TTree or TChain
-	
+  
   //efficiencies
 
   //purity
@@ -161,7 +167,7 @@ class EffMaker : public TSelector {
   TH1Eff *MuPurityActivity_;
   //2D
   TH2Eff *MuonPurityMHTNJet_;
-	
+  
   //elec
   //1D
   TH1Eff *ElecPurityBTag_;
@@ -172,9 +178,9 @@ class EffMaker : public TSelector {
   TH1Eff *ElecPurityActivity_;
   //2D
   TH2Eff *ElecPurityMHTNJet_;
-	
+  
   // x-check of purity
-	
+  
   TH1Eff *MuPurityCheckBTag_;
   TH1Eff *MuPurityCheckNJets_;
   TH1Eff *MuPurityCheckHT_;
@@ -183,7 +189,7 @@ class EffMaker : public TSelector {
   TH1Eff *MuPurityCheckActivity_;
   //2D
   TH2Eff *MuonPurityCheckMHTNJet_;
-	
+  
   //elec
   //1D
   TH1Eff *ElecPurityCheckBTag_;
@@ -194,8 +200,8 @@ class EffMaker : public TSelector {
   TH1Eff *ElecPurityCheckActivity_;
   //2D
   TH2Eff *ElecPurityCheckMHTNJet_;
-	
-	
+  
+  
   // Acceptance
   // mu 
   //1D
@@ -216,7 +222,7 @@ class EffMaker : public TSelector {
   TH2Eff *MuAccHTMHT_NJetsHigh_;
   TH2Eff *MuAccHTMHTB0_;
   TH2Eff *MuAccHTMHTB1_Inf_;
-	
+  
   // elec
   //1D
   TH1Eff *ElecAccBTag_;
@@ -236,7 +242,7 @@ class EffMaker : public TSelector {
   TH2Eff *ElecAccHTMHT_NJetsHigh_;
   TH2Eff *ElecAccHTMHTB0_;
   TH2Eff *ElecAccHTMHTB1_Inf_;
-	
+  
 
   // Reco 
   // mu 
@@ -248,11 +254,11 @@ class EffMaker : public TSelector {
   TH1Eff *MuRecoPT_;
   TH1Eff *MuRecoActivity_;
   TH1Eff *MuRecoRelPTJet_;
-  TH1Eff *MuRecoDeltaRJet_;	
+  TH1Eff *MuRecoDeltaRJet_; 
   //2D
-  TH2Eff *MuRecoPTActivity_;
+  TH2Eff *MuRecoActivityPT_;
   TH2Eff *MuRecoRelPTDeltaRJet_;
-	
+  
   // elec
   //1D
   TH1Eff *ElecRecoBTag_;
@@ -264,9 +270,9 @@ class EffMaker : public TSelector {
   TH1Eff *ElecRecoRelPTJet_;
   TH1Eff *ElecRecoDeltaRJet_;
   //2D
-  TH2Eff *ElecRecoPTActivity_;
+  TH2Eff *ElecRecoActivityPT_;
   TH2Eff *ElecRecoRelPTDeltaRJet_;
-	
+  
   // Iso
   // mu 
   //1D
@@ -279,9 +285,9 @@ class EffMaker : public TSelector {
   TH1Eff *MuIsoRelPTJet_;
   TH1Eff *MuIsoDeltaRJet_;
   //2D
-  TH2Eff *MuIsoPTActivity_;
+  TH2Eff *MuIsoActivityPT_;
   TH2Eff *MuIsoRelPTDeltaRJet_;
-	
+  
   // elec
   //1D
   TH1Eff *ElecIsoBTag_;
@@ -293,10 +299,10 @@ class EffMaker : public TSelector {
   TH1Eff *ElecIsoRelPTJet_;
   TH1Eff *ElecIsoDeltaRJet_;
   //2D
-  TH2Eff *ElecIsoPTActivity_;
-  TH2Eff *ElecIsoRelPTDeltaRJet_;	
+  TH2Eff *ElecIsoActivityPT_;
+  TH2Eff *ElecIsoRelPTDeltaRJet_; 
 
-	
+  
   // MTW
   // mu 
   //1D
@@ -308,7 +314,7 @@ class EffMaker : public TSelector {
   TH1Eff *MuMTWActivity_;
   // 2D
   TH2Eff *MuMTWPTActivity_;
-	
+  
   // elec
   //1D
   TH1Eff *ElecMTWBTag_;
@@ -319,8 +325,8 @@ class EffMaker : public TSelector {
   TH1Eff *ElecMTWActivity_;
   // 2D
   TH2Eff *ElecMTWPTActivity_;
-	
-	
+  
+  
   // Di lep control sample
   // mu 
   //1D
@@ -330,8 +336,8 @@ class EffMaker : public TSelector {
   TH1Eff *MuDiLepMHT_;
   TH1Eff *MuDiLepPT_;
   TH1Eff *MuDiLepActivity_;
-	
-	
+  
+  
   // elec
   //1D
   TH1Eff *ElecDiLepBTag_;
@@ -340,7 +346,7 @@ class EffMaker : public TSelector {
   TH1Eff *ElecDiLepMHT_;
   TH1Eff *ElecDiLepPT_;
   TH1Eff *ElecDiLepActivity_;
-	
+  
   // di lep mtw cut applied
   // mu 
   //1D
@@ -350,7 +356,7 @@ class EffMaker : public TSelector {
   TH1Eff *MuDiLepMTWMHT_;
   TH1Eff *MuDiLepMTWPT_;
   TH1Eff *MuDiLepMTWActivity_;
-	
+  
   // elec
   //1D
   TH1Eff *ElecDiLepMTWBTag_;
@@ -358,22 +364,22 @@ class EffMaker : public TSelector {
   TH1Eff *ElecDiLepMTWHT_;
   TH1Eff *ElecDiLepMTWMHT_;
   TH1Eff *ElecDiLepMTWPT_;
-  TH1Eff *ElecDiLepMTWActivity_;	
-	
+  TH1Eff *ElecDiLepMTWActivity_;  
+  
   // mu 
   //1D
   TH1Eff *MuDiLepContributionBTag_;
   TH1Eff *MuDiLepContributionNJets_;
   TH1Eff *MuDiLepContributionHT_;
   TH1Eff *MuDiLepContributionMHT_;
-	
+  
   // elec
   //1D
   TH1Eff *ElecDiLepContributionBTag_;
   TH1Eff *ElecDiLepContributionNJets_;
   TH1Eff *ElecDiLepContributionHT_;
   TH1Eff *ElecDiLepContributionMHT_;
-	
+  
   // di lep mtw cut applied
   // mu 
   //1D
@@ -381,14 +387,14 @@ class EffMaker : public TSelector {
   TH1Eff *MuDiLepContributionMTWNJets_;
   TH1Eff *MuDiLepContributionMTWHT_;
   TH1Eff *MuDiLepContributionMTWMHT_;
-	
+  
   // elec
   //1D
   TH1Eff *ElecDiLepContributionMTWBTag_;
   TH1Eff *ElecDiLepContributionMTWNJets_;
   TH1Eff *ElecDiLepContributionMTWHT_;
   TH1Eff *ElecDiLepContributionMTWMHT_;
-	
+  
 
   // single isolated track from mu or electron
   // muon
@@ -397,14 +403,14 @@ class EffMaker : public TSelector {
   TH1Eff *IsoTrackMuHT_;
   TH1Eff *IsoTrackMuMHT_;
   TH2Eff *IsoTrackMuPTActivity_;
-	
+  
   // elec
   TH1Eff *IsoTrackElecBTag_;
   TH1Eff *IsoTrackElecNJets_;
   TH1Eff *IsoTrackElecHT_;
   TH1Eff *IsoTrackElecMHT_;
   TH2Eff *IsoTrackElecPTActivity_;
-	
+  
   TH1Eff *ExpectationReductionIsoTrackBTagEff_;
   TH1Eff *ExpectationReductionIsoTrackNJetsEff_;
   TH1Eff *ExpectationReductionIsoTrackHTEff_;
@@ -417,8 +423,8 @@ class EffMaker : public TSelector {
   TH2Eff *IsoTrackReductionMHTNJets_;
   TH2Eff *IsoTrackReductionBTagNJets_;
   TH2Eff *IsoTrackReductionPTActivity_;
-	
-	
+  
+  
   // mu iso tracks
   TH1Eff *ExpectationReductionMuIsoTrackBTagEff_;
   TH1Eff *ExpectationReductionMuIsoTrackNJetsEff_;
@@ -431,7 +437,7 @@ class EffMaker : public TSelector {
   TH2Eff *MuIsoTrackReductionMHTNJets_;
   TH2Eff *MuIsoTrackReductionBTagNJets_;
   TH2Eff *MuIsoTrackReductionPTActivity_;
-	
+  
   //elec iso tracks
   TH1Eff *ExpectationReductionElecIsoTrackBTagEff_;
   TH1Eff *ExpectationReductionElecIsoTrackNJetsEff_;
@@ -444,7 +450,7 @@ class EffMaker : public TSelector {
   TH2Eff *ElecIsoTrackReductionMHTNJets_;
   TH2Eff *ElecIsoTrackReductionBTagNJets_;
   TH2Eff *ElecIsoTrackReductionPTActivity_;
-	
+  
   //pion iso tracks
   TH1Eff *ExpectationReductionPionIsoTrackBTagEff_;
   TH1Eff *ExpectationReductionPionIsoTrackNJetsEff_;
@@ -457,8 +463,8 @@ class EffMaker : public TSelector {
   TH2Eff *PionIsoTrackReductionMHTNJets_;
   TH2Eff *PionIsoTrackReductionBTagNJets_;
   TH2Eff *PionIsoTrackReductionPTActivity_;
-	
-	
+  
+  
   // Declaration of leaf types
   // Declaration of leaf types
   UInt_t          EvtNum;
@@ -483,24 +489,39 @@ class EffMaker : public TSelector {
   Double_t        MET;
   Double_t        METPhi;
   UShort_t        GenMuNum;
+   std::vector<double>  *GenElec_MT2Activity=0;
+  std::vector<double>  *GenElec_RA2Activity=0;
+  std::vector<double>  *GenMu_MT2Activity=0;
+  std::vector<double>  *GenMu_RA2Activity=0;
+  std::vector<double>  *GenTau_MT2Activity=0;
+  std::vector<double>  *GenTau_RA2Activity=0;
+  std::vector<double>  *selectedIDElectrons_MiniIso=0;
+  std::vector<double>  *selectedIDElectrons_MT2Activity=0;
+  std::vector<double>  *selectedIDElectrons_RA2Activity=0;
+  std::vector<double>  *selectedIDIsoElectrons_MT2Activity=0;
+  std::vector<double>  *selectedIDIsoElectrons_PTW=0;
+  std::vector<double>  *selectedIDIsoElectrons_RA2Activity=0;
+  std::vector<double>  *selectedIDMuons_MiniIso=0;
+  std::vector<double>  *selectedIDMuons_MT2Activity=0;
+  std::vector<double>  *selectedIDMuons_RA2Activity=0;
+  std::vector<double>  *selectedIDIsoMuons_MT2Activity=0;
+  std::vector<double>  *selectedIDIsoMuons_PTW=0;
+  std::vector<double>  *selectedIDIsoMuons_RA2Activity=0;
   std::vector<TLorentzVector> *GenMus=0;
   std::vector<int>     *GenMuFromTau=0;
   std::vector<float>   *GenMuDeltaRJet=0;
   std::vector<float>   *GenMuRelPTJet=0;
   std::vector<unsigned short> *GenMuonIsoTrackMatched=0;
-  std::vector<float>   *GenMuonActivity=0;
   UShort_t        GenElecNum;
   std::vector<TLorentzVector> *GenEls=0;
   std::vector<int>     *GenElecFromTau=0;
   std::vector<float>   *GenElecDeltaRJet=0;
   std::vector<float>   *GenElecRelPTJet=0;
   std::vector<unsigned short> *GenElecIsoTrackMatched=0;
-  std::vector<float>   *GenElecActivity=0;
   UShort_t        GenTauNum;
   std::vector<TLorentzVector> *GenTaus=0;
   std::vector<int>     *GenTau_GenTauHad=0;
   std::vector<unsigned short> *GenTauIsoTrackMatched=0;
-  std::vector<float>   *GenTauActivity=0;
   std::vector<TLorentzVector> *GenTauNu=0;
   UShort_t        Expectation;
   UShort_t        ExpectationReductionIsoTrack;
@@ -528,12 +549,10 @@ class EffMaker : public TSelector {
   std::vector<float>   *selectedIDIsoMuonsPromptMatchedDeltaR=0;
   std::vector<float>   *selectedIDIsoMuonsPromptMatchedRelPt=0;
   std::vector<double>  *selectedIDIsoMuons_MTW=0;
-  std::vector<float>   *selectedIDIsoMuonsActivity=0;
   UShort_t        selectedIDMuonsNum;
   std::vector<TLorentzVector> *selectedIDMuons=0;
   std::vector<unsigned short> *selectedIDMuonsMatched=0;
   std::vector<double>  *selectedIDMuons_MTW=0;
-  std::vector<float>   *selectedIDMuonsActivity=0;
   std::vector<unsigned short> *selectedIDIsoMuonsIsoTrackMatched=0;
   UShort_t        selectedIDIsoElectronsNum;
   std::vector<TLorentzVector> *selectedIDIsoElectrons=0;
@@ -542,13 +561,11 @@ class EffMaker : public TSelector {
   std::vector<float>   *selectedIDIsoElectronsPromptMatchedDeltaR=0;
   std::vector<float>   *selectedIDIsoElectronsPromptMatchedRelPt=0;
   std::vector<double>  *selectedIDIsoElectrons_MTW=0;
-  std::vector<float>   *selectedIDIsoElectronsActivity=0;
   std::vector<unsigned short> *selectedIDIsoElectronsIsoTrackMatched=0;
   UShort_t        selectedIDElectronsNum;
   std::vector<TLorentzVector> *selectedIDElectrons=0;
   std::vector<unsigned short> *selectedIDElectronsMatched=0;
   std::vector<double>  *selectedIDElectrons_MTW=0;
-  std::vector<float>   *selectedIDElectronsActivity=0;
   Int_t           isoElectronTracks;
   std::vector<TLorentzVector> *IsolatedElectronTracksVeto=0;
   std::vector<float>   *IsolatedElectronTracksVetoActivity=0;
@@ -626,19 +643,36 @@ class EffMaker : public TSelector {
   TBranch        *b_GenMuDeltaRJet=0;   //!
   TBranch        *b_GenMuRelPTJet=0;   //!
   TBranch        *b_GenMuonIsoTrackMatched=0;   //!
-  TBranch        *b_GenMuonActivity=0;   //!
+  
+    TBranch        *b_GenElec_MT2Activity=0;   //!
+  TBranch        *b_GenElec_RA2Activity=0;
+  TBranch        *b_GenMu_MT2Activity=0;   //!
+  TBranch        *b_GenMu_RA2Activity=0;   //!
+  TBranch        *b_GenTau_MT2Activity=0;   //!
+  TBranch        *b_GenTau_RA2Activity=0;   //!
+  TBranch        *b_selectedIDElectrons_MiniIso=0;   //!
+  TBranch        *b_selectedIDElectrons_MT2Activity=0;   //!
+  TBranch        *b_selectedIDElectrons_RA2Activity=0;   //!
+  TBranch        *b_selectedIDIsoElectrons_MT2Activity=0;   //!
+  TBranch        *b_selectedIDIsoElectrons_PTW=0;   //!
+  TBranch        *b_selectedIDIsoElectrons_RA2Activity=0;   //!
+  TBranch        *b_selectedIDIsoMuons_MT2Activity=0;   //!
+  TBranch        *b_selectedIDIsoMuons_PTW=0;   //!
+  TBranch        *b_selectedIDIsoMuons_RA2Activity=0;   //!
+  TBranch        *b_selectedIDMuons_MiniIso=0;   //!
+  TBranch        *b_selectedIDMuons_MT2Activity=0;   //!
+  TBranch        *b_selectedIDMuons_RA2Activity=0;   //!
+  
   TBranch        *b_GenElecNum=0;   //!
   TBranch        *b_GenEls=0;   //!
   TBranch        *b_GenElecFromTau=0;   //!
   TBranch        *b_GenElecDeltaRJet=0;   //!
   TBranch        *b_GenElecRelPTJet=0;   //!
   TBranch        *b_GenElecIsoTrackMatched=0;   //!
-  TBranch        *b_GenElecActivity=0;   //!
   TBranch        *b_GenTauNum=0;   //!
   TBranch        *b_GenTaus=0;   //!
   TBranch        *b_GenTau_GenTauHad=0;   //!
   TBranch        *b_GenTauIsoTrackMatched=0;   //!
-  TBranch        *b_GenTauActivity=0;   //!
   TBranch        *b_GenTauNu=0;   //!
   TBranch        *b_Expectation=0;   //!
   TBranch        *b_ExpectationReductionIsoTrack=0;   //!
@@ -666,12 +700,10 @@ class EffMaker : public TSelector {
   TBranch        *b_selectedIDIsoMuonsPromptMatchedDeltaR=0;   //!
   TBranch        *b_selectedIDIsoMuonsPromptMatchedRelPt=0;   //!
   TBranch        *b_selectedIDIsoMuons_MTW=0;   //!
-  TBranch        *b_selectedIDIsoMuonsActivity=0;   //!
   TBranch        *b_selectedIDMuonsNum=0;   //!
   TBranch        *b_selectedIDMuons=0;   //!
   TBranch        *b_selectedIDMuonsMatched=0;   //!
   TBranch        *b_selectedIDMuons_MTW=0;   //!
-  TBranch        *b_selectedIDMuonsActivity=0;   //!
   TBranch        *b_selectedIDIsoMuonsIsoTrackMatched=0;   //!
   TBranch        *b_selectedIDIsoElectronsNum=0;   //!
   TBranch        *b_selectedIDIsoElectrons=0;   //!
@@ -680,13 +712,11 @@ class EffMaker : public TSelector {
   TBranch        *b_selectedIDIsoElectronsPromptMatchedDeltaR=0;   //!
   TBranch        *b_selectedIDIsoElectronsPromptMatchedRelPt=0;   //!
   TBranch        *b_selectedIDIsoElectrons_MTW=0;   //!
-  TBranch        *b_selectedIDIsoElectronsActivity=0;   //!
   TBranch        *b_selectedIDIsoElectronsIsoTrackMatched=0;   //!
   TBranch        *b_selectedIDElectronsNum=0;   //!
   TBranch        *b_selectedIDElectrons=0;   //!
   TBranch        *b_selectedIDElectronsMatched=0;   //!
   TBranch        *b_selectedIDElectrons_MTW=0;   //!
-  TBranch        *b_selectedIDElectronsActivity=0;   //!
   TBranch        *b_isoElectronTracks=0;   //!
   TBranch        *b_IsolatedElectronTracksVeto=0;   //!
   TBranch        *b_IsolatedElectronTracksVetoActivity=0;   //!
@@ -735,7 +765,7 @@ class EffMaker : public TSelector {
   TBranch        *b_IsoTrackDiLepControlSampleElec=0;   //!
   TBranch        *b_IsoTrackDiLepMu=0;   //!
   TBranch        *b_IsoTrackDiLepElec=0;   //!
-	
+  
 
  EffMaker(TTree * /*tree*/ =0) : fChain(0) { }
   virtual ~EffMaker() { }
@@ -752,9 +782,9 @@ class EffMaker : public TSelector {
   virtual TList  *GetOutputList() const { return fOutput; }
   virtual void    SlaveTerminate();
   virtual void    Terminate();
-	
+  
   ClassDef(EffMaker,0);
-	
+  
 };
 
 #endif
@@ -769,13 +799,33 @@ void EffMaker::Init(TTree *tree)
   // code, but the routine can be extended by the user if needed.
   // Init() will be called many times when running on PROOF
   // (once per file to be processed).
-	
+  
   // Set branch addresses and branch pointers
   if (!tree) return;
   fChain = tree;
   fChain->SetMakeClass(1);
-	
+  
   fChain->SetBranchStatus("*",0);
+
+  fChain->SetBranchStatus("GenElec_MT2Activity",1);
+  //  fChain->SetBranchStatus("GenElec_RA2Activity",1);
+  fChain->SetBranchStatus("GenMu_MT2Activity", 1);
+  //  fChain->SetBranchStatus("GenMu_RA2Activity",1);
+  fChain->SetBranchStatus("GenTau_MT2Activity",1);
+  // fChain->SetBranchStatus("GenTau_RA2Activity", 1);
+  //  fChain->SetBranchStatus("selectedIDElectrons_MiniIso", 1);
+  fChain->SetBranchStatus("selectedIDElectrons_MT2Activity",1);
+  //  fChain->SetBranchStatus("selectedIDElectrons_RA2Activity", 1);
+  fChain->SetBranchStatus("selectedIDIsoElectrons_MT2Activity", 1);
+  // fChain->SetBranchStatus("selectedIDIsoElectrons_PTW", 1);
+  // fChain->SetBranchStatus("selectedIDIsoElectrons_RA2Activity",1);
+  fChain->SetBranchStatus("selectedIDIsoMuons_MT2Activity",1);
+  // fChain->SetBranchStatus("selectedIDIsoMuons_PTW",1);
+  //  fChain->SetBranchStatus("selectedIDIsoMuons_RA2Activity", 1);
+  // fChain->SetBranchStatus("selectedIDMuons_MiniIso",1);
+  fChain->SetBranchStatus("selectedIDMuons_MT2Activity", 1);
+  //  fChain->SetBranchStatus("selectedIDMuons_RA2Activity", 1);
+  
   fChain->SetBranchStatus("EvtNum", 1);
   fChain->SetBranchStatus("HT", 1);
   fChain->SetBranchStatus("MHT", 1);
@@ -803,19 +853,16 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchStatus("GenMuDeltaRJet", 1);
   fChain->SetBranchStatus("GenMuRelPTJet", 1);
   fChain->SetBranchStatus("GenMuonIsoTrackMatched", 1);
-  fChain->SetBranchStatus("GenMuonActivity", 1);
   fChain->SetBranchStatus("GenElecNum", 1);
   fChain->SetBranchStatus("GenEls", 1);
   fChain->SetBranchStatus("GenElecFromTau", 1);
   fChain->SetBranchStatus("GenElecDeltaRJet", 1);
   fChain->SetBranchStatus("GenElecRelPTJet", 1);
   fChain->SetBranchStatus("GenElecIsoTrackMatched", 1);
-  fChain->SetBranchStatus("GenElecActivity", 1);
   fChain->SetBranchStatus("GenTauNum", 1);
   fChain->SetBranchStatus("GenTaus", 1);
   fChain->SetBranchStatus("GenTau_GenTauHad", 1);
   fChain->SetBranchStatus("GenTauIsoTrackMatched", 1);
-  fChain->SetBranchStatus("GenTauActivity", 1);
   fChain->SetBranchStatus("GenTauNu", 1);
   fChain->SetBranchStatus("Expectation", 1);
   fChain->SetBranchStatus("ExpectationReductionIsoTrack", 1);
@@ -843,12 +890,10 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchStatus("selectedIDIsoMuonsPromptMatchedDeltaR", 1);
   fChain->SetBranchStatus("selectedIDIsoMuonsPromptMatchedRelPt", 1);
   fChain->SetBranchStatus("selectedIDIsoMuons_MTW", 1);
-  fChain->SetBranchStatus("selectedIDIsoMuonsActivity", 1);
   fChain->SetBranchStatus("selectedIDMuonsNum", 1);
   fChain->SetBranchStatus("selectedIDMuons", 1);
   fChain->SetBranchStatus("selectedIDMuonsMatched", 1);
   fChain->SetBranchStatus("selectedIDMuons_MTW", 1);
-  fChain->SetBranchStatus("selectedIDMuonsActivity", 1);
   fChain->SetBranchStatus("selectedIDIsoMuonsIsoTrackMatched", 1);
   fChain->SetBranchStatus("selectedIDIsoElectronsNum", 1);
   fChain->SetBranchStatus("selectedIDIsoElectrons", 1);
@@ -857,13 +902,11 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchStatus("selectedIDIsoElectronsPromptMatchedDeltaR", 1);
   fChain->SetBranchStatus("selectedIDIsoElectronsPromptMatchedRelPt", 1);
   fChain->SetBranchStatus("selectedIDIsoElectrons_MTW", 1);
-  fChain->SetBranchStatus("selectedIDIsoElectronsActivity", 1);
   fChain->SetBranchStatus("selectedIDIsoElectronsIsoTrackMatched", 1);
   fChain->SetBranchStatus("selectedIDElectronsNum", 1);
   fChain->SetBranchStatus("selectedIDElectrons", 1);
   fChain->SetBranchStatus("selectedIDElectronsMatched", 1);
   fChain->SetBranchStatus("selectedIDElectrons_MTW", 1);
-  fChain->SetBranchStatus("selectedIDElectronsActivity", 1);
   fChain->SetBranchStatus("isoElectronTracks", 1);
   fChain->SetBranchStatus("IsolatedElectronTracksVeto", 1);
   fChain->SetBranchStatus("IsolatedElectronTracksVetoActivity", 1);
@@ -886,19 +929,19 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchStatus("elecIsoTrackMatchedToGenSingleProngTau", 1);
   fChain->SetBranchStatus("pionIsoTrackMatchedToGenSingleProngTau", 1);
   fChain->SetBranchStatus("JetsNum", 1);
-  fChain->SetBranchStatus("Jets", 1);
-  fChain->SetBranchStatus("Jets_bDiscriminatorCSV", 1);
-  fChain->SetBranchStatus("Jets_chargedEmEnergyFraction", 1);
-  fChain->SetBranchStatus("Jets_chargedHadronEnergyFraction", 1);
-  fChain->SetBranchStatus("Jets_chargedHadronMultiplicity", 1);
-  fChain->SetBranchStatus("Jets_electronMultiplicity", 1);
-  fChain->SetBranchStatus("Jets_jetArea", 1);
-  fChain->SetBranchStatus("Jets_muonEnergyFraction", 1);
-  fChain->SetBranchStatus("Jets_muonMultiplicity", 1);
-  fChain->SetBranchStatus("Jets_neutralEmEnergyFraction", 1);
-  fChain->SetBranchStatus("Jets_neutralHadronMultiplicity", 1);
-  fChain->SetBranchStatus("Jets_photonEnergyFraction", 1);
-  fChain->SetBranchStatus("Jets_photonMultiplicity", 1);
+  /* fChain->SetBranchStatus("Jets", 1); */
+  /* fChain->SetBranchStatus("Jets_bDiscriminatorCSV", 1); */
+  /* fChain->SetBranchStatus("Jets_chargedEmEnergyFraction", 1); */
+  /* fChain->SetBranchStatus("Jets_chargedHadronEnergyFraction", 1); */
+  /* fChain->SetBranchStatus("Jets_chargedHadronMultiplicity", 1); */
+  /* fChain->SetBranchStatus("Jets_electronMultiplicity", 1); */
+  /* fChain->SetBranchStatus("Jets_jetArea", 1); */
+  /* fChain->SetBranchStatus("Jets_muonEnergyFraction", 1); */
+  /* fChain->SetBranchStatus("Jets_muonMultiplicity", 1); */
+  /* fChain->SetBranchStatus("Jets_neutralEmEnergyFraction", 1); */
+  /* fChain->SetBranchStatus("Jets_neutralHadronMultiplicity", 1); */
+  /* fChain->SetBranchStatus("Jets_photonEnergyFraction", 1); */
+  /* fChain->SetBranchStatus("Jets_photonMultiplicity", 1); */
   fChain->SetBranchStatus("ExpectationDiLep", 1);
   fChain->SetBranchStatus("MuDiLepControlSample", 1);
   fChain->SetBranchStatus("ElecDiLepControlSample", 1);
@@ -913,7 +956,27 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchStatus("IsoTrackDiLepMu", 1);
   fChain->SetBranchStatus("IsoTrackDiLepElec", 1);
 
+  fChain->SetBranchAddress("GenElec_MT2Activity", &GenElec_MT2Activity, &b_GenElec_MT2Activity);
+  // fChain->SetBranchAddress("GenElec_RA2Activity", &GenElec_RA2Activity, &b_GenElec_RA2Activity);
+  fChain->SetBranchAddress("GenMu_MT2Activity", &GenMu_MT2Activity, &b_GenMu_MT2Activity);
+  // fChain->SetBranchAddress("GenMu_RA2Activity", &GenMu_RA2Activity, &b_GenMu_RA2Activity);
+  fChain->SetBranchAddress("GenTau_MT2Activity", &GenTau_MT2Activity, &b_GenTau_MT2Activity);
+  // fChain->SetBranchAddress("GenTau_RA2Activity", &GenTau_RA2Activity, &b_GenTau_RA2Activity);
 
+  // fChain->SetBranchAddress("selectedIDElectrons_MiniIso", &selectedIDElectrons_MiniIso, &b_selectedIDElectrons_MiniIso);
+  fChain->SetBranchAddress("selectedIDElectrons_MT2Activity", &selectedIDElectrons_MT2Activity, &b_selectedIDElectrons_MT2Activity);
+  //  fChain->SetBranchAddress("selectedIDElectrons_RA2Activity", &selectedIDElectrons_RA2Activity, &b_selectedIDElectrons_RA2Activity);
+  fChain->SetBranchAddress("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity, &b_selectedIDIsoElectrons_MT2Activity);
+  // fChain->SetBranchAddress("selectedIDIsoElectrons_PTW", &selectedIDIsoElectrons_PTW, &b_selectedIDIsoElectrons_PTW);
+  // fChain->SetBranchAddress("selectedIDIsoElectrons_RA2Activity", &selectedIDIsoElectrons_RA2Activity, &b_selectedIDIsoElectrons_RA2Activity);
+  fChain->SetBranchAddress("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity, &b_selectedIDIsoMuons_MT2Activity);
+  // fChain->SetBranchAddress("selectedIDIsoMuons_PTW", &selectedIDIsoMuons_PTW, &b_selectedIDIsoMuons_PTW);
+  // fChain->SetBranchAddress("selectedIDIsoMuons_RA2Activity", &selectedIDIsoMuons_RA2Activity, &b_selectedIDIsoMuons_RA2Activity);
+  // fChain->SetBranchAddress("selectedIDMuons_MiniIso", &selectedIDMuons_MiniIso, &b_selectedIDMuons_MiniIso);
+  fChain->SetBranchAddress("selectedIDMuons_MT2Activity", &selectedIDMuons_MT2Activity, &b_selectedIDMuons_MT2Activity);
+  fChain->SetBranchAddress("selectedIDMuons_MTW", &selectedIDMuons_MTW, &b_selectedIDMuons_MTW);
+  //  fChain->SetBranchAddress("selectedIDMuons_RA2Activity", &selectedIDMuons_RA2Activity, &b_selectedIDMuons_RA2Activity);
+  
   fChain->SetBranchAddress("EvtNum", &EvtNum, &b_EvtNum);
   fChain->SetBranchAddress("HT", &HT, &b_HT);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
@@ -941,19 +1004,16 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("GenMuDeltaRJet", &GenMuDeltaRJet, &b_GenMuDeltaRJet);
   fChain->SetBranchAddress("GenMuRelPTJet", &GenMuRelPTJet, &b_GenMuRelPTJet);
   fChain->SetBranchAddress("GenMuonIsoTrackMatched", &GenMuonIsoTrackMatched, &b_GenMuonIsoTrackMatched);
-  fChain->SetBranchAddress("GenMuonActivity", &GenMuonActivity, &b_GenMuonActivity);
   fChain->SetBranchAddress("GenElecNum", &GenElecNum, &b_GenElecNum);
   fChain->SetBranchAddress("GenEls", &GenEls, &b_GenEls);
   fChain->SetBranchAddress("GenElecFromTau", &GenElecFromTau, &b_GenElecFromTau);
   fChain->SetBranchAddress("GenElecDeltaRJet", &GenElecDeltaRJet, &b_GenElecDeltaRJet);
   fChain->SetBranchAddress("GenElecRelPTJet", &GenElecRelPTJet, &b_GenElecRelPTJet);
   fChain->SetBranchAddress("GenElecIsoTrackMatched", &GenElecIsoTrackMatched, &b_GenElecIsoTrackMatched);
-  fChain->SetBranchAddress("GenElecActivity", &GenElecActivity, &b_GenElecActivity);
   fChain->SetBranchAddress("GenTauNum", &GenTauNum, &b_GenTauNum);
   fChain->SetBranchAddress("GenTaus", &GenTaus, &b_GenTaus);
   fChain->SetBranchAddress("GenTau_GenTauHad", &GenTau_GenTauHad, &b_GenTau_GenTauHad);
   fChain->SetBranchAddress("GenTauIsoTrackMatched", &GenTauIsoTrackMatched, &b_GenTauIsoTrackMatched);
-  fChain->SetBranchAddress("GenTauActivity", &GenTauActivity, &b_GenTauActivity);
   fChain->SetBranchAddress("GenTauNu", &GenTauNu, &b_GenTauNu);
   fChain->SetBranchAddress("Expectation", &Expectation, &b_Expectation);
   fChain->SetBranchAddress("ExpectationReductionIsoTrack", &ExpectationReductionIsoTrack, &b_ExpectationReductionIsoTrack);
@@ -981,12 +1041,10 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("selectedIDIsoMuonsPromptMatchedDeltaR", &selectedIDIsoMuonsPromptMatchedDeltaR, &b_selectedIDIsoMuonsPromptMatchedDeltaR);
   fChain->SetBranchAddress("selectedIDIsoMuonsPromptMatchedRelPt", &selectedIDIsoMuonsPromptMatchedRelPt, &b_selectedIDIsoMuonsPromptMatchedRelPt);
   fChain->SetBranchAddress("selectedIDIsoMuons_MTW", &selectedIDIsoMuons_MTW, &b_selectedIDIsoMuons_MTW);
-  fChain->SetBranchAddress("selectedIDIsoMuonsActivity", &selectedIDIsoMuonsActivity, &b_selectedIDIsoMuonsActivity);
   fChain->SetBranchAddress("selectedIDMuonsNum", &selectedIDMuonsNum, &b_selectedIDMuonsNum);
   fChain->SetBranchAddress("selectedIDMuons", &selectedIDMuons, &b_selectedIDMuons);
   fChain->SetBranchAddress("selectedIDMuonsMatched", &selectedIDMuonsMatched, &b_selectedIDMuonsMatched);
   fChain->SetBranchAddress("selectedIDMuons_MTW", &selectedIDMuons_MTW, &b_selectedIDMuons_MTW);
-  fChain->SetBranchAddress("selectedIDMuonsActivity", &selectedIDMuonsActivity, &b_selectedIDMuonsActivity);
   fChain->SetBranchAddress("selectedIDIsoMuonsIsoTrackMatched", &selectedIDIsoMuonsIsoTrackMatched, &b_selectedIDIsoMuonsIsoTrackMatched);
   fChain->SetBranchAddress("selectedIDIsoElectronsNum", &selectedIDIsoElectronsNum, &b_selectedIDIsoElectronsNum);
   fChain->SetBranchAddress("selectedIDIsoElectrons", &selectedIDIsoElectrons, &b_selectedIDIsoElectrons);
@@ -995,13 +1053,11 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("selectedIDIsoElectronsPromptMatchedDeltaR", &selectedIDIsoElectronsPromptMatchedDeltaR, &b_selectedIDIsoElectronsPromptMatchedDeltaR);
   fChain->SetBranchAddress("selectedIDIsoElectronsPromptMatchedRelPt", &selectedIDIsoElectronsPromptMatchedRelPt, &b_selectedIDIsoElectronsPromptMatchedRelPt);
   fChain->SetBranchAddress("selectedIDIsoElectrons_MTW", &selectedIDIsoElectrons_MTW, &b_selectedIDIsoElectrons_MTW);
-  fChain->SetBranchAddress("selectedIDIsoElectronsActivity", &selectedIDIsoElectronsActivity, &b_selectedIDIsoElectronsActivity);
   fChain->SetBranchAddress("selectedIDIsoElectronsIsoTrackMatched", &selectedIDIsoElectronsIsoTrackMatched, &b_selectedIDIsoElectronsIsoTrackMatched);
   fChain->SetBranchAddress("selectedIDElectronsNum", &selectedIDElectronsNum, &b_selectedIDElectronsNum);
   fChain->SetBranchAddress("selectedIDElectrons", &selectedIDElectrons, &b_selectedIDElectrons);
   fChain->SetBranchAddress("selectedIDElectronsMatched", &selectedIDElectronsMatched, &b_selectedIDElectronsMatched);
   fChain->SetBranchAddress("selectedIDElectrons_MTW", &selectedIDElectrons_MTW, &b_selectedIDElectrons_MTW);
-  fChain->SetBranchAddress("selectedIDElectronsActivity", &selectedIDElectronsActivity, &b_selectedIDElectronsActivity);
   fChain->SetBranchAddress("isoElectronTracks", &isoElectronTracks, &b_isoElectronTracks);
   fChain->SetBranchAddress("IsolatedElectronTracksVeto", &IsolatedElectronTracksVeto, &b_IsolatedElectronTracksVeto);
   fChain->SetBranchAddress("IsolatedElectronTracksVetoActivity", &IsolatedElectronTracksVetoActivity, &b_IsolatedElectronTracksVetoActivity);
@@ -1024,19 +1080,19 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("elecIsoTrackMatchedToGenSingleProngTau", &elecIsoTrackMatchedToGenSingleProngTau, &b_elecIsoTrackMatchedToGenSingleProngTau);
   fChain->SetBranchAddress("pionIsoTrackMatchedToGenSingleProngTau", &pionIsoTrackMatchedToGenSingleProngTau, &b_pionIsoTrackMatchedToGenSingleProngTau);
   fChain->SetBranchAddress("JetsNum", &JetsNum, &b_JetsNum);
-  fChain->SetBranchAddress("Jets", &Jets, &b_Jets);
-  fChain->SetBranchAddress("Jets_bDiscriminatorCSV", &Jets_bDiscriminatorCSV, &b_Jets_bDiscriminatorCSV);
-  fChain->SetBranchAddress("Jets_chargedEmEnergyFraction", &Jets_chargedEmEnergyFraction, &b_Jets_chargedEmEnergyFraction);
-  fChain->SetBranchAddress("Jets_chargedHadronEnergyFraction", &Jets_chargedHadronEnergyFraction, &b_Jets_chargedHadronEnergyFraction);
-  fChain->SetBranchAddress("Jets_chargedHadronMultiplicity", &Jets_chargedHadronMultiplicity, &b_Jets_chargedHadronMultiplicity);
-  fChain->SetBranchAddress("Jets_electronMultiplicity", &Jets_electronMultiplicity, &b_Jets_electronMultiplicity);
-  fChain->SetBranchAddress("Jets_jetArea", &Jets_jetArea, &b_Jets_jetArea);
-  fChain->SetBranchAddress("Jets_muonEnergyFraction", &Jets_muonEnergyFraction, &b_Jets_muonEnergyFraction);
-  fChain->SetBranchAddress("Jets_muonMultiplicity", &Jets_muonMultiplicity, &b_Jets_muonMultiplicity);
-  fChain->SetBranchAddress("Jets_neutralEmEnergyFraction", &Jets_neutralEmEnergyFraction, &b_Jets_neutralEmEnergyFraction);
-  fChain->SetBranchAddress("Jets_neutralHadronMultiplicity", &Jets_neutralHadronMultiplicity, &b_Jets_neutralHadronMultiplicity);
-  fChain->SetBranchAddress("Jets_photonEnergyFraction", &Jets_photonEnergyFraction, &b_Jets_photonEnergyFraction);
-  fChain->SetBranchAddress("Jets_photonMultiplicity", &Jets_photonMultiplicity, &b_Jets_photonMultiplicity);
+  /* fChain->SetBranchAddress("Jets", &Jets, &b_Jets); */
+  /* fChain->SetBranchAddress("Jets_bDiscriminatorCSV", &Jets_bDiscriminatorCSV, &b_Jets_bDiscriminatorCSV); */
+  /* fChain->SetBranchAddress("Jets_chargedEmEnergyFraction", &Jets_chargedEmEnergyFraction, &b_Jets_chargedEmEnergyFraction); */
+  /* fChain->SetBranchAddress("Jets_chargedHadronEnergyFraction", &Jets_chargedHadronEnergyFraction, &b_Jets_chargedHadronEnergyFraction); */
+  /* fChain->SetBranchAddress("Jets_chargedHadronMultiplicity", &Jets_chargedHadronMultiplicity, &b_Jets_chargedHadronMultiplicity); */
+  /* fChain->SetBranchAddress("Jets_electronMultiplicity", &Jets_electronMultiplicity, &b_Jets_electronMultiplicity); */
+  /* fChain->SetBranchAddress("Jets_jetArea", &Jets_jetArea, &b_Jets_jetArea); */
+  /* fChain->SetBranchAddress("Jets_muonEnergyFraction", &Jets_muonEnergyFraction, &b_Jets_muonEnergyFraction); */
+  /* fChain->SetBranchAddress("Jets_muonMultiplicity", &Jets_muonMultiplicity, &b_Jets_muonMultiplicity); */
+  /* fChain->SetBranchAddress("Jets_neutralEmEnergyFraction", &Jets_neutralEmEnergyFraction, &b_Jets_neutralEmEnergyFraction); */
+  /* fChain->SetBranchAddress("Jets_neutralHadronMultiplicity", &Jets_neutralHadronMultiplicity, &b_Jets_neutralHadronMultiplicity); */
+  /* fChain->SetBranchAddress("Jets_photonEnergyFraction", &Jets_photonEnergyFraction, &b_Jets_photonEnergyFraction); */
+  /* fChain->SetBranchAddress("Jets_photonMultiplicity", &Jets_photonMultiplicity, &b_Jets_photonMultiplicity); */
   fChain->SetBranchAddress("ExpectationDiLep", &ExpectationDiLep, &b_ExpectationDiLep);
   fChain->SetBranchAddress("MuDiLepControlSample", &MuDiLepControlSample, &b_MuDiLepControlSample);
   fChain->SetBranchAddress("ElecDiLepControlSample", &ElecDiLepControlSample, &b_ElecDiLepControlSample);

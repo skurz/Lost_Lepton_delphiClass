@@ -133,10 +133,10 @@ public :
 
 
  // Storing stuff
-  TTree	*tExpectation_ = 0;
+  TTree *tExpectation_ = 0;
 
   //  template<> void TreeObject<TLorentzVector>::AddBranch() { tree->Branch(nameInTree.c_str(),nameInTree.c_str(),&value); }
-	
+  
   SearchBins *SearchBins_;
   SearchBins *SearchBinsQCD_;
 // eff variables fot the tree
@@ -170,22 +170,22 @@ public :
   std::vector<UShort_t> SelectedIsoTracksMatchedToGenLepton, SelectedIsoTracksMatchedToRecoIsoLepton;
   std::vector<Float_t> SelectedIsoTracksMatchedToGenDeltaR, SelectedIsoTracksMatchedToGenRelPT;
   std::vector<Float_t> SelectedIsoTracksMatchedToRecoIsoDeltaR, SelectedIsoTracksMatchedToRecoIsoRelPT;
-	
+  
   std::vector<UShort_t> GenMuonIsolatedTracksPT10Matched, selectedIDIsoMuonsIsolatedTracksPT10Matched;
   std::vector<UShort_t> GenElecIsolatedTracksPT10Matched, selectedIDIsoElectronsIsolatedTracksPT10Matched;
   std::vector<UShort_t> GenTauIsolatedTracksPT10Matched;
   std::vector<UShort_t> IsolatedTracksPT10MatchedToGenLepton, IsolatedTracksPT10MatchedToRecoIsoLepton;
   std::vector<Float_t> IsolatedTracksPT10MatchedToGenDeltaR, IsolatedTracksPT10MatchedToGenRelPT;
   std::vector<Float_t> IsolatedTracksPT10MatchedToRecoIsoDeltaR, IsolatedTracksPT10MatchedToRecoIsoRelPT;
-	
+  
   std::vector<UShort_t> GenMuonIsolatedTracksPT10IsoCut08Matched, selectedIDIsoMuonsIsolatedTracksPT10IsoCut08Matched;
   std::vector<UShort_t> GenElecIsolatedTracksPT10IsoCut08Matched, selectedIDIsoElectronsIsolatedTracksPT10IsoCut08Matched;
   std::vector<UShort_t> GenTauIsolatedTracksPT10IsoCut08Matched;
   std::vector<UShort_t> IsolatedTracksPT10IsoCut08MatchedToGenLepton, IsolatedTracksPT10IsoCut08MatchedToRecoIsoLepton;
   std::vector<Float_t> IsolatedTracksPT10IsoCut08MatchedToGenDeltaR, IsolatedTracksPT10IsoCut08MatchedToGenRelPT;
   std::vector<Float_t> IsolatedTracksPT10IsoCut08MatchedToRecoIsoDeltaR, IsolatedTracksPT10IsoCut08MatchedToRecoIsoRelPT;
-	
-	
+  
+  
   std::vector<UShort_t> GenMuonIsolatedTracksPT10IsoCut12Matched, selectedIDIsoMuonsIsolatedTracksPT10IsoCut12Matched;
   std::vector<UShort_t> GenElecIsolatedTracksPT10IsoCut12Matched, selectedIDIsoElectronsIsolatedTracksPT10IsoCut12Matched;
   std::vector<UShort_t> GenTauIsolatedTracksPT10IsoCut12Matched;
@@ -199,23 +199,20 @@ public :
   UShort_t StandAloneGenElecIsoTrackMatched_, StandAloneIsoTrackToElecMatched_;
   UShort_t StandAloneIsoTrackToRecoMuMatched_, StandAloneIsoTrackToRecoElecMatched_;
   UShort_t IsoTrackDiLepControlSampleElec_, IsoTrackDiLepControlSampleMu_, IsoTrackDiLepElec_, IsoTrackDiLepMu_;
-	
-  // activity resetValues
-  std::vector<Float_t>         selectedIDIsoMuonsActivity, selectedIDMuonsActivity, GenMuonActivity;
-  std::vector<Float_t>         selectedIDIsoElectronsActivity, selectedIDElectronsActivity, GenElecActivity;
-	
-  std::vector<Float_t> IsoTrackActivity, GenTauActivity;
+  
+
+  std::vector<Float_t> IsoTrackActivity;
   UShort_t elecActivityMethod, muActivityMethod, muIsoTrackActivityMethod, elecIsoTrackActivityMethod, pionIsoTrackActivityMethod;
   bool DY;
-	
-  UShort_t Bin_, BinQCD_;	
-	
+  
+  UShort_t Bin_, BinQCD_; 
+  
   UShort_t MuPurity_, ElecPurity_;
-	
-	
+  
+  
   Float_t mtw, isoTrackMTW_;
   Float_t ptw, gen_ptw;
-	
+  
   // w pt spectrum extrapolation studies
   Float_t GenMuWPt_, GenElecWPt_;
   Float_t GenMuWPhi_, GenElecWPhi_;
@@ -224,21 +221,41 @@ public :
   UShort_t selectedIDElectronsNum_, selectedIDIsoElectronsNum_;
 
   
-  Int_t		isoTracks;
+  Int_t   isoTracks;
   UInt_t JetsNum_;
-	
-  // MTW studies TH1F s
-  TH1F *RecoMuonMTWPrompt_;
-  TH1F *RecoMuonMTWNonPrompt_;
-  TH1F *IsoMuonMTWPrompt_;
-  TH1F *IsoMuonMTWNonPrompt_;
-	
-  TH1F *RecoElectronMTWPrompt_;
-  TH1F *RecoElectronMTWNonPrompt_;
-  TH1F *IsoElectronMTWPrompt_;
-  TH1F *IsoElectronMTWNonPrompt_;
+  
+  // MTW studies TH1D s
+  TH1D *RecoMuonMTWPrompt_;
+  TH1D *RecoMuonMTWNonPrompt_;
+  TH1D *IsoMuonMTWPrompt_;
+  TH1D *IsoMuonMTWNonPrompt_;
+  
+  TH1D *RecoElectronMTWPrompt_;
+  TH1D *RecoElectronMTWNonPrompt_;
+  TH1D *IsoElectronMTWPrompt_;
+  TH1D *IsoElectronMTWNonPrompt_;
   
   // Declaration of leaf types
+  std::vector<double>  *GenElec_MT2Activity=0;
+  std::vector<double>  *GenElec_RA2Activity=0;
+  std::vector<double>  *GenMu_MT2Activity=0;
+  std::vector<double>  *GenMu_RA2Activity=0;
+  std::vector<double>  *GenTau_MT2Activity=0;
+  std::vector<double>  *GenTau_RA2Activity=0;
+  std::vector<double>  *selectedIDElectrons_MiniIso=0;
+  std::vector<double>  *selectedIDElectrons_MT2Activity=0;
+  std::vector<double>  *selectedIDElectrons_RA2Activity=0;
+  std::vector<double>  *selectedIDIsoElectrons_MT2Activity=0;
+  std::vector<double>  *selectedIDIsoElectrons_PTW=0;
+  std::vector<double>  *selectedIDIsoElectrons_RA2Activity=0;
+  std::vector<double>  *selectedIDMuons_MiniIso=0;
+  std::vector<double>  *selectedIDMuons_MT2Activity=0;
+  std::vector<double>  *selectedIDMuons_RA2Activity=0;
+  std::vector<double>  *selectedIDIsoMuons_MT2Activity=0;
+  std::vector<double>  *selectedIDIsoMuons_PTW=0;
+  std::vector<double>  *selectedIDIsoMuons_RA2Activity=0;
+
+  Double_t        genHT;
   UInt_t          RunNum;
   UInt_t          LumiBlockNum;
   UInt_t          EvtNum;
@@ -319,6 +336,27 @@ public :
   Double_t        Weight;
 
   // List of branches
+  TBranch        *b_GenElec_MT2Activity=0;   //!
+  TBranch        *b_GenElec_RA2Activity=0;
+  TBranch        *b_GenMu_MT2Activity=0;   //!
+  TBranch        *b_GenMu_RA2Activity=0;   //!
+  TBranch        *b_GenTau_MT2Activity=0;   //!
+  TBranch        *b_GenTau_RA2Activity=0;   //!
+  TBranch        *b_selectedIDElectrons_MiniIso=0;   //!
+  TBranch        *b_selectedIDElectrons_MT2Activity=0;   //!
+  TBranch        *b_selectedIDElectrons_RA2Activity=0;   //!
+  TBranch        *b_selectedIDIsoElectrons_MT2Activity=0;   //!
+  TBranch        *b_selectedIDIsoElectrons_PTW=0;   //!
+  TBranch        *b_selectedIDIsoElectrons_RA2Activity=0;   //!
+  TBranch        *b_selectedIDIsoMuons_MT2Activity=0;   //!
+  TBranch        *b_selectedIDIsoMuons_PTW=0;   //!
+  TBranch        *b_selectedIDIsoMuons_RA2Activity=0;   //!
+  TBranch        *b_selectedIDMuons_MiniIso=0;   //!
+  TBranch        *b_selectedIDMuons_MT2Activity=0;   //!
+  TBranch        *b_selectedIDMuons_RA2Activity=0;   //!
+
+  TBranch        *b_genHT=0;
+
   TBranch        *b_RunNum=0;   //!
   TBranch        *b_LumiBlockNum=0;   //!
   TBranch        *b_EvtNum=0;   //!
@@ -413,7 +451,7 @@ public :
   virtual TList  *GetOutputList() const { return fOutput; }
   virtual void    SlaveTerminate();
   virtual void    Terminate();
-	
+  
   ClassDef(ExpecMaker,0);
 
 };
@@ -481,6 +519,27 @@ void ExpecMaker::Init(TTree *tree)
 
 
   fChain->SetBranchStatus("*",0);
+
+  fChain->SetBranchStatus("GenElec_MT2Activity",1);
+  fChain->SetBranchStatus("GenElec_RA2Activity",1);
+  fChain->SetBranchStatus("GenMu_MT2Activity", 1);
+  fChain->SetBranchStatus("GenMu_RA2Activity",1);
+  fChain->SetBranchStatus("GenTau_MT2Activity",1);
+  fChain->SetBranchStatus("GenTau_RA2Activity", 1);
+  fChain->SetBranchStatus("selectedIDElectrons_MiniIso", 1);
+  fChain->SetBranchStatus("selectedIDElectrons_MT2Activity",1);
+  fChain->SetBranchStatus("selectedIDElectrons_RA2Activity", 1);
+  fChain->SetBranchStatus("selectedIDIsoElectrons_MT2Activity", 1);
+  fChain->SetBranchStatus("selectedIDIsoElectrons_PTW", 1);
+  fChain->SetBranchStatus("selectedIDIsoElectrons_RA2Activity",1);
+  fChain->SetBranchStatus("selectedIDIsoMuons_MT2Activity",1);
+  fChain->SetBranchStatus("selectedIDIsoMuons_PTW",1);
+  fChain->SetBranchStatus("selectedIDIsoMuons_RA2Activity", 1);
+  fChain->SetBranchStatus("selectedIDMuons_MiniIso",1);
+  fChain->SetBranchStatus("selectedIDMuons_MT2Activity", 1);
+  fChain->SetBranchStatus("selectedIDMuons_MTW",1);
+  fChain->SetBranchStatus("selectedIDMuons_RA2Activity", 1);
+   
   fChain->SetBranchStatus("RunNum", 1);
   fChain->SetBranchStatus("LumiBlockNum", 1);
   fChain->SetBranchStatus("EvtNum", 1);
@@ -545,9 +604,9 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("NVtx", 1);
   fChain->SetBranchStatus("selectedIDElectrons", 1);
   fChain->SetBranchStatus("selectedIDElectrons_MTW", 1);
-  fChain->SetBranchStatus("selectedIDIsoElectrons", 1);
+  fChain->SetBranchStatus("Electrons", 1);
   fChain->SetBranchStatus("selectedIDIsoElectrons_MTW", 1);
-  fChain->SetBranchStatus("selectedIDIsoMuons", 1);
+  fChain->SetBranchStatus("Muons", 1);
   fChain->SetBranchStatus("selectedIDIsoMuons_MTW", 1);
   fChain->SetBranchStatus("selectedIDMuons", 1);
   fChain->SetBranchStatus("selectedIDMuons_MTW", 1);
@@ -558,8 +617,29 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("TriggerPass", 1);
   fChain->SetBranchStatus("TriggerPrescales", 1);
   fChain->SetBranchStatus("Weight", 1);
+  fChain->SetBranchStatus("genHT", 1);
 
-  
+  fChain->SetBranchAddress("GenElec_MT2Activity", &GenElec_MT2Activity, &b_GenElec_MT2Activity);
+  fChain->SetBranchAddress("GenElec_RA2Activity", &GenElec_RA2Activity, &b_GenElec_RA2Activity);
+  fChain->SetBranchAddress("GenMu_MT2Activity", &GenMu_MT2Activity, &b_GenMu_MT2Activity);
+  fChain->SetBranchAddress("GenMu_RA2Activity", &GenMu_RA2Activity, &b_GenMu_RA2Activity);
+  fChain->SetBranchAddress("GenTau_MT2Activity", &GenTau_MT2Activity, &b_GenTau_MT2Activity);
+  fChain->SetBranchAddress("GenTau_RA2Activity", &GenTau_RA2Activity, &b_GenTau_RA2Activity);
+  fChain->SetBranchAddress("selectedIDElectrons_MiniIso", &selectedIDElectrons_MiniIso, &b_selectedIDElectrons_MiniIso);
+  fChain->SetBranchAddress("selectedIDElectrons_MT2Activity", &selectedIDElectrons_MT2Activity, &b_selectedIDElectrons_MT2Activity);
+  fChain->SetBranchAddress("selectedIDElectrons_RA2Activity", &selectedIDElectrons_RA2Activity, &b_selectedIDElectrons_RA2Activity);
+  fChain->SetBranchAddress("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity, &b_selectedIDIsoElectrons_MT2Activity);
+  fChain->SetBranchAddress("selectedIDIsoElectrons_PTW", &selectedIDIsoElectrons_PTW, &b_selectedIDIsoElectrons_PTW);
+  fChain->SetBranchAddress("selectedIDIsoElectrons_RA2Activity", &selectedIDIsoElectrons_RA2Activity, &b_selectedIDIsoElectrons_RA2Activity);
+  fChain->SetBranchAddress("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity, &b_selectedIDIsoMuons_MT2Activity);
+  fChain->SetBranchAddress("selectedIDIsoMuons_PTW", &selectedIDIsoMuons_PTW, &b_selectedIDIsoMuons_PTW);
+  fChain->SetBranchAddress("selectedIDIsoMuons_RA2Activity", &selectedIDIsoMuons_RA2Activity, &b_selectedIDIsoMuons_RA2Activity);
+  fChain->SetBranchAddress("selectedIDMuons_MiniIso", &selectedIDMuons_MiniIso, &b_selectedIDMuons_MiniIso);
+  fChain->SetBranchAddress("selectedIDMuons_MT2Activity", &selectedIDMuons_MT2Activity, &b_selectedIDMuons_MT2Activity);
+  fChain->SetBranchAddress("selectedIDMuons_MTW", &selectedIDMuons_MTW, &b_selectedIDMuons_MTW);
+  fChain->SetBranchAddress("selectedIDMuons_RA2Activity", &selectedIDMuons_RA2Activity, &b_selectedIDMuons_RA2Activity);
+
+  fChain->SetBranchAddress("genHT", &genHT, &b_genHT);
   fChain->SetBranchAddress("RunNum", &RunNum, &b_RunNum);
   fChain->SetBranchAddress("LumiBlockNum", &LumiBlockNum, &b_LumiBlockNum);
   fChain->SetBranchAddress("EvtNum", &EvtNum, &b_EvtNum);
@@ -624,9 +704,9 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("NVtx", &NVtx, &b_NVtx);
   fChain->SetBranchAddress("selectedIDElectrons", &selectedIDElectrons, &b_selectedIDElectrons);
   fChain->SetBranchAddress("selectedIDElectrons_MTW", &selectedIDElectrons_MTW, &b_selectedIDElectrons_MTW);
-  fChain->SetBranchAddress("selectedIDIsoElectrons", &selectedIDIsoElectrons, &b_selectedIDIsoElectrons);
+  fChain->SetBranchAddress("Electrons", &selectedIDIsoElectrons, &b_selectedIDIsoElectrons);
   fChain->SetBranchAddress("selectedIDIsoElectrons_MTW", &selectedIDIsoElectrons_MTW, &b_selectedIDIsoElectrons_MTW);
-  fChain->SetBranchAddress("selectedIDIsoMuons", &selectedIDIsoMuons, &b_selectedIDIsoMuons);
+  fChain->SetBranchAddress("Muons", &selectedIDIsoMuons, &b_selectedIDIsoMuons);
   fChain->SetBranchAddress("selectedIDIsoMuons_MTW", &selectedIDIsoMuons_MTW, &b_selectedIDIsoMuons_MTW);
   fChain->SetBranchAddress("selectedIDMuons", &selectedIDMuons, &b_selectedIDMuons);
   fChain->SetBranchAddress("selectedIDMuons_MTW", &selectedIDMuons_MTW, &b_selectedIDMuons_MTW);

@@ -244,7 +244,6 @@ class Prediction : public TSelector {
 
   
   Float_t totalWeight_, totalWeightDiLep_, totalWeightDiLepIsoTrackReduced_,totalWeightDiLepIsoMuTrackReduced_,totalWeightDiLepIsoElecTrackReduced_,totalWeightDiLepIsoPionTrackReduced_,totalWeightDiLepIsoTrackReducedCombined_;
-  std::vector<Float_t> selectedIDIsoMuonsActivity, selectedIDIsoElectronsActivity;
   std::vector<Float_t> selectedIDIsoMuonsDeltaRJet, selectedIDIsoMuonsRelPTJet;
   std::vector<Float_t> selectedIDIsoElectronsDeltaRJet, selectedIDIsoElectronsRelPTJet;
 
@@ -267,18 +266,18 @@ class Prediction : public TSelector {
   
   // Effiecineices
   // TAP
-  TH2F *MuIsoPTActivityTAPMC_;
-  TH2F *ElecIsoPTActivityTAPMC_;
-  TH2F *MuRecoPTActivityTAPMC_;
-  TH2F *ElecRecoPTActivityTAPMC_;
+  TH2D *MuIsoPTActivityTAPMC_;
+  TH2D *ElecIsoPTActivityTAPMC_;
+  TH2D *MuRecoPTActivityTAPMC_;
+  TH2D *ElecRecoPTActivityTAPMC_;
 
   // new Efficiency Maps
   TH2Eff *MuMTWPTActivity_;
   TH1Eff *MuMTWNJets_;
   TH1Eff *MuDiLepContributionMTWAppliedNJets_;
-  TH2Eff *MuIsoPTActivity_;
+  TH2Eff *MuIsoActivityPT_;
   TH2Eff *MuIsoRelPTDeltaRJet_;
-  TH2Eff *MuRecoPTActivity_;
+  TH2Eff *MuRecoActivityPT_;
   TH2Eff *MuAccBTagNJets_;
   TH2Eff *MuAccMHTNJets_;
   TH2Eff *MuAccHTNJets_;
@@ -295,9 +294,9 @@ class Prediction : public TSelector {
   TH2Eff *MuAccHTMHTB1_Inf_;
 
   
-  TH2Eff *ElecIsoPTActivity_;
+  TH2Eff *ElecIsoActivityPT_;
   TH2Eff *ElecIsoRelPTDeltaRJet_;
-  TH2Eff *ElecRecoPTActivity_;
+  TH2Eff *ElecRecoActivityPT_;
   TH2Eff *ElecAccBTagNJets_;
   TH2Eff *ElecAccMHTNJets_;
   TH2Eff *ElecAccHTNJets_;
@@ -326,6 +325,25 @@ class Prediction : public TSelector {
   
   
   // Declaration of leaf types
+  std::vector<double>  *GenElec_MT2Activity=0;
+  std::vector<double>  *GenElec_RA2Activity=0;
+  std::vector<double>  *GenMu_MT2Activity=0;
+  std::vector<double>  *GenMu_RA2Activity=0;
+  std::vector<double>  *GenTau_MT2Activity=0;
+  std::vector<double>  *GenTau_RA2Activity=0;
+  std::vector<double>  *selectedIDElectrons_MiniIso=0;
+  std::vector<double>  *selectedIDElectrons_MT2Activity=0;
+  std::vector<double>  *selectedIDElectrons_RA2Activity=0;
+  std::vector<double>  *selectedIDIsoElectrons_MT2Activity=0;
+  std::vector<double>  *selectedIDIsoElectrons_PTW=0;
+  std::vector<double>  *selectedIDIsoElectrons_RA2Activity=0;
+  std::vector<double>  *selectedIDMuons_MiniIso=0;
+  std::vector<double>  *selectedIDMuons_MT2Activity=0;
+  std::vector<double>  *selectedIDMuons_RA2Activity=0;
+  std::vector<double>  *selectedIDIsoMuons_MT2Activity=0;
+  std::vector<double>  *selectedIDIsoMuons_PTW=0;
+  std::vector<double>  *selectedIDIsoMuons_RA2Activity=0;
+  
   UInt_t          RunNum;
   UInt_t          LumiBlockNum;
   UInt_t          EvtNum;
@@ -404,8 +422,29 @@ class Prediction : public TSelector {
   std::vector<bool>    *TriggerPass=0;
   std::vector<int>     *TriggerPrescales=0;
   Double_t        Weight;
+  Double_t        genHT;
+
 
   // List of branches
+  TBranch        *b_GenElec_MT2Activity=0;   //!
+  TBranch        *b_GenElec_RA2Activity=0;
+  TBranch        *b_GenMu_MT2Activity=0;   //!
+  TBranch        *b_GenMu_RA2Activity=0;   //!
+  TBranch        *b_GenTau_MT2Activity=0;   //!
+  TBranch        *b_GenTau_RA2Activity=0;   //!
+  TBranch        *b_selectedIDElectrons_MiniIso=0;   //!
+  TBranch        *b_selectedIDElectrons_MT2Activity=0;   //!
+  TBranch        *b_selectedIDElectrons_RA2Activity=0;   //!
+  TBranch        *b_selectedIDIsoElectrons_MT2Activity=0;   //!
+  TBranch        *b_selectedIDIsoElectrons_PTW=0;   //!
+  TBranch        *b_selectedIDIsoElectrons_RA2Activity=0;   //!
+  TBranch        *b_selectedIDIsoMuons_MT2Activity=0;   //!
+  TBranch        *b_selectedIDIsoMuons_PTW=0;   //!
+  TBranch        *b_selectedIDIsoMuons_RA2Activity=0;   //!
+  TBranch        *b_selectedIDMuons_MiniIso=0;   //!
+  TBranch        *b_selectedIDMuons_MT2Activity=0;   //!
+  TBranch        *b_selectedIDMuons_RA2Activity=0;   //!
+  
   TBranch        *b_RunNum=0;   //!
   TBranch        *b_LumiBlockNum=0;   //!
   TBranch        *b_EvtNum=0;   //!
@@ -484,6 +523,8 @@ class Prediction : public TSelector {
   TBranch        *b_TriggerPass=0;   //!
   TBranch        *b_TriggerPrescales=0;   //!
   TBranch        *b_Weight=0;   //!
+  TBranch        *b_genHT=0;
+
   
  Prediction(TTree * /*tree*/ =0) : fChain(0) { }
   virtual ~Prediction() { }
@@ -564,6 +605,27 @@ void Prediction::Init(TTree *tree)
   std::cout << "Saving file to: " << fileName << std::endl;
 
   fChain->SetBranchStatus("*",0);
+
+  fChain->SetBranchStatus("GenElec_MT2Activity",1);
+  fChain->SetBranchStatus("GenElec_RA2Activity",1);
+  fChain->SetBranchStatus("GenMu_MT2Activity", 1);
+  fChain->SetBranchStatus("GenMu_RA2Activity",1);
+  fChain->SetBranchStatus("GenTau_MT2Activity",1);
+  fChain->SetBranchStatus("GenTau_RA2Activity", 1);
+  fChain->SetBranchStatus("selectedIDElectrons_MiniIso", 1);
+  fChain->SetBranchStatus("selectedIDElectrons_MT2Activity",1);
+  fChain->SetBranchStatus("selectedIDElectrons_RA2Activity", 1);
+  fChain->SetBranchStatus("selectedIDIsoElectrons_MT2Activity", 1);
+  fChain->SetBranchStatus("selectedIDIsoElectrons_PTW", 1);
+  fChain->SetBranchStatus("selectedIDIsoElectrons_RA2Activity",1);
+  fChain->SetBranchStatus("selectedIDIsoMuons_MT2Activity",1);
+  fChain->SetBranchStatus("selectedIDIsoMuons_PTW",1);
+  fChain->SetBranchStatus("selectedIDIsoMuons_RA2Activity", 1);
+  fChain->SetBranchStatus("selectedIDMuons_MiniIso",1);
+  fChain->SetBranchStatus("selectedIDMuons_MT2Activity", 1);
+  fChain->SetBranchStatus("selectedIDMuons_MTW",1);
+  fChain->SetBranchStatus("selectedIDMuons_RA2Activity", 1);
+  
   fChain->SetBranchStatus("RunNum", 1);
   fChain->SetBranchStatus("LumiBlockNum", 1);
   fChain->SetBranchStatus("EvtNum", 1);
@@ -628,9 +690,9 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("NVtx", 1);
   fChain->SetBranchStatus("selectedIDElectrons", 1);
   fChain->SetBranchStatus("selectedIDElectrons_MTW", 1);
-  fChain->SetBranchStatus("selectedIDIsoElectrons", 1);
+  fChain->SetBranchStatus("Electrons", 1);
   fChain->SetBranchStatus("selectedIDIsoElectrons_MTW", 1);
-  fChain->SetBranchStatus("selectedIDIsoMuons", 1);
+  fChain->SetBranchStatus("Muons", 1);
   fChain->SetBranchStatus("selectedIDIsoMuons_MTW", 1);
   fChain->SetBranchStatus("selectedIDMuons", 1);
   fChain->SetBranchStatus("selectedIDMuons_MTW", 1);
@@ -641,8 +703,30 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("TriggerPass", 1);
   fChain->SetBranchStatus("TriggerPrescales", 1);
   fChain->SetBranchStatus("Weight", 1);
+  fChain->SetBranchStatus("genHT", 1);
 
- 
+
+
+  fChain->SetBranchAddress("GenElec_MT2Activity", &GenElec_MT2Activity, &b_GenElec_MT2Activity);
+  fChain->SetBranchAddress("GenElec_RA2Activity", &GenElec_RA2Activity, &b_GenElec_RA2Activity);
+  fChain->SetBranchAddress("GenMu_MT2Activity", &GenMu_MT2Activity, &b_GenMu_MT2Activity);
+  fChain->SetBranchAddress("GenMu_RA2Activity", &GenMu_RA2Activity, &b_GenMu_RA2Activity);
+  fChain->SetBranchAddress("GenTau_MT2Activity", &GenTau_MT2Activity, &b_GenTau_MT2Activity);
+  fChain->SetBranchAddress("GenTau_RA2Activity", &GenTau_RA2Activity, &b_GenTau_RA2Activity);
+  fChain->SetBranchAddress("selectedIDElectrons_MiniIso", &selectedIDElectrons_MiniIso, &b_selectedIDElectrons_MiniIso);
+  fChain->SetBranchAddress("selectedIDElectrons_MT2Activity", &selectedIDElectrons_MT2Activity, &b_selectedIDElectrons_MT2Activity);
+  fChain->SetBranchAddress("selectedIDElectrons_RA2Activity", &selectedIDElectrons_RA2Activity, &b_selectedIDElectrons_RA2Activity);
+  fChain->SetBranchAddress("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity, &b_selectedIDIsoElectrons_MT2Activity);
+  fChain->SetBranchAddress("selectedIDIsoElectrons_PTW", &selectedIDIsoElectrons_PTW, &b_selectedIDIsoElectrons_PTW);
+  fChain->SetBranchAddress("selectedIDIsoElectrons_RA2Activity", &selectedIDIsoElectrons_RA2Activity, &b_selectedIDIsoElectrons_RA2Activity);
+  fChain->SetBranchAddress("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity, &b_selectedIDIsoMuons_MT2Activity);
+  fChain->SetBranchAddress("selectedIDIsoMuons_PTW", &selectedIDIsoMuons_PTW, &b_selectedIDIsoMuons_PTW);
+  fChain->SetBranchAddress("selectedIDIsoMuons_RA2Activity", &selectedIDIsoMuons_RA2Activity, &b_selectedIDIsoMuons_RA2Activity);
+  fChain->SetBranchAddress("selectedIDMuons_MiniIso", &selectedIDMuons_MiniIso, &b_selectedIDMuons_MiniIso);
+  fChain->SetBranchAddress("selectedIDMuons_MT2Activity", &selectedIDMuons_MT2Activity, &b_selectedIDMuons_MT2Activity);
+  fChain->SetBranchAddress("selectedIDMuons_MTW", &selectedIDMuons_MTW, &b_selectedIDMuons_MTW);
+  fChain->SetBranchAddress("selectedIDMuons_RA2Activity", &selectedIDMuons_RA2Activity, &b_selectedIDMuons_RA2Activity);
+  
   fChain->SetBranchAddress("RunNum", &RunNum, &b_RunNum);
   fChain->SetBranchAddress("LumiBlockNum", &LumiBlockNum, &b_LumiBlockNum);
   fChain->SetBranchAddress("EvtNum", &EvtNum, &b_EvtNum);
@@ -707,9 +791,9 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("NVtx", &NVtx, &b_NVtx);
   fChain->SetBranchAddress("selectedIDElectrons", &selectedIDElectrons, &b_selectedIDElectrons);
   fChain->SetBranchAddress("selectedIDElectrons_MTW", &selectedIDElectrons_MTW, &b_selectedIDElectrons_MTW);
-  fChain->SetBranchAddress("selectedIDIsoElectrons", &selectedIDIsoElectrons, &b_selectedIDIsoElectrons);
+  fChain->SetBranchAddress("Electrons", &selectedIDIsoElectrons, &b_selectedIDIsoElectrons);
   fChain->SetBranchAddress("selectedIDIsoElectrons_MTW", &selectedIDIsoElectrons_MTW, &b_selectedIDIsoElectrons_MTW);
-  fChain->SetBranchAddress("selectedIDIsoMuons", &selectedIDIsoMuons, &b_selectedIDIsoMuons);
+  fChain->SetBranchAddress("Muons", &selectedIDIsoMuons, &b_selectedIDIsoMuons);
   fChain->SetBranchAddress("selectedIDIsoMuons_MTW", &selectedIDIsoMuons_MTW, &b_selectedIDIsoMuons_MTW);
   fChain->SetBranchAddress("selectedIDMuons", &selectedIDMuons, &b_selectedIDMuons);
   fChain->SetBranchAddress("selectedIDMuons_MTW", &selectedIDMuons_MTW, &b_selectedIDMuons_MTW);
@@ -720,6 +804,8 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("TriggerPass", &TriggerPass, &b_TriggerPass);
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
   fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
+  fChain->SetBranchAddress("genHT", &genHT, &b_genHT);
+
 }
 
 Bool_t Prediction::Notify()

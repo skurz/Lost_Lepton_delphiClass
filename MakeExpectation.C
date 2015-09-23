@@ -24,7 +24,8 @@ void MakeExpectation()
   gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
   
   TChain *Effchain = new TChain("TreeMaker2/PreSelection");
-  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb_0309/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
+//  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb_0309/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
+  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/Kevin_test/*.root");
 
   //Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb_0309/TTJets_SingleLeptFromT_TuneCUETP8M1_V9_v1/*.root");
   //Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb_0309/TTJets_SingleLeptFromT_TuneCUETP8M1_V9_ext1-v1/*.root");
@@ -46,7 +47,7 @@ void MakeExpectation()
     Effchain->SetProof();
   }
 
-  Effchain->Process("ExpecMaker.C++g"); //specify output path/file here // folder already has to exist for the time beeing...
+  Effchain->Process("ExpecMaker.C++g", "Expectation.root"); //specify output path/file here // folder already has to exist for the time beeing...
   // Effchain->Process("ExpecMaker.C++g", "outputFile.root, genHTcut");
   // for Jacks Syntax (outputname based on input) use: Effchain->Process("ExpecMaker.C++g", "*, genHTcut");
 

@@ -6,8 +6,8 @@
 #include <TFile.h>
 #include <TSelector.h>
 #include <TTree.h>
-#include <TH2F.h>
-#include <TH1F.h>
+#include <TH2D.h>
+#include <TH1D.h>
 #include "TVector2.h"
 #include <cmath>
 #include "TCanvas.h"
@@ -31,20 +31,20 @@ public:
 	{
 		name_=TString(name);
 		title_=TString(title);
-		PassTH1F_ = new TH1F(name_+"Pass", title_, nbinsx, xbins);
-		PassTH1F_->Sumw2();
-		TotalTH1F_ = (TH1F*) PassTH1F_->Clone(name_+"Total");		
-		RatioTH1F_ = (TH1F*) PassTH1F_->Clone(name_);
+		PassTH1D_ = new TH1D(name_+"Pass", title_, nbinsx, xbins);
+		PassTH1D_->Sumw2();
+		TotalTH1D_ = (TH1D*) PassTH1D_->Clone(name_+"Total");		
+		RatioTH1D_ = (TH1D*) PassTH1D_->Clone(name_);
 		RatioTGraphAsymm_ = new TGraphAsymmErrors();
 	}
 	TH1Eff(const char* name, const char* title, unsigned int nBins, double startBin, double endBin)
 	{
 		name_=TString(name);
 		title_=TString(title);
-		PassTH1F_ = new TH1F(name_+"Pass", title_, nBins, startBin, endBin);
-		PassTH1F_->Sumw2();
-		TotalTH1F_ = (TH1F*) PassTH1F_->Clone(name_+"Total");	
-		RatioTH1F_ = (TH1F*) PassTH1F_->Clone(name_);
+		PassTH1D_ = new TH1D(name_+"Pass", title_, nBins, startBin, endBin);
+		PassTH1D_->Sumw2();
+		TotalTH1D_ = (TH1D*) PassTH1D_->Clone(name_+"Total");	
+		RatioTH1D_ = (TH1D*) PassTH1D_->Clone(name_);
 		RatioTGraphAsymm_ = new TGraphAsymmErrors();
 	}
 	TH1Eff(const char* name, TDirectory* MainDirectory)
@@ -53,31 +53,31 @@ public:
 		MainDirectory->cd();
 		TDirectory *effDir = (TDirectory*)MainDirectory->Get(name_);
 		effDir->cd();
-		RatioTH1F_ = (TH1F*) effDir->Get(name_);
+		RatioTH1D_ = (TH1D*) effDir->Get(name_);
 		RatioTGraphAsymm_ = (TGraphAsymmErrors*) effDir->Get(name_+"Asymm");
 	}
 	void SetName(const char* name){
 		name_=TString(name);
-		PassTH1F_->SetName(name_+" Pass");
-		TotalTH1F_->SetName(name_+" Total");
-		RatioTH1F_->SetName(name_);
+		PassTH1D_->SetName(name_+" Pass");
+		TotalTH1D_->SetName(name_+" Total");
+		RatioTH1D_->SetName(name_);
 	}
 	void SetTitle(const char* title){
 		title_=TString(title);
-		PassTH1F_->SetTitle(title_);
-		TotalTH1F_->SetTitle(title_);
+		PassTH1D_->SetTitle(title_);
+		TotalTH1D_->SetTitle(title_);
 	}
 	void Fill(Double_t x, Double_t Weight, bool passOrFail);
 	void SaveEff(TDirectory* MainDirectory){ SaveEff(title_, MainDirectory); }
-	void SaveEff(const char* title, TDirectory* MainDirectory);
+	void SaveEff(const char* title, TDirectory* MainDirectory, bool xlog=false, bool ylog=false);
 	void OpenEff(const char* name, TDirectory* MainDirectory);
 	effVec GetEff(double xValue){ return GetEff(xValue, false); }
 	effVec GetEff(double xValue, bool asymm);
 	~TH1Eff(){}
 private:
-	TH1F* PassTH1F_;
-	TH1F* TotalTH1F_;
-	TH1F* RatioTH1F_;
+	TH1D* PassTH1D_;
+	TH1D* TotalTH1D_;
+	TH1D* RatioTH1D_;
 	TGraphAsymmErrors* RatioTGraphAsymm_;
 	TString name_;
 	TString title_;
@@ -86,38 +86,43 @@ private:
 void TH1Eff::Fill(Double_t x, Double_t Weight, bool passOrFail)
 {
 	if(passOrFail){
-		PassTH1F_->Fill(x, Weight);
-		TotalTH1F_->Fill(x, Weight);
+		PassTH1D_->Fill(x, Weight);
+		TotalTH1D_->Fill(x, Weight);
 	}else{
-		TotalTH1F_->Fill(x, Weight);
+		TotalTH1D_->Fill(x, Weight);
 	}
 }
 
-void TH1Eff::SaveEff(const char* title, TDirectory* MainDirectory)
+void TH1Eff::SaveEff(const char* title, TDirectory* MainDirectory, bool xlog, bool ylog)
 {
 	MainDirectory->cd();
 	MainDirectory->mkdir(name_);
 	TDirectory *effDir = (TDirectory*)MainDirectory->Get(name_);
 	effDir->cd();
 
-	RatioTH1F_->Divide(PassTH1F_, TotalTH1F_, 1, 1, "B");
-	RatioTH1F_->SetName(name_);
-	RatioTH1F_->SetTitle(TString("Simulation, L=3 fb^{-1}, #sqrt{s}=13 TeV ") + TString(title));
-	RatioTH1F_->SetMarkerSize(2.0);
-  	RatioTH1F_->UseCurrentStyle();
+	RatioTH1D_->Divide(PassTH1D_, TotalTH1D_, 1, 1, "B");
+	RatioTH1D_->SetName(name_);
+	RatioTH1D_->SetTitle(TString("Simulation, L=3 fb^{-1}, #sqrt{s}=13 TeV ") + TString(title));
+	RatioTH1D_->SetMarkerSize(2.0);
+  	RatioTH1D_->UseCurrentStyle();
 
   	gROOT->SetBatch(true);	  
 	TCanvas *c1 = new TCanvas(name_,title_,1);
 	c1->cd();
-	if(RatioTH1F_->GetXaxis()->GetBinCenter(RatioTH1F_->GetXaxis()->GetNbins()) > 100) c1->SetLogx();
-	RatioTH1F_->Draw("ColZ,Text,E");
+	if (xlog) {
+	  c1->SetLogx();
+	  RatioTH1D_->GetXaxis()->SetRangeUser(0.001, 10*RatioTH1D_->GetBinLowEdge(RatioTH1D_->GetNbinsX()+1));
+	}
+	if (ylog) c1->SetLogy();
+	if(RatioTH1D_->GetXaxis()->GetBinCenter(RatioTH1D_->GetXaxis()->GetNbins()) > 100) c1->SetLogx();
+	RatioTH1D_->Draw("ColZ,Text,E");
 	c1->SaveAs("Efficiencies/"+name_+".pdf");
 	delete c1;
 	gROOT->SetBatch(false);
 
-	RatioTH1F_->Write();
+	RatioTH1D_->Write();
 
-	RatioTGraphAsymm_->Divide(PassTH1F_, TotalTH1F_, "cl=0.683 b(1,1) mode");
+	RatioTGraphAsymm_->Divide(PassTH1D_, TotalTH1D_, "cl=0.683 b(1,1) mode");
 	RatioTGraphAsymm_->SetName(name_+"Asymm");
 	RatioTGraphAsymm_->SetTitle(title);
 	RatioTGraphAsymm_->Write();
@@ -130,38 +135,38 @@ effVec TH1Eff::GetEff(double xValue, bool asymm)
   	double errUp_ = 0;
   	double errDown_ = 0;  	
 
-  	if(xValue < RatioTH1F_->GetXaxis()->GetXmin()){
-	    //std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<RatioTH1F_->GetName()<<std::endl;
-	    xValue= RatioTH1F_->GetXaxis()->GetXmin()+0.01;
+  	if(xValue < RatioTH1D_->GetXaxis()->GetXmin()){
+	    std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<RatioTH1D_->GetName()<<std::endl;
+	    xValue= RatioTH1D_->GetXaxis()->GetXmin()+0.01;
 	    //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
 	}
-	else if(xValue > RatioTH1F_->GetXaxis()->GetXmax()){
-	    //std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<RatioTH1F_->GetName()<<" which is: "<<RatioTH1F_->GetXaxis()->GetXmax();
-	    xValue= RatioTH1F_->GetXaxis()->GetXmax()-0.01;
+	else if(xValue > RatioTH1D_->GetXaxis()->GetXmax()){
+	    std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<RatioTH1D_->GetName()<<" which is: "<<RatioTH1D_->GetXaxis()->GetXmax();
+	    xValue= RatioTH1D_->GetXaxis()->GetXmax()-0.01;
 	    //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
 	}
 
-	int nxBin = RatioTH1F_->GetXaxis()->FindBin(xValue);
+	int nxBin = RatioTH1D_->GetXaxis()->FindBin(xValue);
 
-	result = RatioTH1F_->GetBinContent(nxBin);
-	errUp_ = RatioTH1F_->GetBinErrorUp(nxBin);
-	errDown_ = RatioTH1F_->GetBinErrorLow(nxBin);
+	result = RatioTH1D_->GetBinContent(nxBin);
+	errUp_ = RatioTH1D_->GetBinErrorUp(nxBin);
+	errDown_ = RatioTH1D_->GetBinErrorLow(nxBin);
 
 	if(result<0.01){
-		std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.01 for histo: "<<RatioTH1F_->GetName()<<std::endl;
+		std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.01 for histo: "<<RatioTH1D_->GetName()<<std::endl;
 		result =0.01;
 	}
 	if(result>1){
-		std::cout<<"Warning efficiency is: "<<result<<" is bigger than 1 for histo: "<<RatioTH1F_->GetName()<<std::endl;
+		std::cout<<"Warning efficiency is: "<<result<<" is bigger than 1 for histo: "<<RatioTH1D_->GetName()<<std::endl;
 		result =0.99;
 	}
 
 	if(asymm && result>0.01){
 		// empty bins in the end/beginning of the th's are removed when creating a tgraph..
 	  	int nEmpty = 0;
-	  	while(RatioTH1F_->GetBinContent(nEmpty+1) < 0.01){
+	  	while(RatioTH1D_->GetBinContent(nEmpty+1) < 0.01){
 	  		nEmpty++;
-	  		if(nEmpty > RatioTH1F_->GetXaxis()->GetNbins()) break;
+	  		if(nEmpty > RatioTH1D_->GetXaxis()->GetNbins()) break;
 	  	}
 
 		Double_t xValueAsymm;
@@ -188,15 +193,15 @@ public:
 		title_=TString(title);
 		nBinsy_=nbinsy;
 
-		PassTH2F_ = new TH2F(name_+"Pass", title_, nbinsx, xbins, nbinsy, ybins);
-		PassTH2F_->Sumw2();
+		PassTH2D_ = new TH2D(name_+"Pass", title_, nbinsx, xbins, nbinsy, ybins);
+		PassTH2D_->Sumw2();
 
-		TotalTH2F_ = (TH2F*) PassTH2F_->Clone(name_+"Total");		
-		RatioTH2F_ = (TH2F*) PassTH2F_->Clone(name_);
+		TotalTH2D_ = (TH2D*) PassTH2D_->Clone(name_+"Total");		
+		RatioTH2D_ = (TH2D*) PassTH2D_->Clone(name_);
 
 		for(int i = 0; i < nbinsy; ++i){
-			PassTH1Fvec_.push_back(new TH1F(name_+"Pass_yBin"+std::to_string(i), title_, nbinsx, xbins));
-			TotalTH1Fvec_.push_back(new TH1F(name_+"Total_yBin"+std::to_string(i), title_, nbinsx, xbins));
+			PassTH1Dvec_.push_back(new TH1D(name_+"Pass_yBin"+std::to_string(i), title_, nbinsx, xbins));
+			TotalTH1Dvec_.push_back(new TH1D(name_+"Total_yBin"+std::to_string(i), title_, nbinsx, xbins));
 			RatioTGraphAsymmVec_.push_back(new TGraphAsymmErrors());
 		}
 	}
@@ -206,14 +211,14 @@ public:
 		title_=TString(title);
 		nBinsy_=nBinsy;
 
-		PassTH2F_ = new TH2F(name_+"Pass", title_, nBinsx, startBinx, endBinx, nBinsy, startBiny, endBiny);
-		PassTH2F_->Sumw2();
-		TotalTH2F_ = (TH2F*) PassTH2F_->Clone(name_+"Total");
-		RatioTH2F_ = (TH2F*) PassTH2F_->Clone(name_);
+		PassTH2D_ = new TH2D(name_+"Pass", title_, nBinsx, startBinx, endBinx, nBinsy, startBiny, endBiny);
+		PassTH2D_->Sumw2();
+		TotalTH2D_ = (TH2D*) PassTH2D_->Clone(name_+"Total");
+		RatioTH2D_ = (TH2D*) PassTH2D_->Clone(name_);
 
 		for(unsigned int i = 0; i < nBinsy; ++i){
-			PassTH1Fvec_.push_back(new TH1F(name_+"Pass_yBin"+std::to_string(i+1), title_, nBinsx, startBinx, endBinx));
-			TotalTH1Fvec_.push_back(new TH1F(name_+"Total_yBin"+std::to_string(i+1), title_, nBinsx, startBinx, endBinx));
+			PassTH1Dvec_.push_back(new TH1D(name_+"Pass_yBin"+std::to_string(i+1), title_, nBinsx, startBinx, endBinx));
+			TotalTH1Dvec_.push_back(new TH1D(name_+"Total_yBin"+std::to_string(i+1), title_, nBinsx, startBinx, endBinx));
 			RatioTGraphAsymmVec_.push_back(new TGraphAsymmErrors());
 		}
 	}
@@ -223,38 +228,38 @@ public:
 		MainDirectory->cd();
 		TDirectory *effDir = (TDirectory*)MainDirectory->Get(name_);
 		effDir->cd();
-		RatioTH2F_ = (TH2F*) effDir->Get(name_);
+		RatioTH2D_ = (TH2D*) effDir->Get(name_);
 
-		for(int i = 0; i < RatioTH2F_->GetYaxis()->GetNbins(); ++i){
+		for(int i = 0; i < RatioTH2D_->GetYaxis()->GetNbins(); ++i){
 			RatioTGraphAsymmVec_.push_back((TGraphAsymmErrors*) effDir->Get(name_+"_yBin"+std::to_string(i+1)));
 		}	
 		
 	}
 	void SetName(const char* name){
 		name_=TString(name);
-		PassTH2F_->SetName(name_+" Pass");
-		TotalTH2F_->SetName(name_+" Total");
-		RatioTH2F_->SetName(name_);
+		PassTH2D_->SetName(name_+" Pass");
+		TotalTH2D_->SetName(name_+" Total");
+		RatioTH2D_->SetName(name_);
 	}
 	void SetTitle(const char* title){
 		title_=TString(title);
-		PassTH2F_->SetTitle(title_);
-		TotalTH2F_->SetTitle(title_);
+		PassTH2D_->SetTitle(title_);
+		TotalTH2D_->SetTitle(title_);
 	}
 	void Fill(Double_t x, Double_t y, Double_t Weight, bool passOrFail);
 	void SaveEff(TDirectory* MainDirectory){ SaveEff(title_, MainDirectory); }
-	void SaveEff(const char* title, TDirectory* MainDirectory);
+	void SaveEff(const char* title, TDirectory* MainDirectory, bool xlog=false, bool ylog=false);
 	void OpenEff(const char* name, TDirectory* MainDirectory);
 	effVec GetEff(double xValue, double yValue){ return GetEff(xValue, yValue, false); }
 	effVec GetEff(double xValue, double yValue, bool asymm);
 	~TH2Eff(){}
 private:
-	TH2F* PassTH2F_;
-	TH2F* TotalTH2F_;
-	TH2F* RatioTH2F_;
+	TH2D* PassTH2D_;
+	TH2D* TotalTH2D_;
+	TH2D* RatioTH2D_;
 
-	std::vector<TH1F*> PassTH1Fvec_;
-	std::vector<TH1F*> TotalTH1Fvec_;
+	std::vector<TH1D*> PassTH1Dvec_;
+	std::vector<TH1D*> TotalTH1Dvec_;
 	std::vector<TGraphAsymmErrors*> RatioTGraphAsymmVec_;
 
 	TString name_;
@@ -265,55 +270,57 @@ private:
 
 void TH2Eff::Fill(Double_t x, Double_t y, Double_t Weight, bool passOrFail)
 {
-	int nyBin = RatioTH2F_->GetYaxis()->FindBin(y);
+	int nyBin = RatioTH2D_->GetYaxis()->FindBin(y);
 
 	if(passOrFail){
-		PassTH2F_->Fill(x, y, Weight);
-		TotalTH2F_->Fill(x, y, Weight);
+		PassTH2D_->Fill(x, y, Weight);
+		TotalTH2D_->Fill(x, y, Weight);
 		
 		if(nyBin > 0 && nyBin <= nBinsy_){
-			PassTH1Fvec_.at(nyBin-1)->Fill(x, Weight);
-			TotalTH1Fvec_.at(nyBin-1)->Fill(x, Weight);
+			PassTH1Dvec_.at(nyBin-1)->Fill(x, Weight);
+			TotalTH1Dvec_.at(nyBin-1)->Fill(x, Weight);
 		}
 
 	}else{
-		TotalTH2F_->Fill(x, y, Weight);
+		TotalTH2D_->Fill(x, y, Weight);
 
 		if(nyBin > 0 && nyBin <= nBinsy_){
-			TotalTH1Fvec_.at(nyBin-1)->Fill(x, Weight);
+			TotalTH1Dvec_.at(nyBin-1)->Fill(x, Weight);
 		}
 	}
 }
 
-void TH2Eff::SaveEff(const char* title, TDirectory* MainDirectory)
+void TH2Eff::SaveEff(const char* title, TDirectory* MainDirectory, bool xlog, bool ylog)
 {
 	MainDirectory->cd();
 	MainDirectory->mkdir(name_);
 	TDirectory *effDir = (TDirectory*)MainDirectory->Get(name_);
 	effDir->cd();
 
-	RatioTH2F_->Divide(PassTH2F_, TotalTH2F_, 1, 1, "B");
-	RatioTH2F_->SetName(name_);
-	RatioTH2F_->SetTitle(TString("Simulation, L=3 fb^{-1}, #sqrt{s}=13 TeV ") + TString(title));
-	RatioTH2F_->SetMarkerSize(2.0);
-  	RatioTH2F_->UseCurrentStyle();
+	RatioTH2D_->Divide(PassTH2D_, TotalTH2D_, 1, 1, "B");
+	RatioTH2D_->SetName(name_);
+	RatioTH2D_->SetTitle(TString("Simulation, L=3 fb^{-1}, #sqrt{s}=13 TeV ") + TString(title));
+	RatioTH2D_->SetMarkerSize(2.0);
+  	RatioTH2D_->UseCurrentStyle();
 
   	gROOT->SetBatch(true);	  
 	TCanvas *c1 = new TCanvas(name_,title_,1);
 	c1->cd();
-	if(RatioTH2F_->GetXaxis()->GetBinCenter(RatioTH2F_->GetXaxis()->GetNbins()) > 100) c1->SetLogx();
-	if(RatioTH2F_->GetYaxis()->GetBinCenter(RatioTH2F_->GetYaxis()->GetNbins()) > 100) c1->SetLogy();
-	RatioTH2F_->SetMinimum(0.);
-	RatioTH2F_->SetMaximum(1.);
-	RatioTH2F_->Draw("ColZ,Text,E");
+	if (xlog) c1->SetLogx();
+	if (ylog) c1->SetLogy();
+	if(RatioTH2D_->GetXaxis()->GetBinCenter(RatioTH2D_->GetXaxis()->GetNbins()) > 100) c1->SetLogx();
+	if(RatioTH2D_->GetYaxis()->GetBinCenter(RatioTH2D_->GetYaxis()->GetNbins()) > 100) c1->SetLogy();
+	RatioTH2D_->SetMinimum(0.);
+	RatioTH2D_->SetMaximum(1.5);
+	RatioTH2D_->Draw("ColZ,Text,E");
 	c1->SaveAs("Efficiencies/"+name_+".pdf");
 	delete c1;
 	gROOT->SetBatch(false);
 
-	RatioTH2F_->Write();
+	RatioTH2D_->Write();
 
 	for(int i = 0; i < nBinsy_; ++i){
-		RatioTGraphAsymmVec_.at(i)->Divide(PassTH1Fvec_.at(i), TotalTH1Fvec_.at(i), "cl=0.683 b(1,1) mode");
+		RatioTGraphAsymmVec_.at(i)->Divide(PassTH1Dvec_.at(i), TotalTH1Dvec_.at(i), "cl=0.683 b(1,1) mode");
 		RatioTGraphAsymmVec_.at(i)->SetName(name_+"_yBin"+std::to_string(i+1));
 		RatioTGraphAsymmVec_.at(i)->SetTitle(title);
 		RatioTGraphAsymmVec_.at(i)->GetYaxis()->SetTitle("");
@@ -330,56 +337,56 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   double errUpAsymm_ = 0;
   double errDownAsymm_ = 0;
 
-  if(xValue < RatioTH2F_->GetXaxis()->GetXmin() )
+  if(xValue < RatioTH2D_->GetXaxis()->GetXmin() )
   {
-    //std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<RatioTH2F_->GetName()<<std::endl;
-    xValue= RatioTH2F_->GetXaxis()->GetXmin()+0.01;
+    std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<RatioTH2D_->GetName()<<std::endl;
+    xValue= RatioTH2D_->GetXaxis()->GetXmin()+0.01;
     //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
   }
-  else if(xValue > RatioTH2F_->GetXaxis()->GetXmax() )
+  else if(xValue > RatioTH2D_->GetXaxis()->GetXmax() )
   {
-    //std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<RatioTH2F_->GetName()<<" which is: "<<RatioTH2F_->GetXaxis()->GetXmax();
-    xValue= RatioTH2F_->GetXaxis()->GetXmax()-0.01;
+    std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<RatioTH2D_->GetName()<<" which is: "<<RatioTH2D_->GetXaxis()->GetXmax();
+    xValue= RatioTH2D_->GetXaxis()->GetXmax()-0.01;
     //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
   }
   
-  if(yValue < RatioTH2F_->GetYaxis()->GetXmin() )
+  if(yValue < RatioTH2D_->GetYaxis()->GetXmin() )
   {
-    //std::cout<<"Warning yValue: "<<yValue<<" is smaller than minimum of histo: "<<RatioTH2F_->GetName()<<std::endl;
-    yValue= RatioTH2F_->GetYaxis()->GetXmin()+0.01;
+    std::cout<<"Warning yValue: "<<yValue<<" is smaller than minimum of histo: "<<RatioTH2D_->GetName()<<std::endl;
+    yValue= RatioTH2D_->GetYaxis()->GetXmin()+0.01;
     //std::cout<<" Setting yValue to: "<<yValue<<std::endl;
   }
-  else if(yValue > RatioTH2F_->GetYaxis()->GetXmax() )
+  else if(yValue > RatioTH2D_->GetYaxis()->GetXmax() )
   {
-    //std::cout<<"Warning yValue: "<<yValue<<" is bigger than maximum of histo: "<<RatioTH2F_->GetName()<<std::endl;
-    yValue= RatioTH2F_->GetYaxis()->GetXmax()-0.01;
+    std::cout<<"Warning yValue: "<<yValue<<" is bigger than maximum of histo: "<<RatioTH2D_->GetName()<<std::endl;
+    yValue= RatioTH2D_->GetYaxis()->GetXmax()-0.01;
     //std::cout<<" Setting yValue to: "<<yValue<<std::endl;
   }
 
-  int nxBin = RatioTH2F_->GetXaxis()->FindBin(xValue);
-  int nyBin = RatioTH2F_->GetYaxis()->FindBin(yValue);
+  int nxBin = RatioTH2D_->GetXaxis()->FindBin(xValue);
+  int nyBin = RatioTH2D_->GetYaxis()->FindBin(yValue);
 
-  result = RatioTH2F_->GetBinContent(nxBin, nyBin);
-  errUp_ = RatioTH2F_->GetBinErrorUp(nxBin, nyBin);
-  errDown_ = RatioTH2F_->GetBinErrorLow(nxBin, nyBin);
+  result = RatioTH2D_->GetBinContent(nxBin, nyBin);
+  errUp_ = RatioTH2D_->GetBinErrorUp(nxBin, nyBin);
+  errDown_ = RatioTH2D_->GetBinErrorLow(nxBin, nyBin);
 
   if(result<0.01)
   {
-    std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.01 for histo: "<<RatioTH2F_->GetName()<<" ("<<xValue<<","<<yValue<<")"<<std::endl;
+    std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.01 for histo: "<<RatioTH2D_->GetName()<<std::endl;
     result =0.01;
   }
   if(result>1)
   {
-    std::cout<<"Warning efficiency is: "<<result<<" is bigger than 1 for histo: "<<RatioTH2F_->GetName()<<std::endl;
+    std::cout<<"Warning efficiency is: "<<result<<" is bigger than 1 for histo: "<<RatioTH2D_->GetName()<<std::endl;
     result =0.99;
   }
 
   if(asymm && result>0.01){
   	// empty bins in the end/beginning of the th's are removed when creating a tgraph..
   	int nEmpty = 0;
-  	while(RatioTH2F_->GetBinContent(nEmpty+1, nyBin) < 0.01){
+  	while(RatioTH2D_->GetBinContent(nEmpty+1, nyBin) < 0.01){
   		nEmpty++;
-  		if(nEmpty > RatioTH2F_->GetXaxis()->GetNbins()) break;
+  		if(nEmpty > RatioTH2D_->GetXaxis()->GetNbins()) break;
   	}
 
   	Double_t xValueAsymm;
@@ -410,64 +417,64 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
 /// outdated! not to be used anymore!
 
 
-class TH1Feff
+class TH1Deff
 {
 public:
-	TH1Feff(){}
-	TH1Feff(const char* name, const char* title, Int_t nbinsx, const double* xbins)
+	TH1Deff(){}
+	TH1Deff(const char* name, const char* title, Int_t nbinsx, const double* xbins)
 	{
-		RefTH1F_ = new 	TH1F(name, title, nbinsx, xbins);
-		RefTH1F_->Sumw2();
+		RefTH1D_ = new 	TH1D(name, title, nbinsx, xbins);
+		RefTH1D_->Sumw2();
 		name_=name;
 		title_=title;
 	}
-	TH1Feff(const char* name, const char* title, unsigned int nBins, double startBin, double endBin)
+	TH1Deff(const char* name, const char* title, unsigned int nBins, double startBin, double endBin)
 	{
-		RefTH1F_ = new 	TH1F(name, title, nBins, startBin,endBin);
-		RefTH1F_->Sumw2();
+		RefTH1D_ = new 	TH1D(name, title, nBins, startBin,endBin);
+		RefTH1D_->Sumw2();
 		name_=name;
 		title_=title;
 	}
-	TH1F* Clone(){return RefTH1F_;}
-	void SetName(const char* title){RefTH1F_->SetName(title); }
-	void SetTitle(const char* title){RefTH1F_->SetTitle(title);}
+	TH1D* Clone(){return RefTH1D_;}
+	void SetName(const char* title){RefTH1D_->SetName(title); }
+	void SetTitle(const char* title){RefTH1D_->SetTitle(title);}
 	void Fill(Double_t x,Double_t Weight,bool passOrFail);
 	TGraphAsymmErrors* GetEfficiency();
-	TH1F* GetSanityCheckTH1F(){return RefTH1F_;}
+	TH1D* GetSanityCheckTH1D(){return RefTH1D_;}
 	void saveResults(TDirectory* MainDirectory);
-	~TH1Feff(){}
+	~TH1Deff(){}
 private:
-	TH1F* RefTH1F_;
+	TH1D* RefTH1D_;
 	vector<Double_t> weights_;
-	vector<TH1F*> TH1FFail_, TH1FPass_;
+	vector<TH1D*> TH1DFail_, TH1DPass_;
 	const char* name_;
 	const char* title_;
 };
 
-class TH2Feff
+class TH2Deff
 {
 public:
-	TH2Feff(){}
-	TH2Feff(const char* name, const char* title, Int_t nbinsx, const Double_t* xbins, Int_t nbinsy, const Double_t* ybins)
+	TH2Deff(){}
+	TH2Deff(const char* name, const char* title, Int_t nbinsx, const Double_t* xbins, Int_t nbinsy, const Double_t* ybins)
 	{
-		RefTH2F_ = new 	TH2F(name, title, nbinsx, xbins,nbinsy,ybins);
-		RefTH2F_->Sumw2();
+		RefTH2D_ = new 	TH2D(name, title, nbinsx, xbins,nbinsy,ybins);
+		RefTH2D_->Sumw2();
 		nbinsx_=nbinsx; xbins_=xbins;
 		nbinsy_=nbinsy; ybins_=ybins;
 		name_=name;
 		title_=title;
 	}
-	TH2F* Clone(){return RefTH2F_;}
-	void SetName(const char* title){RefTH2F_->SetName(title);}
+	TH2D* Clone(){return RefTH2D_;}
+	void SetName(const char* title){RefTH2D_->SetName(title);}
 	void Fill(Double_t x, Double_t y, Double_t Weight,bool passOrFail);
 	std::vector<TGraphAsymmErrors*> GetEfficiency();
-	TH2F* GetSanityCheckTH2F(){return RefTH2F_;}
+	TH2D* GetSanityCheckTH2D(){return RefTH2D_;}
 	void saveResults(TDirectory* MainDirectory);
-	~TH2Feff(){}
+	~TH2Deff(){}
 private:
-	TH2F* RefTH2F_;
+	TH2D* RefTH2D_;
 	vector<Double_t> weights_;
-	vector<TH2F*> TH2FFail_, TH2FPass_;
+	vector<TH2D*> TH2DFail_, TH2DPass_;
 	Int_t nbinsx_, nbinsy_;
 	const Double_t* xbins_;
 	const Double_t* ybins_;
@@ -487,8 +494,8 @@ public:
 private:	
 	const char* name_;
 	const char* title_;
-	TH1Feff* TH1FSearchBins_;
-	std::vector<TH1Feff*> TH1FSearchBinsSplit_;
+	TH1Deff* TH1DSearchBins_;
+	std::vector<TH1Deff*> TH1DSearchBinsSplit_;
 	unsigned int splitAfter_;
 	
 };
@@ -499,17 +506,17 @@ public:
 	SearchBinEventCount(const char*);
 	void Fill(double HT, double MHT, int NJets, int BTags, double Weight);
 	void saveResults(TDirectory* MainDirectory);
-	TH1F* getFullTH1F(){return fullTH1F_;}
+	TH1D* getFullTH1D(){return fullTH1D_;}
 	~SearchBinEventCount(){}
 private:
-	TH1F* fullTH1F_;
-	std::vector<TH1F*> splitTH1F_;
+	TH1D* fullTH1D_;
+	std::vector<TH1D*> splitTH1D_;
 	unsigned int splitAfter_;
 	const char* name_;
 };
 
 
-void TH1Feff::Fill(Double_t x,Double_t Weight, bool passOrFail)
+void TH1Deff::Fill(Double_t x,Double_t Weight, bool passOrFail)
 {
 	int matched=-1;
 	for(unsigned int i=0; i < weights_.size();i++)
@@ -518,46 +525,46 @@ void TH1Feff::Fill(Double_t x,Double_t Weight, bool passOrFail)
 	}
 	if(matched==-1)
 	{
-		TH1F* tempPass = (TH1F*) RefTH1F_->Clone();
-		TH1F* tempFail = (TH1F*) RefTH1F_->Clone();
-		TH1FPass_.push_back(tempPass );
-		TH1FFail_.push_back(tempFail );
+		TH1D* tempPass = (TH1D*) RefTH1D_->Clone();
+		TH1D* tempFail = (TH1D*) RefTH1D_->Clone();
+		TH1DPass_.push_back(tempPass );
+		TH1DFail_.push_back(tempFail );
 
 		if(passOrFail)
 		{
-			TH1FPass_[weights_.size()]->Fill(x);
+			TH1DPass_[weights_.size()]->Fill(x);
 		}
-		else TH1FFail_[weights_.size()]->Fill(x);
+		else TH1DFail_[weights_.size()]->Fill(x);
 		weights_.push_back(Weight);
 // 		std::cout<<"Weight: "<<Weight<<"added"<<std::endl;
 	}
 	else
 	{
-		if(passOrFail) TH1FPass_[matched]->Fill(x);
-		else TH1FFail_[matched]->Fill(x);
+		if(passOrFail) TH1DPass_[matched]->Fill(x);
+		else TH1DFail_[matched]->Fill(x);
 	}
 }
-TGraphAsymmErrors* TH1Feff::GetEfficiency()
+TGraphAsymmErrors* TH1Deff::GetEfficiency()
 {
 	TList* myList = new TList(); 
 	// compute th1 for sanity check
-	TH1F* sumRef = (TH1F*) RefTH1F_->Clone();
+	TH1D* sumRef = (TH1D*) RefTH1D_->Clone();
 	sumRef->Sumw2();
-	for(unsigned int i=0; i< TH1FFail_.size();i++)
+	for(unsigned int i=0; i< TH1DFail_.size();i++)
 	{
-		sumRef->Add(TH1FPass_[i],weights_[i]);
-		RefTH1F_->Add(TH1FPass_[i],weights_[i]);
-		sumRef->Add(TH1FFail_[i],weights_[i]);
+		sumRef->Add(TH1DPass_[i],weights_[i]);
+		RefTH1D_->Add(TH1DPass_[i],weights_[i]);
+		sumRef->Add(TH1DFail_[i],weights_[i]);
 	}
-	RefTH1F_->Divide(RefTH1F_,sumRef,1,1,"B");
+	RefTH1D_->Divide(RefTH1D_,sumRef,1,1,"B");
 	for(unsigned int i=0; i<weights_.size();i++)
 	{
-		TH1FFail_[i]->Sumw2();
-		TH1F *sum = (TH1F*)TH1FFail_[i]->Clone();
-		TH1FPass_[i]->Sumw2();
+		TH1DFail_[i]->Sumw2();
+		TH1D *sum = (TH1D*)TH1DFail_[i]->Clone();
+		TH1DPass_[i]->Sumw2();
 		
-		sum->Add(TH1FPass_[i]);
-		TEfficiency* myEff = new TEfficiency(*TH1FPass_[i],*sum);
+		sum->Add(TH1DPass_[i]);
+		TEfficiency* myEff = new TEfficiency(*TH1DPass_[i],*sum);
 // 		std::cout<<"Eff["<<i<<"]: "<<myEff->GetEfficiency(14)<<" +"<<myEff->GetEfficiencyErrorUp(14)<<" - "<<myEff->GetEfficiencyErrorLow(14)<<" passed: "<<myEff->GetPassedHistogram()->GetBinContent(14)<<" totalN: "<<myEff->GetTotalHistogram()->GetBinContent(14)<<" Weight: "<<weights_[i]<<" xCenter: "<<myEff->GetPassedHistogram()->GetBinCenter(14)<<"\n";
 // 		myEff->SetWeight(weights_[i]);
 		myList->Add(myEff);
@@ -574,7 +581,7 @@ TGraphAsymmErrors* TH1Feff::GetEfficiency()
 	return result;
 }
 
-void TH1Feff::saveResults(TDirectory* MainDirectory)
+void TH1Deff::saveResults(TDirectory* MainDirectory)
 {
 // 	MainDirectory->mkdir(name_);
 // 	std::cout<<"name: "<<name_<<std::endl;
@@ -582,21 +589,21 @@ void TH1Feff::saveResults(TDirectory* MainDirectory)
 // 	dir->cd();
 	MainDirectory->cd();
 	TGraphAsymmErrors* result = GetEfficiency();
-	result->SetName(RefTH1F_->GetName());
-	result->SetTitle(RefTH1F_->GetTitle());
+	result->SetName(RefTH1D_->GetName());
+	result->SetTitle(RefTH1D_->GetTitle());
 	result->Write();
-	TString tempName = RefTH1F_->GetName();
+	TString tempName = RefTH1D_->GetName();
 	tempName+="_SanityCheck";
 	MainDirectory->mkdir(tempName);
 	// 	std::cout<<"name: "<<name_<<std::endl;
 	TDirectory *sanityDir = (TDirectory*)MainDirectory->Get(tempName);
 	sanityDir->cd();
-	RefTH1F_->Write();
+	RefTH1D_->Write();
 	
 }
 
 
-void TH2Feff::Fill(Double_t x, Double_t y, Double_t Weight, bool passOrFail)
+void TH2Deff::Fill(Double_t x, Double_t y, Double_t Weight, bool passOrFail)
 {
 	int matched=-1;
 	for(unsigned int i=0; i < weights_.size();i++)
@@ -605,41 +612,41 @@ void TH2Feff::Fill(Double_t x, Double_t y, Double_t Weight, bool passOrFail)
 	}
 	if(matched==-1)
 	{
-		TH2F* tempPass = (TH2F*) RefTH2F_->Clone();
+		TH2D* tempPass = (TH2D*) RefTH2D_->Clone();
 		tempPass->Sumw2();
-		TH2F* tempFail = (TH2F*) RefTH2F_->Clone();
+		TH2D* tempFail = (TH2D*) RefTH2D_->Clone();
 		tempFail->Sumw2();
-		TH2FPass_.push_back(tempPass );
-		TH2FFail_.push_back(tempFail );
+		TH2DPass_.push_back(tempPass );
+		TH2DFail_.push_back(tempFail );
 		
-		if(passOrFail)	TH2FPass_[weights_.size()]->Fill(x,y);
-		else TH2FFail_[weights_.size()]->Fill(x,y);
+		if(passOrFail)	TH2DPass_[weights_.size()]->Fill(x,y);
+		else TH2DFail_[weights_.size()]->Fill(x,y);
 		weights_.push_back(Weight);
 // 		std::cout<<"Weight: "<<Weight<<" added"<<std::endl;
 	}
 	else
 	{
-		if(passOrFail) TH2FPass_[matched]->Fill(x,y);
-		else TH2FFail_[matched]->Fill(x,y);
+		if(passOrFail) TH2DPass_[matched]->Fill(x,y);
+		else TH2DFail_[matched]->Fill(x,y);
 	}
 }
-std::vector<TGraphAsymmErrors*> TH2Feff::GetEfficiency()
+std::vector<TGraphAsymmErrors*> TH2Deff::GetEfficiency()
 { 
-	const Int_t nBinsY = RefTH2F_->GetNbinsY();
+	const Int_t nBinsY = RefTH2D_->GetNbinsY();
 	std::cout<<"Number of binsY: "<<nBinsY<<std::endl;
-	std::vector<std::vector<TH1F*> > th1PassVec, th1FailVec;
+	std::vector<std::vector<TH1D*> > th1PassVec, th1FailVec;
 	std::vector<TList*> myLists;
 	// reference sum th2f
-	TH2F* sumTH2ftemp = (TH2F*) RefTH2F_->Clone();
+	TH2D* sumTH2ftemp = (TH2D*) RefTH2D_->Clone();
 	sumTH2ftemp->Sumw2();
 
-	for(unsigned int i=0; i < TH2FPass_.size();i++)
+	for(unsigned int i=0; i < TH2DPass_.size();i++)
 	{
-		RefTH2F_->Add(TH2FPass_[i],weights_[i]);
-		sumTH2ftemp->Add(TH2FPass_[i],weights_[i]);
-		sumTH2ftemp->Add(TH2FFail_[i],weights_[i]);
+		RefTH2D_->Add(TH2DPass_[i],weights_[i]);
+		sumTH2ftemp->Add(TH2DPass_[i],weights_[i]);
+		sumTH2ftemp->Add(TH2DFail_[i],weights_[i]);
 	}
-	RefTH2F_->Divide(RefTH2F_,sumTH2ftemp,1,1,"B");
+	RefTH2D_->Divide(RefTH2D_,sumTH2ftemp,1,1,"B");
 	for(int i=0; i<nBinsY;i++)
 	{
 		myLists.push_back(new TList());
@@ -647,7 +654,7 @@ std::vector<TGraphAsymmErrors*> TH2Feff::GetEfficiency()
 		temp1= (TString)name_+"Bin"+temp1;
 		TString temp2 (Form ("_%f.0-%f.0",ybins_[i],ybins_[i+1]));
 		temp2= (TString)title_+temp2;
-		std::vector<TH1F*> tt;
+		std::vector<TH1D*> tt;
 		th1PassVec.push_back(tt);
 		th1FailVec.push_back(tt);
 	for(unsigned int ii=0; ii<weights_.size();ii++)
@@ -655,19 +662,19 @@ std::vector<TGraphAsymmErrors*> TH2Feff::GetEfficiency()
 		TString temp3 ( Form ("%d", ii));
 		temp1= temp1+"_"+temp3;
 		temp3=temp1+"pass";
-		th1PassVec[i].push_back(new TH1F(temp3,temp2,nbinsx_, xbins_));
+		th1PassVec[i].push_back(new TH1D(temp3,temp2,nbinsx_, xbins_));
 		temp3=temp1+"fail";
-		th1FailVec[i].push_back(new TH1F(temp3,temp2,nbinsx_, xbins_));
+		th1FailVec[i].push_back(new TH1D(temp3,temp2,nbinsx_, xbins_));
 		for(int iii=0; iii<nbinsx_+1;iii++)
 		{
-			th1PassVec[i][ii]->SetBinContent(iii,TH2FPass_[ii]->GetBinContent(iii,i+1) );
-// 			std::cout<<"P:BinContent["<<i<<"]["<<ii<<"]["<<iii<<"]: "<<TH2FPass_[ii]->GetBinContent(iii,i+1)<<" +- "<<TH2FPass_[ii]->GetBinError(iii,i+1)<<std::endl;
-			th1PassVec[i][ii]->SetBinError(iii,TH2FPass_[ii]->GetBinError(iii,i+1) );
-			th1FailVec[i][ii]->SetBinContent(iii,TH2FFail_[ii]->GetBinContent(iii,i+1) );
-// 			std::cout<<"F:BinContent["<<i<<"]["<<ii<<"]["<<iii<<"]: "<<TH2FFail_[ii]->GetBinContent(iii,i)<<" +- "<<TH2FFail_[ii]->GetBinError(iii,i+1)<<std::endl;
-			th1FailVec[i][ii]->SetBinError(iii,TH2FFail_[ii]->GetBinError(iii,i+1) );
+			th1PassVec[i][ii]->SetBinContent(iii,TH2DPass_[ii]->GetBinContent(iii,i+1) );
+// 			std::cout<<"P:BinContent["<<i<<"]["<<ii<<"]["<<iii<<"]: "<<TH2DPass_[ii]->GetBinContent(iii,i+1)<<" +- "<<TH2DPass_[ii]->GetBinError(iii,i+1)<<std::endl;
+			th1PassVec[i][ii]->SetBinError(iii,TH2DPass_[ii]->GetBinError(iii,i+1) );
+			th1FailVec[i][ii]->SetBinContent(iii,TH2DFail_[ii]->GetBinContent(iii,i+1) );
+// 			std::cout<<"F:BinContent["<<i<<"]["<<ii<<"]["<<iii<<"]: "<<TH2DFail_[ii]->GetBinContent(iii,i)<<" +- "<<TH2DFail_[ii]->GetBinError(iii,i+1)<<std::endl;
+			th1FailVec[i][ii]->SetBinError(iii,TH2DFail_[ii]->GetBinError(iii,i+1) );
 		}
-		TH1F *sum = (TH1F*)th1FailVec[i][ii]->Clone();
+		TH1D *sum = (TH1D*)th1FailVec[i][ii]->Clone();
 // 		sum->SetTitle()
 		sum->Add(th1PassVec[i][ii]);
 		TEfficiency* myEff = new TEfficiency(*th1PassVec[i][ii],*sum);
@@ -687,14 +694,14 @@ std::vector<TGraphAsymmErrors*> TH2Feff::GetEfficiency()
 	return result;
 }
 
-void TH2Feff::saveResults(TDirectory* MainDirectory)
+void TH2Deff::saveResults(TDirectory* MainDirectory)
 {
 	MainDirectory->mkdir(name_);
 // 	std::cout<<"name: "<<name_<<std::endl;
 	TDirectory *dir = (TDirectory*)MainDirectory->Get(name_);
 	dir->cd();
-	RefTH2F_->SetName(name_);
-	RefTH2F_->Write();
+	RefTH2D_->SetName(name_);
+	RefTH2D_->Write();
 	std::vector<TGraphAsymmErrors*> result = GetEfficiency();
 	for(unsigned int i=0; i<result.size();i++) 
 	{
@@ -710,14 +717,14 @@ void TH2Feff::saveResults(TDirectory* MainDirectory)
 	// 	std::cout<<"name: "<<name_<<std::endl;
 	TDirectory *sanityDir = (TDirectory*)dir->Get("SanityCheck");
 	sanityDir->cd();
-	RefTH2F_->Write();
+	RefTH2D_->Write();
 }
 
 
 SearchBinEventCount::SearchBinEventCount(const char* name)
 {
-	fullTH1F_ = new 	TH1F(name, name, bins_.size(),0,bins_.size()+1);
-	fullTH1F_->Sumw2();
+	fullTH1D_ = new 	TH1D(name, name, bins_.size(),0,bins_.size()+1);
+	fullTH1D_->Sumw2();
 	name_=name;
 /*	splitAfter_=18;
 	unsigned int plotsNumber= bins_.size()/splitAfter_;
@@ -740,13 +747,13 @@ SearchBinEventCount::SearchBinEventCount(const char* name)
 			{
 				// 				std::cout<<"titlelast["<<i<<"]: "<<temp1<<std::endl;
 				unsigned int tempBins = bins_.size() - plotsNumber * splitAfter_;
-				splitTH1F_.push_back( new TH1F (name1,title1,tempBins,0,tempBins+1) );
-				splitTH1F_[i]->Sumw2();
+				splitTH1D_.push_back( new TH1D (name1,title1,tempBins,0,tempBins+1) );
+				splitTH1D_[i]->Sumw2();
 				continue;
 			}
 			// 			std::cout<<"title["<<i<<"]: "<<temp1<<std::endl;
-			splitTH1F_.push_back( new TH1F (name1,title1,splitAfter_,0,splitAfter_+1) );
-			splitTH1F_[i]->Sumw2();
+			splitTH1D_.push_back( new TH1D (name1,title1,splitAfter_,0,splitAfter_+1) );
+			splitTH1D_[i]->Sumw2();
 		}
 	}
 	else
@@ -759,9 +766,9 @@ SearchBinEventCount::SearchBinEventCount(const char* name)
 			temp1+=temp2;
 
 			const char* name1=temp1;
-			TH1F* tempeff2 = new  TH1F (name1,name1,splitAfter_,0,splitAfter_+1);
-			splitTH1F_.push_back( tempeff2 );
-			splitTH1F_[i]->Sumw2();
+			TH1D* tempeff2 = new  TH1D (name1,name1,splitAfter_,0,splitAfter_+1);
+			splitTH1D_.push_back( tempeff2 );
+			splitTH1D_[i]->Sumw2();
 		}
 	}
 */}
@@ -773,7 +780,7 @@ void SearchBinEventCount::Fill(double HT, double MHT, int NJets, int BTags, doub
 	
 	if(bin<bins_.size()+2) 
 	{
-		fullTH1F_->Fill(bin-0.01, Weight);
+		fullTH1D_->Fill(bin-0.01, Weight);
 	/*	unsigned int splitHist=0;
 		// 	std::cout<<"bin before split: "<<bin<<std::endl;
 		for(int ii=0;bin>splitAfter_;ii++)
@@ -781,9 +788,9 @@ void SearchBinEventCount::Fill(double HT, double MHT, int NJets, int BTags, doub
 			splitHist++;
 			bin = bin-splitAfter_;
 		}
-		// 		if(splitHist==3)std::cout<<"BinForSplit: "<<bin<<" with splitHistNumber "<<splitHist<<" and TH1FSearchBinsSplit_.size(): "<<TH1FSearchBinsSplit_.size()<<std::endl;
+		// 		if(splitHist==3)std::cout<<"BinForSplit: "<<bin<<" with splitHistNumber "<<splitHist<<" and TH1DSearchBinsSplit_.size(): "<<TH1DSearchBinsSplit_.size()<<std::endl;
 		
-		splitTH1F_[splitHist]->Fill(bin-0.1, Weight);
+		splitTH1D_[splitHist]->Fill(bin-0.1, Weight);
 	*/}
 }
 void SearchBinEventCount::saveResults(TDirectory* MainDirectory)
@@ -792,8 +799,8 @@ void SearchBinEventCount::saveResults(TDirectory* MainDirectory)
 	// 	std::cout<<"name: "<<name_<<std::endl;
 	TDirectory *dir = (TDirectory*)MainDirectory->Get(name_);
 	dir->cd();
-	fullTH1F_->Write();
-/*	for(unsigned int i=0; i<splitTH1F_.size();i++) 
+	fullTH1D_->Write();
+/*	for(unsigned int i=0; i<splitTH1D_.size();i++) 
 	{
 		TString temp2 (Form ("_%d",(int)i+1));
 		TString temp1 = name_;
@@ -801,8 +808,8 @@ void SearchBinEventCount::saveResults(TDirectory* MainDirectory)
 		temp2 = name_ + temp2;
 		const char* name1=temp1;
 		const char* title1=temp2;
-		splitTH1F_[i]->SetTitle(title1);
-		splitTH1F_[i]->SetName(name1);
-		splitTH1F_[i]->Write();
+		splitTH1D_[i]->SetTitle(title1);
+		splitTH1D_[i]->SetName(name1);
+		splitTH1D_[i]->Write();
 	}
 */}

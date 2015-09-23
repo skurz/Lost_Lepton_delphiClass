@@ -26,15 +26,15 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   if(UseTagAndProbeEffIso_)
     {
       TDirectory *EffTagAndProbeInputFolder =   (TDirectory*)effInput->Get("TagAndProbe");
-      MuIsoPTActivityTAPMC_ = (TH2F*)EffTagAndProbeInputFolder->Get("MuIsoTagAndProbeMC");    
-      ElecIsoPTActivityTAPMC_ = (TH2F*)EffTagAndProbeInputFolder->Get("ElecIsoTagAndProbeMC");
+      MuIsoPTActivityTAPMC_ = (TH2D*)EffTagAndProbeInputFolder->Get("MuIsoTagAndProbeMC");    
+      ElecIsoPTActivityTAPMC_ = (TH2D*)EffTagAndProbeInputFolder->Get("ElecIsoTagAndProbeMC");
     
     }
   if(UseTagAndProbeEffReco_)
     {
       TDirectory *EffTagAndProbeInputFolder =   (TDirectory*)effInput->Get("TagAndProbe");
-      MuRecoPTActivityTAPMC_ = (TH2F*)EffTagAndProbeInputFolder->Get("MuRecoTagAndProbeMC");
-      ElecRecoPTActivityTAPMC_ = (TH2F*)EffTagAndProbeInputFolder->Get("ElecRecoTagAndProbeMC");    
+      MuRecoPTActivityTAPMC_ = (TH2D*)EffTagAndProbeInputFolder->Get("MuRecoTagAndProbeMC");
+      ElecRecoPTActivityTAPMC_ = (TH2D*)EffTagAndProbeInputFolder->Get("ElecRecoTagAndProbeMC");    
     }
 
   MuMTWPTActivity_ = new TH2Eff("MuMTWPTActivity", EffInputFolder);
@@ -42,9 +42,9 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   MuDiLepContributionMTWAppliedNJets_ = new TH1Eff("MuDiLepContributionMTWNJets1D", EffInputFolder);
   MuDiLepEffMTWAppliedNJets_ = new TH1Eff("MuDiLepMTWNJets1D", EffInputFolder);
 
-  MuIsoPTActivity_ = new TH2Eff("MuIsoPTActivity", EffInputFolder);
+  MuIsoActivityPT_ = new TH2Eff("MuIsoActivityPT", EffInputFolder);
   MuIsoRelPTDeltaRJet_ = new TH2Eff("MuIsoRelPTDeltaRJet", EffInputFolder);
-  MuRecoPTActivity_= new TH2Eff("MuRecoPTActivity", EffInputFolder);
+  MuRecoActivityPT_= new TH2Eff("MuRecoActivityPT", EffInputFolder);
   MuPurityMHTNJets_ = new TH2Eff("MuonPurityMHTNJet", EffInputFolder); 
 
   MuAccHTNJets_ = new TH2Eff("MuAccHTNJets", EffInputFolder);
@@ -59,9 +59,9 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   MuAccHTMHTB1_Inf_ = new TH2Eff("MuAccHTMHTB1_Inf", EffInputFolder); 
 
 
-  ElecIsoPTActivity_ = new TH2Eff("ElecIsoPTActivity", EffInputFolder);
+  ElecIsoActivityPT_ = new TH2Eff("ElecIsoActivityPT", EffInputFolder);
   ElecIsoRelPTDeltaRJet_ = new TH2Eff("ElecIsoRelPTDeltaRJet", EffInputFolder);
-  ElecRecoPTActivity_= new TH2Eff("ElecRecoPTActivity", EffInputFolder);
+  ElecRecoActivityPT_= new TH2Eff("ElecRecoActivityPT", EffInputFolder);
   
   ElecPurityMHTNJets_ = new TH2Eff("ElecPurityMHTNJet", EffInputFolder);
   ElecMTWNJets_ = new TH1Eff("ElecMTWNJets1D", EffInputFolder);
@@ -106,7 +106,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   }  
     
   
-  TString option = GetOption();
+  tPrediction_ = new TTree("LostLeptonPrediction","a simple Tree with simple variables");
   tPrediction_ = new TTree("LostLeptonPrediction","a simple Tree with simple variables");
   tPrediction_->Branch("HT",&HT);
   tPrediction_->Branch("MHT",&MHT);
@@ -130,13 +130,13 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum_);
   tPrediction_->Branch("selectedIDIsoMuons", "std::vector<TLorentzVector>", &selectedIDIsoMuons, 32000, 0);
   tPrediction_->Branch("selectedIDIsoMuons_MTW", &selectedIDIsoMuons_MTW);
-  tPrediction_->Branch("selectedIDIsoMuonsActivity", &selectedIDIsoMuonsActivity);
+  tPrediction_->Branch("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity);
   tPrediction_->Branch("selectedIDIsoMuonsRelPTJet", &selectedIDIsoMuonsRelPTJet);
   tPrediction_->Branch("selectedIDIsoMuonsDeltaRJet", &selectedIDIsoMuonsDeltaRJet);
   tPrediction_->Branch("selectedIDIsoElectronsNum",&selectedIDIsoElectronsNum_);
   tPrediction_->Branch("selectedIDIsoElectrons", "std::vector<TLorentzVector>", &selectedIDIsoElectrons, 32000, 0);
   tPrediction_->Branch("selectedIDIsoElectrons_MTW", &selectedIDIsoElectrons_MTW);
-  tPrediction_->Branch("selectedIDIsoElectronsActivity", &selectedIDIsoElectronsActivity);
+  tPrediction_->Branch("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity);
   tPrediction_->Branch("selectedIDIsoElectronsRelPTJet", &selectedIDIsoElectronsRelPTJet);
   tPrediction_->Branch("selectedIDIsoElectronsDeltaRJet", &selectedIDIsoElectronsDeltaRJet);
   tPrediction_->Branch("MTW",&mtw);
@@ -273,6 +273,7 @@ Bool_t Prediction::Process(Long64_t entry)
   resetValues();
   fChain->GetTree()->GetEntry(entry);
 
+  if(HTgen_cut> 0.01) if(genHT < HTgen_cut) return kTRUE;
   
   if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_  ) return kTRUE;
   if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ ) return kTRUE;
@@ -326,8 +327,8 @@ Bool_t Prediction::Process(Long64_t entry)
       // cout << "Single muon event...";
       mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
       ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
-      selectedIDIsoMuonsActivity.push_back(MuActivity(selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi(),muActivityMethod_));
-      double elecActivity = ElecActivity(selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi(),elecActivityMethod_);
+      //selectedIDIsoMuonsActivity.push_back(MuActivity(selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi(),muActivityMethod_));
+      //double elecActivity = ElecActivity(selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi(),elecActivityMethod_);
 
       std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi());
       selectedIDIsoMuonsDeltaRJet.push_back(DeltaR_relPT.first);
@@ -339,8 +340,8 @@ Bool_t Prediction::Process(Long64_t entry)
       muDiLepContributionMTWAppliedEffVec_ = MuDiLepContributionMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
       muDiLepEffMTWAppliedEffVec_ = MuDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
 
-      muIsoEffVec_ = MuIsoPTActivity_->GetEff( selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0], useAsymmErrors);
-      muRecoEffVec_ = MuRecoPTActivity_->GetEff(selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0], useAsymmErrors);
+      muIsoEffVec_ = MuIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
+      muRecoEffVec_ = MuRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
       //muAccEffVec_ = MuAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5) muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
       else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
@@ -348,8 +349,8 @@ Bool_t Prediction::Process(Long64_t entry)
       //elecAccEffVec_ = ElecAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5) elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
       else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
-      elecRecoEffVec_ = ElecRecoPTActivity_->GetEff(selectedIDIsoMuons->at(0).Pt(),elecActivity, useAsymmErrors);
-      elecIsoEffVec_ = ElecIsoPTActivity_->GetEff(selectedIDIsoMuons->at(0).Pt(),elecActivity, useAsymmErrors);
+      elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
+      elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
       /*
     	if(UseTagAndProbeEffIso_)muIsoEff_ = getEff(MuIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0]); 
     	if(UseTagAndProbeEffReco_)muRecoEff_ = getEff(MuRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0]); 
@@ -545,9 +546,8 @@ Bool_t Prediction::Process(Long64_t entry)
       // cout << "get MTW...";
       mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
       ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
-      selectedIDIsoElectronsActivity.push_back(ElecActivity(selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi(),elecActivityMethod_));
-
-      double muActivity = MuActivity(selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi(),elecActivityMethod_);
+      //selectedIDIsoElectronsActivity.push_back(ElecActivity(selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi(),elecActivityMethod_));
+      //double muActivity = MuActivity(selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi(),elecActivityMethod_);
 
       std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi());
       selectedIDIsoElectronsDeltaRJet.push_back(DeltaR_relPT.first);
@@ -560,8 +560,8 @@ Bool_t Prediction::Process(Long64_t entry)
       elecDiLepEffMTWAppliedEffVec_ = ElecDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
 
       // cout << "get isolation efficiency...";
-      elecIsoEffVec_ =  ElecIsoPTActivity_->GetEff(selectedIDIsoElectrons->at(0).Pt(),selectedIDIsoElectronsActivity[0], useAsymmErrors);
-      elecRecoEffVec_ = ElecRecoPTActivity_->GetEff(selectedIDIsoElectrons->at(0).Pt(),selectedIDIsoElectronsActivity[0], useAsymmErrors);
+      elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
+      elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
       //elecAccEffVec_ = ElecAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5) elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
       else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
@@ -570,8 +570,9 @@ Bool_t Prediction::Process(Long64_t entry)
       //muAccEffVec_ = MuAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5) muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
       else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
-      muRecoEffVec_ = MuRecoPTActivity_->GetEff( selectedIDIsoElectrons->at(0).Pt(), muActivity, useAsymmErrors);
-      muIsoEffVec_ = MuIsoPTActivity_->GetEff( selectedIDIsoElectrons->at(0).Pt(), muActivity, useAsymmErrors);
+      muIsoEffVec_ = MuIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
+      muRecoEffVec_ = MuRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
+      
       /*
     	if(UseTagAndProbeEffIso_) elecIsoEff_ = getEff(ElecIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoElectronsActivity[0]); 
     	if(UseTagAndProbeEffReco_)elecRecoEff_ = getEff(ElecRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoElectronsActivity[0]); 
@@ -839,8 +840,8 @@ void Prediction::resetValues()
   // isolated track prediction
   IsolatedTracksMuMatched_=false;
   IsolatedTracksElecMatched_=false;
-  selectedIDIsoMuonsActivity.clear(); 
-  selectedIDIsoElectronsActivity.clear(); 
+  //selectedIDIsoMuonsActivity.clear(); 
+  //selectedIDIsoElectronsActivity.clear(); 
   selectedIDIsoMuonsDeltaRJet.clear();
   selectedIDIsoMuonsRelPTJet.clear(); 
   selectedIDIsoElectronsDeltaRJet.clear();
