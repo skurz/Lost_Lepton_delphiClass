@@ -809,16 +809,15 @@ void ExpecMaker::Terminate()
   tExpectation_ = dynamic_cast<TTree*>(GetOutputList()->FindObject("LostLeptonExpectation"));
   //std::cout << "tExpectation_:" << tExpectation_ << '\n';
 
-  TString option = GetOption();
-  if(option=="") option = "Expectation.root";
-
   if(!tExpectation_) Error("Terminate", "TTree object missing in output list");
   else{
-    TFile *outPutFile = new TFile(option,"RECREATE"); 
+    TFile *outPutFile = new TFile(fileName, "RECREATE"); 
     outPutFile->cd();
     tExpectation_->Write();
     outPutFile->Close();
   }
+
+  cout << "Saved output to " << fileName << endl;
 	
 }
 

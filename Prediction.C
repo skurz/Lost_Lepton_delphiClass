@@ -777,16 +777,9 @@ void Prediction::Terminate()
   // a query. It always runs on the client, it can be used to present
   // the results graphically or save the results to file.
 
-  TString option = GetOption();
-  if(option=="") option = "Prediction.root";
-/*
-  TObjArray *tx = option.Tokenize("/");
-  for (Int_t i = 0; i < tx->GetEntries()-1; i++){
-    std::cout << ((TObjString *)(tx->At(i)))->String() << std::endl;
-  }
-*/
+
   tPrediction_ = dynamic_cast<TTree*>(GetOutputList()->FindObject("LostLeptonPrediction"));
-  TFile *outPutFile = new TFile(option,"RECREATE"); ;
+  TFile *outPutFile = new TFile(fileName,"RECREATE"); ;
   outPutFile->cd();
   tPrediction_->Write();
 
@@ -809,6 +802,8 @@ void Prediction::Terminate()
   }
 
   outPutFile->Close();
+
+  cout << "Saved output to " << fileName << endl;
   
 }
 void Prediction::resetValues()

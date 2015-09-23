@@ -127,6 +127,9 @@ public :
   std::pair <double,double> minDeltaRLepJet(double lepPT, double lepEta, double lepPhi);
   
   TTree          *fChain;   //!pointer to the analyzed TTree or TChain
+  std::string fname; // for fetching file name
+  TString fileName;
+  Double_t HTgen_cut = 0;
 
 
  // Storing stuff
@@ -433,6 +436,49 @@ void ExpecMaker::Init(TTree *tree)
   if (!tree) return;
   fChain = tree;
   fChain->SetMakeClass(1);
+
+
+  TChain* temp = (TChain*)fChain;
+  std::string infname=temp->GetFile()->GetName();
+
+  std::string baseName(infname);
+  size_t pos=baseName.rfind("/");
+  if(pos!=std::string::npos){
+    if(pos!=baseName.size()-1){
+      baseName.erase(0,pos+1);
+    }
+  }
+  pos=baseName.rfind(".root");
+  if(pos!=std::string::npos){
+    if(pos!=baseName.size()-1){
+      baseName.erase(pos);
+    }
+  }
+ 
+  fname = baseName+"_Exp.root";
+
+  TString option = GetOption();
+  TObjArray *optionArray = option.Tokenize(",");
+  fileName = fname.c_str();
+
+  TString fileNameString = "";
+  TString HTcutString = "";
+
+  if(!optionArray->IsEmpty()){
+    fileNameString = ((TObjString *)(optionArray->At(0)))->String();
+    if(optionArray->GetEntries() > 1) HTcutString = ((TObjString *)(optionArray->At(1)))->String();
+  }
+
+  fileNameString = fileNameString.Strip(TString::kBoth, ' ').String();
+  HTcutString = HTcutString.Strip(TString::kBoth, ' ').String();
+
+  if(fileNameString!="*" && fileNameString!="") fileName = fileNameString;
+  if(HTcutString!="" && HTcutString.IsFloat()) HTgen_cut = HTcutString.Atof();
+
+  std::cout << "genHT cut: " << HTgen_cut << std::endl;
+
+  std::cout << "Saving file to: " << fileName << std::endl;
+
 
   fChain->SetBranchStatus("*",0);
   fChain->SetBranchStatus("RunNum", 1);
