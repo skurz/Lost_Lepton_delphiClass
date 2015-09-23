@@ -3,6 +3,7 @@
 #include "TProofServ.h"
 #include "TProof.h"
 #include "TLorentzVector.h"
+#include "Prediction.h"
 #include "TROOT.h"
 
 using std::vector;

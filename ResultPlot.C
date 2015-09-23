@@ -37,7 +37,7 @@ void ResultPlot()
   // General Settings
   TString InputPath_Expectation("Expectation.root");
   TString InputPath_Prediction("Prediction.root");
-  TString InputPath_Prediction_Data("Prediction_data.root"); // Use same path as above if pure MC prediction wanted
+  TString InputPath_Prediction_Data("Prediction_MC.root"); // Use same path as above if pure MC prediction wanted
   TString OutputPath_Closure("Closure.root");
   TString OutputPath_Prediction("LLPrediction.root");
 
@@ -48,7 +48,7 @@ void ResultPlot()
   bool doExtrapolation = false; 
 
   // Present output in QCD binning
-  bool doQCDbinning = false;
+  bool doQCDbinning = true;
 
   int nSearchBinsTotal = 72;
   if(doQCDbinning) nSearchBinsTotal = 220;
@@ -95,6 +95,10 @@ void ResultPlot()
   Float_t         totalStatDown;
   Float_t         totalSysUp;
   Float_t         totalSysDown;
+  Float_t         nonClosureUp;
+  Float_t         nonClosureDown;
+  Float_t         diBosonUp;
+  Float_t         diBosonDown;
   Float_t         totalUncUp;
   Float_t         totalUncDown;
 
@@ -174,6 +178,10 @@ void ResultPlot()
   TH1F* totalPredStatDown_LL_ = new TH1F("totalPredStatDown_LL","totalPredStatDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
   TH1F* totalPredSysUp_LL_ = new TH1F("totalPredSysUp_LL","totalPredSysUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
   TH1F* totalPredSysDown_LL_ = new TH1F("totalPredSysDown_LL","totalPredSysDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredNonClosureUp_LL_ = new TH1F("totalPredNonClosureUp_LL","totalPredNonClosureUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredNonClosureDown_LL_ = new TH1F("totalPredNonClosureDown_LL","totalPredNonClosureDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredDiBosonUp_LL_ = new TH1F("totalPredDiBosonUp_LL","totalPredDiBosonUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredDiBosonDown_LL_ = new TH1F("totalPredDiBosonDown_LL","totalPredDiBosonDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
   TH1F* totalCS_LL_ = new TH1F("totalCS_LL","totalCS_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
   TH1F* nEvtsCS_LL_ = new TH1F("nEvtsCS_LL","nEvtsCS_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
@@ -183,12 +191,20 @@ void ResultPlot()
   TProfile* avgWeightStatDown_LL_ = new TProfile("avgWeightStatDown_LL","avgWeightStatDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
   TProfile* avgWeightSysUp_LL_ = new TProfile("avgWeightSysUp_LL","avgWeightSysUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
   TProfile* avgWeightSysDown_LL_ = new TProfile("avgWeightSysDown_LL","avgWeightSysDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightNonClosureUp_LL_ = new TProfile("avgWeightNonClosureUp_LL","avgWeightNonClosureUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightNonClosureDown_LL_ = new TProfile("avgWeightNonClosureDown_LL","avgWeightNonClosureDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightDiBosonUp_LL_ = new TProfile("avgWeightDiBosonUp_LL","avgWeightDiBosonUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightDiBosonDown_LL_ = new TProfile("avgWeightDiBosonDown_LL","avgWeightDiBosonDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
   totalPred_LL_->Sumw2();
   totalPredStatUp_LL_->Sumw2();
   totalPredStatDown_LL_->Sumw2();
   totalPredSysUp_LL_->Sumw2();
   totalPredSysDown_LL_->Sumw2();
+  totalPredNonClosureUp_LL_->Sumw2();
+  totalPredNonClosureDown_LL_->Sumw2();
+  totalPredDiBosonUp_LL_->Sumw2();
+  totalPredDiBosonDown_LL_->Sumw2();
 
   totalCS_LL_->Sumw2();
 
@@ -197,6 +213,10 @@ void ResultPlot()
   avgWeightStatDown_LL_->Sumw2();
   avgWeightSysUp_LL_->Sumw2();
   avgWeightSysDown_LL_->Sumw2();
+  avgWeightNonClosureUp_LL_->Sumw2();
+  avgWeightNonClosureDown_LL_->Sumw2();
+  avgWeightDiBosonUp_LL_->Sumw2();
+  avgWeightDiBosonDown_LL_->Sumw2();
 
   // Define histrograms to do totalPrediction per SearchBin (MC)
   TH1F* totalExp_LL_MC_ = new TH1F("totalExp_LL_MC","totalExp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
@@ -206,6 +226,10 @@ void ResultPlot()
   TH1F* totalPredStatDown_LL_MC_ = new TH1F("totalPredStatDown_LL_MC","totalPredStatDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
   TH1F* totalPredSysUp_LL_MC_ = new TH1F("totalPredSysUp_LL_MC","totalPredSysUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
   TH1F* totalPredSysDown_LL_MC_ = new TH1F("totalPredSysDown_LL_MC","totalPredSysDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredNonClosureUp_LL_MC_ = new TH1F("totalPredNonClosureUp_LL_MC","totalPredNonClosureUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredNonClosureDown_LL_MC_ = new TH1F("totalPredNonClosureDown_LL_MC","totalPredNonClosureDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredDiBosonUp_LL_MC_ = new TH1F("totalPredDiBosonUp_LL_MC","totalPredDiBosonUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPredDiBosonDown_LL_MC_ = new TH1F("totalPredDiBosonDown_LL_MC","totalPredDiBosonDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
   TH1F* totalCS_LL_MC_ = new TH1F("totalCS_LL_MC","totalCS_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
   TH1F* nEvtsCS_LL_MC_ = new TH1F("nEvtsCS_LL_MC","nEvtsCS_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
@@ -215,12 +239,20 @@ void ResultPlot()
   TProfile* avgWeightStatDown_LL_MC_ = new TProfile("avgWeightStatDown_LL_MC","avgWeightStatDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
   TProfile* avgWeightSysUp_LL_MC_ = new TProfile("avgWeightSysUp_LL_MC","avgWeightSysUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
   TProfile* avgWeightSysDown_LL_MC_ = new TProfile("avgWeightSysDown_LL_MC","avgWeightSysDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightNonClosureUp_LL_MC_ = new TProfile("avgWeightNonClosureUp_LL_MC","avgWeightNonClosureUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightNonClosureDown_LL_MC_ = new TProfile("avgWeightNonClosureDown_LL_MC","avgWeightNonClosureDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightDiBosonUp_LL_MC_ = new TProfile("avgWeightDiBosonUp_LL_MC","avgWeightDiBosonUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeightDiBosonDown_LL_MC_ = new TProfile("avgWeightDiBosonDown_LL_MC","avgWeightDiBosonDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
 
   totalPred_LL_MC_->Sumw2();
   totalPredStatUp_LL_MC_->Sumw2();
   totalPredStatDown_LL_MC_->Sumw2();
   totalPredSysUp_LL_MC_->Sumw2();
   totalPredSysDown_LL_MC_->Sumw2();
+  totalPredNonClosureUp_LL_MC_->Sumw2();
+  totalPredNonClosureDown_LL_MC_->Sumw2();
+  totalPredDiBosonUp_LL_MC_->Sumw2();
+  totalPredDiBosonDown_LL_MC_->Sumw2();
 
   totalCS_LL_MC_->Sumw2();
 
@@ -229,6 +261,10 @@ void ResultPlot()
   avgWeightStatDown_LL_MC_->Sumw2();
   avgWeightSysUp_LL_MC_->Sumw2();
   avgWeightSysDown_LL_MC_->Sumw2();
+  avgWeightNonClosureUp_LL_MC_->Sumw2();
+  avgWeightNonClosureDown_LL_MC_->Sumw2();
+  avgWeightDiBosonUp_LL_MC_->Sumw2();
+  avgWeightDiBosonDown_LL_MC_->Sumw2();
 
 
 	
@@ -378,9 +414,13 @@ void ResultPlot()
   LostLeptonPrediction->SetBranchStatus("elecIsoWeight",1);
   LostLeptonPrediction->SetBranchStatus("totalStatUp",1);
   LostLeptonPrediction->SetBranchStatus("totalSysUp",1);
+  LostLeptonPrediction->SetBranchStatus("nonClosureUp",1);
+  LostLeptonPrediction->SetBranchStatus("diBosonUp",1);
   LostLeptonPrediction->SetBranchStatus("totalUncUp",1);
   LostLeptonPrediction->SetBranchStatus("totalStatDown",1);
   LostLeptonPrediction->SetBranchStatus("totalSysDown",1);
+  LostLeptonPrediction->SetBranchStatus("nonClosureDown",1);
+  LostLeptonPrediction->SetBranchStatus("diBosonDown",1);
   LostLeptonPrediction->SetBranchStatus("totalUncDown",1);
   
   LostLeptonPrediction->SetBranchAddress("HT",&HT);
@@ -407,10 +447,14 @@ void ResultPlot()
 
   LostLeptonPrediction->SetBranchAddress("totalStatUp", &totalStatUp);
   LostLeptonPrediction->SetBranchAddress("totalSysUp", &totalSysUp);
+  LostLeptonPrediction->SetBranchAddress("nonClosureUp",&nonClosureUp);
+  LostLeptonPrediction->SetBranchAddress("diBosonUp", &diBosonUp);
   LostLeptonPrediction->SetBranchAddress("totalUncUp", &totalUncUp);
 
   LostLeptonPrediction->SetBranchAddress("totalStatDown", &totalStatDown);
   LostLeptonPrediction->SetBranchAddress("totalSysDown", &totalSysDown);
+  LostLeptonPrediction->SetBranchAddress("nonClosureDown",&nonClosureDown);
+  LostLeptonPrediction->SetBranchAddress("diBosonDown", &diBosonDown);
   LostLeptonPrediction->SetBranchAddress("totalUncDown", &totalUncDown);
 
 
@@ -435,6 +479,10 @@ void ResultPlot()
     totalPredStatDown_LL_MC_->Fill(SearchBin, totalStatDown*scaleFactorWeight/2);
     totalPredSysUp_LL_MC_->Fill(SearchBin, totalSysUp*scaleFactorWeight/2);
     totalPredSysDown_LL_MC_->Fill(SearchBin, totalSysDown*scaleFactorWeight/2);
+    totalPredNonClosureUp_LL_MC_->Fill(SearchBin, nonClosureUp*scaleFactorWeight/2);
+    totalPredNonClosureDown_LL_MC_->Fill(SearchBin, nonClosureDown*scaleFactorWeight/2);
+    totalPredDiBosonUp_LL_MC_->Fill(SearchBin, diBosonUp*scaleFactorWeight/2);
+    totalPredDiBosonDown_LL_MC_->Fill(SearchBin, diBosonDown*scaleFactorWeight/2);
 
     totalCS_LL_MC_->Fill(SearchBin, scaledWeight);
     nEvtsCS_LL_MC_->Fill(SearchBin);
@@ -444,6 +492,10 @@ void ResultPlot()
     avgWeightStatDown_LL_MC_->Fill(SearchBin, totalStatDown/Weight/2);
     avgWeightSysUp_LL_MC_->Fill(SearchBin, totalSysUp/Weight/2);
     avgWeightSysDown_LL_MC_->Fill(SearchBin, totalSysDown/Weight/2);
+    avgWeightNonClosureUp_LL_MC_->Fill(SearchBin, nonClosureUp/Weight/2);
+    avgWeightNonClosureDown_LL_MC_->Fill(SearchBin, nonClosureDown/Weight/2);
+    avgWeightDiBosonUp_LL_MC_->Fill(SearchBin, diBosonUp/Weight/2);
+    avgWeightDiBosonDown_LL_MC_->Fill(SearchBin, diBosonDown/Weight/2);
   }
 
   std::cout<<"Finished"<<std::endl;
@@ -477,9 +529,13 @@ void ResultPlot()
   LostLeptonPredictionData->SetBranchStatus("elecIsoWeight",1);
   LostLeptonPredictionData->SetBranchStatus("totalStatUp",1);
   LostLeptonPredictionData->SetBranchStatus("totalSysUp",1);
+  LostLeptonPredictionData->SetBranchStatus("nonClosureUp",1);
+  LostLeptonPredictionData->SetBranchStatus("diBosonUp",1);
   LostLeptonPredictionData->SetBranchStatus("totalUncUp",1);
   LostLeptonPredictionData->SetBranchStatus("totalStatDown",1);
   LostLeptonPredictionData->SetBranchStatus("totalSysDown",1);
+  LostLeptonPredictionData->SetBranchStatus("nonClosureDown",1);
+  LostLeptonPredictionData->SetBranchStatus("diBosonDown",1);
   LostLeptonPredictionData->SetBranchStatus("totalUncDown",1);
   
   LostLeptonPredictionData->SetBranchAddress("HT",&HT);
@@ -506,10 +562,14 @@ void ResultPlot()
 
   LostLeptonPredictionData->SetBranchAddress("totalStatUp", &totalStatUp);
   LostLeptonPredictionData->SetBranchAddress("totalSysUp", &totalSysUp);
+  LostLeptonPredictionData->SetBranchAddress("nonClosureUp",&nonClosureUp);
+  LostLeptonPredictionData->SetBranchAddress("diBosonUp", &diBosonUp);
   LostLeptonPredictionData->SetBranchAddress("totalUncUp", &totalUncUp);
 
   LostLeptonPredictionData->SetBranchAddress("totalStatDown", &totalStatDown);
   LostLeptonPredictionData->SetBranchAddress("totalSysDown", &totalSysDown);
+  LostLeptonPredictionData->SetBranchAddress("nonClosureDown",&nonClosureDown);
+  LostLeptonPredictionData->SetBranchAddress("diBosonDown", &diBosonDown);
   LostLeptonPredictionData->SetBranchAddress("totalUncDown", &totalUncDown);
 
 /*
@@ -553,6 +613,10 @@ void ResultPlot()
     totalPredStatDown_LL_->Fill(SearchBin, totalStatDown*scaleFactorWeight/2/scaleMC);
     totalPredSysUp_LL_->Fill(SearchBin, totalSysUp*scaleFactorWeight/2/scaleMC);
     totalPredSysDown_LL_->Fill(SearchBin, totalSysDown*scaleFactorWeight/2/scaleMC);
+    totalPredNonClosureUp_LL_->Fill(SearchBin, nonClosureUp*scaleFactorWeight/2/scaleMC);
+    totalPredNonClosureDown_LL_->Fill(SearchBin, nonClosureDown*scaleFactorWeight/2/scaleMC);
+    totalPredDiBosonUp_LL_->Fill(SearchBin, diBosonUp*scaleFactorWeight/2/scaleMC);
+    totalPredDiBosonDown_LL_->Fill(SearchBin, diBosonDown*scaleFactorWeight/2/scaleMC);
 
     totalCS_LL_->Fill(SearchBin, scaledWeight/scaleMC);
     nEvtsCS_LL_->Fill(SearchBin);
@@ -562,6 +626,10 @@ void ResultPlot()
     avgWeightStatDown_LL_->Fill(SearchBin, totalStatDown/Weight/2);
     avgWeightSysUp_LL_->Fill(SearchBin, totalSysUp/Weight/2);
     avgWeightSysDown_LL_->Fill(SearchBin, totalSysDown/Weight/2);
+    avgWeightNonClosureUp_LL_->Fill(SearchBin, nonClosureUp/Weight/2);
+    avgWeightNonClosureDown_LL_->Fill(SearchBin, nonClosureDown/Weight/2);
+    avgWeightDiBosonUp_LL_->Fill(SearchBin, diBosonUp/Weight/2);
+    avgWeightDiBosonDown_LL_->Fill(SearchBin, diBosonDown/Weight/2);
 
     if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0){
 
@@ -772,7 +840,7 @@ void ResultPlot()
 
   if(InputPath_Prediction_Data == InputPath_Prediction) std::cout<<"ATTENTION: Full MC statistics used to do prediction! Only approx. stat. unc. (~sqrt(n)) shown on prediction!"<<std::endl;
 
-  printf("Bin & NJets & BTags & HT & MHT & CS\\_MC (nEntries) & avg. weight (MC) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff.] & CS\\_data & avg. weight (data) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff.] & Prediction [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff.] & Expectation \\\\\n");
+  printf("Bin & NJets & BTags & HT & MHT & CS\\_MC (nEntries) & avg. weight (MC) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff. $\\pm$ nonClos.] & CS\\_data & avg. weight (data) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff. $\\pm$ nonClos.] & Prediction [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff. $\\pm$ nonClos.] & Expectation \\\\\n");
 
   for(int i = 1; i<totalPred_LL_->GetNbinsX()+1; ++i){
 
@@ -807,20 +875,20 @@ void ResultPlot()
     printf("%3.3f (%1.0f) & ", totalCS_LL_MC_->GetBinContent(i), nEvtsCS_LL_MC_->GetBinContent(i));
  
     // Average weight per Bin (MC)
-    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}$ & ", avgWeight_LL_MC_->GetBinContent(i), avgWeight_LL_MC_->GetBinError(i), avgWeightStatUp_LL_MC_->GetBinContent(i), avgWeightStatDown_LL_MC_->GetBinContent(i), avgWeightSysUp_LL_MC_->GetBinContent(i), avgWeightSysDown_LL_MC_->GetBinContent(i));
+    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}$ & ", avgWeight_LL_MC_->GetBinContent(i), avgWeight_LL_MC_->GetBinError(i), avgWeightStatUp_LL_MC_->GetBinContent(i), avgWeightStatDown_LL_MC_->GetBinContent(i), avgWeightSysUp_LL_MC_->GetBinContent(i), avgWeightSysDown_LL_MC_->GetBinContent(i), avgWeightNonClosureUp_LL_MC_->GetBinContent(i), abs(avgWeightNonClosureDown_LL_MC_->GetBinContent(i)));
     
     // CS events (data)
     printf("%1.0f & ", totalCS_LL_->GetBinContent(i));
 
     // Average weight per Bin (data)
-    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}$ & ", avgWeight_LL_->GetBinContent(i), avgWeight_LL_->GetBinError(i), avgWeightStatUp_LL_->GetBinContent(i), avgWeightStatDown_LL_->GetBinContent(i), avgWeightSysUp_LL_->GetBinContent(i), avgWeightSysDown_LL_->GetBinContent(i));
+    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}$ & ", avgWeight_LL_->GetBinContent(i), avgWeight_LL_->GetBinError(i), avgWeightStatUp_LL_->GetBinContent(i), avgWeightStatDown_LL_->GetBinContent(i), avgWeightSysUp_LL_->GetBinContent(i), avgWeightSysDown_LL_->GetBinContent(i), avgWeightNonClosureUp_LL_->GetBinContent(i), abs(avgWeightNonClosureDown_LL_->GetBinContent(i)));
 
     // Prediction
     // Correct estimate of stat. uncertainty on prediction only possible if data is used or limited MC statistics (e.g. number of events corresponding to 3fb-1)
     // For approximation of stat. uncertainty on prediction using full MC statistics use:
     if(InputPath_Prediction_Data == InputPath_Prediction) if(totalCS_LL_->GetBinContent(i)>0.00001) totalPred_LL_->SetBinError(i, sqrt(totalPred_LL_->GetBinContent(i)*totalPred_LL_->GetBinContent(i)/totalCS_LL_->GetBinContent(i)));
 
-    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}$ & ", totalPred_LL_->GetBinContent(i), totalPred_LL_->GetBinError(i), totalPredStatUp_LL_->GetBinContent(i), totalPredStatDown_LL_->GetBinContent(i), totalPredSysUp_LL_->GetBinContent(i), totalPredSysDown_LL_->GetBinContent(i));
+    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}$ & ", totalPred_LL_->GetBinContent(i), totalPred_LL_->GetBinError(i), totalPredStatUp_LL_->GetBinContent(i), totalPredStatDown_LL_->GetBinContent(i), totalPredSysUp_LL_->GetBinContent(i), totalPredSysDown_LL_->GetBinContent(i), totalPredNonClosureUp_LL_->GetBinContent(i), abs(totalPredNonClosureDown_LL_->GetBinContent(i)));
 
     // Expectation
     printf("$%3.3f\\pm%3.3f$ \\\\\n", totalExp_LL_->GetBinContent(i), totalExp_LL_->GetBinError(i));
@@ -847,6 +915,10 @@ void ResultPlot()
   totalPredStatDown_LL_->Write();
   totalPredSysUp_LL_->Write();
   totalPredSysDown_LL_->Write();
+  totalPredNonClosureUp_LL_->Write();
+  totalPredNonClosureDown_LL_->Write();
+  totalPredDiBosonUp_LL_->Write();
+  totalPredDiBosonDown_LL_->Write();
 
   totalCS_LL_->Write();
   nEvtsCS_LL_->Write();
@@ -856,23 +928,25 @@ void ResultPlot()
   avgWeightStatDown_LL_->Write();  
   avgWeightSysUp_LL_->Write();
   avgWeightSysDown_LL_->Write();
+  avgWeightNonClosureUp_LL_->Write();
+  avgWeightNonClosureDown_LL_->Write();
+  avgWeightDiBosonUp_LL_->Write();
+  avgWeightDiBosonDown_LL_->Write();
 
   LLoutPutFile->cd();
   LLoutPutFile->mkdir("Prediction_MC");
   TDirectory *dPreMC = (TDirectory*)LLoutPutFile->Get("Prediction_MC");
   dPreMC->cd();
 
-  avgWeight_LL_->Write();
-  avgWeightStatUp_LL_->Write();
-  avgWeightStatDown_LL_->Write();  
-  avgWeightSysUp_LL_->Write();
-  avgWeightSysDown_LL_->Write();
-
   totalPred_LL_MC_->Write();
   totalPredStatUp_LL_MC_->Write();
   totalPredStatDown_LL_MC_->Write();
   totalPredSysUp_LL_MC_->Write();
   totalPredSysDown_LL_MC_->Write();
+  totalPredNonClosureUp_LL_MC_->Write();
+  totalPredNonClosureDown_LL_MC_->Write();
+  totalPredDiBosonUp_LL_MC_->Write();
+  totalPredDiBosonDown_LL_MC_->Write();
 
   totalCS_LL_MC_->Write();
   nEvtsCS_LL_MC_->Write();
@@ -882,6 +956,10 @@ void ResultPlot()
   avgWeightStatDown_LL_MC_->Write();  
   avgWeightSysUp_LL_MC_->Write();
   avgWeightSysDown_LL_MC_->Write();
+  avgWeightNonClosureUp_LL_MC_->Write();
+  avgWeightNonClosureDown_LL_MC_->Write();
+  avgWeightDiBosonUp_LL_MC_->Write();
+  avgWeightDiBosonDown_LL_MC_->Write();
 
   LLoutPutFile->Close();
 	

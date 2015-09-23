@@ -97,10 +97,11 @@ const double ElecIsoUncertaintyUp_ = 10;  // dummies as long as TAP is not avail
 const double ElecIsoUncertaintyDown_ = 10;  // dummies as long as TAP is not available
 
 const double diBosonContributionUp_ = 0;
-const double diBosonContributionDown_ = 3;
+const double diBosonContributionDown_ = 0;
 
-const double nonClosureLowNJets_ = 25;
-const double nonClosureHighNJets_ = 50;
+const double nonClosureNJets_46_ = 20;
+const double nonClosureNJets_78_ = 20;
+const double nonClosureNJets_9Inf_ = 30;
 
 // input jet definitions
 const double jetCone_=0.4;
@@ -311,6 +312,7 @@ class Prediction : public TSelector {
   // expectation reduction by the isolated track veto
   TH1Eff *ExpectationReductionIsoTrackNJetsEff_;
   TH2Eff *ExpectationReductionIsoTrackBTagsNJetsEff_;
+  TH2Eff *ExpectationReductionIsoTrackHTNJetsEff_;
   TH2Eff *ExpectationReductionMuIsoTrackBTagsNJetsEff_, *ExpectationReductionElecIsoTrackBTagsNJetsEff_, *ExpectationReductionPionIsoTrackBTagsNJetsEff_;
 
   

@@ -82,6 +82,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   
   ExpectationReductionIsoTrackNJetsEff_ = new TH1Eff("ExpectationReductionIsoTrackNJetsEff", EffInputFolder);
   ExpectationReductionIsoTrackBTagsNJetsEff_= new TH2Eff("IsoTrackReductionBTagNJets", EffInputFolder);
+  ExpectationReductionIsoTrackHTNJetsEff_ = new TH2Eff("IsoTrackReductionHTNJets", EffInputFolder);
   ExpectationReductionMuIsoTrackBTagsNJetsEff_= new TH2Eff("MuIsoTrackReductionBTagNJets", EffInputFolder);
   ExpectationReductionElecIsoTrackBTagsNJetsEff_= new TH2Eff("ElecIsoTrackReductionBTagNJets", EffInputFolder);
   ExpectationReductionPionIsoTrackBTagsNJetsEff_= new TH2Eff("PionIsoTrackReductionBTagNJets", EffInputFolder);
@@ -308,8 +309,8 @@ Bool_t Prediction::Process(Long64_t entry)
 
 
   // get IsoTrack Effs
-  //      expectationReductionIsoTrackEff_= ExpectationReductionIsoTrackNJetsEff_->GetEff(NJets, useAsymmErrors);
-  expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
+  expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackHTNJetsEff_->GetEff(HT, NJets, useAsymmErrors);
+  //expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
   expectationReductionMuIsoTrackEffVec_ = ExpectationReductionMuIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
   expectationReductionElecIsoTrackEffVec_ = ExpectationReductionElecIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
   expectationReductionPionIsoTrackEffVec_ = ExpectationReductionPionIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
@@ -397,7 +398,7 @@ Bool_t Prediction::Process(Long64_t entry)
         MuMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight, Weight);
         CombinedMeanWeight_->Fill(Bin_+0.01, 0.5*(totalWeightDiLepIsoTrackReduced_/Weight), Weight);
 
-        if(Bin_<72){
+        if(Bin_<=72){
         	MuWeightPerBin_[Bin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/Weight,Weight);
         	CombinedWeightPerBin_[Bin_-1]->Fill(0.5*(totalWeightDiLepIsoTrackReduced_/Weight),Weight);
         }
@@ -519,20 +520,23 @@ Bool_t Prediction::Process(Long64_t entry)
       diBosonDown = - wGes * 0.01 * diBosonContributionDown_;
 
       if(NJets < 6.5){
-        nonClosureUp = wGes * 0.01 * nonClosureLowNJets_;
-        nonClosureDown = - wGes * 0.01 * nonClosureLowNJets_;
+        nonClosureUp = wGes * 0.01 * nonClosureNJets_46_;
+        nonClosureDown = - wGes * 0.01 * nonClosureNJets_46_;
+      }else if(NJets < 8.5){
+        nonClosureUp = wGes * 0.01 * nonClosureNJets_78_;
+        nonClosureDown = - wGes * 0.01 * nonClosureNJets_78_;
       }else{
-        nonClosureUp = wGes * 0.01 * nonClosureHighNJets_;
-        nonClosureDown = - wGes * 0.01 * nonClosureHighNJets_;
+        nonClosureUp = wGes * 0.01 * nonClosureNJets_9Inf_;
+        nonClosureDown = - wGes * 0.01 * nonClosureNJets_9Inf_;
       }
 
       totalStatUp = sqrt(isoTrackStatUp*isoTrackStatUp+MTWStatUp*MTWStatUp+purityStatUp*purityStatUp+singleLepPurityStatUp*singleLepPurityStatUp+diLepFoundStatUp*diLepFoundStatUp+muIsoStatUp*muIsoStatUp+muRecoStatUp*muRecoStatUp+muAccStatUp*muAccStatUp+elecIsoStatUp*elecIsoStatUp+elecRecoStatUp*elecRecoStatUp+elecAccStatUp*elecAccStatUp);
-      totalSysUp = sqrt(isoTrackSysUp*isoTrackSysUp+MTWSysUp*MTWSysUp+puritySysUp*puritySysUp+singleLepPuritySysUp*singleLepPuritySysUp+diLepFoundSysUp*diLepFoundSysUp+muIsoSysUp*muIsoSysUp+muRecoSysUp*muRecoSysUp+muAccSysUp*muAccSysUp+elecIsoSysUp*elecIsoSysUp+elecRecoSysUp*elecRecoSysUp+elecAccSysUp*elecAccSysUp+diBosonUp*diBosonUp+nonClosureUp*nonClosureUp);
-      totalUncUp = sqrt(totalStatUp*totalStatUp+totalSysUp*totalSysUp);
+      totalSysUp = sqrt(isoTrackSysUp*isoTrackSysUp+MTWSysUp*MTWSysUp+puritySysUp*puritySysUp+singleLepPuritySysUp*singleLepPuritySysUp+diLepFoundSysUp*diLepFoundSysUp+muIsoSysUp*muIsoSysUp+muRecoSysUp*muRecoSysUp+muAccSysUp*muAccSysUp+elecIsoSysUp*elecIsoSysUp+elecRecoSysUp*elecRecoSysUp+elecAccSysUp*elecAccSysUp);
+      totalUncUp = sqrt(totalStatUp*totalStatUp+totalSysUp*totalSysUp+nonClosureUp*nonClosureUp+diBosonUp*diBosonUp);
 
-      totalStatDown = sqrt(isoTrackStatDown*isoTrackStatDown+MTWStatDown*MTWStatDown+purityStatDown*purityStatDown+singleLepPurityStatDown*singleLepPurityStatDown+diLepFoundStatDown*diLepFoundStatDown+muIsoStatDown*muIsoStatDown+muRecoStatDown*muRecoStatDown+muAccStatDown*muAccStatDown+elecIsoStatDown*elecIsoStatDown+elecRecoStatDown*elecRecoStatDown+elecAccStatDown*elecAccStatDown);
-      totalSysDown = sqrt(isoTrackSysDown*isoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown+diBosonDown*diBosonDown+nonClosureDown*nonClosureDown);
-      totalUncDown = sqrt(totalStatDown*totalStatDown+totalSysDown*totalSysDown);
+      totalStatDown = -sqrt(isoTrackStatDown*isoTrackStatDown+MTWStatDown*MTWStatDown+purityStatDown*purityStatDown+singleLepPurityStatDown*singleLepPurityStatDown+diLepFoundStatDown*diLepFoundStatDown+muIsoStatDown*muIsoStatDown+muRecoStatDown*muRecoStatDown+muAccStatDown*muAccStatDown+elecIsoStatDown*elecIsoStatDown+elecRecoStatDown*elecRecoStatDown+elecAccStatDown*elecAccStatDown);
+      totalSysDown = -sqrt(isoTrackSysDown*isoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown);
+      totalUncDown = -sqrt(totalStatDown*totalStatDown+totalSysDown*totalSysDown+nonClosureDown*nonClosureDown+diBosonDown*diBosonDown);
       // cout <<"DONE"<<endl;
     }       
   else if(selectedIDIsoMuonsNum_==0 && selectedIDIsoElectronsNum_==1)
@@ -615,7 +619,7 @@ Bool_t Prediction::Process(Long64_t entry)
         ElecMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight, Weight);
         CombinedMeanWeight_->Fill(Bin_+0.01, 0.5*(totalWeightDiLepIsoTrackReduced_/Weight), Weight);
 
-        if(Bin_<72){
+        if(Bin_<=72){
         	ElecWeightPerBin_[Bin_-1]->Fill(totalWeightDiLepIsoTrackReduced_/Weight,Weight);
         	CombinedWeightPerBin_[Bin_-1]->Fill(0.5*(totalWeightDiLepIsoTrackReduced_/Weight),Weight);
         }
@@ -731,20 +735,23 @@ Bool_t Prediction::Process(Long64_t entry)
       diBosonDown = - wGes * 0.01 * diBosonContributionDown_;
 
       if(NJets < 6.5){
-      	nonClosureUp = wGes * 0.01 * nonClosureLowNJets_;
-      	nonClosureDown = - wGes * 0.01 * nonClosureLowNJets_;
+        nonClosureUp = wGes * 0.01 * nonClosureNJets_46_;
+        nonClosureDown = - wGes * 0.01 * nonClosureNJets_46_;
+      }else if(NJets < 8.5){
+        nonClosureUp = wGes * 0.01 * nonClosureNJets_78_;
+        nonClosureDown = - wGes * 0.01 * nonClosureNJets_78_;
       }else{
-      	nonClosureUp = wGes * 0.01 * nonClosureHighNJets_;
-      	nonClosureDown = - wGes * 0.01 * nonClosureHighNJets_;
+        nonClosureUp = wGes * 0.01 * nonClosureNJets_9Inf_;
+        nonClosureDown = - wGes * 0.01 * nonClosureNJets_9Inf_;
       }
 
       totalStatUp = sqrt(isoTrackStatUp*isoTrackStatUp+MTWStatUp*MTWStatUp+purityStatUp*purityStatUp+singleLepPurityStatUp*singleLepPurityStatUp+diLepFoundStatUp*diLepFoundStatUp+muIsoStatUp*muIsoStatUp+muRecoStatUp*muRecoStatUp+muAccStatUp*muAccStatUp+elecIsoStatUp*elecIsoStatUp+elecRecoStatUp*elecRecoStatUp+elecAccStatUp*elecAccStatUp);
-      totalSysUp = sqrt(isoTrackSysUp*isoTrackSysUp+MTWSysUp*MTWSysUp+puritySysUp*puritySysUp+singleLepPuritySysUp*singleLepPuritySysUp+diLepFoundSysUp*diLepFoundSysUp+muIsoSysUp*muIsoSysUp+muRecoSysUp*muRecoSysUp+muAccSysUp*muAccSysUp+elecIsoSysUp*elecIsoSysUp+elecRecoSysUp*elecRecoSysUp+elecAccSysUp*elecAccSysUp+diBosonUp*diBosonUp+nonClosureUp*nonClosureUp);
-      totalUncUp = sqrt(totalStatUp*totalStatUp+totalSysUp*totalSysUp);
+      totalSysUp = sqrt(isoTrackSysUp*isoTrackSysUp+MTWSysUp*MTWSysUp+puritySysUp*puritySysUp+singleLepPuritySysUp*singleLepPuritySysUp+diLepFoundSysUp*diLepFoundSysUp+muIsoSysUp*muIsoSysUp+muRecoSysUp*muRecoSysUp+muAccSysUp*muAccSysUp+elecIsoSysUp*elecIsoSysUp+elecRecoSysUp*elecRecoSysUp+elecAccSysUp*elecAccSysUp);
+      totalUncUp = sqrt(totalStatUp*totalStatUp+totalSysUp*totalSysUp+nonClosureUp*nonClosureUp+diBosonUp*diBosonUp);
 
-      totalStatDown = sqrt(isoTrackStatDown*isoTrackStatDown+MTWStatDown*MTWStatDown+purityStatDown*purityStatDown+singleLepPurityStatDown*singleLepPurityStatDown+diLepFoundStatDown*diLepFoundStatDown+muIsoStatDown*muIsoStatDown+muRecoStatDown*muRecoStatDown+muAccStatDown*muAccStatDown+elecIsoStatDown*elecIsoStatDown+elecRecoStatDown*elecRecoStatDown+elecAccStatDown*elecAccStatDown);
-      totalSysDown = sqrt(isoTrackSysDown*isoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown+diBosonDown*diBosonDown+nonClosureDown*nonClosureDown);
-      totalUncDown = sqrt(totalStatDown*totalStatDown+totalSysDown*totalSysDown);
+      totalStatDown = -sqrt(isoTrackStatDown*isoTrackStatDown+MTWStatDown*MTWStatDown+purityStatDown*purityStatDown+singleLepPurityStatDown*singleLepPurityStatDown+diLepFoundStatDown*diLepFoundStatDown+muIsoStatDown*muIsoStatDown+muRecoStatDown*muRecoStatDown+muAccStatDown*muAccStatDown+elecIsoStatDown*elecIsoStatDown+elecRecoStatDown*elecRecoStatDown+elecAccStatDown*elecAccStatDown);
+      totalSysDown = -sqrt(isoTrackSysDown*isoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown);
+      totalUncDown = -sqrt(totalStatDown*totalStatDown+totalSysDown*totalSysDown+nonClosureDown*nonClosureDown+diBosonDown*diBosonDown);
       // cout << "DONE" << endl;
     }
 
