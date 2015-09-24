@@ -274,6 +274,8 @@ class Prediction : public TSelector {
   // new Efficiency Maps
   TH2Eff *MuMTWPTActivity_;
   TH1Eff *MuMTWNJets_;
+  TH2Eff *MuMTWHTNJets_;
+
   TH1Eff *MuDiLepContributionMTWAppliedNJets_;
   TH2Eff *MuIsoActivityPT_;
   TH2Eff *MuIsoRelPTDeltaRJet_;
@@ -304,6 +306,9 @@ class Prediction : public TSelector {
 
   TH2Eff *ElecPurityMHTNJets_;
   TH1Eff *ElecMTWNJets_;
+  TH2Eff *ElecMTWHTNJets_;
+
+
   TH1Eff *ElecDiLepContributionMTWAppliedNJets_;
   TH1Eff *ElecDiLepEffMTWAppliedNJets_;
 

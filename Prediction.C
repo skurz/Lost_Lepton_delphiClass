@@ -39,6 +39,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
 
   MuMTWPTActivity_ = new TH2Eff("MuMTWPTActivity", EffInputFolder);
   MuMTWNJets_ = new TH1Eff("MuMTWNJets1D", EffInputFolder);
+  MuMTWHTNJets_ = new TH2Eff("MuMTWHTNJets", EffInputFolder);
+
   MuDiLepContributionMTWAppliedNJets_ = new TH1Eff("MuDiLepContributionMTWNJets1D", EffInputFolder);
   MuDiLepEffMTWAppliedNJets_ = new TH1Eff("MuDiLepMTWNJets1D", EffInputFolder);
 
@@ -65,6 +67,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   
   ElecPurityMHTNJets_ = new TH2Eff("ElecPurityMHTNJet", EffInputFolder);
   ElecMTWNJets_ = new TH1Eff("ElecMTWNJets1D", EffInputFolder);
+  ElecMTWHTNJets_ = new TH2Eff("ElecMTWHTNJets", EffInputFolder);
+
   ElecDiLepContributionMTWAppliedNJets_ = new TH1Eff("ElecDiLepContributionMTWNJets1D", EffInputFolder);
   ElecDiLepEffMTWAppliedNJets_ = new TH1Eff("ElecDiLepMTWNJets1D", EffInputFolder);  
 
@@ -335,7 +339,7 @@ Bool_t Prediction::Process(Long64_t entry)
 
       // get Efficiencies
       muPurityCorrectionVec_ =  MuPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
-      muMTWEffVec_ = MuMTWNJets_->GetEff(NJets, useAsymmErrors);
+      muMTWEffVec_ = MuMTWHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       muDiLepContributionMTWAppliedEffVec_ = MuDiLepContributionMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
       muDiLepEffMTWAppliedEffVec_ = MuDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);      
 
@@ -554,7 +558,7 @@ Bool_t Prediction::Process(Long64_t entry)
 
       // get Efficiencies
       elecPurityCorrectionVec_ =  ElecPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
-      elecMTWEffVec_ = ElecMTWNJets_->GetEff(NJets, useAsymmErrors);
+      elecMTWEffVec_ = ElecMTWHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       elecDiLepContributionMTWAppliedEffVec_ = ElecDiLepContributionMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
       elecDiLepEffMTWAppliedEffVec_ = ElecDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
 

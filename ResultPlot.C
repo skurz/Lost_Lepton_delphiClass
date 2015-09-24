@@ -487,15 +487,15 @@ void ResultPlot()
     totalCS_LL_MC_->Fill(SearchBin, scaledWeight);
     nEvtsCS_LL_MC_->Fill(SearchBin);
 
-    avgWeight_LL_MC_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced/Weight/2);
-    avgWeightStatUp_LL_MC_->Fill(SearchBin, totalStatUp/Weight/2);
-    avgWeightStatDown_LL_MC_->Fill(SearchBin, totalStatDown/Weight/2);
-    avgWeightSysUp_LL_MC_->Fill(SearchBin, totalSysUp/Weight/2);
-    avgWeightSysDown_LL_MC_->Fill(SearchBin, totalSysDown/Weight/2);
-    avgWeightNonClosureUp_LL_MC_->Fill(SearchBin, nonClosureUp/Weight/2);
-    avgWeightNonClosureDown_LL_MC_->Fill(SearchBin, nonClosureDown/Weight/2);
-    avgWeightDiBosonUp_LL_MC_->Fill(SearchBin, diBosonUp/Weight/2);
-    avgWeightDiBosonDown_LL_MC_->Fill(SearchBin, diBosonDown/Weight/2);
+    avgWeight_LL_MC_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReduced/Weight/2));
+    avgWeightStatUp_LL_MC_->Fill(SearchBin, abs(totalStatUp/Weight/2));
+    avgWeightStatDown_LL_MC_->Fill(SearchBin, abs(totalStatDown/Weight/2));
+    avgWeightSysUp_LL_MC_->Fill(SearchBin, abs(totalSysUp/Weight/2));
+    avgWeightSysDown_LL_MC_->Fill(SearchBin, abs(totalSysDown/Weight/2));
+    avgWeightNonClosureUp_LL_MC_->Fill(SearchBin, abs(nonClosureUp/Weight/2));
+    avgWeightNonClosureDown_LL_MC_->Fill(SearchBin, abs(nonClosureDown/Weight/2));
+    avgWeightDiBosonUp_LL_MC_->Fill(SearchBin, abs(diBosonUp/Weight/2));
+    avgWeightDiBosonDown_LL_MC_->Fill(SearchBin, abs(diBosonDown/Weight/2));
   }
 
   std::cout<<"Finished"<<std::endl;
@@ -621,15 +621,15 @@ void ResultPlot()
     totalCS_LL_->Fill(SearchBin, scaledWeight/scaleMC);
     nEvtsCS_LL_->Fill(SearchBin);
 
-    avgWeight_LL_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced/Weight/2);
-    avgWeightStatUp_LL_->Fill(SearchBin, totalStatUp/Weight/2);
-    avgWeightStatDown_LL_->Fill(SearchBin, totalStatDown/Weight/2);
-    avgWeightSysUp_LL_->Fill(SearchBin, totalSysUp/Weight/2);
-    avgWeightSysDown_LL_->Fill(SearchBin, totalSysDown/Weight/2);
-    avgWeightNonClosureUp_LL_->Fill(SearchBin, nonClosureUp/Weight/2);
-    avgWeightNonClosureDown_LL_->Fill(SearchBin, nonClosureDown/Weight/2);
-    avgWeightDiBosonUp_LL_->Fill(SearchBin, diBosonUp/Weight/2);
-    avgWeightDiBosonDown_LL_->Fill(SearchBin, diBosonDown/Weight/2);
+    avgWeight_LL_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReduced/Weight/2));
+    avgWeightStatUp_LL_->Fill(SearchBin, abs(totalStatUp/Weight/2));
+    avgWeightStatDown_LL_->Fill(SearchBin, abs(totalStatDown/Weight/2));
+    avgWeightSysUp_LL_->Fill(SearchBin, abs(totalSysUp/Weight/2));
+    avgWeightSysDown_LL_->Fill(SearchBin, abs(totalSysDown/Weight/2));
+    avgWeightNonClosureUp_LL_->Fill(SearchBin, abs(nonClosureUp/Weight/2));
+    avgWeightNonClosureDown_LL_->Fill(SearchBin, abs(nonClosureDown/Weight/2));
+    avgWeightDiBosonUp_LL_->Fill(SearchBin, abs(diBosonUp/Weight/2));
+    avgWeightDiBosonDown_LL_->Fill(SearchBin, abs(diBosonDown/Weight/2));
 
     if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0){
 
@@ -876,13 +876,13 @@ void ResultPlot()
     printf("%3.3f (%1.0f) & ", totalCS_LL_MC_->GetBinContent(i), nEvtsCS_LL_MC_->GetBinContent(i));
  
     // Average weight per Bin (MC)
-    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{%3.3f}{}^{+%3.3f}_{%3.3f}{}^{+%3.3f}_{%3.3f}$ & ", avgWeight_LL_MC_->GetBinContent(i), avgWeight_LL_MC_->GetBinError(i), avgWeightStatUp_LL_MC_->GetBinContent(i), avgWeightStatDown_LL_MC_->GetBinContent(i), avgWeightSysUp_LL_MC_->GetBinContent(i), avgWeightSysDown_LL_MC_->GetBinContent(i), avgWeightNonClosureUp_LL_MC_->GetBinContent(i), avgWeightNonClosureDown_LL_MC_->GetBinContent(i));
+    printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}$ & ", avgWeight_LL_MC_->GetBinContent(i), avgWeight_LL_MC_->GetBinError(i), avgWeightStatUp_LL_MC_->GetBinContent(i), avgWeightStatDown_LL_MC_->GetBinContent(i), avgWeightSysUp_LL_MC_->GetBinContent(i), avgWeightSysDown_LL_MC_->GetBinContent(i), avgWeightNonClosureUp_LL_MC_->GetBinContent(i), avgWeightNonClosureDown_LL_MC_->GetBinContent(i));
     
     // CS events (data)
     if(InputPath_Prediction_Data != InputPath_Prediction) printf("%1.0f & ", totalCS_LL_->GetBinContent(i));
 
     // Average weight per Bin (data)
-    if(InputPath_Prediction_Data != InputPath_Prediction) printf("$%3.3f\\pm%3.3f^{+%3.3f}_{%3.3f}{}^{+%3.3f}_{%3.3f}{}^{+%3.3f}_{%3.3f}$ & ", avgWeight_LL_->GetBinContent(i), avgWeight_LL_->GetBinError(i), avgWeightStatUp_LL_->GetBinContent(i), avgWeightStatDown_LL_->GetBinContent(i), avgWeightSysUp_LL_->GetBinContent(i), avgWeightSysDown_LL_->GetBinContent(i), avgWeightNonClosureUp_LL_->GetBinContent(i), avgWeightNonClosureDown_LL_->GetBinContent(i));
+    if(InputPath_Prediction_Data != InputPath_Prediction) printf("$%3.3f\\pm%3.3f^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}{}^{+%3.3f}_{-%3.3f}$ & ", avgWeight_LL_->GetBinContent(i), avgWeight_LL_->GetBinError(i), avgWeightStatUp_LL_->GetBinContent(i), avgWeightStatDown_LL_->GetBinContent(i), avgWeightSysUp_LL_->GetBinContent(i), avgWeightSysDown_LL_->GetBinContent(i), avgWeightNonClosureUp_LL_->GetBinContent(i), avgWeightNonClosureDown_LL_->GetBinContent(i));
 
     // Prediction
     // Correct estimate of stat. uncertainty on prediction only possible if data is used or limited MC statistics (e.g. number of events corresponding to 3fb-1)

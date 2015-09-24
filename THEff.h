@@ -310,8 +310,7 @@ void TH2Eff::SaveEff(const char* title, TDirectory* MainDirectory, bool xlog, bo
 	if (ylog) c1->SetLogy();
 	if(RatioTH2D_->GetXaxis()->GetBinCenter(RatioTH2D_->GetXaxis()->GetNbins()) > 100) c1->SetLogx();
 	if(RatioTH2D_->GetYaxis()->GetBinCenter(RatioTH2D_->GetYaxis()->GetNbins()) > 100) c1->SetLogy();
-	RatioTH2D_->SetMinimum(0.);
-	RatioTH2D_->SetMaximum(1.5);
+	RatioTH2D_->GetZaxis()->SetRangeUser(0., 1.5);
 	RatioTH2D_->Draw("ColZ,Text,E");
 	c1->SaveAs("Efficiencies/"+name_+".pdf");
 	delete c1;

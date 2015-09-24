@@ -44,7 +44,7 @@ double OneDHT_[oneDHT_] = {350,500,550,600,650,700,750,800,900,1000,1200,1500,20
 const int oneDMHT_=16;
 double OneDMHT_[oneDMHT_] = {0,50,100,150,200,250,300,350,450,500,600,700,900,1200,1700,8000};
 const int oneDNJets_=6;
-double OneDNJets_[oneDNJets_] = {4,5,6,8,11,20};
+double OneDNJets_[oneDNJets_] = {4,5,6,7,9,20};
 const int oneDBJets_=6;
 double OneDBJets_[oneDBJets_] = {0,1,2,3,5,10};
 const int oneDDeltaR_=8;
@@ -94,8 +94,8 @@ const int muaccMHT_ = 4;
 double muAccMHT_ [muaccMHT_] = {200,500,750,1900};
 const int muaccBTags_ = 5;
 double muAccBTags_[muaccBTags_] = {0,1,2,3,10};
-const int muaccNJets_ = 5;
-double muAccNJets_ [muaccNJets_] = {4,5,6,9,20};
+const int muaccNJets_ = 6;
+double muAccNJets_ [muaccNJets_] = {4,5,6,7,9,20};
 
 // elec acceptance
 // 2D
@@ -106,7 +106,7 @@ double elecAccMHT_ [elecaccMHT_] = {200,500,750,1900};
 const int elecaccBTags_ = 5;
 double elecAccBTags_[elecaccBTags_] = {0,1,2,3,10};
 const int elecaccNJets_ = 6;
-double elecAccNJets_ [elecaccNJets_] = {4,5,6,8,11,20};
+double elecAccNJets_ [elecaccNJets_] = {4,5,6,7,9,20};
 
 // mtw
 // 2D
@@ -129,7 +129,7 @@ double isoTrackReductionMHT_ [isotrackreductionMHT_] = {200,500,750,1900};
 const int isotrackreductionBTags_ = 5;
 double isoTrackReductionBTags_[isotrackreductionBTags_] = {0,1,2,3,10};
 const int isotrackreductionNJets_ = 6;
-double isoTrackReductionNJets_ [isotrackreductionNJets_] = {4,5,6,8,11,20};
+double isoTrackReductionNJets_ [isotrackreductionNJets_] = {4,5,6,7,9,20};
 const int isotrackreductionPT_ = 8;
 double isoTrackReductionPT_ [isotrackreductionPT_] = {5,10,20,25,30,40,50,200};
 const int isotrackreductionActivity_ = 5;
@@ -137,8 +137,8 @@ double isoTrackReductionActivity_ [isotrackreductionActivity_] = {0, 0.02, 0.05,
 // 2D
 const int isotrackreductionBTags2D_ = 3;
 double isoTrackReductionBTags2D_[isotrackreductionBTags2D_] = {0,1,10};
-const int isotrackreductionNJets2D_ = 4;
-double isoTrackReductionNJets2D_ [isotrackreductionNJets2D_] = {4,6,7,20};
+const int isotrackreductionNJets2D_ = 6;
+double isoTrackReductionNJets2D_ [isotrackreductionNJets2D_] = {4,5,6,7,9,20};
 const int isotrackreductionPT2D_ = 8;
 double isoTrackReductionPT2D_[isotrackreductionPT2D_] = {5,10,20,25,30,40,50,200};
 const int isotrackreductionActivity2D_ = 5;
@@ -314,6 +314,8 @@ class EffMaker : public TSelector {
   TH1Eff *MuMTWActivity_;
   // 2D
   TH2Eff *MuMTWPTActivity_;
+  TH2Eff *MuMTWHTNJets_;
+
   
   // elec
   //1D
@@ -325,6 +327,8 @@ class EffMaker : public TSelector {
   TH1Eff *ElecMTWActivity_;
   // 2D
   TH2Eff *ElecMTWPTActivity_;
+  TH2Eff *ElecMTWHTNJets_;
+
   
   
   // Di lep control sample

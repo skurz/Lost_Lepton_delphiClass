@@ -144,6 +144,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuMTWNJets_ = new TH1Eff("MuMTWNJets1D","MuMTWNJets1D",oneDNJets_-1,OneDNJets_);
   MuMTWHT_ = new TH1Eff("MuMTWHT1D","MuMTWHT1D",oneDHT_-1,OneDHT_);
   MuMTWMHT_ = new TH1Eff("MuMTWMHT1D","MuMTWMHT1D",oneDMHT_-1,OneDMHT_);
+
+  MuMTWHTNJets_ = new TH2Eff("MuMTWHTNJets","MuMTWHTNJets",muaccHT_-1,muAccHT_, muaccNJets_-1, muAccNJets_);
   
   //electron
   //1D
@@ -151,6 +153,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecMTWNJets_ = new TH1Eff("ElecMTWNJets1D","ElecMTWNJets1D",oneDNJets_-1,OneDNJets_);
   ElecMTWHT_ = new TH1Eff("ElecMTWHT1D","ElecMTWHT1D",oneDHT_-1,OneDHT_);
   ElecMTWMHT_ = new TH1Eff("ElecMTWMHT1D","ElecMTWMHT1D",oneDMHT_-1,OneDMHT_);
+
+  ElecMTWHTNJets_ = new TH2Eff("ElecMTWHTNJets","ElecMTWHTNJets",elecaccHT_-1,elecAccHT_, elecaccNJets_-1, elecAccNJets_);
 
  
   // di lep  
@@ -733,6 +737,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuMTWPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,true);
       MuMTWActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),Weight,true);
       MuMTWPTActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),selectedIDIsoMuons->at(0).Pt(),Weight,true);
+      MuMTWHTNJets_->Fill(HT, NJets, Weight, true);
     }
   if(muIso==2 && MTW > mtwCut_)
     {
@@ -744,6 +749,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuMTWPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,false);
       MuMTWActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),Weight,false);
       MuMTWPTActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),selectedIDIsoMuons->at(0).Pt(),Weight,false);
+      MuMTWHTNJets_->Fill(HT, NJets, Weight, false);
     }
   
   // single elec control sample
@@ -757,6 +763,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecMTWPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,true);
       ElecMTWActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),Weight,true);
       ElecMTWPTActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),selectedIDIsoElectrons->at(0).Pt(),Weight,true);
+      ElecMTWHTNJets_->Fill(HT, NJets, Weight, true);
     }
   if(elecIso==2 && MTW > mtwCut_)
     {
@@ -768,6 +775,8 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecMTWPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,false);
       ElecMTWActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),Weight,false);
       ElecMTWPTActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),selectedIDIsoElectrons->at(0).Pt(),Weight,false);
+      ElecMTWHTNJets_->Fill(HT, NJets, Weight, false);
+
     }
   // di lep contribution
   if(MuDiLepControlSample==2)
@@ -1257,7 +1266,9 @@ void EffMaker::Terminate()
   MuMTWNJets_->SaveEff("#mu m_{T}^{W}; N_{Jets}", dEfficiencies);   
   MuMTWHT_->SaveEff("#mu m_{T}^{W}; H_{T} [GeV]", dEfficiencies);   
   MuMTWMHT_->SaveEff("#mu m_{T}^{W}; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuMTWPTActivity_->SaveEff("#mu m_{T}^{W};  Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);  
+  MuMTWPTActivity_->SaveEff("#mu m_{T}^{W};  Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);
+  MuMTWHTNJets_->SaveEff("#mu m_{T}(w); H_{T} [GeV]; N_{Jets}", dEfficiencies);
+
 
   //muon
   //1D
@@ -1294,7 +1305,9 @@ void EffMaker::Terminate()
   ElecDiLepMTWNJets_->SaveEff("e di lep; N_{Jets}", dEfficiencies);   
   ElecDiLepMTWHT_->SaveEff("e di lep; H_{T} [GeV]", dEfficiencies);   
   ElecDiLepMTWMHT_->SaveEff("e di lep; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecMTWPTActivity_->SaveEff("e m_{T}^{W}; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
+  ElecMTWPTActivity_->SaveEff("e m_{T}^{W}; Activity; p_{T}(e) [GeV]", dEfficiencies, true);
+  ElecMTWHTNJets_->SaveEff("e m_{T}(w); H_{T} [GeV]; N_{Jets}", dEfficiencies);
+
   //elec
   //1D
   ElecDiLepContributionBTag_->SaveEff("e di lep contri contri; B_{Tags}", dEfficiencies);   
