@@ -962,6 +962,16 @@ void ResultPlot()
   avgWeightDiBosonUp_LL_MC_->Write();
   avgWeightDiBosonDown_LL_MC_->Write();
 
+  LLoutPutFile->cd();
+  LLoutPutFile->mkdir("Closure");
+  TDirectory *dClosure = (TDirectory*)LLoutPutFile->Get("Closure");
+  dClosure->cd();
+
+  TH1F *ClosureTest = (TH1F*) totalPred_LL_MC_->Clone("ClosureTest");
+  ClosureTest->Divide(totalExp_LL_);
+  ClosureTest->SetTitle("Prediction / Expectation");
+  ClosureTest->Write();
+
   LLoutPutFile->Close();
 	
 }
