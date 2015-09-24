@@ -401,7 +401,12 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   	errUpAsymm_ = RatioTGraphAsymmVec_.at(nyBin-1)->GetErrorYhigh(nxBin-1-nEmpty);
 	errDownAsymm_ = RatioTGraphAsymmVec_.at(nyBin-1)->GetErrorYlow(nxBin-1-nEmpty);
 
-	if(std::abs(resultAsymm-result)>0.01) std::cout<<"Efficiencies of TGraph "<<name_<<" doens't fit to THist!: "<<result<<"; "<<resultAsymm<<std::endl;
+	if(std::abs(resultAsymm-result)>0.01){
+		std::cout<<"Efficiencies of TGraph "<<name_<<" doens't fit to THist!: "<<result<<"; "<<resultAsymm<<std::endl;
+		effVec effVec_ = {result, errUp_, errDown_};
+  		return effVec_;
+	}
+
 	effVec effVec_ = {resultAsymm, errUpAsymm_, errDownAsymm_};
     return effVec_;
   }
