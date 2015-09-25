@@ -193,7 +193,7 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   fChain->GetTree()->GetEntry(entry);
 
   // genLevel HTcut
-  if(genHT < HTgen_cut) return kTRUE;
+  if(HTgen_cut > 0.01) if(genHT > HTgen_cut) return kTRUE;
 
   // std::cout << "Applying skim cuts..." << std::endl;
   if(!DY_ && (HT<minHT_ || MHT< minMHT_ || NJets < minNJets_)) return kTRUE;

@@ -276,7 +276,7 @@ Bool_t Prediction::Process(Long64_t entry)
   resetValues();
   fChain->GetTree()->GetEntry(entry);
 
-  if(HTgen_cut> 0.01) if(genHT < HTgen_cut) return kTRUE;
+  if(HTgen_cut > 0.01) if(genHT > HTgen_cut) return kTRUE;
   
   if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_  ) return kTRUE;
   if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ ) return kTRUE;
