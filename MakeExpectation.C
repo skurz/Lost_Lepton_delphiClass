@@ -48,7 +48,8 @@ void MakeExpectation()
   }
 
   Effchain->Process("ExpecMaker.C++g", "Expectation.root"); //specify output path/file here // folder already has to exist for the time beeing...
-  // Effchain->Process("ExpecMaker.C++g", "outputFile.root, genHTcut");
+  // No HT cut: Effchain->Process("ExpecMaker.C++g", "outputFile.root");
+  // HT cut: Effchain->Process("ExpecMaker.C++g", "outputFile.root, genHTcut");
   // for Jacks Syntax (outputname based on input) use: Effchain->Process("ExpecMaker.C++g", "*, genHTcut");
 
   delete proof;

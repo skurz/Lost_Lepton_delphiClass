@@ -59,9 +59,9 @@ double OneDPTRel_[oneDPTRel_]={0, 0.2 ,0.4 ,0.6 ,0.8 ,1.0 , 10.0};
 // double OneDActivity_[oneDActivity_]={0,5,10,20,40,60,80,100,1600};
 // used to compare with tag and probe eff.
 const int oneDPT_=8;
-double OneDPT_[oneDPT_]={10,20,25,30,40,50,200,500};
+double OneDPT_[oneDPT_]={10,20,25,30,40,50,200,2000};
 const int oneDActivity_=6;
-double OneDActivity_[oneDActivity_]={0, 0.02, 0.05, 0.2, 1., 10.};
+double OneDActivity_[oneDActivity_]={0, 0.02, 0.05, 0.2, 1., 50.};
 
 const int oneDActivityOld_=6;
 double OneDActivityOld_[oneDActivityOld_]={0,20,40,60,150,1600};
@@ -89,7 +89,7 @@ double elecPurityNJet_[elecpurityNJet_] ={4,5,20};
 // mu acceptance
 // 2D
 const int muaccHT_ = 4;
-double muAccHT_ [muaccHT_] = {500,800,1200,2500};
+double muAccHT_ [muaccHT_] = {500,800,1200,10000};
 const int muaccMHT_ = 4;
 double muAccMHT_ [muaccMHT_] = {200,500,750,1900};
 const int muaccBTags_ = 5;
@@ -100,7 +100,7 @@ double muAccNJets_ [muaccNJets_] = {4,5,6,7,9,20};
 // elec acceptance
 // 2D
 const int elecaccHT_ = 4;
-double elecAccHT_ [elecaccHT_] = {500,800,1200,2500};
+double elecAccHT_ [elecaccHT_] = {500,800,1200,10000};
 const int elecaccMHT_ = 4;
 double elecAccMHT_ [elecaccMHT_] = {200,500,750,1900};
 const int elecaccBTags_ = 5;
@@ -123,7 +123,7 @@ double ElecMTWActivity2D_[elecMTWActivity2D_]={0, 0.02, 0.05, 0.2, 1.};
 // isotrack reduction
 // 1D
 const int isotrackreductionHT_ = 4;
-double isoTrackReductionHT_ [isotrackreductionHT_] = {500,800,1200,2500};
+double isoTrackReductionHT_ [isotrackreductionHT_] = {500,800,1200,10000};
 const int isotrackreductionMHT_ = 4;
 double isoTrackReductionMHT_ [isotrackreductionMHT_] = {200,500,750,1900};
 const int isotrackreductionBTags_ = 5;
@@ -425,6 +425,8 @@ class EffMaker : public TSelector {
   // 2D
   TH2Eff *IsoTrackReductionHTNJets_; 
   TH2Eff *IsoTrackReductionMHTNJets_;
+  TH2Eff *IsoTrackReductionHTMHT_NJetsLow_;
+  TH2Eff *IsoTrackReductionHTMHT_NJetsHigh_;
   TH2Eff *IsoTrackReductionBTagNJets_;
   TH2Eff *IsoTrackReductionPTActivity_;
   

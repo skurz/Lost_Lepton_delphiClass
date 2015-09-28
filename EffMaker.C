@@ -289,6 +289,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ExpectationReductionIsoTrackActivityEff_ = new TH1Eff("ExpectationReductionIsoTrackActivityEff","ExpectationReductionIsoTrackActivityEff",isotrackreductionActivity_-1,isoTrackReductionActivity_);
   //2D
   IsoTrackReductionHTNJets_ = new TH2Eff("IsoTrackReductionHTNJets","IsoTrackReductionHTNJets",isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionNJets_-1, isoTrackReductionNJets_);
+  IsoTrackReductionHTMHT_NJetsLow_ = new TH2Eff("IsoTrackReductionHTMHT_NJetsLow","IsoTrackReductionHTMHT_NJetsLow", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
+  IsoTrackReductionHTMHT_NJetsHigh_ = new TH2Eff("IsoTrackReductionHTMHT_NJetsHigh","IsoTrackReductionHTMHT_NJetsHigh", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
   IsoTrackReductionMHTNJets_ = new TH2Eff("IsoTrackReductionMHTNJets","IsoTrackReductionMHTNJets",isotrackreductionMHT_-1,isoTrackReductionMHT_, isotrackreductionNJets_-1, isoTrackReductionNJets_);
   IsoTrackReductionBTagNJets_ = new TH2Eff("IsoTrackReductionBTagNJets","IsoTrackReductionBTagNJets",isotrackreductionBTags2D_-1,isoTrackReductionBTags2D_, isotrackreductionNJets2D_-1, isoTrackReductionNJets2D_);
   IsoTrackReductionPTActivity_ = new TH2Eff("IsoTrackReductionPTActivity","IsoTrackReductionPTActivity", isotrackreductionActivity2D_-1, isoTrackReductionActivity2D_,isotrackreductionPT2D_-1,isoTrackReductionPT2D_);
@@ -964,6 +966,8 @@ Bool_t EffMaker::Process(Long64_t entry)
       IsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
       IsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
       IsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
+      if(NJets < 6.5) IsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+      else IsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
       if(GenMuNum>0)
   {
     IsoTrackReductionPTActivity_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),Weight,false);
@@ -1005,6 +1009,8 @@ Bool_t EffMaker::Process(Long64_t entry)
       IsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
       IsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
       IsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
+      if(NJets < 6.5) IsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+      else IsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
       if(isoMuonTracks>0)
   {
     IsoTrackReductionPTActivity_->Fill(IsolatedMuonTracksVetoActivity->at(0),IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
@@ -1194,8 +1200,8 @@ void EffMaker::Terminate()
   MuAccBTagNJets_->SaveEff("#mu acc; B_{Tags}; N_{Jets}", dEfficiencies);   
   MuAccMHTNJetsB0_->SaveEff("#mu acc B_{Tags}=0; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   MuAccMHTNJetsB1_Inf_->SaveEff("#mu acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  MuAccHTMHT_NJetsLow_->SaveEff("#mu acc low N_{Jets}; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJetsHigh_->SaveEff("#mu acc high N_{Jets}; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJetsLow_->SaveEff("#mu acc N_{Jets}=4-6; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJetsHigh_->SaveEff("#mu acc N_{Jets}#geq7; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
   MuAccHTMHTB0_->SaveEff("#mu acc B_{Tags}=0;H_{T} [GeV] ; #slash{H}_{T} [GeV]", dEfficiencies);   
   MuAccHTMHTB1_Inf_->SaveEff("#mu acc B_{Tags}#geq1; H_{T} [GeV]; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
 
@@ -1212,8 +1218,8 @@ void EffMaker::Terminate()
   ElecAccBTagNJets_->SaveEff("e acc; B_{Tags}; N_{Jets}", dEfficiencies);   
   ElecAccMHTNJetsB0_->SaveEff("e acc B_{Tags}=0; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   ElecAccMHTNJetsB1_Inf_->SaveEff("e acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  ElecAccHTMHT_NJetsLow_->SaveEff("e acc low N_{Jets}; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJetsHigh_->SaveEff("e acc high N_{Jets}; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJetsLow_->SaveEff("e acc N_{Jets}=4-6; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJetsHigh_->SaveEff("e acc N_{Jets}#geq7; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
   ElecAccHTMHTB0_->SaveEff("e acc B_{Tags}=0;H_{T} [GeV] ; #slash{H}_{T} [GeV]", dEfficiencies);   
   ElecAccHTMHTB1_Inf_->SaveEff("e acc B_{Tags}#geq1; H_{T} [GeV]; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
 
@@ -1357,7 +1363,9 @@ void EffMaker::Terminate()
   ExpectationReductionIsoTrackPTEff_->SaveEff("iso track expec. reduction; p_{T} [GeV]", dEfficiencies);   
   ExpectationReductionIsoTrackActivityEff_->SaveEff("iso track expec. reduction; Activity", dEfficiencies, true);   
   //2D
-  IsoTrackReductionHTNJets_->SaveEff("iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  IsoTrackReductionHTNJets_->SaveEff("iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);
+  IsoTrackReductionHTMHT_NJetsLow_->SaveEff("iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJetsHigh_->SaveEff("iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   IsoTrackReductionMHTNJets_->SaveEff("iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   IsoTrackReductionBTagNJets_->SaveEff("iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
   IsoTrackReductionPTActivity_->SaveEff("iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true);   

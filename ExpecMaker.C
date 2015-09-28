@@ -206,13 +206,13 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 
   bool passTrigger = false;	
   for (std::vector<string>::iterator it = TriggerNames->begin() ; it != TriggerNames->end(); ++it){
-    if(*it=="HLT_PFHT350_PFMET100_NoiseCleaned_v1"){
+    if(*it=="HLT_PFHT350_PFMET100_NoiseCleaned_v1"){  // Run2015A,B
       if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
     }
-    if(*it=="HLT_PFHT800_v1"){
+    if(*it=="HLT_PFHT350_PFMET100_JetIdCleaned_v1"){  // Run2015C
       if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
     }
-    if(*it=="HLT_PFMET170_NoiseCleaned_v2"){
+    if(*it=="HLT_PFHT350_PFMET100_JetIdCleaned_v2"){  // Run2015D
       if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
     }
   }

@@ -323,6 +323,9 @@ class Prediction : public TSelector {
   TH1Eff *ExpectationReductionIsoTrackNJetsEff_;
   TH2Eff *ExpectationReductionIsoTrackBTagsNJetsEff_;
   TH2Eff *ExpectationReductionIsoTrackHTNJetsEff_;
+  TH2Eff *ExpectationReductionIsoTrackMHTNJetsEff_;
+  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJetsLowEff_;
+  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJetsHighEff_;
   TH2Eff *ExpectationReductionMuIsoTrackBTagsNJetsEff_, *ExpectationReductionElecIsoTrackBTagsNJetsEff_, *ExpectationReductionPionIsoTrackBTagsNJetsEff_;
 
   

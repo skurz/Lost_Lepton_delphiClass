@@ -372,7 +372,8 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   if(result<0.01)
   {
     std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.01 for histo: "<<RatioTH2D_->GetName()<<std::endl;
-    result =0.01;
+    effVec effVec_ = {0.01, 0.99, 0.01};
+    return effVec_; 
   }
   if(result>1)
   {
