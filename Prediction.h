@@ -48,6 +48,7 @@ const double minNJets_=3.5;
 const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;
 const double deltaPhi3_=0.3;
+const double deltaPhi4_=0.3;
 const double minDeltaPhiN_=4.0;
 
 const UShort_t NJetsLow_=2;
@@ -361,6 +362,7 @@ class Prediction : public TSelector {
   Double_t        DeltaPhi1;
   Double_t        DeltaPhi2;
   Double_t        DeltaPhi3;
+  Double_t        DeltaPhi4;
   Double_t        DeltaPhiN1;
   Double_t        DeltaPhiN2;
   Double_t        DeltaPhiN3;
@@ -462,6 +464,7 @@ class Prediction : public TSelector {
   TBranch        *b_DeltaPhi1=0;   //!
   TBranch        *b_DeltaPhi2=0;   //!
   TBranch        *b_DeltaPhi3=0;   //!
+  TBranch        *b_DeltaPhi4=0;   //!
   TBranch        *b_DeltaPhiN1=0;   //!
   TBranch        *b_DeltaPhiN2=0;   //!
   TBranch        *b_DeltaPhiN3=0;   //!
@@ -614,13 +617,13 @@ void Prediction::Init(TTree *tree)
 
   fChain->SetBranchStatus("*",0);
 
-  fChain->SetBranchStatus("GenElec_MT2Activity",1);
+/*  fChain->SetBranchStatus("GenElec_MT2Activity",1);
   fChain->SetBranchStatus("GenElec_RA2Activity",1);
   fChain->SetBranchStatus("GenMu_MT2Activity", 1);
   fChain->SetBranchStatus("GenMu_RA2Activity",1);
   fChain->SetBranchStatus("GenTau_MT2Activity",1);
   fChain->SetBranchStatus("GenTau_RA2Activity", 1);
-  fChain->SetBranchStatus("selectedIDElectrons_MiniIso", 1);
+*/  fChain->SetBranchStatus("selectedIDElectrons_MiniIso", 1);
   fChain->SetBranchStatus("selectedIDElectrons_MT2Activity",1);
   fChain->SetBranchStatus("selectedIDElectrons_RA2Activity", 1);
   fChain->SetBranchStatus("selectedIDIsoElectrons_MT2Activity", 1);
@@ -642,6 +645,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("DeltaPhi1", 1);
   fChain->SetBranchStatus("DeltaPhi2", 1);
   fChain->SetBranchStatus("DeltaPhi3", 1);
+  fChain->SetBranchStatus("DeltaPhi4", 1);
   fChain->SetBranchStatus("DeltaPhiN1", 1);
   fChain->SetBranchStatus("DeltaPhiN2", 1);
   fChain->SetBranchStatus("DeltaPhiN3", 1);
@@ -705,23 +709,23 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("selectedIDMuons", 1);
   fChain->SetBranchStatus("selectedIDMuons_MTW", 1);
   fChain->SetBranchStatus("TagLeptonHighPT", 1);
-  fChain->SetBranchStatus("TauDecayCands", 1);
-  fChain->SetBranchStatus("TauDecayCands_pdgID", 1);
+//  fChain->SetBranchStatus("TauDecayCands", 1);
+//  fChain->SetBranchStatus("TauDecayCands_pdgID", 1);
   fChain->SetBranchStatus("TriggerNames", 1);
   fChain->SetBranchStatus("TriggerPass", 1);
   fChain->SetBranchStatus("TriggerPrescales", 1);
   fChain->SetBranchStatus("Weight", 1);
-  fChain->SetBranchStatus("genHT", 1);
+  if(HTgen_cut>0.01)  fChain->SetBranchStatus("genHT", 1);
 
 
 
-  fChain->SetBranchAddress("GenElec_MT2Activity", &GenElec_MT2Activity, &b_GenElec_MT2Activity);
+/*  fChain->SetBranchAddress("GenElec_MT2Activity", &GenElec_MT2Activity, &b_GenElec_MT2Activity);
   fChain->SetBranchAddress("GenElec_RA2Activity", &GenElec_RA2Activity, &b_GenElec_RA2Activity);
   fChain->SetBranchAddress("GenMu_MT2Activity", &GenMu_MT2Activity, &b_GenMu_MT2Activity);
   fChain->SetBranchAddress("GenMu_RA2Activity", &GenMu_RA2Activity, &b_GenMu_RA2Activity);
   fChain->SetBranchAddress("GenTau_MT2Activity", &GenTau_MT2Activity, &b_GenTau_MT2Activity);
   fChain->SetBranchAddress("GenTau_RA2Activity", &GenTau_RA2Activity, &b_GenTau_RA2Activity);
-  fChain->SetBranchAddress("selectedIDElectrons_MiniIso", &selectedIDElectrons_MiniIso, &b_selectedIDElectrons_MiniIso);
+*/  fChain->SetBranchAddress("selectedIDElectrons_MiniIso", &selectedIDElectrons_MiniIso, &b_selectedIDElectrons_MiniIso);
   fChain->SetBranchAddress("selectedIDElectrons_MT2Activity", &selectedIDElectrons_MT2Activity, &b_selectedIDElectrons_MT2Activity);
   fChain->SetBranchAddress("selectedIDElectrons_RA2Activity", &selectedIDElectrons_RA2Activity, &b_selectedIDElectrons_RA2Activity);
   fChain->SetBranchAddress("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity, &b_selectedIDIsoElectrons_MT2Activity);
@@ -743,6 +747,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("DeltaPhi1", &DeltaPhi1, &b_DeltaPhi1);
   fChain->SetBranchAddress("DeltaPhi2", &DeltaPhi2, &b_DeltaPhi2);
   fChain->SetBranchAddress("DeltaPhi3", &DeltaPhi3, &b_DeltaPhi3);
+  fChain->SetBranchAddress("DeltaPhi4", &DeltaPhi4, &b_DeltaPhi4);
   fChain->SetBranchAddress("DeltaPhiN1", &DeltaPhiN1, &b_DeltaPhiN1);
   fChain->SetBranchAddress("DeltaPhiN2", &DeltaPhiN2, &b_DeltaPhiN2);
   fChain->SetBranchAddress("DeltaPhiN3", &DeltaPhiN3, &b_DeltaPhiN3);
@@ -806,13 +811,13 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("selectedIDMuons", &selectedIDMuons, &b_selectedIDMuons);
   fChain->SetBranchAddress("selectedIDMuons_MTW", &selectedIDMuons_MTW, &b_selectedIDMuons_MTW);
   fChain->SetBranchAddress("TagLeptonHighPT", &TagLeptonHighPT, &b_TagLeptonHighPT);
-  fChain->SetBranchAddress("TauDecayCands", &TauDecayCands, &b_TauDecayCands);
-  fChain->SetBranchAddress("TauDecayCands_pdgID", &TauDecayCands_pdgID, &b_TauDecayCands_pdgID);
+//  fChain->SetBranchAddress("TauDecayCands", &TauDecayCands, &b_TauDecayCands);
+//  fChain->SetBranchAddress("TauDecayCands_pdgID", &TauDecayCands_pdgID, &b_TauDecayCands_pdgID);
   fChain->SetBranchAddress("TriggerNames", &TriggerNames, &b_TriggerNames);
   fChain->SetBranchAddress("TriggerPass", &TriggerPass, &b_TriggerPass);
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
   fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
-  fChain->SetBranchAddress("genHT", &genHT, &b_genHT);
+  if(HTgen_cut>0.01) fChain->SetBranchAddress("genHT", &genHT, &b_genHT);
 
 }
 

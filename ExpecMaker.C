@@ -34,6 +34,7 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("DeltaPhi1",&DeltaPhi1);
   tExpectation_->Branch("DeltaPhi2",&DeltaPhi2);
   tExpectation_->Branch("DeltaPhi3",&DeltaPhi3);
+  tExpectation_->Branch("DeltaPhi4",&DeltaPhi3);
   tExpectation_->Branch("minDeltaPhiN",&minDeltaPhiN);
   tExpectation_->Branch("DeltaPhiN1",&DeltaPhiN1);
   tExpectation_->Branch("DeltaPhiN2",&DeltaPhiN2);
@@ -198,8 +199,8 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   // std::cout << "Applying skim cuts..." << std::endl;
   if(!DY_ && (HT<minHT_ || MHT< minMHT_ || NJets < minNJets_)) return kTRUE;
   if(DY_ && ( HT<minHT_ || NJets < minNJets_) ) return kTRUE;	
-  if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ ) return kTRUE;
-  if(useDeltaPhiCut == -1) if(!(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_)) return kTRUE;
+  if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_ ) return kTRUE;
+  if(useDeltaPhiCut == -1) if(!(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_)) return kTRUE;
   //	if(!DY_) if(minDeltaPhiN<minDeltaPhiN_) return kTRUE;
 
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;

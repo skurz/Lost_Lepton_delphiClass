@@ -7,7 +7,7 @@ void MakePrediction_Data()
 	bool useTProof = false;
 
 	TChain *Effchain = new TChain("TreeMaker2/PreSelection");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/data_CD_122.9pb/*.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/data_CD_225.6pb/*.root");
 
 	TProof *proof = NULL;
 

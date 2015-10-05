@@ -50,6 +50,7 @@ const double minNJets_=3.4;
 const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;
 const double deltaPhi3_=0.3;
+const double deltaPhi4_=0.3;
 const double minDeltaPhiN_=4.0;
 const bool applyFilters_=true;
 const bool DY_=false;
@@ -265,6 +266,7 @@ public :
   Double_t        DeltaPhi1;
   Double_t        DeltaPhi2;
   Double_t        DeltaPhi3;
+  Double_t        DeltaPhi4;
   Double_t        DeltaPhiN1;
   Double_t        DeltaPhiN2;
   Double_t        DeltaPhiN3;
@@ -366,6 +368,7 @@ public :
   TBranch        *b_DeltaPhi1=0;   //!
   TBranch        *b_DeltaPhi2=0;   //!
   TBranch        *b_DeltaPhi3=0;   //!
+  TBranch        *b_DeltaPhi4=0;   //!
   TBranch        *b_DeltaPhiN1=0;   //!
   TBranch        *b_DeltaPhiN2=0;   //!
   TBranch        *b_DeltaPhiN3=0;   //!
@@ -548,6 +551,7 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("DeltaPhi1", 1);
   fChain->SetBranchStatus("DeltaPhi2", 1);
   fChain->SetBranchStatus("DeltaPhi3", 1);
+  fChain->SetBranchStatus("DeltaPhi4", 1);
   fChain->SetBranchStatus("DeltaPhiN1", 1);
   fChain->SetBranchStatus("DeltaPhiN2", 1);
   fChain->SetBranchStatus("DeltaPhiN3", 1);
@@ -648,6 +652,7 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("DeltaPhi1", &DeltaPhi1, &b_DeltaPhi1);
   fChain->SetBranchAddress("DeltaPhi2", &DeltaPhi2, &b_DeltaPhi2);
   fChain->SetBranchAddress("DeltaPhi3", &DeltaPhi3, &b_DeltaPhi3);
+  fChain->SetBranchAddress("DeltaPhi4", &DeltaPhi4, &b_DeltaPhi4);
   fChain->SetBranchAddress("DeltaPhiN1", &DeltaPhiN1, &b_DeltaPhiN1);
   fChain->SetBranchAddress("DeltaPhiN2", &DeltaPhiN2, &b_DeltaPhiN2);
   fChain->SetBranchAddress("DeltaPhiN3", &DeltaPhiN3, &b_DeltaPhiN3);

@@ -42,7 +42,11 @@ void ResultPlot()
   TString OutputPath_Prediction("LLPrediction.root");
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 3000; // only used for MC prediction! Not data tree!
+  Double_t scaleFactorWeight = 1; // only used for MC prediction! Not data tree!
+
+  // Do approximation of statistical uncertainties if full MC statistics are used (stat. unc. then refers to a given luminosity of data)
+  // Leave at 'false' if doing a closure test so stat. uncertainty is the one using full MC statistics
+  bool approxStatUncertainty = false;
 
   // Prepare Code for Extrapolation Method
   bool doExtrapolation = false; 
@@ -887,7 +891,7 @@ void ResultPlot()
     // Prediction
     // Correct estimate of stat. uncertainty on prediction only possible if data is used or limited MC statistics (e.g. number of events corresponding to 3fb-1)
     // For approximation of stat. uncertainty on prediction using full MC statistics use:
-    if(InputPath_Prediction_Data == InputPath_Prediction) if(totalCS_LL_->GetBinContent(i)>0.00001) totalPred_LL_->SetBinError(i, sqrt(totalPred_LL_->GetBinContent(i)*totalPred_LL_->GetBinContent(i)/totalCS_LL_->GetBinContent(i)));
+    if(InputPath_Prediction_Data == InputPath_Prediction && approxStatUncertainty) if(totalCS_LL_->GetBinContent(i)>0.00001) totalPred_LL_->SetBinError(i, sqrt(totalPred_LL_->GetBinContent(i)*totalPred_LL_->GetBinContent(i)/totalCS_LL_->GetBinContent(i)));
 
     printf("$%3.3f\\pm%3.3f^{+%3.3f}_{%3.3f}{}^{+%3.3f}_{%3.3f}{}^{+%3.3f}_{%3.3f}$ & ", totalPred_LL_->GetBinContent(i), totalPred_LL_->GetBinError(i), totalPredStatUp_LL_->GetBinContent(i), totalPredStatDown_LL_->GetBinContent(i), totalPredSysUp_LL_->GetBinContent(i), totalPredSysDown_LL_->GetBinContent(i), totalPredNonClosureUp_LL_->GetBinContent(i), totalPredNonClosureDown_LL_->GetBinContent(i));
 

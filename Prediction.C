@@ -20,7 +20,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   // When running with PROOF SlaveBegin() is called on each slave server.
   // The tree argument is deprecated (on PROOF 0 is passed).
   
-  TFile *effInput = new TFile("Efficiencies.root","UPDATE");
+  TFile *effInput = new TFile("Efficiencies.root","READ");
   TDirectory *EffInputFolder =   (TDirectory*)effInput->Get("Efficiencies");
 
   if(UseTagAndProbeEffIso_)
@@ -267,6 +267,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   SearchBinsQCD_ = new SearchBins(true); // 220 QCD binning
   std::cout<<"Applying filters: "<<applyFilters_<<std::endl;
   std::cout<<"Use MET filters: "<<useFilterData<<std::endl;
+  std::cout<<"Apply Triggers: "<<useTrigger<<std::endl;
   std::cout<<"----------------"<<std::endl;
   std::cout<<"UseAsymmErrors: "<<useAsymmErrors<<std::endl;
   std::cout<<"UseTagAndProbeEffIso: "<<UseTagAndProbeEffIso_<<std::endl;
@@ -282,13 +283,11 @@ Bool_t Prediction::Process(Long64_t entry)
   if(HTgen_cut > 0.01) if(genHT > HTgen_cut) return kTRUE;
   
   if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_  ) return kTRUE;
-  if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ ) return kTRUE;
-  if(useDeltaPhiCut == -1) if(!(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_)) return kTRUE;
+  if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_) return kTRUE;
+  if(useDeltaPhiCut == -1) if(!(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_)) return kTRUE;
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
 
   isoTracks= isoElectronTracks + isoMuonTracks + isoPionTracks;
-  Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
-  BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
 
   selectedIDMuonsNum_ = selectedIDMuons->size();
   selectedIDIsoMuonsNum_ = selectedIDIsoMuons->size();
@@ -313,6 +312,9 @@ Bool_t Prediction::Process(Long64_t entry)
   }
   if(useTrigger && !passTrigger) return kTRUE;
 
+
+  Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
+  BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
 
   // get IsoTrack Effs
   //expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackHTNJetsEff_->GetEff(HT, NJets, useAsymmErrors);
@@ -874,6 +876,7 @@ bool Prediction::FiltersPass()
     if(NVtx==0) result=false;
     if(eeBadScFilter==0) result=false;
     if(HBHENoiseFilter==0) result=false;
+    //if(METFilters==0) result=false;
   }
   if(!JetID) result=false;
   return result;

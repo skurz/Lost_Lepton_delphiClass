@@ -22,7 +22,7 @@ void MakePrediction()
   
   TChain *Effchain = new TChain("TreeMaker2/PreSelection");
   //Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb_0309/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
-  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/Kevin_test/*.root");
+  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb_activity_2409/ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/*.root");
   
     
 //  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb_0309/WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
