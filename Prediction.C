@@ -56,6 +56,9 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   MuAccMHTNJetsB0_ = new TH2Eff("MuAccMHTNJetsB0", EffInputFolder);
   MuAccMHTNJetsB1_Inf_ = new TH2Eff("MuAccMHTNJetsB1_Inf", EffInputFolder);
   MuAccHTMHT_NJetsLow_ = new TH2Eff("MuAccHTMHT_NJetsLow", EffInputFolder);
+  MuAccHTMHT_NJets4_ = new TH2Eff("MuAccHTMHT_NJets4", EffInputFolder);
+  MuAccHTMHT_NJets5_ = new TH2Eff("MuAccHTMHT_NJets5", EffInputFolder);
+  MuAccHTMHT_NJets6_ = new TH2Eff("MuAccHTMHT_NJets6", EffInputFolder);
   MuAccHTMHT_NJetsHigh_ = new TH2Eff("MuAccHTMHT_NJetsHigh", EffInputFolder);
   MuAccHTMHTB0_ = new TH2Eff("MuAccHTMHTB0", EffInputFolder);
   MuAccHTMHTB1_Inf_ = new TH2Eff("MuAccHTMHTB1_Inf", EffInputFolder); 
@@ -79,6 +82,9 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   ElecAccMHTNJetsB0_ = new TH2Eff("ElecAccMHTNJetsB0", EffInputFolder);
   ElecAccMHTNJetsB1_Inf_ = new TH2Eff("ElecAccMHTNJetsB1_Inf", EffInputFolder);
   ElecAccHTMHT_NJetsLow_ = new TH2Eff("ElecAccHTMHT_NJetsLow", EffInputFolder);
+  ElecAccHTMHT_NJets4_ = new TH2Eff("ElecAccHTMHT_NJets4", EffInputFolder);
+  ElecAccHTMHT_NJets5_ = new TH2Eff("ElecAccHTMHT_NJets5", EffInputFolder);
+  ElecAccHTMHT_NJets6_ = new TH2Eff("ElecAccHTMHT_NJets6", EffInputFolder);
   ElecAccHTMHT_NJetsHigh_ = new TH2Eff("ElecAccHTMHT_NJetsHigh", EffInputFolder);
   ElecAccHTMHTB0_ = new TH2Eff("ElecAccHTMHTB0", EffInputFolder);
   ElecAccHTMHTB1_Inf_ = new TH2Eff("ElecAccHTMHTB1_Inf", EffInputFolder);
@@ -171,6 +177,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("muAccWeight",&muAccWeight_);
   tPrediction_->Branch("muAccEff",&muAccEff_);
   tPrediction_->Branch("muTotalWeight",&muTotalWeight_);
+  tPrediction_->Branch("muTotalWeightDiLep",&muTotalWeightDiLep_);
+  tPrediction_->Branch("muTotalWeightDiLepIsoTrackReduced",&muTotalWeightDiLepIsoTrackReduced_);
   tPrediction_->Branch("totalMuons",&totalMuons_);
   tPrediction_->Branch("elecAccWeight",&elecAccWeight_);
   tPrediction_->Branch("elecAccEff",&elecAccEff_);
@@ -180,6 +188,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("elecIsoOnlyWeight",&elecIsoOnlyWeight_);
   tPrediction_->Branch("elecIsoEff",&elecIsoEff_);
   tPrediction_->Branch("elecTotalWeight",&elecTotalWeight_);
+  tPrediction_->Branch("elecTotalWeightDiLep",&elecTotalWeightDiLep_);
+  tPrediction_->Branch("elecTotalWeightDiLepIsoTrackReduced",&elecTotalWeightDiLepIsoTrackReduced_);
   tPrediction_->Branch("totalElectrons",&totalElectrons_);
   tPrediction_->Branch("expectationReductionIsoTrackEff",&expectationReductionIsoTrackEff_);
   tPrediction_->Branch("expectationReductionMuIsoTrackEff",&expectationReductionMuIsoTrackEff_);
@@ -268,6 +278,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   std::cout<<"Applying filters: "<<applyFilters_<<std::endl;
   std::cout<<"Use MET filters: "<<useFilterData<<std::endl;
   std::cout<<"Apply Triggers: "<<useTrigger<<std::endl;
+  std::cout<<"DeltaPhi Cut: "<<useDeltaPhiCut<<std::endl;
   std::cout<<"----------------"<<std::endl;
   std::cout<<"UseAsymmErrors: "<<useAsymmErrors<<std::endl;
   std::cout<<"UseTagAndProbeEffIso: "<<UseTagAndProbeEffIso_<<std::endl;
@@ -355,12 +366,23 @@ Bool_t Prediction::Process(Long64_t entry)
       muIsoEffVec_ = MuIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
       muRecoEffVec_ = MuRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
       //muAccEffVec_ = MuAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
-      if(NJets<6.5) muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+      if(NJets<6.5){
+        //muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
+        else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJets6_->GetEff(HT,MHT, useAsymmErrors);
+      }
       else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
 
       //elecAccEffVec_ = ElecAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
-      if(NJets<6.5) elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+      if(NJets<6.5){
+        // elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
+        else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJets6_->GetEff(HT,MHT, useAsymmErrors);
+      }
       else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+
       elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
       elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
       /*
@@ -406,6 +428,9 @@ Bool_t Prediction::Process(Long64_t entry)
       totalWeightDiLepIsoElecTrackReduced_ = totalWeightDiLep_ * (1 - expectationReductionElecIsoTrackEff_);
       totalWeightDiLepIsoPionTrackReduced_ = totalWeightDiLep_ * (1 - expectationReductionPionIsoTrackEff_);
       totalWeightDiLepIsoTrackReducedCombined_ = totalWeightDiLep_ * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_));
+
+      muTotalWeightDiLep_ = muTotalWeight_ + (1-muDiLepContributionMTWAppliedEff_) * mtwCorrectedWeight_ * (1-muDiLepEffMTWAppliedEff_)/muDiLepEffMTWAppliedEff_;
+      muTotalWeightDiLepIsoTrackReduced_ = muTotalWeightDiLep_ * (1 - expectationReductionIsoTrackEff_);
 
       if(mtw<100){
         MuMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight, Weight);
@@ -576,13 +601,24 @@ Bool_t Prediction::Process(Long64_t entry)
       elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
 
       //elecAccEffVec_ = ElecAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
-      if(NJets<6.5) elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+      if(NJets<6.5){
+        // elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
+        else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJets6_->GetEff(HT,MHT, useAsymmErrors);
+      }
       else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
 
       // cout << "get acceptance efficiency...";
       //muAccEffVec_ = MuAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
-      if(NJets<6.5) muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+      if(NJets<6.5){
+        //muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
+        else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJets6_->GetEff(HT,MHT, useAsymmErrors);
+      }
       else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+
       muIsoEffVec_ = MuIsoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
       muRecoEffVec_ = MuRecoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
       
@@ -628,6 +664,9 @@ Bool_t Prediction::Process(Long64_t entry)
       totalWeightDiLepIsoElecTrackReduced_ = totalWeightDiLep_ * (1 - expectationReductionElecIsoTrackEff_);
       totalWeightDiLepIsoPionTrackReduced_ = totalWeightDiLep_ * (1 - expectationReductionPionIsoTrackEff_);
       totalWeightDiLepIsoTrackReducedCombined_ = totalWeightDiLep_ * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_));
+
+      elecTotalWeightDiLep_ = elecTotalWeight_ + (1-elecDiLepContributionMTWAppliedEff_) * mtwCorrectedWeight_ * (1-elecDiLepEffMTWAppliedEff_)/elecDiLepEffMTWAppliedEff_;
+      elecTotalWeightDiLepIsoTrackReduced_ = elecTotalWeightDiLep_ * (1 - expectationReductionIsoTrackEff_);
 
       if(mtw<100){
         ElecMeanWeight_->Fill(Bin_+0.01, totalWeightDiLepIsoTrackReduced_/Weight, Weight);

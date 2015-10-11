@@ -219,6 +219,9 @@ class EffMaker : public TSelector {
   TH2Eff *MuAccMHTNJetsB0_;
   TH2Eff *MuAccMHTNJetsB1_Inf_;
   TH2Eff *MuAccHTMHT_NJetsLow_;
+  TH2Eff *MuAccHTMHT_NJets4_;
+  TH2Eff *MuAccHTMHT_NJets5_;
+  TH2Eff *MuAccHTMHT_NJets6_;
   TH2Eff *MuAccHTMHT_NJetsHigh_;
   TH2Eff *MuAccHTMHTB0_;
   TH2Eff *MuAccHTMHTB1_Inf_;
@@ -239,6 +242,9 @@ class EffMaker : public TSelector {
   TH2Eff *ElecAccMHTNJetsB0_;
   TH2Eff *ElecAccMHTNJetsB1_Inf_;
   TH2Eff *ElecAccHTMHT_NJetsLow_;
+  TH2Eff *ElecAccHTMHT_NJets4_;
+  TH2Eff *ElecAccHTMHT_NJets5_;
+  TH2Eff *ElecAccHTMHT_NJets6_;
   TH2Eff *ElecAccHTMHT_NJetsHigh_;
   TH2Eff *ElecAccHTMHTB0_;
   TH2Eff *ElecAccHTMHTB1_Inf_;
@@ -426,6 +432,9 @@ class EffMaker : public TSelector {
   TH2Eff *IsoTrackReductionHTNJets_; 
   TH2Eff *IsoTrackReductionMHTNJets_;
   TH2Eff *IsoTrackReductionHTMHT_NJetsLow_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets4_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets5_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets6_;
   TH2Eff *IsoTrackReductionHTMHT_NJetsHigh_;
   TH2Eff *IsoTrackReductionBTagNJets_;
   TH2Eff *IsoTrackReductionPTActivity_;

@@ -30,7 +30,7 @@ const bool useAsymmErrors = true;
 const bool useFilterData = true;
 const bool applyFilters_=true;
 const bool applyDiLepCorrection_=true;
-const bool useTrigger = false;
+const bool useTrigger = true;
 
 // useDeltaPhiCut = 0: no deltaPhiCut
 // useDeltaPhiCut = 1: deltaPhiCut
@@ -245,6 +245,8 @@ class Prediction : public TSelector {
 
   
   Float_t totalWeight_, totalWeightDiLep_, totalWeightDiLepIsoTrackReduced_,totalWeightDiLepIsoMuTrackReduced_,totalWeightDiLepIsoElecTrackReduced_,totalWeightDiLepIsoPionTrackReduced_,totalWeightDiLepIsoTrackReducedCombined_;
+  Float_t muTotalWeightDiLep_, muTotalWeightDiLepIsoTrackReduced_;
+  Float_t elecTotalWeightDiLep_, elecTotalWeightDiLepIsoTrackReduced_;
   std::vector<Float_t> selectedIDIsoMuonsDeltaRJet, selectedIDIsoMuonsRelPTJet;
   std::vector<Float_t> selectedIDIsoElectronsDeltaRJet, selectedIDIsoElectronsRelPTJet;
 
@@ -292,6 +294,9 @@ class Prediction : public TSelector {
   TH2Eff *MuAccMHTNJetsB0_;
   TH2Eff *MuAccMHTNJetsB1_Inf_;
   TH2Eff *MuAccHTMHT_NJetsLow_;
+  TH2Eff *MuAccHTMHT_NJets4_;
+  TH2Eff *MuAccHTMHT_NJets5_;
+  TH2Eff *MuAccHTMHT_NJets6_;
   TH2Eff *MuAccHTMHT_NJetsHigh_;
   TH2Eff *MuAccHTMHTB0_;
   TH2Eff *MuAccHTMHTB1_Inf_;
@@ -314,6 +319,9 @@ class Prediction : public TSelector {
   TH1Eff *ElecDiLepEffMTWAppliedNJets_;
 
   TH2Eff *ElecAccHTMHT_NJetsLow_;
+  TH2Eff *ElecAccHTMHT_NJets4_;
+  TH2Eff *ElecAccHTMHT_NJets5_;
+  TH2Eff *ElecAccHTMHT_NJets6_;
   TH2Eff *ElecAccHTMHT_NJetsHigh_;
   TH2Eff *ElecAccMHTNJetsB0_;
   TH2Eff *ElecAccMHTNJetsB1_Inf_; 
@@ -326,6 +334,9 @@ class Prediction : public TSelector {
   TH2Eff *ExpectationReductionIsoTrackHTNJetsEff_;
   TH2Eff *ExpectationReductionIsoTrackMHTNJetsEff_;
   TH2Eff *ExpectationReductionIsoTrackHTMHT_NJetsLowEff_;
+  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets4Eff_;
+  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets5Eff_;
+  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets6Eff_;
   TH2Eff *ExpectationReductionIsoTrackHTMHT_NJetsHighEff_;
   TH2Eff *ExpectationReductionMuIsoTrackBTagsNJetsEff_, *ExpectationReductionElecIsoTrackBTagsNJetsEff_, *ExpectationReductionPionIsoTrackBTagsNJetsEff_;
 

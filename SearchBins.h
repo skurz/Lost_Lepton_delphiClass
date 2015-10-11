@@ -521,9 +521,9 @@ unsigned int SearchBins::GetBinNumber(double HT, double MHT, int NJets, int BTag
   for(unsigned int i=0; i<bins_.size();i++)
   {
     //              std::cout<<"Bin["<<i<<"]: HT["<<bins_[i].HTmin_<<","<<bins_[i].HTmax_<<"] MHT["<<bins_[i].MHTmin_<<","<<bins_[i].MHTmax_<<"] NJets["<<bins_[i].NJetsmin_<<","<<bins_[i].NJetsmax_<<"] BTags["<<bins_[i].BTagsmin_<<","<<bins_[i].BTagsmax_<<"]\n";
-    if(HT>bins_[i].HTmin_ && 
+    if(HT>=bins_[i].HTmin_ && 
       HT<bins_[i].HTmax_ &&
-      MHT>bins_[i].MHTmin_ && 
+      MHT>=bins_[i].MHTmin_ && 
       MHT<bins_[i].MHTmax_ &&
       NJets+0.1>bins_[i].NJetsmin_ && 
       NJets-0.1<bins_[i].NJetsmax_ &&

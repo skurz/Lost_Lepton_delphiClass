@@ -31,31 +31,89 @@ void SaveClosure(TH1F* prediction, TH1F* expectation, TDirectory* Folder) // pre
   Closure->Write();
 }
 
+UShort_t getMergedBinQCD(UShort_t BinQCD, Int_t NJets){
+  if(BinQCD > 900) return 900;
+  if(NJets < 4) return 900;
+
+  UShort_t bin = 0;
+
+  switch(NJets){
+    case 4:
+      bin = BinQCD % 11;
+      if(bin == 0) bin = 11;
+      break;
+    case 5:
+      bin = BinQCD % 11 + 11;
+      if(bin == 11) bin = 22;
+      break;
+    case 6:
+      bin = BinQCD % 11 + 22;
+      if(bin == 22) bin = 33;
+      break;
+    case 7:
+    case 8:
+      bin = BinQCD % 11 + 33;
+      if(bin == 33) bin = 44;
+      break;
+    default:
+      bin = BinQCD % 11 + 44;
+      if(bin == 44) bin = 55;
+      break;
+  }
+
+  return bin;
+}
+
+UShort_t getHTMHTBox(Double_t HT, Double_t MHT){
+  if(MHT < 200 || HT < 500) return -1;
+  if(MHT >= 750 && HT < 800) return -1;
+
+  if(MHT < 500){
+    if(HT < 800) return 1;
+    if(HT < 1200) return 2;
+    else return 3;
+  }else if(MHT < 750){
+    if(HT < 1200) return 4;
+    else return 5;
+  }else{
+    return 6;
+  }
+
+  return -1; // Should not be reached
+}
+
 void ResultPlot()
 {
 
   // General Settings
   TString InputPath_Expectation("Expectation.root");
   TString InputPath_Prediction("Prediction.root");
-  TString InputPath_Prediction_Data("Prediction.root"); // Use same path as above if pure MC prediction wanted
+  TString InputPath_Prediction_Data("Prediction_data.root"); // Use same path as above if pure MC prediction wanted
   TString OutputPath_Closure("Closure.root");
   TString OutputPath_Prediction("LLPrediction.root");
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 1; // only used for MC prediction! Not data tree!
+  Double_t scaleFactorWeight = 225.6; // only used for MC prediction! Not data tree!
 
   // Do approximation of statistical uncertainties if full MC statistics are used (stat. unc. then refers to a given luminosity of data)
   // Leave at 'false' if doing a closure test so stat. uncertainty is the one using full MC statistics
   bool approxStatUncertainty = false;
 
   // Prepare Code for Extrapolation Method
-  bool doExtrapolation = false; 
+  bool doExtrapolation = false; // not fully implemented yet
 
   // Present output in QCD binning
   bool doQCDbinning = false;
+  bool mergeQCDbins = true; //Merge QCDbins (bTags) = 55 bins // only works if doQCDbinning = true;
+
+  // Histograms for Readiness Talk
+  bool doMergedHistograms = true;
 
   int nSearchBinsTotal = 72;
-  if(doQCDbinning) nSearchBinsTotal = 220;
+  if(doQCDbinning){
+    nSearchBinsTotal = 220;
+    if(mergeQCDbins) nSearchBinsTotal = 55;
+  }
   UShort_t         SearchBin=0;
 
 
@@ -135,70 +193,70 @@ void ResultPlot()
   double totalPreElecMuAcc=0, totalPreElecMuReco=0, totalPreElecMuIso=0;
   double totalPreElecElecAcc=0, totalPreElecElecReco=0, totalPreElecElecIso=0;
 	
-  TH1F* ControlSampleMu_ = new TH1F("ControlSampleMu", "ControlSampleMu", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* ControlSampleElec_ = new TH1F("ControlSampleElec", "ControlSampleElec", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* ControlSampleMu_ = new TH1F("ControlSampleMu", "ControlSampleMu", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* ControlSampleElec_ = new TH1F("ControlSampleElec", "ControlSampleElec", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 	
-  TH1F* totalExpectation_ = new TH1F("TotalLostLeptonExpecation", "TotalLostLeptonExpecation", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPrediction_ = new TH1F("TotalLostLeptonPrediction", "TotalLostLeptonPrediction", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionMu_ = new TH1F("TotalLostLeptonPredictionMu", "TotalLostLeptonPredictionMu", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionElec_ = new TH1F("TotalLostLeptonPredictionElec", "TotalLostLeptonPredictionElec", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalExpectation_ = new TH1F("TotalLostLeptonExpecation", "TotalLostLeptonExpecation", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPrediction_ = new TH1F("TotalLostLeptonPrediction", "TotalLostLeptonPrediction", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionMu_ = new TH1F("TotalLostLeptonPredictionMu", "TotalLostLeptonPredictionMu", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionElec_ = new TH1F("TotalLostLeptonPredictionElec", "TotalLostLeptonPredictionElec", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 	
-  TH1F* totalExpectationIsoTrackReduction_ = new TH1F("TotalLostLeptonExpecationIsoTrackReduction", "TotalLostLeptonExpecationIsoTrackReduction", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionIsoTrackReduction_ = new TH1F("TotalLostLeptonPredictionIsoTrackReduction", "TotalLostLeptonPredictionIsoTrackReduction", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionMuIsoTrackReduction_ = new TH1F("TotalLostLeptonPredictionMuIsoTrackReduction", "TotalLostLeptonPredictionMuIsoTrackReduction", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionElecIsoTrackReduction_ = new TH1F("TotalLostLeptonPredictionElecIsoTrackReduction", "TotalLostLeptonPredictionElecIsoTrackReduction", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalExpectationIsoTrackReduction_ = new TH1F("TotalLostLeptonExpecationIsoTrackReduction", "TotalLostLeptonExpecationIsoTrackReduction", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionIsoTrackReduction_ = new TH1F("TotalLostLeptonPredictionIsoTrackReduction", "TotalLostLeptonPredictionIsoTrackReduction", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionMuIsoTrackReduction_ = new TH1F("TotalLostLeptonPredictionMuIsoTrackReduction", "TotalLostLeptonPredictionMuIsoTrackReduction", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionElecIsoTrackReduction_ = new TH1F("TotalLostLeptonPredictionElecIsoTrackReduction", "TotalLostLeptonPredictionElecIsoTrackReduction", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 	
   // separted closure
-  TH1F* totalExpectationMuAcc_ = new TH1F("TotalLostLeptonExpecationMuAcc", "TotalLostLeptonExpecationMuAcc", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionMuCSMuAcc_ = new TH1F("TotalLostLeptonPredictionMuCSMuAcc", "TotalLostLeptonPredictionMuCSMuAcc", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionElecCSMuAcc_ = new TH1F("TotalLostLeptonPredictionElecCSMuAcc", "TotalLostLeptonPredictionElecCSMuAcc", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalExpectationMuAcc_ = new TH1F("TotalLostLeptonExpecationMuAcc", "TotalLostLeptonExpecationMuAcc", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionMuCSMuAcc_ = new TH1F("TotalLostLeptonPredictionMuCSMuAcc", "TotalLostLeptonPredictionMuCSMuAcc", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionElecCSMuAcc_ = new TH1F("TotalLostLeptonPredictionElecCSMuAcc", "TotalLostLeptonPredictionElecCSMuAcc", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 	
-  TH1F* totalExpectationMuReco_ = new TH1F("TotalLostLeptonExpecationMuReco", "TotalLostLeptonExpecationMuReco", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionMuCSMuReco_ = new TH1F("TotalLostLeptonPredictionMuCSMuReco", "TotalLostLeptonPredictionMuCSMuReco", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionElecCSMuReco_ = new TH1F("TotalLostLeptonPredictionElecCSMuReco", "TotalLostLeptonPredictionElecCSMuReco", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalExpectationMuReco_ = new TH1F("TotalLostLeptonExpecationMuReco", "TotalLostLeptonExpecationMuReco", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionMuCSMuReco_ = new TH1F("TotalLostLeptonPredictionMuCSMuReco", "TotalLostLeptonPredictionMuCSMuReco", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionElecCSMuReco_ = new TH1F("TotalLostLeptonPredictionElecCSMuReco", "TotalLostLeptonPredictionElecCSMuReco", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 	
-  TH1F* totalExpectationMuIso_ = new TH1F("TotalLostLeptonExpecationMuIso", "TotalLostLeptonExpecationMuIso", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionMuCSMuIso_ = new TH1F("TotalLostLeptonPredictionMuCSMuIso", "TotalLostLeptonPredictionMuCSMuIso", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionElecCSMuIso_ = new TH1F("TotalLostLeptonPredictionElecCSMuIso", "TotalLostLeptonPredictionElecCSMuIso", nSearchBinsTotal, 1, nSearchBinsTotal+1);	
+  TH1F* totalExpectationMuIso_ = new TH1F("TotalLostLeptonExpecationMuIso", "TotalLostLeptonExpecationMuIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionMuCSMuIso_ = new TH1F("TotalLostLeptonPredictionMuCSMuIso", "TotalLostLeptonPredictionMuCSMuIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionElecCSMuIso_ = new TH1F("TotalLostLeptonPredictionElecCSMuIso", "TotalLostLeptonPredictionElecCSMuIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);	
 	
-  TH1F* totalExpectationElecAcc_ = new TH1F("TotalLostLeptonExpecationElecAcc", "TotalLostLeptonExpecationElecAcc", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionMuCSElecAcc_ = new TH1F("TotalLostLeptonPredictionMuCSElecAcc", "TotalLostLeptonPredictionMuCSElecAcc", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionElecCSElecAcc_ = new TH1F("TotalLostLeptonPredictionElecCSElecAcc", "TotalLostLeptonPredictionElecCSElecAcc", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalExpectationElecAcc_ = new TH1F("TotalLostLeptonExpecationElecAcc", "TotalLostLeptonExpecationElecAcc", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionMuCSElecAcc_ = new TH1F("TotalLostLeptonPredictionMuCSElecAcc", "TotalLostLeptonPredictionMuCSElecAcc", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionElecCSElecAcc_ = new TH1F("TotalLostLeptonPredictionElecCSElecAcc", "TotalLostLeptonPredictionElecCSElecAcc", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 	
-  TH1F* totalExpectationElecReco_ = new TH1F("TotalLostLeptonExpecationElecReco", "TotalLostLeptonExpecationElecReco", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionMuCSElecReco_ = new TH1F("TotalLostLeptonPredictionMuCSElecReco", "TotalLostLeptonPredictionMuCSElecReco", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionElecCSElecReco_ = new TH1F("TotalLostLeptonPredictionElecCSElecReco", "TotalLostLeptonPredictionElecCSElecReco", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalExpectationElecReco_ = new TH1F("TotalLostLeptonExpecationElecReco", "TotalLostLeptonExpecationElecReco", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionMuCSElecReco_ = new TH1F("TotalLostLeptonPredictionMuCSElecReco", "TotalLostLeptonPredictionMuCSElecReco", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionElecCSElecReco_ = new TH1F("TotalLostLeptonPredictionElecCSElecReco", "TotalLostLeptonPredictionElecCSElecReco", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 	
-  TH1F* totalExpectationElecIso_ = new TH1F("TotalLostLeptonExpecationElecIso", "TotalLostLeptonExpecationElecIso", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionMuCSElecIso_ = new TH1F("TotalLostLeptonPredictionMuCSElecIso", "TotalLostLeptonPredictionMuCSElecIso", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredictionElecCSElecIso_ = new TH1F("TotalLostLeptonPredictionElecCSElecIso", "TotalLostLeptonPredictionElecCSElecIso", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalExpectationElecIso_ = new TH1F("TotalLostLeptonExpecationElecIso", "TotalLostLeptonExpecationElecIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionMuCSElecIso_ = new TH1F("TotalLostLeptonPredictionMuCSElecIso", "TotalLostLeptonPredictionMuCSElecIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredictionElecCSElecIso_ = new TH1F("TotalLostLeptonPredictionElecCSElecIso", "TotalLostLeptonPredictionElecCSElecIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
 
   // Define histrograms to do totalPrediction per SearchBin
-  TH1F* totalExp_LL_ = new TH1F("totalExp_LL","totalExp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalExp_LL_ = new TH1F("totalExp_LL","totalExp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TH1F* totalPred_LL_ = new TH1F("totalPred_LL","totalPred_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredStatUp_LL_ = new TH1F("totalPredStatUp_LL","totalPredStatUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredStatDown_LL_ = new TH1F("totalPredStatDown_LL","totalPredStatDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredSysUp_LL_ = new TH1F("totalPredSysUp_LL","totalPredSysUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredSysDown_LL_ = new TH1F("totalPredSysDown_LL","totalPredSysDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredNonClosureUp_LL_ = new TH1F("totalPredNonClosureUp_LL","totalPredNonClosureUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredNonClosureDown_LL_ = new TH1F("totalPredNonClosureDown_LL","totalPredNonClosureDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredDiBosonUp_LL_ = new TH1F("totalPredDiBosonUp_LL","totalPredDiBosonUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredDiBosonDown_LL_ = new TH1F("totalPredDiBosonDown_LL","totalPredDiBosonDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPred_LL_ = new TH1F("totalPred_LL","totalPred_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredStatUp_LL_ = new TH1F("totalPredStatUp_LL","totalPredStatUp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredStatDown_LL_ = new TH1F("totalPredStatDown_LL","totalPredStatDown_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredSysUp_LL_ = new TH1F("totalPredSysUp_LL","totalPredSysUp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredSysDown_LL_ = new TH1F("totalPredSysDown_LL","totalPredSysDown_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredNonClosureUp_LL_ = new TH1F("totalPredNonClosureUp_LL","totalPredNonClosureUp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredNonClosureDown_LL_ = new TH1F("totalPredNonClosureDown_LL","totalPredNonClosureDown_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredDiBosonUp_LL_ = new TH1F("totalPredDiBosonUp_LL","totalPredDiBosonUp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredDiBosonDown_LL_ = new TH1F("totalPredDiBosonDown_LL","totalPredDiBosonDown_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TH1F* totalCS_LL_ = new TH1F("totalCS_LL","totalCS_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* nEvtsCS_LL_ = new TH1F("nEvtsCS_LL","nEvtsCS_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalCS_LL_ = new TH1F("totalCS_LL","totalCS_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* nEvtsCS_LL_ = new TH1F("nEvtsCS_LL","nEvtsCS_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TProfile* avgWeight_LL_ = new TProfile("avgWeight_LL","avgWeight_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightStatUp_LL_ = new TProfile("avgWeightStatUp_LL","avgWeightStatUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightStatDown_LL_ = new TProfile("avgWeightStatDown_LL","avgWeightStatDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightSysUp_LL_ = new TProfile("avgWeightSysUp_LL","avgWeightSysUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightSysDown_LL_ = new TProfile("avgWeightSysDown_LL","avgWeightSysDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightNonClosureUp_LL_ = new TProfile("avgWeightNonClosureUp_LL","avgWeightNonClosureUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightNonClosureDown_LL_ = new TProfile("avgWeightNonClosureDown_LL","avgWeightNonClosureDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightDiBosonUp_LL_ = new TProfile("avgWeightDiBosonUp_LL","avgWeightDiBosonUp_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightDiBosonDown_LL_ = new TProfile("avgWeightDiBosonDown_LL","avgWeightDiBosonDown_LL", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeight_LL_ = new TProfile("avgWeight_LL","avgWeight_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightStatUp_LL_ = new TProfile("avgWeightStatUp_LL","avgWeightStatUp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightStatDown_LL_ = new TProfile("avgWeightStatDown_LL","avgWeightStatDown_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightSysUp_LL_ = new TProfile("avgWeightSysUp_LL","avgWeightSysUp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightSysDown_LL_ = new TProfile("avgWeightSysDown_LL","avgWeightSysDown_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightNonClosureUp_LL_ = new TProfile("avgWeightNonClosureUp_LL","avgWeightNonClosureUp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightNonClosureDown_LL_ = new TProfile("avgWeightNonClosureDown_LL","avgWeightNonClosureDown_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightDiBosonUp_LL_ = new TProfile("avgWeightDiBosonUp_LL","avgWeightDiBosonUp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightDiBosonDown_LL_ = new TProfile("avgWeightDiBosonDown_LL","avgWeightDiBosonDown_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
   totalPred_LL_->Sumw2();
   totalPredStatUp_LL_->Sumw2();
@@ -223,30 +281,30 @@ void ResultPlot()
   avgWeightDiBosonDown_LL_->Sumw2();
 
   // Define histrograms to do totalPrediction per SearchBin (MC)
-  TH1F* totalExp_LL_MC_ = new TH1F("totalExp_LL_MC","totalExp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalExp_LL_MC_ = new TH1F("totalExp_LL_MC","totalExp_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TH1F* totalPred_LL_MC_ = new TH1F("totalPred_LL_MC","totalPred_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredStatUp_LL_MC_ = new TH1F("totalPredStatUp_LL_MC","totalPredStatUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredStatDown_LL_MC_ = new TH1F("totalPredStatDown_LL_MC","totalPredStatDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredSysUp_LL_MC_ = new TH1F("totalPredSysUp_LL_MC","totalPredSysUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredSysDown_LL_MC_ = new TH1F("totalPredSysDown_LL_MC","totalPredSysDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredNonClosureUp_LL_MC_ = new TH1F("totalPredNonClosureUp_LL_MC","totalPredNonClosureUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredNonClosureDown_LL_MC_ = new TH1F("totalPredNonClosureDown_LL_MC","totalPredNonClosureDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredDiBosonUp_LL_MC_ = new TH1F("totalPredDiBosonUp_LL_MC","totalPredDiBosonUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* totalPredDiBosonDown_LL_MC_ = new TH1F("totalPredDiBosonDown_LL_MC","totalPredDiBosonDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalPred_LL_MC_ = new TH1F("totalPred_LL_MC","totalPred_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredStatUp_LL_MC_ = new TH1F("totalPredStatUp_LL_MC","totalPredStatUp_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredStatDown_LL_MC_ = new TH1F("totalPredStatDown_LL_MC","totalPredStatDown_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredSysUp_LL_MC_ = new TH1F("totalPredSysUp_LL_MC","totalPredSysUp_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredSysDown_LL_MC_ = new TH1F("totalPredSysDown_LL_MC","totalPredSysDown_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredNonClosureUp_LL_MC_ = new TH1F("totalPredNonClosureUp_LL_MC","totalPredNonClosureUp_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredNonClosureDown_LL_MC_ = new TH1F("totalPredNonClosureDown_LL_MC","totalPredNonClosureDown_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredDiBosonUp_LL_MC_ = new TH1F("totalPredDiBosonUp_LL_MC","totalPredDiBosonUp_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* totalPredDiBosonDown_LL_MC_ = new TH1F("totalPredDiBosonDown_LL_MC","totalPredDiBosonDown_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TH1F* totalCS_LL_MC_ = new TH1F("totalCS_LL_MC","totalCS_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TH1F* nEvtsCS_LL_MC_ = new TH1F("nEvtsCS_LL_MC","nEvtsCS_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TH1F* totalCS_LL_MC_ = new TH1F("totalCS_LL_MC","totalCS_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* nEvtsCS_LL_MC_ = new TH1F("nEvtsCS_LL_MC","nEvtsCS_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TProfile* avgWeight_LL_MC_ = new TProfile("avgWeight_LL_MC","avgWeight_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightStatUp_LL_MC_ = new TProfile("avgWeightStatUp_LL_MC","avgWeightStatUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightStatDown_LL_MC_ = new TProfile("avgWeightStatDown_LL_MC","avgWeightStatDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightSysUp_LL_MC_ = new TProfile("avgWeightSysUp_LL_MC","avgWeightSysUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightSysDown_LL_MC_ = new TProfile("avgWeightSysDown_LL_MC","avgWeightSysDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightNonClosureUp_LL_MC_ = new TProfile("avgWeightNonClosureUp_LL_MC","avgWeightNonClosureUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightNonClosureDown_LL_MC_ = new TProfile("avgWeightNonClosureDown_LL_MC","avgWeightNonClosureDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightDiBosonUp_LL_MC_ = new TProfile("avgWeightDiBosonUp_LL_MC","avgWeightDiBosonUp_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
-  TProfile* avgWeightDiBosonDown_LL_MC_ = new TProfile("avgWeightDiBosonDown_LL_MC","avgWeightDiBosonDown_LL_MC", nSearchBinsTotal, 1, nSearchBinsTotal+1);
+  TProfile* avgWeight_LL_MC_ = new TProfile("avgWeight_LL_MC","avgWeight_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightStatUp_LL_MC_ = new TProfile("avgWeightStatUp_LL_MC","avgWeightStatUp_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightStatDown_LL_MC_ = new TProfile("avgWeightStatDown_LL_MC","avgWeightStatDown_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightSysUp_LL_MC_ = new TProfile("avgWeightSysUp_LL_MC","avgWeightSysUp_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightSysDown_LL_MC_ = new TProfile("avgWeightSysDown_LL_MC","avgWeightSysDown_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightNonClosureUp_LL_MC_ = new TProfile("avgWeightNonClosureUp_LL_MC","avgWeightNonClosureUp_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightNonClosureDown_LL_MC_ = new TProfile("avgWeightNonClosureDown_LL_MC","avgWeightNonClosureDown_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightDiBosonUp_LL_MC_ = new TProfile("avgWeightDiBosonUp_LL_MC","avgWeightDiBosonUp_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeightDiBosonDown_LL_MC_ = new TProfile("avgWeightDiBosonDown_LL_MC","avgWeightDiBosonDown_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
   totalPred_LL_MC_->Sumw2();
   totalPredStatUp_LL_MC_->Sumw2();
@@ -269,6 +327,44 @@ void ResultPlot()
   avgWeightNonClosureDown_LL_MC_->Sumw2();
   avgWeightDiBosonUp_LL_MC_->Sumw2();
   avgWeightDiBosonDown_LL_MC_->Sumw2();
+
+
+  // Histograms for Readiness Talk
+  TH1D* hPredAllBins = new TH1D("hPredAllBins", ";Bin;Events / Bin", 72, 0.5, 72.5);
+  TH1D* hExpAllBins = new TH1D("hExpAllBins", ";Bin;Events / Bin", 72, 0.5, 72.5);
+  TProfile* hAvgWeightAllBins = new TProfile("hAvgWeightAllBins", ";Bin;avgWeight / Bin", 72, 0.5, 72.5);
+
+  TH1D* hPredHTMHT0b = new TH1D("hPredHTMHT0b", ";HTMHT Box;Events / Bin", 6, 0.5, 6.5);
+  TH1D* hPredHTMHTwb = new TH1D("hPredHTMHTwb", ";HTMHT Box;Events / Bin", 6, 0.5, 6.5);
+  TH1D* hExpHTMHT0b = new TH1D("hExpHTMHT0b", ";HTMHT Box;Events / Bin", 6, 0.5, 6.5);
+  TH1D* hExpHTMHTwb = new TH1D("hExpHTMHTwb", ";HTMHT Box;Events / Bin", 6, 0.5, 6.5);
+  TProfile* hAvgWeightHTMHT0b = new TProfile("hAvgWeightHTMHT0b", ";HTMHT Box;avgWeight / Bin", 6, 0.5, 6.5);
+  TProfile* hAvgWeightHTMHTwb = new TProfile("hAvgWeightHTMHTwb", ";HTMHT Box;avgWeight / Bin", 6, 0.5, 6.5);
+
+  Double_t njetbins[4] = {3.5, 6.5, 8.5, 11.5};
+  TH1D* hPredNJetBins = new TH1D("hPredNJetBins", ";N_{jets} (p_{T} > 30 GeV);Events / Bin", 3, njetbins);
+  TH1D* hExpNJetBins = new TH1D("hExpNJetBins", ";N_{jets} (p_{T} > 30 GeV);Events / Bin", 3, njetbins);
+  TProfile* hAvgWeightNJetBins = new TProfile("hAvgWeightNJetBins", ";N_{jets} (p_{T} > 30 GeV);avgWeight / Bin", 3, njetbins);
+
+  TH1D* hPredNbBins = new TH1D("hPredNbBins", ";N_{b-jets} (p_{T} > 30 GeV);Events / Bin", 4, -0.5, 3.5);
+  TH1D* hExpNbBins = new TH1D("hExpNbBins", ";N_{b-jets} (p_{T} > 30 GeV);Events / Bin", 4, -0.5, 3.5);
+  TProfile* hAvgWeightNbBins = new TProfile("hAvgWeightNbBins", ";N_{b-jets} (p_{T} > 30 GeV);avgWeight / Bin", 4, -0.5, 3.5);
+
+  hPredAllBins->Sumw2();
+  hExpAllBins->Sumw2();
+  hAvgWeightAllBins->Sumw2();
+  hPredHTMHT0b->Sumw2();
+  hPredHTMHTwb->Sumw2();
+  hExpHTMHT0b->Sumw2();
+  hExpHTMHTwb->Sumw2();
+  hAvgWeightHTMHT0b->Sumw2();
+  hAvgWeightHTMHTwb->Sumw2();
+  hPredNJetBins->Sumw2();
+  hExpNJetBins->Sumw2();
+  hAvgWeightNJetBins->Sumw2();
+  hPredNbBins->Sumw2();
+  hExpNbBins->Sumw2();
+  hAvgWeightNbBins->Sumw2();
 
 
 	
@@ -333,11 +429,15 @@ void ResultPlot()
   for (Long64_t i=0; i<nentries;i++) {
     nbytes += LostLeptonExpectation->GetEntry(i);
 
-    if(doQCDbinning) SearchBin = BinQCD;
+    if(doQCDbinning){
+      SearchBin = BinQCD;
+      if(mergeQCDbins) SearchBin = getMergedBinQCD(BinQCD, NJets);
+    }
     else SearchBin = Bin;
 
     // total expectation
     if(doExtrapolation || SearchBin > 900) continue;
+
 
     scaledWeight = Weight * scaleFactorWeight;
 
@@ -353,6 +453,12 @@ void ResultPlot()
     	totalExpIsoTrack+=scaledWeight;
     	totalExpIsoTrackError+= scaledWeight*scaledWeight;
       totalExp_LL_->Fill(SearchBin, scaledWeight);
+
+      hExpAllBins->Fill(SearchBin, scaledWeight);
+      if(BTags==0) hExpHTMHT0b->Fill(getHTMHTBox(HT, MHT), scaledWeight);
+      else hExpHTMHTwb->Fill(getHTMHTBox(HT, MHT), scaledWeight);
+      hExpNJetBins->Fill(NJets, scaledWeight);
+      hExpNbBins->Fill(BTags, scaledWeight);
     }
     if(muAcc==0)
     {
@@ -469,7 +575,10 @@ void ResultPlot()
   for (Long64_t i=0; i<nentries;i++) {
     nbytes += LostLeptonPrediction->GetEntry(i);
 
-    if(doQCDbinning) SearchBin = BinQCD;
+    if(doQCDbinning){
+      SearchBin = BinQCD;
+      if(mergeQCDbins) SearchBin = getMergedBinQCD(BinQCD, NJets);
+    }
     else SearchBin = Bin;
     
     if(doExtrapolation || SearchBin > 900) continue;
@@ -500,6 +609,14 @@ void ResultPlot()
     avgWeightNonClosureDown_LL_MC_->Fill(SearchBin, abs(nonClosureDown/Weight/2));
     avgWeightDiBosonUp_LL_MC_->Fill(SearchBin, abs(diBosonUp/Weight/2));
     avgWeightDiBosonDown_LL_MC_->Fill(SearchBin, abs(diBosonDown/Weight/2));
+
+    
+    hAvgWeightAllBins->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReduced/Weight/2));
+    if(BTags==0) hAvgWeightHTMHT0b->Fill(getHTMHTBox(HT, MHT), abs(totalWeightDiLepIsoTrackReduced/Weight/2));
+    else hAvgWeightHTMHTwb->Fill(getHTMHTBox(HT, MHT), abs(totalWeightDiLepIsoTrackReduced/Weight/2));
+    hAvgWeightNJetBins->Fill(NJets, abs(totalWeightDiLepIsoTrackReduced/Weight/2));
+    hAvgWeightNbBins->Fill(BTags, abs(totalWeightDiLepIsoTrackReduced/Weight/2));
+
   }
 
   std::cout<<"Finished"<<std::endl;
@@ -601,7 +718,10 @@ void ResultPlot()
   for (Long64_t i=0; i<nentries;i++) {
     nbytes += LostLeptonPredictionData->GetEntry(i);
 
-    if(doQCDbinning) SearchBin = BinQCD;
+    if(doQCDbinning){
+      SearchBin = BinQCD;
+      if(mergeQCDbins) SearchBin = getMergedBinQCD(BinQCD, NJets);
+    }
     else SearchBin = Bin;
     
     if(doExtrapolation || SearchBin > 900) continue;
@@ -634,6 +754,14 @@ void ResultPlot()
     avgWeightNonClosureDown_LL_->Fill(SearchBin, abs(nonClosureDown/Weight/2));
     avgWeightDiBosonUp_LL_->Fill(SearchBin, abs(diBosonUp/Weight/2));
     avgWeightDiBosonDown_LL_->Fill(SearchBin, abs(diBosonDown/Weight/2));
+
+
+    hPredAllBins->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC);
+    if(BTags==0) hPredHTMHT0b->Fill(getHTMHTBox(HT, MHT), totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC);
+    else hPredHTMHTwb->Fill(getHTMHTBox(HT, MHT), totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC);
+    hPredNJetBins->Fill(NJets, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC);
+    hPredNbBins->Fill(BTags, totalWeightDiLepIsoTrackReduced*scaleFactorWeight/2/scaleMC);
+
 
     if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0){
 
@@ -976,6 +1104,61 @@ void ResultPlot()
   ClosureTest->SetTitle("Prediction / Expectation");
   ClosureTest->Write();
 
+  if(doMergedHistograms){
+    LLoutPutFile->cd();
+    LLoutPutFile->mkdir("Readiness");
+    TDirectory *dReadiness = (TDirectory*)LLoutPutFile->Get("Readiness");
+    dReadiness->cd();
+
+    hPredAllBins->Write();
+    hAvgWeightAllBins->Write();
+    hPredHTMHT0b->Write();
+    hPredHTMHTwb->Write();    
+    hAvgWeightHTMHT0b->Write();
+    hAvgWeightHTMHTwb->Write();
+    hPredNJetBins->Write();
+    hAvgWeightNJetBins->Write();
+    hPredNbBins->Write();
+    hAvgWeightNbBins->Write();
+
+    LLoutPutFile->cd();
+    LLoutPutFile->mkdir("Readiness_additional");
+    TDirectory *Readiness_additional = (TDirectory*)LLoutPutFile->Get("Readiness_additional");
+    Readiness_additional->cd();
+
+    hExpAllBins->Write();
+    hExpHTMHT0b->Write();
+    hExpHTMHTwb->Write();
+    hExpNJetBins->Write();
+    hExpNbBins->Write();
+
+    TH1F *hDataMCAllBins = (TH1F*) hPredAllBins->Clone("hDataMCAllBins");
+    hDataMCAllBins->Divide(hExpAllBins);
+    hDataMCAllBins->SetTitle("Prediction / Expectation");
+    hDataMCAllBins->Write();
+
+    TH1F *hDataMCHTMHT0b = (TH1F*) hPredHTMHT0b->Clone("hDataMCHTMHT0b");
+    hDataMCHTMHT0b->Divide(hExpHTMHT0b);
+    hDataMCHTMHT0b->SetTitle("Prediction / Expectation");
+    hDataMCHTMHT0b->Write();
+
+    TH1F *hDataMCHTMHTwb = (TH1F*) hPredHTMHTwb->Clone("hDataMCHTMHTwb");
+    hDataMCHTMHTwb->Divide(hExpHTMHTwb);
+    hDataMCHTMHTwb->SetTitle("Prediction / Expectation");
+    hDataMCHTMHTwb->Write();
+
+    TH1F *hDataMCNJetBins = (TH1F*) hPredNJetBins->Clone("hDataMCNJetBins");
+    hDataMCNJetBins->Divide(hExpNJetBins);
+    hDataMCNJetBins->SetTitle("Prediction / Expectation");
+    hDataMCNJetBins->Write();
+
+    TH1F *hDataMCNbBins = (TH1F*) hPredNbBins->Clone("hDataMCNbBins");
+    hDataMCNbBins->Divide(hExpNbBins);
+    hDataMCNbBins->SetTitle("Prediction / Expectation");
+    hDataMCNbBins->Write();  
+  }
+
   LLoutPutFile->Close();
+
 	
 }
