@@ -104,11 +104,16 @@ void ResultPlot()
 
   // Present output in QCD binning
   bool doQCDbinning = false;
-  bool mergeQCDbins = true; //Merge QCDbins (bTags) = 55 bins // only works if doQCDbinning = true;
+  //Merge QCDbins (bTags) = 55 bins // only works if doQCDbinning = true;
+  //BUT: Output table does not work! However, histograms are filled properly
+  bool mergeQCDbins = false; 
 
   // Histograms for Readiness Talk
   bool doMergedHistograms = true;
 
+
+
+  // Begin of Code
   int nSearchBinsTotal = 72;
   if(doQCDbinning){
     nSearchBinsTotal = 220;
@@ -234,6 +239,7 @@ void ResultPlot()
 
   // Define histrograms to do totalPrediction per SearchBin
   TH1F* totalExp_LL_ = new TH1F("totalExp_LL","totalExp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1F* nEvtsExp_LL_ = new TH1F("nEvtsExp_LL","nEvtsExp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
   TH1F* totalPred_LL_ = new TH1F("totalPred_LL","totalPred_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1F* totalPredStatUp_LL_ = new TH1F("totalPredStatUp_LL","totalPredStatUp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
@@ -453,6 +459,8 @@ void ResultPlot()
     	totalExpIsoTrack+=scaledWeight;
     	totalExpIsoTrackError+= scaledWeight*scaledWeight;
       totalExp_LL_->Fill(SearchBin, scaledWeight);
+
+      nEvtsExp_LL_->Fill(SearchBin);
 
       hExpAllBins->Fill(SearchBin, scaledWeight);
       if(BTags==0) hExpHTMHT0b->Fill(getHTMHTBox(HT, MHT), scaledWeight);
@@ -1037,6 +1045,7 @@ void ResultPlot()
   dExp->cd();
 
   totalExp_LL_->Write();
+  nEvtsExp_LL_->Write();
 
   LLoutPutFile->cd();
   LLoutPutFile->mkdir("Prediction_data");
@@ -1156,6 +1165,29 @@ void ResultPlot()
     hDataMCNbBins->Divide(hExpNbBins);
     hDataMCNbBins->SetTitle("Prediction / Expectation");
     hDataMCNbBins->Write();  
+  }
+
+  TH1F *nonClosureSysUp = (TH1F*) ClosureTest->Clone("nonClosureSysUp");
+  nonClosureSysUp->Reset();
+  nonClosureSysUp->SetTitle("nonClosureSysUp");
+  TH1F *nonClosureSysDown = (TH1F*) ClosureTest->Clone("nonClosureSysDown");
+  nonClosureSysDown->Reset();
+  nonClosureSysDown->SetTitle("nonClosureSysUp");
+
+
+  for(int i = 1; i<=ClosureTest->GetNbinsX()+1; ++i){
+      nonClosureSysUp->SetBinContent(i, 1+max(abs(ClosureTest->GetBinContent(i)-1), ClosureTest->GetBinError(i)));
+      nonClosureSysDown->SetBinContent(i, 1-max(abs(ClosureTest->GetBinContent(i)-1), ClosureTest->GetBinError(i)));
+  }
+
+  if(false){
+    LLoutPutFile->cd();
+    LLoutPutFile->mkdir("Uncertainties");
+    TDirectory *Uncertainties = (TDirectory*)LLoutPutFile->Get("Uncertainties");
+    Uncertainties->cd();
+
+    nonClosureSysUp->Write();
+    nonClosureSysDown->Write();
   }
 
   LLoutPutFile->Close();
