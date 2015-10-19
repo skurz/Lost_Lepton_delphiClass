@@ -62,8 +62,12 @@ const bool UseTagAndProbeEffReco_=false; // warning overriges all other choices 
 
 
 // uncertainties
-const double isoTrackUncertaintyUp_ = 10; // dummies as long as TAP is not available 20
-const double isoTrackUncertaintyDown_ = 10; // dummies as long as TAP is not available 20
+const double muIsoTrackUncertaintyUp_ = 10; // dummies as long as TAP is not available 20
+const double muIsoTrackUncertaintyDown_ = 10; // dummies as long as TAP is not available 20
+const double elecIsoTrackUncertaintyUp_ = 10; // dummies as long as TAP is not available 20
+const double elecIsoTrackUncertaintyDown_ = 10; // dummies as long as TAP is not available 20
+const double pionIsoTrackUncertaintyUp_ = 10; // dummies as long as TAP is not available 20
+const double pionIsoTrackUncertaintyDown_ = 10; // dummies as long as TAP is not available 20
 
 const double MuMTWUncertaintyUp_ = 20;  //40
 const double MuMTWUncertaintyDown_ = 20;
@@ -164,8 +168,12 @@ class Prediction : public TSelector {
   Float_t expectationReductionMuIsoTrackEff_,expectationReductionElecIsoTrackEff_,expectationReductionPionIsoTrackEff_, expectationReductionIsoTrackEffCombined_;
 
   // Uncertainties
-  Float_t isoTrackStatUp;
-  Float_t isoTrackStatDown;
+  Float_t muIsoTrackStatUp;
+  Float_t muIsoTrackStatDown;
+  Float_t elecIsoTrackStatUp;
+  Float_t elecIsoTrackStatDown;
+  Float_t pionIsoTrackStatUp;
+  Float_t pionIsoTrackStatDown;
   Float_t MTWStatUp;
   Float_t MTWStatDown;
   Float_t purityStatUp;
@@ -187,8 +195,12 @@ class Prediction : public TSelector {
   Float_t elecAccStatUp;
   Float_t elecAccStatDown;
 
-  Float_t isoTrackSysUp;
-  Float_t isoTrackSysDown;
+  Float_t muIsoTrackSysUp;
+  Float_t muIsoTrackSysDown;
+  Float_t elecIsoTrackSysUp;
+  Float_t elecIsoTrackSysDown;
+  Float_t pionIsoTrackSysUp;
+  Float_t pionIsoTrackSysDown;
   Float_t MTWSysUp;
   Float_t MTWSysDown;
   Float_t puritySysUp;

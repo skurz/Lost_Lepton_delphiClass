@@ -224,8 +224,12 @@ void ResultPlot()
   Float_t         totalUncDown;
 
   // Uncertainties
-  Float_t isoTrackStatUp;
-  Float_t isoTrackStatDown;
+  Float_t muIsoTrackStatUp;
+  Float_t muIsoTrackStatDown;
+  Float_t elecIsoTrackStatUp;
+  Float_t elecIsoTrackStatDown;
+  Float_t pionIsoTrackStatUp;
+  Float_t pionIsoTrackStatDown;
   Float_t MTWStatUp;
   Float_t MTWStatDown;
   Float_t purityStatUp;
@@ -247,8 +251,12 @@ void ResultPlot()
   Float_t elecAccStatUp;
   Float_t elecAccStatDown;
 
-  Float_t isoTrackSysUp;
-  Float_t isoTrackSysDown;
+  Float_t muIsoTrackSysUp;
+  Float_t muIsoTrackSysDown;
+  Float_t elecIsoTrackSysUp;
+  Float_t elecIsoTrackSysDown;
+  Float_t pionIsoTrackSysUp;
+  Float_t pionIsoTrackSysDown;
   Float_t MTWSysUp;
   Float_t MTWSysDown;
   Float_t puritySysUp;
@@ -666,8 +674,12 @@ void ResultPlot()
   LostLeptonPrediction->SetBranchStatus("elecRecoWeight",1);
   LostLeptonPrediction->SetBranchStatus("elecIsoWeight",1);
 
-  LostLeptonPrediction->SetBranchStatus("isoTrackSysUp", 1);
-  LostLeptonPrediction->SetBranchStatus("isoTrackSysDown", 1);
+  LostLeptonPrediction->SetBranchStatus("muIsoTrackSysUp", 1);
+  LostLeptonPrediction->SetBranchStatus("muIsoTrackSysDown", 1);
+  LostLeptonPrediction->SetBranchStatus("elecIsoTrackSysUp", 1);
+  LostLeptonPrediction->SetBranchStatus("elecIsoTrackSysDown", 1);
+  LostLeptonPrediction->SetBranchStatus("pionIsoTrackSysUp", 1);
+  LostLeptonPrediction->SetBranchStatus("pionIsoTrackSysDown", 1);
   LostLeptonPrediction->SetBranchStatus("MTWSysUp", 1);
   LostLeptonPrediction->SetBranchStatus("MTWSysDown", 1);
   LostLeptonPrediction->SetBranchStatus("puritySysUp", 1);
@@ -712,8 +724,12 @@ void ResultPlot()
   LostLeptonPrediction->SetBranchAddress("elecRecoWeight",&elecRecoWeight);
   LostLeptonPrediction->SetBranchAddress("elecIsoWeight",&elecIsoWeight);
 
-  LostLeptonPrediction->SetBranchAddress("isoTrackSysUp", &isoTrackSysUp);
-  LostLeptonPrediction->SetBranchAddress("isoTrackSysDown", &isoTrackSysDown);
+  LostLeptonPrediction->SetBranchAddress("muIsoTrackSysUp", &muIsoTrackSysUp);
+  LostLeptonPrediction->SetBranchAddress("muIsoTrackSysDown", &muIsoTrackSysDown);
+  LostLeptonPrediction->SetBranchAddress("elecIsoTrackSysUp", &elecIsoTrackSysUp);
+  LostLeptonPrediction->SetBranchAddress("elecIsoTrackSysDown", &elecIsoTrackSysDown);
+  LostLeptonPrediction->SetBranchAddress("pionIsoTrackSysUp", &pionIsoTrackSysUp);
+  LostLeptonPrediction->SetBranchAddress("pionIsoTrackSysDown", &pionIsoTrackSysDown);
   LostLeptonPrediction->SetBranchAddress("MTWSysUp", &MTWSysUp);
   LostLeptonPrediction->SetBranchAddress("MTWSysDown", &MTWSysDown);
   LostLeptonPrediction->SetBranchAddress("puritySysUp", &puritySysUp);
@@ -756,8 +772,8 @@ void ResultPlot()
     scaledWeight = Weight * scaleFactorWeight;
 
     totalPred_LL_MC_->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
-    totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, isoTrackSysUp*scaleFactorWeight/2);
-    totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, isoTrackSysDown*scaleFactorWeight/2);
+    totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2);
+    totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeight/2);
     totalPredMTWSysUp_LL_MC_->Fill(SearchBin, MTWSysUp*scaleFactorWeight/2);
     totalPredMTWSysDown_LL_MC_->Fill(SearchBin, MTWSysDown*scaleFactorWeight/2);
     totalPredPuritySysUp_LL_MC_->Fill(SearchBin, puritySysUp*scaleFactorWeight/2);
@@ -823,8 +839,12 @@ void ResultPlot()
   LostLeptonPredictionData->SetBranchStatus("elecRecoWeight",1);
   LostLeptonPredictionData->SetBranchStatus("elecIsoWeight",1);
 
-  LostLeptonPredictionData->SetBranchStatus("isoTrackSysUp", 1);
-  LostLeptonPredictionData->SetBranchStatus("isoTrackSysDown", 1);
+  LostLeptonPredictionData->SetBranchStatus("muIsoTrackSysUp", 1);
+  LostLeptonPredictionData->SetBranchStatus("muIsoTrackSysDown", 1);
+  LostLeptonPredictionData->SetBranchStatus("elecIsoTrackSysUp", 1);
+  LostLeptonPredictionData->SetBranchStatus("elecIsoTrackSysDown", 1);
+  LostLeptonPredictionData->SetBranchStatus("pionIsoTrackSysUp", 1);
+  LostLeptonPredictionData->SetBranchStatus("pionIsoTrackSysDown", 1);
   LostLeptonPredictionData->SetBranchStatus("MTWSysUp", 1);
   LostLeptonPredictionData->SetBranchStatus("MTWSysDown", 1);
   LostLeptonPredictionData->SetBranchStatus("puritySysUp", 1);
@@ -869,8 +889,12 @@ void ResultPlot()
   LostLeptonPredictionData->SetBranchAddress("elecRecoWeight",&elecRecoWeight);
   LostLeptonPredictionData->SetBranchAddress("elecIsoWeight",&elecIsoWeight);
 
-  LostLeptonPredictionData->SetBranchAddress("isoTrackSysUp", &isoTrackSysUp);
-  LostLeptonPredictionData->SetBranchAddress("isoTrackSysDown", &isoTrackSysDown);
+  LostLeptonPredictionData->SetBranchAddress("muIsoTrackSysUp", &muIsoTrackSysUp);
+  LostLeptonPredictionData->SetBranchAddress("muIsoTrackSysDown", &muIsoTrackSysDown);
+  LostLeptonPredictionData->SetBranchAddress("elecIsoTrackSysUp", &elecIsoTrackSysUp);
+  LostLeptonPredictionData->SetBranchAddress("elecIsoTrackSysDown", &elecIsoTrackSysDown);
+  LostLeptonPredictionData->SetBranchAddress("pionIsoTrackSysUp", &pionIsoTrackSysUp);
+  LostLeptonPredictionData->SetBranchAddress("pionIsoTrackSysDown", &pionIsoTrackSysDown);
   LostLeptonPredictionData->SetBranchAddress("MTWSysUp", &MTWSysUp);
   LostLeptonPredictionData->SetBranchAddress("MTWSysDown", &MTWSysDown);
   LostLeptonPredictionData->SetBranchAddress("puritySysUp", &puritySysUp);
@@ -917,8 +941,8 @@ void ResultPlot()
     if(InputPath_Prediction_Data != InputPath_Prediction) scaleMC = Weight;
 
     totalPred_LL_->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
-    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, isoTrackSysUp*scaleFactorWeight/2/scaleMC);
-    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, isoTrackSysDown*scaleFactorWeight/2/scaleMC);
+    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2/scaleMC);
+    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeight/2/scaleMC);
     totalPredMTWSysUp_LL_->Fill(SearchBin, MTWSysUp*scaleFactorWeight/2/scaleMC);
     totalPredMTWSysDown_LL_->Fill(SearchBin, MTWSysDown*scaleFactorWeight/2/scaleMC);
     totalPredPuritySysUp_LL_->Fill(SearchBin, puritySysUp*scaleFactorWeight/2/scaleMC);
