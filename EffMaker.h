@@ -452,6 +452,8 @@ class EffMaker : public TSelector {
   TH2Eff *MuIsoTrackReductionMHTNJets_;
   TH2Eff *MuIsoTrackReductionBTagNJets_;
   TH2Eff *MuIsoTrackReductionPTActivity_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJetsLow_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJetsHigh_;
   
   //elec iso tracks
   TH1Eff *ExpectationReductionElecIsoTrackBTagEff_;
@@ -465,6 +467,8 @@ class EffMaker : public TSelector {
   TH2Eff *ElecIsoTrackReductionMHTNJets_;
   TH2Eff *ElecIsoTrackReductionBTagNJets_;
   TH2Eff *ElecIsoTrackReductionPTActivity_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsLow_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsHigh_;
   
   //pion iso tracks
   TH1Eff *ExpectationReductionPionIsoTrackBTagEff_;
@@ -478,6 +482,8 @@ class EffMaker : public TSelector {
   TH2Eff *PionIsoTrackReductionMHTNJets_;
   TH2Eff *PionIsoTrackReductionBTagNJets_;
   TH2Eff *PionIsoTrackReductionPTActivity_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJetsLow_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJetsHigh_;
   
   
   // Declaration of leaf types

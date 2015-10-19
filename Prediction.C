@@ -100,6 +100,13 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   ExpectationReductionElecIsoTrackBTagsNJetsEff_= new TH2Eff("ElecIsoTrackReductionBTagNJets", EffInputFolder);
   ExpectationReductionPionIsoTrackBTagsNJetsEff_= new TH2Eff("PionIsoTrackReductionBTagNJets", EffInputFolder);
 
+  ExpectationReductionMuIsoTrackHTMHT_NJetsLowEff_ = new TH2Eff("MuIsoTrackReductionHTMHT_NJetsLow", EffInputFolder);
+  ExpectationReductionElecIsoTrackHTMHT_NJetsLowEff_ = new TH2Eff("ElecIsoTrackReductionHTMHT_NJetsLow", EffInputFolder);
+  ExpectationReductionPionIsoTrackHTMHT_NJetsLowEff_ = new TH2Eff("PionIsoTrackReductionHTMHT_NJetsLow", EffInputFolder);
+  ExpectationReductionMuIsoTrackHTMHT_NJetsHighEff_ = new TH2Eff("MuIsoTrackReductionHTMHT_NJetsHigh", EffInputFolder);
+  ExpectationReductionElecIsoTrackHTMHT_NJetsHighEff_ = new TH2Eff("ElecIsoTrackReductionHTMHT_NJetsHigh", EffInputFolder);
+  ExpectationReductionPionIsoTrackHTMHT_NJetsHighEff_ = new TH2Eff("PionIsoTrackReductionHTMHT_NJetsHigh", EffInputFolder);
+
 
   // TProfiles
   MuMeanWeight_ = new TProfile("MuMeanWeight","MuMeanWeight",72,1.,73.);
@@ -132,6 +139,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("DeltaPhi1",&DeltaPhi1);
   tPrediction_->Branch("DeltaPhi2",&DeltaPhi2);
   tPrediction_->Branch("DeltaPhi3",&DeltaPhi3);
+  tPrediction_->Branch("DeltaPhi4",&DeltaPhi4);
   tPrediction_->Branch("minDeltaPhiN",&minDeltaPhiN);
   tPrediction_->Branch("DeltaPhiN1",&DeltaPhiN1);
   tPrediction_->Branch("DeltaPhiN2",&DeltaPhiN2);
@@ -259,10 +267,10 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("elecAccSysUp", &elecAccSysUp);
   tPrediction_->Branch("elecAccSysDown", &elecAccSysDown);
 
-  tPrediction_->Branch("diBosonUp", &diBosonUp);
-  tPrediction_->Branch("diBosonDown", &diBosonDown);
-  tPrediction_->Branch("nonClosureUp", &nonClosureUp);
-  tPrediction_->Branch("nonClosureDown", &nonClosureDown);
+//  tPrediction_->Branch("diBosonUp", &diBosonUp);
+//  tPrediction_->Branch("diBosonDown", &diBosonDown);
+//  tPrediction_->Branch("nonClosureUp", &nonClosureUp);
+//  tPrediction_->Branch("nonClosureDown", &nonClosureDown);
 
   tPrediction_->Branch("totalStatUp", &totalStatUp);
   tPrediction_->Branch("totalSysUp", &totalSysUp);
@@ -334,9 +342,15 @@ Bool_t Prediction::Process(Long64_t entry)
   if(NJets < 6.5) expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackHTMHT_NJetsLowEff_->GetEff(HT, MHT, useAsymmErrors);
   else expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackHTMHT_NJetsHighEff_->GetEff(HT, MHT, useAsymmErrors);
 
-  expectationReductionMuIsoTrackEffVec_ = ExpectationReductionMuIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
-  expectationReductionElecIsoTrackEffVec_ = ExpectationReductionElecIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
-  expectationReductionPionIsoTrackEffVec_ = ExpectationReductionPionIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
+  //expectationReductionMuIsoTrackEffVec_ = ExpectationReductionMuIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
+  //expectationReductionElecIsoTrackEffVec_ = ExpectationReductionElecIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
+  //expectationReductionPionIsoTrackEffVec_ = ExpectationReductionPionIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
+  if(NJets < 6.5) expectationReductionMuIsoTrackEffVec_ = ExpectationReductionMuIsoTrackHTMHT_NJetsLowEff_->GetEff(HT, MHT, useAsymmErrors);
+  else expectationReductionMuIsoTrackEffVec_ = ExpectationReductionMuIsoTrackHTMHT_NJetsHighEff_->GetEff(HT, MHT, useAsymmErrors);
+  if(NJets < 6.5) expectationReductionElecIsoTrackEffVec_ = ExpectationReductionElecIsoTrackHTMHT_NJetsLowEff_->GetEff(HT, MHT, useAsymmErrors);
+  else expectationReductionElecIsoTrackEffVec_ = ExpectationReductionElecIsoTrackHTMHT_NJetsHighEff_->GetEff(HT, MHT, useAsymmErrors);
+  if(NJets < 6.5) expectationReductionPionIsoTrackEffVec_ = ExpectationReductionPionIsoTrackHTMHT_NJetsLowEff_->GetEff(HT, MHT, useAsymmErrors);
+  else expectationReductionPionIsoTrackEffVec_ = ExpectationReductionPionIsoTrackHTMHT_NJetsHighEff_->GetEff(HT, MHT, useAsymmErrors);
 
   //for compatibility
   expectationReductionIsoTrackEff_ = expectationReductionIsoTrackEffVec_.eff;
@@ -445,6 +459,11 @@ Bool_t Prediction::Process(Long64_t entry)
       // weights used for closure tests
       muIsoOnlyWeight_ = Weight * (1 - muIsoEff_) / muIsoEff_ * muPurityCorrection_ * muDiLepContributionMTWAppliedEff_;
 
+      if(totalWeightDiLepIsoTrackReduced_/Weight<0.01){
+        std::cout<<NJets<<"; "<<BTags<<"; "<<HT<<"; "<<MHT<<std::endl;
+        std::cout<<muIsoWeight_/Weight<<"; "<<muRecoWeight_/Weight<<"; "<<muAccWeight_/Weight<<std::endl;
+      }
+
       //std::cout << (1-muDiLepContributionMTWAppliedEff_) * mtwCorrectedWeight_ * (1-muDiLepEffMTWAppliedEff_)/muDiLepEffMTWAppliedEff_ / Weight << std::endl;
 
       // Uncertainties
@@ -552,29 +571,15 @@ Bool_t Prediction::Process(Long64_t entry)
       elecAccSysDown = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*elecAccMax + (1-elecRecoEff_)*elecAccMax + (1-elecAccMax)) + w4) - wGes;
       double elecAccMin = elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_);
       elecAccSysUp = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*elecAccMin + (1-elecRecoEff_)*elecAccMin + (1-elecAccMin)) + w4) - wGes;
-   
-  
-      diBosonUp = wGes * 0.01 * diBosonContributionUp_;
-      diBosonDown = - wGes * 0.01 * diBosonContributionDown_;
 
-      if(NJets < 6.5){
-        nonClosureUp = wGes * 0.01 * nonClosureNJets_46_;
-        nonClosureDown = - wGes * 0.01 * nonClosureNJets_46_;
-      }else if(NJets < 8.5){
-        nonClosureUp = wGes * 0.01 * nonClosureNJets_78_;
-        nonClosureDown = - wGes * 0.01 * nonClosureNJets_78_;
-      }else{
-        nonClosureUp = wGes * 0.01 * nonClosureNJets_9Inf_;
-        nonClosureDown = - wGes * 0.01 * nonClosureNJets_9Inf_;
-      }
 
       totalStatUp = sqrt(isoTrackStatUp*isoTrackStatUp+MTWStatUp*MTWStatUp+purityStatUp*purityStatUp+singleLepPurityStatUp*singleLepPurityStatUp+diLepFoundStatUp*diLepFoundStatUp+muIsoStatUp*muIsoStatUp+muRecoStatUp*muRecoStatUp+muAccStatUp*muAccStatUp+elecIsoStatUp*elecIsoStatUp+elecRecoStatUp*elecRecoStatUp+elecAccStatUp*elecAccStatUp);
       totalSysUp = sqrt(isoTrackSysUp*isoTrackSysUp+MTWSysUp*MTWSysUp+puritySysUp*puritySysUp+singleLepPuritySysUp*singleLepPuritySysUp+diLepFoundSysUp*diLepFoundSysUp+muIsoSysUp*muIsoSysUp+muRecoSysUp*muRecoSysUp+muAccSysUp*muAccSysUp+elecIsoSysUp*elecIsoSysUp+elecRecoSysUp*elecRecoSysUp+elecAccSysUp*elecAccSysUp);
-      totalUncUp = sqrt(totalStatUp*totalStatUp+totalSysUp*totalSysUp+nonClosureUp*nonClosureUp+diBosonUp*diBosonUp);
+      totalUncUp = sqrt(totalStatUp*totalStatUp+totalSysUp*totalSysUp);
 
       totalStatDown = -sqrt(isoTrackStatDown*isoTrackStatDown+MTWStatDown*MTWStatDown+purityStatDown*purityStatDown+singleLepPurityStatDown*singleLepPurityStatDown+diLepFoundStatDown*diLepFoundStatDown+muIsoStatDown*muIsoStatDown+muRecoStatDown*muRecoStatDown+muAccStatDown*muAccStatDown+elecIsoStatDown*elecIsoStatDown+elecRecoStatDown*elecRecoStatDown+elecAccStatDown*elecAccStatDown);
       totalSysDown = -sqrt(isoTrackSysDown*isoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown);
-      totalUncDown = -sqrt(totalStatDown*totalStatDown+totalSysDown*totalSysDown+nonClosureDown*nonClosureDown+diBosonDown*diBosonDown);
+      totalUncDown = -sqrt(totalStatDown*totalStatDown+totalSysDown*totalSysDown);
       // cout <<"DONE"<<endl;
     } 
   else if(selectedIDIsoMuonsNum_==0 && selectedIDIsoElectronsNum_==1)
@@ -721,15 +726,15 @@ Bool_t Prediction::Process(Long64_t entry)
       //cut of systematics so that efficiencies are <=1
       double isoTrackMax = expectationReductionIsoTrackEff_ *(1 + 0.01 * isoTrackUncertaintyUp_);
       if(isoTrackMax > 1) isoTrackMax = 1;
-      isoTrackSysDown = Weight * (1 - isoTrackMax) * 1/elecMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
+      isoTrackSysDown = Weight * (1 - isoTrackMax) * 1/elecMTWEff_ * elecPurityCorrection_ *(w2 * (w3a+w3b) + w4) - wGes;
       double isoTrackMin = expectationReductionIsoTrackEff_ *(1 - 0.01 * isoTrackUncertaintyDown_);
-      isoTrackSysUp  = Weight * (1 - isoTrackMin) * 1/elecMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
+      isoTrackSysUp  = Weight * (1 - isoTrackMin) * 1/elecMTWEff_ * elecPurityCorrection_* (w2 * (w3a+w3b) + w4) - wGes;
  
       double MTWMax = elecMTWEff_ + (1-elecMTWEff_) * 0.01 * ElecMTWUncertaintyUp_;
       if(MTWMax > 1) MTWMax = 1;
-      MTWSysDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/MTWMax * (w2 * (w3a+w3b) + w4) - wGes;
+      MTWSysDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/MTWMax * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
       double MTWMin = elecMTWEff_ - (1-elecMTWEff_) * 0.01 * ElecMTWUncertaintyDown_;
-      MTWSysUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/MTWMin * (w2 * (w3a+w3b) + w4) - wGes;
+      MTWSysUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/MTWMin * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
 
       double purityMax = elecPurityCorrection_ + (1-elecPurityCorrection_) * 0.01 * ElecPurityUncertaintyUp_;
       if(purityMax > 1) purityMax = 1;
@@ -785,27 +790,13 @@ Bool_t Prediction::Process(Long64_t entry)
       double muAccMin = muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_);
       muAccSysUp = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*muAccMin + (1-muRecoEff_)*muAccMin + (1-muAccMin)) + w4) - wGes;
       
-      diBosonUp = wGes * 0.01 * diBosonContributionUp_;
-      diBosonDown = - wGes * 0.01 * diBosonContributionDown_;
-
-      if(NJets < 6.5){
-        nonClosureUp = wGes * 0.01 * nonClosureNJets_46_;
-        nonClosureDown = - wGes * 0.01 * nonClosureNJets_46_;
-      }else if(NJets < 8.5){
-        nonClosureUp = wGes * 0.01 * nonClosureNJets_78_;
-        nonClosureDown = - wGes * 0.01 * nonClosureNJets_78_;
-      }else{
-        nonClosureUp = wGes * 0.01 * nonClosureNJets_9Inf_;
-        nonClosureDown = - wGes * 0.01 * nonClosureNJets_9Inf_;
-      }
-
       totalStatUp = sqrt(isoTrackStatUp*isoTrackStatUp+MTWStatUp*MTWStatUp+purityStatUp*purityStatUp+singleLepPurityStatUp*singleLepPurityStatUp+diLepFoundStatUp*diLepFoundStatUp+muIsoStatUp*muIsoStatUp+muRecoStatUp*muRecoStatUp+muAccStatUp*muAccStatUp+elecIsoStatUp*elecIsoStatUp+elecRecoStatUp*elecRecoStatUp+elecAccStatUp*elecAccStatUp);
       totalSysUp = sqrt(isoTrackSysUp*isoTrackSysUp+MTWSysUp*MTWSysUp+puritySysUp*puritySysUp+singleLepPuritySysUp*singleLepPuritySysUp+diLepFoundSysUp*diLepFoundSysUp+muIsoSysUp*muIsoSysUp+muRecoSysUp*muRecoSysUp+muAccSysUp*muAccSysUp+elecIsoSysUp*elecIsoSysUp+elecRecoSysUp*elecRecoSysUp+elecAccSysUp*elecAccSysUp);
-      totalUncUp = sqrt(totalStatUp*totalStatUp+totalSysUp*totalSysUp+nonClosureUp*nonClosureUp+diBosonUp*diBosonUp);
+      totalUncUp = sqrt(totalStatUp*totalStatUp+totalSysUp*totalSysUp);
 
       totalStatDown = -sqrt(isoTrackStatDown*isoTrackStatDown+MTWStatDown*MTWStatDown+purityStatDown*purityStatDown+singleLepPurityStatDown*singleLepPurityStatDown+diLepFoundStatDown*diLepFoundStatDown+muIsoStatDown*muIsoStatDown+muRecoStatDown*muRecoStatDown+muAccStatDown*muAccStatDown+elecIsoStatDown*elecIsoStatDown+elecRecoStatDown*elecRecoStatDown+elecAccStatDown*elecAccStatDown);
       totalSysDown = -sqrt(isoTrackSysDown*isoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown);
-      totalUncDown = -sqrt(totalStatDown*totalStatDown+totalSysDown*totalSysDown+nonClosureDown*nonClosureDown+diBosonDown*diBosonDown);
+      totalUncDown = -sqrt(totalStatDown*totalStatDown+totalSysDown*totalSysDown);
       // cout << "DONE" << endl;
     }
 
@@ -911,7 +902,7 @@ bool Prediction::FiltersPass()
 {
   bool result=true;
   if(useFilterData){
-    if(CSCTightHaloFilter==0) result=false;
+    //if(CSCTightHaloFilter==0) result=false;
     if(NVtx==0) result=false;
     if(eeBadScFilter==0) result=false;
     if(HBHENoiseFilter==0) result=false;

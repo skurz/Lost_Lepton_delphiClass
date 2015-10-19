@@ -30,7 +30,7 @@ const bool useAsymmErrors = true;
 const bool useFilterData = true;
 const bool applyFilters_=true;
 const bool applyDiLepCorrection_=true;
-const bool useTrigger = true;
+const bool useTrigger = false;
 
 // useDeltaPhiCut = 0: no deltaPhiCut
 // useDeltaPhiCut = 1: deltaPhiCut
@@ -62,16 +62,16 @@ const bool UseTagAndProbeEffReco_=false; // warning overriges all other choices 
 
 
 // uncertainties
-const double isoTrackUncertaintyUp_ = 20; // dummies as long as TAP is not available
-const double isoTrackUncertaintyDown_ = 20; // dummies as long as TAP is not available
+const double isoTrackUncertaintyUp_ = 10; // dummies as long as TAP is not available 20
+const double isoTrackUncertaintyDown_ = 10; // dummies as long as TAP is not available 20
 
-const double MuMTWUncertaintyUp_ = 40;
-const double MuMTWUncertaintyDown_ = 40;
-const double ElecMTWUncertaintyUp_ = 40;
-const double ElecMTWUncertaintyDown_ = 40;
+const double MuMTWUncertaintyUp_ = 20;  //40
+const double MuMTWUncertaintyDown_ = 20;
+const double ElecMTWUncertaintyUp_ = 20;
+const double ElecMTWUncertaintyDown_ = 20;
 
-const double ElecPurityUncertaintyUp_ = 40; // no purity correction for muCS (>99%)
-const double ElecPurityUncertaintyDown_ = 40; // no purity correction for muCS (>99%)
+const double ElecPurityUncertaintyUp_ = 20; // no purity correction for muCS (>99%)
+const double ElecPurityUncertaintyDown_ = 20; // no purity correction for muCS (>99%)
 
 const double MuSingleLepPurityUp_ = 50;
 const double MuSingleLepPurityDown_ = 50;
@@ -83,26 +83,20 @@ const double MuDiLepFoundDown_ = 20;
 const double ElecDiLepFoundUp_ = 20;
 const double ElecDiLepFoundDown_ = 20;
 
-const double MuAccUncertaintyUp_ = 9;  // pdf
-const double MuAccUncertaintyDown_ = 9;  // pdf
-const double ElecAccUncertaintyUp_ = 9;  // pdf
-const double ElecAccUncertaintyDown_ = 9;  // pdf
+const double MuAccUncertaintyUp_ = 5;  // pdf // 9
+const double MuAccUncertaintyDown_ = 5;  // pdf
+const double ElecAccUncertaintyUp_ = 5;  // pdf
+const double ElecAccUncertaintyDown_ = 5;  // pdf
 
-const double MuRecoUncertaintyUp_ = 10;  // dummies as long as TAP is not available
-const double MuRecoUncertaintyDown_ = 10;  // dummies as long as TAP is not available
-const double ElecRecoUncertaintyUp_ = 10;  // dummies as long as TAP is not available
-const double ElecRecoUncertaintyDown_ = 10;  // dummies as long as TAP is not available
-const double MuIsoUncertaintyUp_ = 10;  // dummies as long as TAP is not available
-const double MuIsoUncertaintyDown_ = 10;  // dummies as long as TAP is not available
-const double ElecIsoUncertaintyUp_ = 10;  // dummies as long as TAP is not available
-const double ElecIsoUncertaintyDown_ = 10;  // dummies as long as TAP is not available
+const double MuRecoUncertaintyUp_ = 5;  // dummies as long as TAP is not available 10
+const double MuRecoUncertaintyDown_ = 5;  // dummies as long as TAP is not available
+const double ElecRecoUncertaintyUp_ = 5;  // dummies as long as TAP is not available
+const double ElecRecoUncertaintyDown_ = 5;  // dummies as long as TAP is not available
+const double MuIsoUncertaintyUp_ = 5;  // dummies as long as TAP is not available
+const double MuIsoUncertaintyDown_ = 5;  // dummies as long as TAP is not available
+const double ElecIsoUncertaintyUp_ = 5;  // dummies as long as TAP is not available
+const double ElecIsoUncertaintyDown_ = 5;  // dummies as long as TAP is not available
 
-const double diBosonContributionUp_ = 0;
-const double diBosonContributionDown_ = 0;
-
-const double nonClosureNJets_46_ = 20;
-const double nonClosureNJets_78_ = 20;
-const double nonClosureNJets_9Inf_ = 30;
 
 // input jet definitions
 const double jetCone_=0.4;
@@ -339,6 +333,8 @@ class Prediction : public TSelector {
   TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets6Eff_;
   TH2Eff *ExpectationReductionIsoTrackHTMHT_NJetsHighEff_;
   TH2Eff *ExpectationReductionMuIsoTrackBTagsNJetsEff_, *ExpectationReductionElecIsoTrackBTagsNJetsEff_, *ExpectationReductionPionIsoTrackBTagsNJetsEff_;
+  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJetsLowEff_, *ExpectationReductionElecIsoTrackHTMHT_NJetsLowEff_, *ExpectationReductionPionIsoTrackHTMHT_NJetsLowEff_;
+  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJetsHighEff_, *ExpectationReductionElecIsoTrackHTMHT_NJetsHighEff_, *ExpectationReductionPionIsoTrackHTMHT_NJetsHighEff_;
 
   
   UShort_t elecActivityMethod, muActivityMethod, isoTrackActivityMethod;

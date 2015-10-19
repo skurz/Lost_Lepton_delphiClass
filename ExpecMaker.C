@@ -34,7 +34,7 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("DeltaPhi1",&DeltaPhi1);
   tExpectation_->Branch("DeltaPhi2",&DeltaPhi2);
   tExpectation_->Branch("DeltaPhi3",&DeltaPhi3);
-  tExpectation_->Branch("DeltaPhi4",&DeltaPhi3);
+  tExpectation_->Branch("DeltaPhi4",&DeltaPhi4);
   tExpectation_->Branch("minDeltaPhiN",&minDeltaPhiN);
   tExpectation_->Branch("DeltaPhiN1",&DeltaPhiN1);
   tExpectation_->Branch("DeltaPhiN2",&DeltaPhiN2);
@@ -954,7 +954,7 @@ bool ExpecMaker::FiltersPass()
 {
   bool result=true;
   if(useFilterData){
-    if(CSCTightHaloFilter==0) result=false;
+    //if(CSCTightHaloFilter==0) result=false;
     if(NVtx==0) result=false;
     if(eeBadScFilter==0) result=false;
     if(HBHENoiseFilter==0) result=false;

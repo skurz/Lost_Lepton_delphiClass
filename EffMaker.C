@@ -4,6 +4,7 @@
 #include <TStyle.h>
 #include <iostream>
 #include "TSystem.h"
+#include "TMath.h"
 
 void EffMaker::Begin(TTree * /*tree*/)
 {
@@ -317,7 +318,9 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuIsoTrackReductionMHTNJets_ = new TH2Eff("MuIsoTrackReductionMHTNJets","MuIsoTrackReductionMHTNJets",isotrackreductionMHT_-1,isoTrackReductionMHT_, isotrackreductionNJets_-1, isoTrackReductionNJets_);
   MuIsoTrackReductionBTagNJets_ = new TH2Eff("MuIsoTrackReductionBTagNJets","MuIsoTrackReductionBTagNJets",isotrackreductionBTags2D_-1,isoTrackReductionBTags2D_, isotrackreductionNJets2D_-1, isoTrackReductionNJets2D_);
   MuIsoTrackReductionPTActivity_ = new TH2Eff("MuIsoTrackReductionPTActivity","MuIsoTrackReductionPTActivity", isotrackreductionActivity2D_-1, isoTrackReductionActivity2D_,isotrackreductionPT2D_-1,isoTrackReductionPT2D_);
-  
+  MuIsoTrackReductionHTMHT_NJetsLow_ = new TH2Eff("MuIsoTrackReductionHTMHT_NJetsLow","MuIsoTrackReductionHTMHT_NJetsLow", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
+  MuIsoTrackReductionHTMHT_NJetsHigh_ = new TH2Eff("MuIsoTrackReductionHTMHT_NJetsHigh","MuIsoTrackReductionHTMHT_NJetsHigh", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
+
   // elec iso track
   //1D
   ExpectationReductionElecIsoTrackBTagEff_ = new TH1Eff("ExpectationReductionElecIsoTrackBTagEff","ExpectationReductionElecIsoTrackBTagEff",isotrackreductionBTags_-1,isoTrackReductionBTags_);
@@ -331,7 +334,9 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecIsoTrackReductionMHTNJets_ = new TH2Eff("ElecIsoTrackReductionMHTNJets","ElecIsoTrackReductionMHTNJets",isotrackreductionMHT_-1,isoTrackReductionMHT_, isotrackreductionNJets_-1, isoTrackReductionNJets_);
   ElecIsoTrackReductionBTagNJets_ = new TH2Eff("ElecIsoTrackReductionBTagNJets","ElecIsoTrackReductionBTagNJets",isotrackreductionBTags2D_-1,isoTrackReductionBTags2D_, isotrackreductionNJets2D_-1, isoTrackReductionNJets2D_);
   ElecIsoTrackReductionPTActivity_ = new TH2Eff("ElecIsoTrackReductionPTActivity","ElecIsoTrackReductionPTActivity", isotrackreductionActivity2D_-1, isoTrackReductionActivity2D_,isotrackreductionPT2D_-1,isoTrackReductionPT2D_);
-  
+  ElecIsoTrackReductionHTMHT_NJetsLow_ = new TH2Eff("ElecIsoTrackReductionHTMHT_NJetsLow","ElecIsoTrackReductionHTMHT_NJetsLow", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
+  ElecIsoTrackReductionHTMHT_NJetsHigh_ = new TH2Eff("ElecIsoTrackReductionHTMHT_NJetsHigh","ElecIsoTrackReductionHTMHT_NJetsHigh", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
+
   // pion iso track
   //1D
   ExpectationReductionPionIsoTrackBTagEff_ = new TH1Eff("ExpectationReductionPionIsoTrackBTagEff","ExpectationReductionPionIsoTrackBTagEff",isotrackreductionBTags_-1,isoTrackReductionBTags_);
@@ -345,7 +350,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   PionIsoTrackReductionMHTNJets_ = new TH2Eff("PionIsoTrackReductionMHTNJets","PionIsoTrackReductionMHTNJets",isotrackreductionMHT_-1,isoTrackReductionMHT_, isotrackreductionNJets_-1, isoTrackReductionNJets_);
   PionIsoTrackReductionBTagNJets_ = new TH2Eff("PionIsoTrackReductionBTagNJets","PionIsoTrackReductionBTagNJets",isotrackreductionBTags2D_-1,isoTrackReductionBTags2D_, isotrackreductionNJets2D_-1, isoTrackReductionNJets2D_);
   PionIsoTrackReductionPTActivity_ = new TH2Eff("PionIsoTrackReductionPTActivity","PionIsoTrackReductionPTActivity", isotrackreductionActivity2D_-1, isoTrackReductionActivity2D_,isotrackreductionPT2D_-1,isoTrackReductionPT2D_);
-  
+  PionIsoTrackReductionHTMHT_NJetsLow_ = new TH2Eff("PionIsoTrackReductionHTMHT_NJetsLow","PionIsoTrackReductionHTMHT_NJetsLow", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
+  PionIsoTrackReductionHTMHT_NJetsHigh_ = new TH2Eff("PionIsoTrackReductionHTMHT_NJetsHigh","PionIsoTrackReductionHTMHT_NJetsHigh", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
 
   // delta R jet and pT jet 
   MuIsoRelPTJet_ = new TH1Eff("MuIsoRelPTJet","MuIsoRelPTJet",oneDPTRel_-1,OneDPTRel_);
@@ -1052,111 +1058,150 @@ Bool_t EffMaker::Process(Long64_t entry)
   }
 
     }
-  // muon iso tracks
-  if(Expectation==1 && isoMuonTracks==0)
-    {
-      // cout << "Muon tracks not found...";
-      ExpectationReductionMuIsoTrackBTagEff_->Fill(BTags,Weight,false);
-      ExpectationReductionMuIsoTrackNJetsEff_->Fill(NJets,Weight,false);
-      ExpectationReductionMuIsoTrackHTEff_->Fill(HT,Weight,false);
-      ExpectationReductionMuIsoTrackMHTEff_->Fill(MHT,Weight,false);
-      // JACK -- placeholders
-      ExpectationReductionMuIsoTrackPTEff_->Fill(0,Weight,false);
-      ExpectationReductionMuIsoTrackActivityEff_->Fill(0,Weight,false);
-      //2D
-      MuIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
-      MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
-      MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
-      MuIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
-      // cout << "DONE" << endl;
+
+    // In order to avoid double-counting events, only select track with highest pt
+    if(Expectation==1){
+      int isoTrack_highestPt = 0;
+
+      if(isoMuonTracks>0){
+        isoTrack_highestPt = 1;
+        if(isoElectronTracks>0 && isoPionTracks>0){
+          if(IsolatedElectronTracksVeto->at(0).Pt() > TMath::Max(IsolatedMuonTracksVeto->at(0).Pt(), IsolatedPionTracksVeto->at(0).Pt())) isoTrack_highestPt = 2;
+          if(IsolatedPionTracksVeto->at(0).Pt() > TMath::Max(IsolatedMuonTracksVeto->at(0).Pt(), IsolatedElectronTracksVeto->at(0).Pt())) isoTrack_highestPt = 3;
+        }else if(isoElectronTracks>0){
+          if(IsolatedElectronTracksVeto->at(0).Pt() > IsolatedMuonTracksVeto->at(0).Pt()) isoTrack_highestPt = 2;
+        }else if(isoPionTracks>0){
+          if(IsolatedPionTracksVeto->at(0).Pt() > IsolatedMuonTracksVeto->at(0).Pt()) isoTrack_highestPt = 3;
+        }
+      }else if(isoElectronTracks>0){
+        isoTrack_highestPt = 2;
+        if(isoPionTracks>0) if(IsolatedPionTracksVeto->at(0).Pt() > IsolatedElectronTracksVeto->at(0).Pt()) isoTrack_highestPt = 3;
+      }else if(isoPionTracks>0){
+        isoTrack_highestPt = 3;
+      }
+
+
+    // muon iso tracks
+      if(isoMuonTracks>0 && isoTrack_highestPt==1)
+        {
+          // cout << "Muon tracks found...";
+          ExpectationReductionMuIsoTrackBTagEff_->Fill(BTags,Weight,true);
+          ExpectationReductionMuIsoTrackNJetsEff_->Fill(NJets,Weight,true);
+          ExpectationReductionMuIsoTrackHTEff_->Fill(HT,Weight,true);
+          ExpectationReductionMuIsoTrackMHTEff_->Fill(MHT,Weight,true);
+          ExpectationReductionMuIsoTrackPTEff_->Fill(IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
+          ExpectationReductionMuIsoTrackActivityEff_->Fill(IsolatedMuonTracksVetoActivity->at(0),Weight,true);
+        
+          //2D
+          MuIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
+          MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
+          MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
+          MuIsoTrackReductionPTActivity_->Fill(IsolatedMuonTracksVetoActivity->at(0),IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
+          if(NJets < 6.5) MuIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+          else MuIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
+          // cout << "DONE" << endl;
+        }
+      else
+        {
+          // cout << "Muon tracks not found...";
+          ExpectationReductionMuIsoTrackBTagEff_->Fill(BTags,Weight,false);
+          ExpectationReductionMuIsoTrackNJetsEff_->Fill(NJets,Weight,false);
+          ExpectationReductionMuIsoTrackHTEff_->Fill(HT,Weight,false);
+          ExpectationReductionMuIsoTrackMHTEff_->Fill(MHT,Weight,false);
+          // JACK -- placeholders
+          ExpectationReductionMuIsoTrackPTEff_->Fill(0,Weight,false);
+          ExpectationReductionMuIsoTrackActivityEff_->Fill(0,Weight,false);
+          //2D
+          MuIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
+          MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
+          MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
+          MuIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
+          if(NJets < 6.5) MuIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+          else MuIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
+          // cout << "DONE" << endl;
+        }
+      
+      
+      // elec iso tracks
+      if(isoElectronTracks>0 && isoTrack_highestPt==2)
+        {
+          // cout << "Electron tracks found...";
+          ExpectationReductionElecIsoTrackBTagEff_->Fill(BTags,Weight,true);
+          ExpectationReductionElecIsoTrackNJetsEff_->Fill(NJets,Weight,true);
+          ExpectationReductionElecIsoTrackHTEff_->Fill(HT,Weight,true);
+          ExpectationReductionElecIsoTrackMHTEff_->Fill(MHT,Weight,true);
+          ExpectationReductionElecIsoTrackPTEff_->Fill(IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
+          ExpectationReductionElecIsoTrackActivityEff_->Fill(IsolatedElectronTracksVetoActivity->at(0),Weight,true);
+        
+          //2D
+          ElecIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
+          ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
+          ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
+          ElecIsoTrackReductionPTActivity_->Fill(IsolatedElectronTracksVetoActivity->at(0),IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
+          if(NJets < 6.5) ElecIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+          else ElecIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
+          // cout << "DONE" << endl;    
+        }
+      else        
+        {
+          // cout << "Electron tracks not found...";
+          ExpectationReductionElecIsoTrackBTagEff_->Fill(BTags,Weight,false);
+          ExpectationReductionElecIsoTrackNJetsEff_->Fill(NJets,Weight,false);
+          ExpectationReductionElecIsoTrackHTEff_->Fill(HT,Weight,false);
+          ExpectationReductionElecIsoTrackMHTEff_->Fill(MHT,Weight,false);
+          ExpectationReductionElecIsoTrackPTEff_->Fill(0,Weight,false);
+          ExpectationReductionElecIsoTrackActivityEff_->Fill(0,Weight,false);
+          //2D
+          ElecIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
+          ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
+          ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
+          ElecIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
+          if(NJets < 6.5) ElecIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+          else ElecIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
+          // cout << "DONE" << endl;    
+        }
+      // pion iso tracks
+      if(isoPionTracks>0 && isoTrack_highestPt==3)
+        {
+          // cout << "Pion tracks found...";
+          ExpectationReductionPionIsoTrackBTagEff_->Fill(BTags,Weight,true);
+          ExpectationReductionPionIsoTrackNJetsEff_->Fill(NJets,Weight,true);
+          ExpectationReductionPionIsoTrackHTEff_->Fill(HT,Weight,true);
+          ExpectationReductionPionIsoTrackMHTEff_->Fill(MHT,Weight,true);
+          ExpectationReductionPionIsoTrackPTEff_->Fill(IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
+          ExpectationReductionPionIsoTrackActivityEff_->Fill(IsolatedPionTracksVetoActivity->at(0),Weight,true);
+        
+          //2D
+          PionIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
+          PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
+          PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
+          PionIsoTrackReductionPTActivity_->Fill(IsolatedPionTracksVetoActivity->at(0),IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
+          if(NJets < 6.5) PionIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+          else PionIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
+          // cout << "DONE" << endl;    
+        }        
+      else
+        {
+          // cout << "Pion tracks not found...";
+          ExpectationReductionPionIsoTrackBTagEff_->Fill(BTags,Weight,false);
+          ExpectationReductionPionIsoTrackNJetsEff_->Fill(NJets,Weight,false);
+          ExpectationReductionPionIsoTrackHTEff_->Fill(HT,Weight,false);
+          ExpectationReductionPionIsoTrackMHTEff_->Fill(MHT,Weight,false);
+          ExpectationReductionPionIsoTrackPTEff_->Fill(0,Weight,false);
+          ExpectationReductionPionIsoTrackActivityEff_->Fill(0,Weight,false);
+          //2D
+          PionIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
+          PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
+          PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
+          PionIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
+          if(NJets < 6.5) PionIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+          else PionIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
+          // cout << "DONE" << endl;    
+        }
     }
-  if(Expectation==1 && isoMuonTracks>0)
-    {
-      // cout << "Muon tracks found...";
-      ExpectationReductionMuIsoTrackBTagEff_->Fill(BTags,Weight,true);
-      ExpectationReductionMuIsoTrackNJetsEff_->Fill(NJets,Weight,true);
-      ExpectationReductionMuIsoTrackHTEff_->Fill(HT,Weight,true);
-      ExpectationReductionMuIsoTrackMHTEff_->Fill(MHT,Weight,true);
-      ExpectationReductionMuIsoTrackPTEff_->Fill(IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
-      ExpectationReductionMuIsoTrackActivityEff_->Fill(IsolatedMuonTracksVetoActivity->at(0),Weight,true);
     
-      //2D
-      MuIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
-      MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
-      MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
-      MuIsoTrackReductionPTActivity_->Fill(IsolatedMuonTracksVetoActivity->at(0),IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
-      // cout << "DONE" << endl;
-    }
+
   
-  
-  // elec iso tracks
-  if(Expectation==1 && isoElectronTracks==0)
-    {
-      // cout << "Electron tracks not found...";
-      ExpectationReductionElecIsoTrackBTagEff_->Fill(BTags,Weight,false);
-      ExpectationReductionElecIsoTrackNJetsEff_->Fill(NJets,Weight,false);
-      ExpectationReductionElecIsoTrackHTEff_->Fill(HT,Weight,false);
-      ExpectationReductionElecIsoTrackMHTEff_->Fill(MHT,Weight,false);
-      ExpectationReductionElecIsoTrackPTEff_->Fill(0,Weight,false);
-      ExpectationReductionElecIsoTrackActivityEff_->Fill(0,Weight,false);
-      //2D
-      ElecIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
-      ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
-      ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
-      ElecIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
-      // cout << "DONE" << endl;    
-    }
-  if(Expectation==1 && isoElectronTracks>0)
-    {
-      // cout << "Electron tracks found...";
-      ExpectationReductionElecIsoTrackBTagEff_->Fill(BTags,Weight,true);
-      ExpectationReductionElecIsoTrackNJetsEff_->Fill(NJets,Weight,true);
-      ExpectationReductionElecIsoTrackHTEff_->Fill(HT,Weight,true);
-      ExpectationReductionElecIsoTrackMHTEff_->Fill(MHT,Weight,true);
-      ExpectationReductionElecIsoTrackPTEff_->Fill(IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
-      ExpectationReductionElecIsoTrackActivityEff_->Fill(IsolatedElectronTracksVetoActivity->at(0),Weight,true);
-    
-      //2D
-      ElecIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
-      ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
-      ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
-      ElecIsoTrackReductionPTActivity_->Fill(IsolatedElectronTracksVetoActivity->at(0),IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
-      // cout << "DONE" << endl;    
-    }
-  // pion iso tracks
-  if(Expectation==1 && isoPionTracks==0)
-    {
-      // cout << "Pion tracks not found...";
-      ExpectationReductionPionIsoTrackBTagEff_->Fill(BTags,Weight,false);
-      ExpectationReductionPionIsoTrackNJetsEff_->Fill(NJets,Weight,false);
-      ExpectationReductionPionIsoTrackHTEff_->Fill(HT,Weight,false);
-      ExpectationReductionPionIsoTrackMHTEff_->Fill(MHT,Weight,false);
-      ExpectationReductionPionIsoTrackPTEff_->Fill(0,Weight,false);
-      ExpectationReductionPionIsoTrackActivityEff_->Fill(0,Weight,false);
-      //2D
-      PionIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
-      PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
-      PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
-      PionIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
-      // cout << "DONE" << endl;    
-    }
-  if(Expectation==1 && isoPionTracks>0)
-    {
-      // cout << "Pion tracks found...";
-      ExpectationReductionPionIsoTrackBTagEff_->Fill(BTags,Weight,true);
-      ExpectationReductionPionIsoTrackNJetsEff_->Fill(NJets,Weight,true);
-      ExpectationReductionPionIsoTrackHTEff_->Fill(HT,Weight,true);
-      ExpectationReductionPionIsoTrackMHTEff_->Fill(MHT,Weight,true);
-      ExpectationReductionPionIsoTrackPTEff_->Fill(IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
-      ExpectationReductionPionIsoTrackActivityEff_->Fill(IsolatedPionTracksVetoActivity->at(0),Weight,true);
-    
-      //2D
-      PionIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
-      PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
-      PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
-      PionIsoTrackReductionPTActivity_->Fill(IsolatedPionTracksVetoActivity->at(0),IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
-      // cout << "DONE" << endl;    
-    }
   return kTRUE;
 }
 
@@ -1418,7 +1463,9 @@ void EffMaker::Terminate()
   MuIsoTrackReductionHTNJets_->SaveEff("#mu iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
   MuIsoTrackReductionMHTNJets_->SaveEff("#mu iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   MuIsoTrackReductionBTagNJets_->SaveEff("#mu iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
-  MuIsoTrackReductionPTActivity_->SaveEff("#mu iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true);  
+  MuIsoTrackReductionPTActivity_->SaveEff("#mu iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true); 
+  MuIsoTrackReductionHTMHT_NJetsLow_->SaveEff("#mu iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("#mu iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
 
   // elec iso tracks
   //1D
@@ -1432,7 +1479,9 @@ void EffMaker::Terminate()
   ElecIsoTrackReductionHTNJets_->SaveEff("e iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
   ElecIsoTrackReductionMHTNJets_->SaveEff("e iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   ElecIsoTrackReductionBTagNJets_->SaveEff("e iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
-  ElecIsoTrackReductionPTActivity_->SaveEff("e iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true);   
+  ElecIsoTrackReductionPTActivity_->SaveEff("e iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true); 
+  ElecIsoTrackReductionHTMHT_NJetsLow_->SaveEff("e iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("e iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   
   // pion iso tracks
   //1D
@@ -1446,7 +1495,9 @@ void EffMaker::Terminate()
   PionIsoTrackReductionHTNJets_->SaveEff("#pi iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
   PionIsoTrackReductionMHTNJets_->SaveEff("#pi iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   PionIsoTrackReductionBTagNJets_->SaveEff("#pi iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
-  PionIsoTrackReductionPTActivity_->SaveEff("#pi iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true);   
+  PionIsoTrackReductionPTActivity_->SaveEff("#pi iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true);
+  PionIsoTrackReductionHTMHT_NJetsLow_->SaveEff("#pi iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("#pi iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
 
   outPutFile->Close();
 }
