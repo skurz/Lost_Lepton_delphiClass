@@ -134,19 +134,21 @@ void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir){
   Top->Write();
 }
 
-
 void ResultPlot()
 {
 
   // General Settings
   TString InputPath_Expectation("Expectation.root");
   TString InputPath_Prediction("Prediction.root");
-  TString InputPath_Prediction_Data("Prediction.root"); // Use same path as above if pure MC prediction wanted
+  TString InputPath_Prediction_Data("Prediction_data.root"); // Use same path as above if pure MC prediction wanted
   TString OutputPath_Closure("Closure.root");
   TString OutputPath_Prediction("LLPrediction.root");
 
+  // If you want to compare MC to MC set this to true. E.g. prediction with and without signal contamination
+  bool useMCForDataTree = false;
+
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 225.6; // only used for MC prediction! Not data tree! 225.6
+  Double_t scaleFactorWeight = 1287;
 
   // Do approximation of statistical uncertainties if full MC statistics are used (stat. unc. then refers to a given luminosity of data)
   // Leave at 'false' if doing a closure test so stat. uncertainty is the one using full MC statistics
@@ -251,6 +253,8 @@ void ResultPlot()
   Float_t elecAccStatUp;
   Float_t elecAccStatDown;
 
+  Float_t isoTrackSysUp;
+  Float_t isoTrackSysDown;
   Float_t muIsoTrackSysUp;
   Float_t muIsoTrackSysDown;
   Float_t elecIsoTrackSysUp;
@@ -586,7 +590,6 @@ void ResultPlot()
     // total expectation
     if(doExtrapolation || SearchBin > 900) continue;
 
-
     scaledWeight = Weight * scaleFactorWeight;
 
     if(Expectation==1 && NJets>3.1)
@@ -674,6 +677,8 @@ void ResultPlot()
   LostLeptonPrediction->SetBranchStatus("elecRecoWeight",1);
   LostLeptonPrediction->SetBranchStatus("elecIsoWeight",1);
 
+  LostLeptonPrediction->SetBranchStatus("isoTrackSysUp", 1);
+  LostLeptonPrediction->SetBranchStatus("isoTrackSysDown", 1);
   LostLeptonPrediction->SetBranchStatus("muIsoTrackSysUp", 1);
   LostLeptonPrediction->SetBranchStatus("muIsoTrackSysDown", 1);
   LostLeptonPrediction->SetBranchStatus("elecIsoTrackSysUp", 1);
@@ -724,6 +729,8 @@ void ResultPlot()
   LostLeptonPrediction->SetBranchAddress("elecRecoWeight",&elecRecoWeight);
   LostLeptonPrediction->SetBranchAddress("elecIsoWeight",&elecIsoWeight);
 
+  LostLeptonPrediction->SetBranchAddress("isoTrackSysUp", &isoTrackSysUp);
+  LostLeptonPrediction->SetBranchAddress("isoTrackSysDown", &isoTrackSysDown);
   LostLeptonPrediction->SetBranchAddress("muIsoTrackSysUp", &muIsoTrackSysUp);
   LostLeptonPrediction->SetBranchAddress("muIsoTrackSysDown", &muIsoTrackSysDown);
   LostLeptonPrediction->SetBranchAddress("elecIsoTrackSysUp", &elecIsoTrackSysUp);
@@ -764,7 +771,7 @@ void ResultPlot()
       if(mergeQCDbins) SearchBin = getMergedBinQCD(BinQCD, NJets);
     }
     else SearchBin = Bin;
-    
+
     if(doExtrapolation || SearchBin > 900) continue;
     if(MTW>100)continue;
     if(selectedIDIsoMuonsNum+selectedIDIsoElectronsNum!=1)continue;
@@ -772,8 +779,8 @@ void ResultPlot()
     scaledWeight = Weight * scaleFactorWeight;
 
     totalPred_LL_MC_->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
-    totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2);
-    totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeight/2);
+    totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, isoTrackSysUp*scaleFactorWeight/2);
+    totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, isoTrackSysDown*scaleFactorWeight/2);
     totalPredMTWSysUp_LL_MC_->Fill(SearchBin, MTWSysUp*scaleFactorWeight/2);
     totalPredMTWSysDown_LL_MC_->Fill(SearchBin, MTWSysDown*scaleFactorWeight/2);
     totalPredPuritySysUp_LL_MC_->Fill(SearchBin, puritySysUp*scaleFactorWeight/2);
@@ -839,6 +846,8 @@ void ResultPlot()
   LostLeptonPredictionData->SetBranchStatus("elecRecoWeight",1);
   LostLeptonPredictionData->SetBranchStatus("elecIsoWeight",1);
 
+  LostLeptonPredictionData->SetBranchStatus("isoTrackSysUp", 1);
+  LostLeptonPredictionData->SetBranchStatus("isoTrackSysDown", 1);
   LostLeptonPredictionData->SetBranchStatus("muIsoTrackSysUp", 1);
   LostLeptonPredictionData->SetBranchStatus("muIsoTrackSysDown", 1);
   LostLeptonPredictionData->SetBranchStatus("elecIsoTrackSysUp", 1);
@@ -889,6 +898,8 @@ void ResultPlot()
   LostLeptonPredictionData->SetBranchAddress("elecRecoWeight",&elecRecoWeight);
   LostLeptonPredictionData->SetBranchAddress("elecIsoWeight",&elecIsoWeight);
 
+  LostLeptonPredictionData->SetBranchAddress("isoTrackSysUp", &isoTrackSysUp);
+  LostLeptonPredictionData->SetBranchAddress("isoTrackSysDown", &isoTrackSysDown);
   LostLeptonPredictionData->SetBranchAddress("muIsoTrackSysUp", &muIsoTrackSysUp);
   LostLeptonPredictionData->SetBranchAddress("muIsoTrackSysDown", &muIsoTrackSysDown);
   LostLeptonPredictionData->SetBranchAddress("elecIsoTrackSysUp", &elecIsoTrackSysUp);
@@ -922,7 +933,7 @@ void ResultPlot()
   nentries = LostLeptonPredictionData->GetEntries();
   nbytes = 0;
   double scaleMC = 1.0;
-  if(InputPath_Prediction_Data != InputPath_Prediction) scaleFactorWeight = 1.0;
+  if(!useMCForDataTree && InputPath_Prediction_Data != InputPath_Prediction) scaleFactorWeight = 1.0;
   for (Long64_t i=0; i<nentries;i++) {
     nbytes += LostLeptonPredictionData->GetEntry(i);
 
@@ -938,11 +949,11 @@ void ResultPlot()
 
     scaledWeight = Weight * scaleFactorWeight;
 
-    if(InputPath_Prediction_Data != InputPath_Prediction) scaleMC = Weight;
+    if(!useMCForDataTree && InputPath_Prediction_Data != InputPath_Prediction) scaleMC = Weight;
 
     totalPred_LL_->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
-    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2/scaleMC);
-    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeight/2/scaleMC);
+    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, isoTrackSysUp*scaleFactorWeight/2/scaleMC);
+    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, isoTrackSysDown*scaleFactorWeight/2/scaleMC);
     totalPredMTWSysUp_LL_->Fill(SearchBin, MTWSysUp*scaleFactorWeight/2/scaleMC);
     totalPredMTWSysDown_LL_->Fill(SearchBin, MTWSysDown*scaleFactorWeight/2/scaleMC);
     totalPredPuritySysUp_LL_->Fill(SearchBin, puritySysUp*scaleFactorWeight/2/scaleMC);
@@ -978,7 +989,6 @@ void ResultPlot()
 
 
     if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0){
-
     	ControlSampleMu_->Fill(SearchBin, scaledWeight/scaleMC);
     			
     	totalPrediction_->Fill(SearchBin, totalWeightDiLep*scaleFactorWeight/2/scaleMC);
@@ -1184,7 +1194,7 @@ void ResultPlot()
 
   //printf("Total: & & & & & & & $%3.3f\\pm$%3.3f & $%3.3f\\pm$%3.3f \\\\\n", LLexp, LLexpErr, LLpre, LLpreErr);
 
-  if(InputPath_Prediction_Data == InputPath_Prediction) std::cout<<"ATTENTION: Full MC statistics used to do prediction! Only approx. stat. unc. (~sqrt(n)) shown on prediction!"<<std::endl;
+  if(!useMCForDataTree && InputPath_Prediction_Data == InputPath_Prediction) std::cout<<"ATTENTION: Full MC statistics used to do prediction! Only approx. stat. unc. (~sqrt(n)) shown on prediction!"<<std::endl;
 
   if(InputPath_Prediction_Data != InputPath_Prediction) printf("Bin & NJets & BTags & HT & MHT & CS\\_MC (nEntries) & avg. weight (MC) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff. $\\pm$ nonClos.] & CS\\_data & avg. weight (data) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff. $\\pm$ nonClos.] & Prediction (data) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff. $\\pm$ nonClos.] & Expectation \\\\\n");
   else printf("Bin & NJets & BTags & HT & MHT & CS\\_MC (nEntries) & avg. weight (MC) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff. $\\pm$ nonClos.] & Prediction (MC) [$\\pm$ stat. $\\pm$ statEff. $\\pm$ sysEff. $\\pm$ nonClos.] & Expectation \\\\\n");
@@ -1233,7 +1243,7 @@ void ResultPlot()
     // Prediction
     // Correct estimate of stat. uncertainty on prediction only possible if data is used or limited MC statistics (e.g. number of events corresponding to 3fb-1)
     // For approximation of stat. uncertainty on prediction using full MC statistics use:
-    if(InputPath_Prediction_Data == InputPath_Prediction && approxStatUncertainty) if(totalCS_LL_->GetBinContent(i)>0.00001) totalPred_LL_->SetBinError(i, sqrt(totalPred_LL_->GetBinContent(i)*totalPred_LL_->GetBinContent(i)/totalCS_LL_->GetBinContent(i)));
+    if(!useMCForDataTree && InputPath_Prediction_Data == InputPath_Prediction && approxStatUncertainty) if(totalCS_LL_->GetBinContent(i)>0.00001) totalPred_LL_->SetBinError(i, sqrt(totalPred_LL_->GetBinContent(i)*totalPred_LL_->GetBinContent(i)/totalCS_LL_->GetBinContent(i)));
 
     //printf("$%3.3f\\pm%3.3f^{+%3.3f}_{%3.3f}{}^{+%3.3f}_{%3.3f}{}^{+%3.3f}_{%3.3f}$ & ", totalPred_LL_->GetBinContent(i), totalPred_LL_->GetBinError(i), totalPredStatUp_LL_->GetBinContent(i), totalPredStatDown_LL_->GetBinContent(i), totalPredSysUp_LL_->GetBinContent(i), totalPredSysDown_LL_->GetBinContent(i), totalPredNonClosureUp_LL_->GetBinContent(i), totalPredNonClosureDown_LL_->GetBinContent(i));
 
@@ -1250,12 +1260,87 @@ void ResultPlot()
   TDirectory *dClosure = (TDirectory*)LLoutPutFile->Get("Closure");
   dClosure->cd();
 
-  TH1D *ClosureTest = (TH1D*) totalPred_LL_MC_->Clone("ClosureTest");
-  ClosureTest->Divide(totalExp_LL_);
-  ClosureTest->SetTitle("Prediction / Expectation");
+  TH1D *ClosureTest = (TH1D*) totalExp_LL_->Clone("ClosureTest");
+  ClosureTest->Divide(totalPred_LL_MC_);
+  ClosureTest->SetTitle("Expectation / Prediction");
   SetBinLabel(ClosureTest);
   ClosureTest->Write();
+/*
+  TH1D *ClosureTest_HT = (TH1D*) totalExp_LL_->Clone("ClosureTest_HT");
+  ClosureTest_HT->SetTitle("Expectation / Prediction (HT bins)");
 
+  int nBin = 1;
+  for(int i =1; i<=6; i++){
+    for(int j =0; j<=11; j++){
+      ClosureTest_HT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i));
+      ClosureTest_HT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i));
+      ClosureTest_HT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i));
+      nBin++;
+    }
+  }
+  ClosureTest_HT->Write();
+
+  TH1D *ClosureTest_MHT = (TH1D*) totalExp_LL_->Clone("ClosureTest_MHT");
+  ClosureTest_MHT->SetTitle("Expectation / Prediction (MHT bins)");
+
+  nBin = 1;
+  for(int i =1; i<=3; i++){
+    for(int j =0; j<=11; j++){
+      if(i==1){
+        ClosureTest_MHT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i));
+        ClosureTest_MHT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i));
+        ClosureTest_MHT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i));
+        nBin++;
+        ClosureTest_MHT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i+1));
+        ClosureTest_MHT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i+1));
+        ClosureTest_MHT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i+1));
+        nBin++;
+        ClosureTest_MHT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i+2));
+        ClosureTest_MHT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i+2));
+        ClosureTest_MHT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i+2));
+        nBin++;
+      }if(i==2){
+        ClosureTest_MHT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i+2));
+        ClosureTest_MHT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i+2));
+        ClosureTest_MHT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i+2));
+        nBin++;
+        ClosureTest_MHT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i+3));
+        ClosureTest_MHT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i+3));
+        ClosureTest_MHT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i+3));
+        nBin++;
+      }if(i==3){
+        ClosureTest_MHT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i+3));
+        ClosureTest_MHT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i+3));
+        ClosureTest_MHT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i+3));
+        nBin++;
+      }      
+    }
+  }
+  ClosureTest_MHT->Write();
+
+  nBin = 1;
+  Double_t nCSmax = 10000000000.;
+  TH1D *ClosureTest_CS = (TH1D*) totalExp_LL_->Clone("ClosureTest_CS");
+  ClosureTest_CS->SetTitle("Expectation / Prediction (CS stats)");
+  while(nBin <= 72){
+    Double_t nCS = 0.;
+    int iMax = 0;
+    for(int i = 1; i <= 72; i++){
+      if(totalCS_LL_MC_->GetBinContent(i)<nCSmax){
+        if(nCS < totalCS_LL_MC_->GetBinContent(i)){
+          nCS = totalCS_LL_MC_->GetBinContent(i);
+          iMax = i;
+        }
+      }
+    }
+    nCSmax = nCS;
+    ClosureTest_CS->SetBinContent(nBin, ClosureTest->GetBinContent(iMax));
+    ClosureTest_CS->SetBinError(nBin, ClosureTest->GetBinError(iMax));
+    ClosureTest_CS->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(iMax));
+    nBin++;
+  }
+  ClosureTest_CS->Write();
+*/
   TH1D *nonClosureSysUp = (TH1D*) ClosureTest->Clone("nonClosureSysUp");
   nonClosureSysUp->Reset();
   nonClosureSysUp->SetTitle("nonClosureSysUp");
@@ -1422,6 +1507,18 @@ void ResultPlot()
     hDataMCNbBins->SetTitle("Prediction / Expectation");
     hDataMCNbBins->Write();  
   }
+
+  LLoutPutFile->cd();
+  LLoutPutFile->mkdir("Prediction_Data_MC");
+  TDirectory *dDataMC = (TDirectory*)LLoutPutFile->Get("Prediction_Data_MC");
+  dDataMC->cd();
+
+  TH1D *Prediction_Data_MC = (TH1D*) totalPred_LL_->Clone("Prediction_Data_MC");
+  Prediction_Data_MC->Divide(totalPred_LL_MC_);
+  Prediction_Data_MC->SetTitle("Prediction Data / Prediction MC");
+  SetBinLabel(Prediction_Data_MC);
+  Prediction_Data_MC->Write();
+
 
   LLoutPutFile->Close();
 

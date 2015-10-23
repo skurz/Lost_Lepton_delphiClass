@@ -861,10 +861,6 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchStatus("DeltaPhi1", 1);
   fChain->SetBranchStatus("DeltaPhi2", 1);
   fChain->SetBranchStatus("DeltaPhi3", 1);
-  fChain->SetBranchStatus("minDeltaPhiN", 1);
-  fChain->SetBranchStatus("DeltaPhiN1", 1);
-  fChain->SetBranchStatus("DeltaPhiN2", 1);
-  fChain->SetBranchStatus("DeltaPhiN3", 1);
   fChain->SetBranchStatus("Weight", 1);
   fChain->SetBranchStatus("MET", 1);
   fChain->SetBranchStatus("METPhi", 1);
@@ -1012,10 +1008,6 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("DeltaPhi1", &DeltaPhi1, &b_DeltaPhi1);
   fChain->SetBranchAddress("DeltaPhi2", &DeltaPhi2, &b_DeltaPhi2);
   fChain->SetBranchAddress("DeltaPhi3", &DeltaPhi3, &b_DeltaPhi3);
-  fChain->SetBranchAddress("minDeltaPhiN", &minDeltaPhiN, &b_minDeltaPhiN);
-  fChain->SetBranchAddress("DeltaPhiN1", &DeltaPhiN1, &b_DeltaPhiN1);
-  fChain->SetBranchAddress("DeltaPhiN2", &DeltaPhiN2, &b_DeltaPhiN2);
-  fChain->SetBranchAddress("DeltaPhiN3", &DeltaPhiN3, &b_DeltaPhiN3);
   fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
   fChain->SetBranchAddress("MET", &MET, &b_MET);
   fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);

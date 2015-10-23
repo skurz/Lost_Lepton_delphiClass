@@ -35,10 +35,6 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("DeltaPhi2",&DeltaPhi2);
   tExpectation_->Branch("DeltaPhi3",&DeltaPhi3);
   tExpectation_->Branch("DeltaPhi4",&DeltaPhi4);
-  tExpectation_->Branch("minDeltaPhiN",&minDeltaPhiN);
-  tExpectation_->Branch("DeltaPhiN1",&DeltaPhiN1);
-  tExpectation_->Branch("DeltaPhiN2",&DeltaPhiN2);
-  tExpectation_->Branch("DeltaPhiN3",&DeltaPhiN3);
   tExpectation_->Branch("Weight", &Weight);
   tExpectation_->Branch("MET",&METPt);
   tExpectation_->Branch("METPhi",&METPhi);
@@ -208,17 +204,24 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 
   bool passTrigger = false;	
   for (std::vector<string>::iterator it = TriggerNames->begin() ; it != TriggerNames->end(); ++it){
-    if(*it=="HLT_PFHT350_PFMET100_NoiseCleaned_v1"){  // Run2015A,B
+    if(it->find("HLT_PFHT350_PFMET100_NoiseCleaned_v")!=std::string::npos){  // Run2015A,B
       if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
     }
-    if(*it=="HLT_PFHT350_PFMET100_JetIdCleaned_v1"){  // Run2015C
-      if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
-    }
-    if(*it=="HLT_PFHT350_PFMET100_JetIdCleaned_v2"){  // Run2015D
+    if(it->find("HLT_PFHT350_PFMET100_JetIdCleaned_v")!=std::string::npos){  // Run2015C.D
       if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
     }
   }
   if(useTrigger && !passTrigger) return kTRUE;
+
+  // Fix for weights in v3 trees
+  if(dividePUweight){
+    Weight = Weight / puWeight;
+    if(fname.find("TTJets_SingleLeptFromTbar")!=std::string::npos) Weight = 179.25 / 60068965;
+    if(fname.find("TTJets_DiLept")!=std::string::npos) Weight = 86.66 / 30498962;
+  }
+
+  if(useTriggerEffWeight) Weight = Weight * GetTriggerEffWeight(MHT);
+
 
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
   BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
@@ -279,8 +282,8 @@ Bool_t ExpecMaker::Process(Long64_t entry)
         muIsoMatched.push_back(1);
         Expectation=2;
         if(!DY_) {
-          mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi());
-          ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi());
+          mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi(), scaleMet);
+          ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi(), scaleMet);
         }
         MuDiLepControlSample_=2;
       }
@@ -347,8 +350,8 @@ Bool_t ExpecMaker::Process(Long64_t entry)
         elecIsoMatched.push_back(1);
         Expectation=2;
         if(!DY_) {
-          mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi());
-          ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi());
+          mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi(), scaleMet);
+          ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi(), scaleMet);
         }
         ElecDiLepControlSample_=2;
       }
@@ -410,15 +413,15 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   }
       if(selectedIDIsoMuonsNum_==1 && selectedIDIsoElectronsNum_==0)
   {
-    mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
-    ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
+    mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
+    ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
     MuDiLepControlSample_=0;
   }
       if(selectedIDIsoMuonsNum_==0 && selectedIDIsoElectronsNum_==1)
   {
     ElecDiLepControlSample_=0;
-    mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
-    ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
+    mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
+    ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
   }
     }
   // isotrack
@@ -550,7 +553,7 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   //old purity calculations
   for (UShort_t i=0; i< selectedIDIsoMuonsNum_;i++)
     {
-      if(selectedIDIsoMuonsNum_>1 || MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi())>mtwCut_) {
+      if(selectedIDIsoMuonsNum_>1 || MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet)>mtwCut_) {
   selectedIDIsoMuonsPromptMatched.push_back(-1);
   selectedIDIsoMuonsPromptMatchedDeltaR.push_back(-999.);
   selectedIDIsoMuonsPromptMatchedRelPt.push_back(-999.);
@@ -592,7 +595,7 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     }
   for (UShort_t i=0; i< selectedIDIsoElectronsNum_;i++)
     {
-      if(selectedIDIsoElectronsNum_>1 || MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi())>mtwCut_) {
+      if(selectedIDIsoElectronsNum_>1 || MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet)>mtwCut_) {
   selectedIDIsoElectronsPromptMatched.push_back(-1);
   selectedIDIsoElectronsPromptMatchedDeltaR.push_back(-999.);
   selectedIDIsoElectronsPromptMatchedRelPt.push_back(-999.);
@@ -956,10 +959,11 @@ bool ExpecMaker::FiltersPass()
   if(useFilterData){
     //if(CSCTightHaloFilter==0) result=false;
     if(NVtx==0) result=false;
-    if(eeBadScFilter==0) result=false;
-    if(HBHENoiseFilter==0) result=false;
+    if(eeBadScFilter!=1) result=false;
+    if(!HBHENoiseFilter) result=false;
+    if(!HBHEIsoNoiseFilter) result=false;
   }
-  if(!JetID) result=false;
+  if(JetIDloose!=1) result=false;
   return result;
 }
 

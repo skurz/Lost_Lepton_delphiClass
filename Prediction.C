@@ -140,10 +140,6 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("DeltaPhi2",&DeltaPhi2);
   tPrediction_->Branch("DeltaPhi3",&DeltaPhi3);
   tPrediction_->Branch("DeltaPhi4",&DeltaPhi4);
-  tPrediction_->Branch("minDeltaPhiN",&minDeltaPhiN);
-  tPrediction_->Branch("DeltaPhiN1",&DeltaPhiN1);
-  tPrediction_->Branch("DeltaPhiN2",&DeltaPhiN2);
-  tPrediction_->Branch("DeltaPhiN3",&DeltaPhiN3);
   tPrediction_->Branch("Weight", &Weight);
   tPrediction_->Branch("MET",&METPt);
   tPrediction_->Branch("METPhi",&METPhi);
@@ -221,6 +217,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("IsolatedPionTracksVetoActivity", &IsolatedPionTracksVetoActivity);
   tPrediction_->Branch("IsolatedPionTracksVetoMTW", &IsolatedPionTracksVetoMTW);
 
+  tPrediction_->Branch("isoTrackStatUp", &isoTrackStatUp);
+  tPrediction_->Branch("isoTrackStatDown", &isoTrackStatDown);
   tPrediction_->Branch("muIsoTrackStatUp", &muIsoTrackStatUp);
   tPrediction_->Branch("muIsoTrackStatDown", &muIsoTrackStatDown);
   tPrediction_->Branch("elecIsoTrackStatUp", &elecIsoTrackStatUp);
@@ -247,7 +245,9 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("elecRecoStatDown", &elecRecoStatDown);
   tPrediction_->Branch("elecAccStatUp", &elecAccStatUp);
   tPrediction_->Branch("elecAccStatDown", &elecAccStatDown);
-
+  
+  tPrediction_->Branch("isoTrackSysUp", &isoTrackSysUp);
+  tPrediction_->Branch("isoTrackSysDown", &isoTrackSysDown);
   tPrediction_->Branch("muIsoTrackSysUp", &muIsoTrackSysUp);
   tPrediction_->Branch("muIsoTrackSysDown", &muIsoTrackSysDown);
   tPrediction_->Branch("elecIsoTrackSysUp", &elecIsoTrackSysUp);
@@ -327,18 +327,24 @@ Bool_t Prediction::Process(Long64_t entry)
 
   bool passTrigger = false; 
   for (std::vector<string>::iterator it = TriggerNames->begin() ; it != TriggerNames->end(); ++it){
-    if(*it=="HLT_PFHT350_PFMET100_NoiseCleaned_v1"){  // Run2015A,B
+    if(it->find("HLT_PFHT350_PFMET100_NoiseCleaned_v")!=std::string::npos){  // Run2015A,B
       if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
     }
-    if(*it=="HLT_PFHT350_PFMET100_JetIdCleaned_v1"){  // Run2015C
-      if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
-    }
-    if(*it=="HLT_PFHT350_PFMET100_JetIdCleaned_v2"){  // Run2015D
+    if(it->find("HLT_PFHT350_PFMET100_JetIdCleaned_v")!=std::string::npos){  // Run2015C.D
       if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
     }
   }
   if(useTrigger && !passTrigger) return kTRUE;
 
+  // Fix for weights in v3 trees
+  if(dividePUweight){
+    Weight = Weight / puWeight;
+    if(fname.find("TTJets_SingleLeptFromTbar")!=std::string::npos) Weight = 179.25 / 60068965;
+    if(fname.find("TTJets_DiLept")!=std::string::npos) Weight = 86.66 / 30498962;
+  }
+
+  if(useTriggerEffWeight) Weight = Weight * GetTriggerEffWeight(MHT);
+  
 
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
   BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
@@ -370,8 +376,8 @@ Bool_t Prediction::Process(Long64_t entry)
   if(selectedIDIsoMuonsNum_==1 && selectedIDIsoElectronsNum_==0)
     {
       // cout << "Single muon event...";
-      mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
-      ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
+      mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
+      ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
       //selectedIDIsoMuonsActivity.push_back(MuActivity(selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi(),muActivityMethod_));
       //double elecActivity = ElecActivity(selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi(),elecActivityMethod_);
 
@@ -521,6 +527,12 @@ Bool_t Prediction::Process(Long64_t entry)
 
 
       //cut of systematics so that efficiencies are <=1
+      double isoTrackMax = expectationReductionIsoTrackEff_ *(1 + 0.01 * isoTrackUncertaintyUp_);
+      if(isoTrackMax > 1) isoTrackMax = 1;
+      isoTrackSysDown = Weight * (1 - isoTrackMax) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
+      double isoTrackMin = expectationReductionIsoTrackEff_ *(1 - 0.01 * isoTrackUncertaintyDown_);
+      isoTrackSysUp  = Weight * (1 - isoTrackMin) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
+
       double muIsoTrackMax = expectationReductionMuIsoTrackEff_ *(1 + 0.01 * muIsoTrackUncertaintyUp_);
       if(muIsoTrackMax > 1) muIsoTrackMax = 1;
       muIsoTrackSysDown = Weight * (1 - (muIsoTrackMax + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
@@ -610,8 +622,8 @@ Bool_t Prediction::Process(Long64_t entry)
     {
       // cout << "Single electron event...";
       // cout << "get MTW...";
-      mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
-      ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
+      mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
+      ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
       //selectedIDIsoElectronsActivity.push_back(ElecActivity(selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi(),elecActivityMethod_));
       //double muActivity = MuActivity(selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi(),elecActivityMethod_);
 
@@ -752,6 +764,12 @@ Bool_t Prediction::Process(Long64_t entry)
 
 
       //cut of systematics so that efficiencies are <=1
+      double isoTrackMax = expectationReductionIsoTrackEff_ *(1 + 0.01 * isoTrackUncertaintyUp_);
+      if(isoTrackMax > 1) isoTrackMax = 1;
+      isoTrackSysDown = Weight * (1 - isoTrackMax) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
+      double isoTrackMin = expectationReductionIsoTrackEff_ *(1 - 0.01 * isoTrackUncertaintyDown_);
+      isoTrackSysUp  = Weight * (1 - isoTrackMin) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
+
       double muIsoTrackMax = expectationReductionMuIsoTrackEff_ *(1 + 0.01 * muIsoTrackUncertaintyUp_);
       if(muIsoTrackMax > 1) muIsoTrackMax = 1;
       muIsoTrackSysDown = Weight * (1 - (muIsoTrackMax + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
@@ -944,11 +962,11 @@ bool Prediction::FiltersPass()
   if(useFilterData){
     //if(CSCTightHaloFilter==0) result=false;
     if(NVtx==0) result=false;
-    if(eeBadScFilter==0) result=false;
-    if(HBHENoiseFilter==0) result=false;
-    //if(METFilters==0) result=false;
+    if(eeBadScFilter!=1) result=false;
+    if(!HBHENoiseFilter) result=false;
+    if(!HBHEIsoNoiseFilter) result=false;
   }
-  if(!JetID) result=false;
+  if(JetIDloose!=1) result=false;
   return result;
 }
 

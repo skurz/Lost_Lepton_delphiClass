@@ -28,27 +28,27 @@ void MakePrediction_separate()
     Effchain[i] = new TChain("PreSelection");
   }   
 
-  Effchain[0]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/TTJets_SingleLeptFromT.root");
-  Effchain[1]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/TTJets_SingleLeptFromTbar.root");
+  Effchain[0]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/TTJets_SingleLeptFromT.root");
+  Effchain[1]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/TTJets_SingleLeptFromTbar.root");
 
-  Effchain[2]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/TTJets_DiLept.root");
+  Effchain[2]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/TTJets_DiLept.root");
 
-  Effchain[3]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/TTJets_HT-600to800.root");
-  Effchain[4]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/TTJets_HT-800to1200.root");
-  Effchain[5]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/TTJets_HT-1200to2500.root");
-  Effchain[6]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/TTJets_HT-2500toInf.root");
+  Effchain[3]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/TTJets_HT-600to800.root");
+  Effchain[4]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/TTJets_HT-800to1200.root");
+  Effchain[5]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/TTJets_HT-1200to2500.root");
+  Effchain[6]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/TTJets_HT-2500toInf.root");
 
-  Effchain[7]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/WJetsToLNu_HT-200To400.root");
-  Effchain[8]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/WJetsToLNu_HT-400To600.root"); 
-  Effchain[9]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/WJetsToLNu_HT-600To800.root"); 
-  Effchain[10]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/WJetsToLNu_HT-800To1200.root"); 
-  Effchain[11]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/WJetsToLNu_HT-1200To2500.root"); 
-  Effchain[12]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/WJetsToLNu_HT-2500ToInf.root"); 
+  Effchain[7]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/WJetsToLNu_HT-200To400.root");
+  Effchain[8]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/WJetsToLNu_HT-400To600.root"); 
+  Effchain[9]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/WJetsToLNu_HT-600To800.root"); 
+  Effchain[10]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/WJetsToLNu_HT-800To1200.root"); 
+  Effchain[11]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/WJetsToLNu_HT-1200To2500.root"); 
+  Effchain[12]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/WJetsToLNu_HT-2500ToInf.root"); 
 
-  Effchain[13]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_Central_V2/ST_all.root");
+  Effchain[13]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v3/ST_all.root");
 
 
-  for(Int_t i=0; i<nChains; i++){ //i<nChains
+  for(Int_t i=0; i<nChains; i++){ //i<nChains i>2
     std::cout<<"Processing Tree: "<<i<<std::endl;
     if(i > 2)    Effchain[i]->Process("Prediction", TString::Format("Prediction_separate/Prediction_%d.root",i));
     else Effchain[i]->Process("Prediction", TString::Format("Prediction_separate/Prediction_%d.root, 600",i)); // folder already has to exist for the time beeing...

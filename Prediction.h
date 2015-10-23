@@ -31,11 +31,19 @@ const bool useFilterData = true;
 const bool applyFilters_=true;
 const bool applyDiLepCorrection_=true;
 const bool useTrigger = false;
+const bool useTriggerEffWeight = true;
+
+// Fix for central production v3
+const bool dividePUweight = true;
 
 // useDeltaPhiCut = 0: no deltaPhiCut
 // useDeltaPhiCut = 1: deltaPhiCut
 // useDeltaPhiCut = -1: inverted deltaPhiCut
 const int useDeltaPhiCut = 1;
+
+// scaleMet = 0: keep things the way they are
+// scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
+const int scaleMet = 0;
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 // use gen infomation to fix purityy of muon controlsample
@@ -68,11 +76,13 @@ const double elecIsoTrackUncertaintyUp_ = 10; // dummies as long as TAP is not a
 const double elecIsoTrackUncertaintyDown_ = 10; // dummies as long as TAP is not available 20
 const double pionIsoTrackUncertaintyUp_ = 10; // dummies as long as TAP is not available 20
 const double pionIsoTrackUncertaintyDown_ = 10; // dummies as long as TAP is not available 20
+const double isoTrackUncertaintyUp_ = 10; // inclusive Isotracks. Not used any more
+const double isoTrackUncertaintyDown_ = 10; // inclusive Isotracks. Not used any more
 
-const double MuMTWUncertaintyUp_ = 20;  //40
-const double MuMTWUncertaintyDown_ = 20;
-const double ElecMTWUncertaintyUp_ = 20;
-const double ElecMTWUncertaintyDown_ = 20;
+const double MuMTWUncertaintyUp_ = 40;  //40
+const double MuMTWUncertaintyDown_ = 40;
+const double ElecMTWUncertaintyUp_ = 40;
+const double ElecMTWUncertaintyDown_ = 40;
 
 const double ElecPurityUncertaintyUp_ = 20; // no purity correction for muCS (>99%)
 const double ElecPurityUncertaintyDown_ = 20; // no purity correction for muCS (>99%)
@@ -168,6 +178,8 @@ class Prediction : public TSelector {
   Float_t expectationReductionMuIsoTrackEff_,expectationReductionElecIsoTrackEff_,expectationReductionPionIsoTrackEff_, expectationReductionIsoTrackEffCombined_;
 
   // Uncertainties
+  Float_t isoTrackStatUp;
+  Float_t isoTrackStatDown;
   Float_t muIsoTrackStatUp;
   Float_t muIsoTrackStatDown;
   Float_t elecIsoTrackStatUp;
@@ -195,6 +207,8 @@ class Prediction : public TSelector {
   Float_t elecAccStatUp;
   Float_t elecAccStatDown;
 
+  Float_t isoTrackSysUp;
+  Float_t isoTrackSysDown;
   Float_t muIsoTrackSysUp;
   Float_t muIsoTrackSysDown;
   Float_t elecIsoTrackSysUp;
@@ -397,6 +411,7 @@ class Prediction : public TSelector {
   std::vector<TLorentzVector> *GenTauNu=0;
   std::vector<TLorentzVector> *GenTaus=0;
   Bool_t          HBHENoiseFilter;
+  Bool_t          HBHEIsoNoiseFilter;
   Double_t        HT;
   Int_t           isoElectronTracks;
   std::vector<TLorentzVector> *IsolatedElectronTracksVeto=0;
@@ -408,6 +423,7 @@ class Prediction : public TSelector {
   Int_t           isoMuonTracks;
   Int_t           isoPionTracks;
   Bool_t          JetID;
+  Bool_t          JetIDloose;
   std::vector<TLorentzVector> *Jets=0;
   std::vector<double>  *Jets_bDiscriminatorCSV=0;
   std::vector<double>  *Jets_bDiscriminatorMVA=0;
@@ -448,9 +464,10 @@ class Prediction : public TSelector {
   std::vector<TLorentzVector> *TauDecayCands=0;
   std::vector<int>     *TauDecayCands_pdgID=0;
   std::vector<string>  *TriggerNames=0;
-  std::vector<bool>    *TriggerPass=0;
+  std::vector<int>    *TriggerPass=0;
   std::vector<int>     *TriggerPrescales=0;
   Double_t        Weight;
+  Double_t        puWeight;
   Double_t        genHT;
 
 
@@ -499,6 +516,7 @@ class Prediction : public TSelector {
   TBranch        *b_GenTauNu=0;   //!
   TBranch        *b_GenTaus=0;   //!
   TBranch        *b_HBHENoiseFilter=0;   //!
+  TBranch        *b_HBHEIsoNoiseFilter=0;   //!
   TBranch        *b_HT=0;   //!
   TBranch        *b_isoElectronTracks=0;   //!
   TBranch        *b_IsolatedElectronTracksVeto=0;   //!
@@ -510,6 +528,7 @@ class Prediction : public TSelector {
   TBranch        *b_isoMuonTracks=0;   //!
   TBranch        *b_isoPionTracks=0;   //!
   TBranch        *b_JetID=0;   //!
+  TBranch        *b_JetIDloose=0;   //!
   TBranch        *b_Jets=0;   //!
   TBranch        *b_Jets_bDiscriminatorCSV=0;   //!
   TBranch        *b_Jets_bDiscriminatorMVA=0;   //!
@@ -553,6 +572,7 @@ class Prediction : public TSelector {
   TBranch        *b_TriggerPass=0;   //!
   TBranch        *b_TriggerPrescales=0;   //!
   TBranch        *b_Weight=0;   //!
+  TBranch        *b_puWeight=0;   //!
   TBranch        *b_genHT=0;
 
   
@@ -644,17 +664,17 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("GenTau_RA2Activity", 1);
 */  fChain->SetBranchStatus("selectedIDElectrons_MiniIso", 1);
   fChain->SetBranchStatus("selectedIDElectrons_MT2Activity",1);
-  fChain->SetBranchStatus("selectedIDElectrons_RA2Activity", 1);
+  //fChain->SetBranchStatus("selectedIDElectrons_RA2Activity", 1);
   fChain->SetBranchStatus("selectedIDIsoElectrons_MT2Activity", 1);
   fChain->SetBranchStatus("selectedIDIsoElectrons_PTW", 1);
-  fChain->SetBranchStatus("selectedIDIsoElectrons_RA2Activity",1);
+  //fChain->SetBranchStatus("selectedIDIsoElectrons_RA2Activity",1);
   fChain->SetBranchStatus("selectedIDIsoMuons_MT2Activity",1);
   fChain->SetBranchStatus("selectedIDIsoMuons_PTW",1);
-  fChain->SetBranchStatus("selectedIDIsoMuons_RA2Activity", 1);
+  //fChain->SetBranchStatus("selectedIDIsoMuons_RA2Activity", 1);
   fChain->SetBranchStatus("selectedIDMuons_MiniIso",1);
   fChain->SetBranchStatus("selectedIDMuons_MT2Activity", 1);
   fChain->SetBranchStatus("selectedIDMuons_MTW",1);
-  fChain->SetBranchStatus("selectedIDMuons_RA2Activity", 1);
+  //fChain->SetBranchStatus("selectedIDMuons_RA2Activity", 1);
   
   fChain->SetBranchStatus("RunNum", 1);
   fChain->SetBranchStatus("LumiBlockNum", 1);
@@ -665,9 +685,6 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("DeltaPhi2", 1);
   fChain->SetBranchStatus("DeltaPhi3", 1);
   fChain->SetBranchStatus("DeltaPhi4", 1);
-  fChain->SetBranchStatus("DeltaPhiN1", 1);
-  fChain->SetBranchStatus("DeltaPhiN2", 1);
-  fChain->SetBranchStatus("DeltaPhiN3", 1);
   fChain->SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter", 1);
   fChain->SetBranchStatus("eeBadScFilter", 1);
   fChain->SetBranchStatus("ElectronCharge", 1);
@@ -680,6 +697,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("GenTauNu", 1);
   fChain->SetBranchStatus("GenTaus", 1);
 */  fChain->SetBranchStatus("HBHENoiseFilter", 1);
+  fChain->SetBranchStatus("HBHEIsoNoiseFilter", 1);
   fChain->SetBranchStatus("HT", 1);
   fChain->SetBranchStatus("isoElectronTracks", 1);
   fChain->SetBranchStatus("IsolatedElectronTracksVeto", 1);
@@ -691,6 +709,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("isoMuonTracks", 1);
   fChain->SetBranchStatus("isoPionTracks", 1);
   fChain->SetBranchStatus("JetID", 1);
+  fChain->SetBranchStatus("JetIDloose", 1);
   fChain->SetBranchStatus("Jets", 1);
   fChain->SetBranchStatus("Jets_bDiscriminatorCSV", 1);
   fChain->SetBranchStatus("Jets_bDiscriminatorMVA", 1);
@@ -712,7 +731,6 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("METPt", 1);
   fChain->SetBranchStatus("MHT", 1);
   fChain->SetBranchStatus("MHT_Phi", 1);
-  fChain->SetBranchStatus("minDeltaPhiN", 1);
   fChain->SetBranchStatus("MuonCharge", 1);
   fChain->SetBranchStatus("Muons", 1);
   fChain->SetBranchStatus("nAllVertices", 1);
@@ -734,6 +752,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("TriggerPass", 1);
   fChain->SetBranchStatus("TriggerPrescales", 1);
   fChain->SetBranchStatus("Weight", 1);
+  fChain->SetBranchStatus("puWeight", 1);
   if(HTgen_cut>0.01)  fChain->SetBranchStatus("genHT", 1);
 
 
@@ -746,18 +765,18 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("GenTau_RA2Activity", &GenTau_RA2Activity, &b_GenTau_RA2Activity);
 */  fChain->SetBranchAddress("selectedIDElectrons_MiniIso", &selectedIDElectrons_MiniIso, &b_selectedIDElectrons_MiniIso);
   fChain->SetBranchAddress("selectedIDElectrons_MT2Activity", &selectedIDElectrons_MT2Activity, &b_selectedIDElectrons_MT2Activity);
-  fChain->SetBranchAddress("selectedIDElectrons_RA2Activity", &selectedIDElectrons_RA2Activity, &b_selectedIDElectrons_RA2Activity);
+  //fChain->SetBranchAddress("selectedIDElectrons_RA2Activity", &selectedIDElectrons_RA2Activity, &b_selectedIDElectrons_RA2Activity);
   fChain->SetBranchAddress("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity, &b_selectedIDIsoElectrons_MT2Activity);
   fChain->SetBranchAddress("selectedIDIsoElectrons_PTW", &selectedIDIsoElectrons_PTW, &b_selectedIDIsoElectrons_PTW);
-  fChain->SetBranchAddress("selectedIDIsoElectrons_RA2Activity", &selectedIDIsoElectrons_RA2Activity, &b_selectedIDIsoElectrons_RA2Activity);
+  //fChain->SetBranchAddress("selectedIDIsoElectrons_RA2Activity", &selectedIDIsoElectrons_RA2Activity, &b_selectedIDIsoElectrons_RA2Activity);
   fChain->SetBranchAddress("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity, &b_selectedIDIsoMuons_MT2Activity);
   fChain->SetBranchAddress("selectedIDIsoMuons_PTW", &selectedIDIsoMuons_PTW, &b_selectedIDIsoMuons_PTW);
-  fChain->SetBranchAddress("selectedIDIsoMuons_RA2Activity", &selectedIDIsoMuons_RA2Activity, &b_selectedIDIsoMuons_RA2Activity);
+  //fChain->SetBranchAddress("selectedIDIsoMuons_RA2Activity", &selectedIDIsoMuons_RA2Activity, &b_selectedIDIsoMuons_RA2Activity);
   fChain->SetBranchAddress("selectedIDMuons_MiniIso", &selectedIDMuons_MiniIso, &b_selectedIDMuons_MiniIso);
   fChain->SetBranchAddress("selectedIDMuons_MT2Activity", &selectedIDMuons_MT2Activity, &b_selectedIDMuons_MT2Activity);
   fChain->SetBranchAddress("selectedIDMuons_MTW", &selectedIDMuons_MTW, &b_selectedIDMuons_MTW);
-  fChain->SetBranchAddress("selectedIDMuons_RA2Activity", &selectedIDMuons_RA2Activity, &b_selectedIDMuons_RA2Activity);
-  
+  //fChain->SetBranchAddress("selectedIDMuons_RA2Activity", &selectedIDMuons_RA2Activity, &b_selectedIDMuons_RA2Activity);
+
   fChain->SetBranchAddress("RunNum", &RunNum, &b_RunNum);
   fChain->SetBranchAddress("LumiBlockNum", &LumiBlockNum, &b_LumiBlockNum);
   fChain->SetBranchAddress("EvtNum", &EvtNum, &b_EvtNum);
@@ -767,9 +786,6 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("DeltaPhi2", &DeltaPhi2, &b_DeltaPhi2);
   fChain->SetBranchAddress("DeltaPhi3", &DeltaPhi3, &b_DeltaPhi3);
   fChain->SetBranchAddress("DeltaPhi4", &DeltaPhi4, &b_DeltaPhi4);
-  fChain->SetBranchAddress("DeltaPhiN1", &DeltaPhiN1, &b_DeltaPhiN1);
-  fChain->SetBranchAddress("DeltaPhiN2", &DeltaPhiN2, &b_DeltaPhiN2);
-  fChain->SetBranchAddress("DeltaPhiN3", &DeltaPhiN3, &b_DeltaPhiN3);
   fChain->SetBranchAddress("EcalDeadCellTriggerPrimitiveFilter", &EcalDeadCellTriggerPrimitiveFilter, &b_EcalDeadCellTriggerPrimitiveFilter);
   fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
   fChain->SetBranchAddress("ElectronCharge", &ElectronCharge, &b_ElectronCharge);
@@ -782,6 +798,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("GenTauNu", &GenTauNu, &b_GenTauNu);
   fChain->SetBranchAddress("GenTaus", &GenTaus, &b_GenTaus);
 */  fChain->SetBranchAddress("HBHENoiseFilter", &HBHENoiseFilter, &b_HBHENoiseFilter);
+  fChain->SetBranchAddress("HBHEIsoNoiseFilter", &HBHEIsoNoiseFilter, &b_HBHEIsoNoiseFilter);
   fChain->SetBranchAddress("HT", &HT, &b_HT);
   fChain->SetBranchAddress("isoElectronTracks", &isoElectronTracks, &b_isoElectronTracks);
   fChain->SetBranchAddress("IsolatedElectronTracksVeto", &IsolatedElectronTracksVeto, &b_IsolatedElectronTracksVeto);
@@ -793,6 +810,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("isoMuonTracks", &isoMuonTracks, &b_isoMuonTracks);
   fChain->SetBranchAddress("isoPionTracks", &isoPionTracks, &b_isoPionTracks);
   fChain->SetBranchAddress("JetID", &JetID, &b_JetID);
+  fChain->SetBranchAddress("JetIDloose", &JetIDloose, &b_JetIDloose);
   fChain->SetBranchAddress("Jets", &Jets, &b_Jets);
   fChain->SetBranchAddress("Jets_bDiscriminatorCSV", &Jets_bDiscriminatorCSV, &b_Jets_bDiscriminatorCSV);
   fChain->SetBranchAddress("Jets_bDiscriminatorMVA", &Jets_bDiscriminatorMVA, &b_Jets_bDiscriminatorMVA);
@@ -814,7 +832,6 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("METPt", &METPt, &b_METPt);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
   fChain->SetBranchAddress("MHT_Phi", &MHT_Phi, &b_MHT_Phi);
-  fChain->SetBranchAddress("minDeltaPhiN", &minDeltaPhiN, &b_minDeltaPhiN);
   fChain->SetBranchAddress("MuonCharge", &MuonCharge, &b_MuonCharge);
   fChain->SetBranchAddress("Muons", &Muons, &b_Muons);
   fChain->SetBranchAddress("nAllVertices", &nAllVertices, &b_nAllVertices);
@@ -836,6 +853,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("TriggerPass", &TriggerPass, &b_TriggerPass);
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
   fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
+  fChain->SetBranchAddress("puWeight", &puWeight, &b_puWeight);
   if(HTgen_cut>0.01) fChain->SetBranchAddress("genHT", &genHT, &b_genHT);
 
 }
