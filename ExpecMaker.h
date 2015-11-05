@@ -38,9 +38,6 @@ const bool useFilterData = true;
 const bool useTrigger = false;
 const bool useTriggerEffWeight = true;
 
-// Fix for central production v3
-const bool dividePUweight = true;
-
 
 // useDeltaPhiCut = 0: no deltaPhiCut
 // useDeltaPhiCut = 1: deltaPhiCut
@@ -263,14 +260,16 @@ public :
   std::vector<double>  *selectedIDIsoMuons_MT2Activity=0;
   std::vector<double>  *selectedIDIsoMuons_PTW=0;
   std::vector<double>  *selectedIDIsoMuons_RA2Activity=0;
+  std::vector<double>  *PDFweights=0;
+  std::vector<double>  *ScaleWeights=0;
 
   Double_t        genHT;
   UInt_t          RunNum;
   UInt_t          LumiBlockNum;
-  UInt_t          EvtNum;
+  ULong64_t       EvtNum;
   std::vector<TLorentzVector> *bestPhoton=0;
   Int_t           BTags;
-  Int_t           CSCTightHaloFilter;
+  Bool_t           CSCTightHaloFilter;
   Double_t        DeltaPhi1;
   Double_t        DeltaPhi2;
   Double_t        DeltaPhi3;
@@ -294,15 +293,11 @@ public :
   Double_t        HT;
   Int_t           isoElectronTracks;
   std::vector<TLorentzVector> *IsolatedElectronTracksVeto=0;
-  std::vector<double>  *IsolatedElectronTracksVeto_MTW=0;
   std::vector<TLorentzVector> *IsolatedMuonTracksVeto=0;
-  std::vector<double>  *IsolatedMuonTracksVeto_MTW=0;
   std::vector<TLorentzVector> *IsolatedPionTracksVeto=0;
-  std::vector<double>  *IsolatedPionTracksVeto_MTW=0;
   Int_t           isoMuonTracks;
   Int_t           isoPionTracks;
   Bool_t          JetID;
-  Bool_t          JetIDloose;
   std::vector<TLorentzVector> *Jets=0;
   std::vector<double>  *Jets_bDiscriminatorCSV=0;
   std::vector<double>  *Jets_bDiscriminatorMVA=0;
@@ -310,7 +305,6 @@ public :
   std::vector<double>  *Jets_chargedHadronEnergyFraction=0;
   std::vector<int>     *Jets_chargedHadronMultiplicity=0;
   std::vector<int>     *Jets_electronMultiplicity=0;
-  std::vector<int>     *Jets_flavor=0;
   std::vector<double>  *Jets_jetArea=0;
   std::vector<double>  *Jets_muonEnergyFraction=0;
   std::vector<int>     *Jets_muonMultiplicity=0;
@@ -400,15 +394,11 @@ public :
   TBranch        *b_HT=0;   //!
   TBranch        *b_isoElectronTracks=0;   //!
   TBranch        *b_IsolatedElectronTracksVeto=0;   //!
-  TBranch        *b_IsolatedElectronTracksVeto_MTW=0;   //!
   TBranch        *b_IsolatedMuonTracksVeto=0;   //!
-  TBranch        *b_IsolatedMuonTracksVeto_MTW=0;   //!
   TBranch        *b_IsolatedPionTracksVeto=0;   //!
-  TBranch        *b_IsolatedPionTracksVeto_MTW=0;   //!
   TBranch        *b_isoMuonTracks=0;   //!
   TBranch        *b_isoPionTracks=0;   //!
   TBranch        *b_JetID=0;   //!
-  TBranch        *b_JetIDloose=0;   //!
   TBranch        *b_Jets=0;   //!
   TBranch        *b_Jets_bDiscriminatorCSV=0;   //!
   TBranch        *b_Jets_bDiscriminatorMVA=0;   //!
@@ -416,7 +406,6 @@ public :
   TBranch        *b_Jets_chargedHadronEnergyFraction=0;   //!
   TBranch        *b_Jets_chargedHadronMultiplicity=0;   //!
   TBranch        *b_Jets_electronMultiplicity=0;   //!
-  TBranch        *b_Jets_flavor=0;   //!
   TBranch        *b_Jets_jetArea=0;   //!
   TBranch        *b_Jets_muonEnergyFraction=0;   //!
   TBranch        *b_Jets_muonMultiplicity=0;   //!
@@ -453,6 +442,8 @@ public :
   TBranch        *b_TriggerPrescales=0;   //!
   TBranch        *b_Weight=0;   //!
   TBranch        *b_puWeight=0;   //!
+  TBranch        *b_PDFweights=0;   //!
+  TBranch        *b_ScaleWeights=0;   //!
 
  ExpecMaker(TTree * /*tree*/ =0) : fChain(0) { }
   virtual ~ExpecMaker() { }
@@ -583,15 +574,11 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("HT", 1);
   fChain->SetBranchStatus("isoElectronTracks", 1);
   fChain->SetBranchStatus("IsolatedElectronTracksVeto", 1);
-  fChain->SetBranchStatus("IsolatedElectronTracksVeto_MTW", 1);
   fChain->SetBranchStatus("IsolatedMuonTracksVeto", 1);
-  fChain->SetBranchStatus("IsolatedMuonTracksVeto_MTW", 1);
   fChain->SetBranchStatus("IsolatedPionTracksVeto", 1);
-  fChain->SetBranchStatus("IsolatedPionTracksVeto_MTW", 1);
   fChain->SetBranchStatus("isoMuonTracks", 1);
   fChain->SetBranchStatus("isoPionTracks", 1);
   fChain->SetBranchStatus("JetID", 1);
-  fChain->SetBranchStatus("JetIDloose", 1);
   fChain->SetBranchStatus("Jets", 1);
   fChain->SetBranchStatus("Jets_bDiscriminatorCSV", 1);
   fChain->SetBranchStatus("Jets_bDiscriminatorMVA", 1);
@@ -599,7 +586,6 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("Jets_chargedHadronEnergyFraction", 1);
   fChain->SetBranchStatus("Jets_chargedHadronMultiplicity", 1);
   fChain->SetBranchStatus("Jets_electronMultiplicity", 1);
-  fChain->SetBranchStatus("Jets_flavor", 1);
   fChain->SetBranchStatus("Jets_jetArea", 1);
   fChain->SetBranchStatus("Jets_muonEnergyFraction", 1);
   fChain->SetBranchStatus("Jets_muonMultiplicity", 1);
@@ -635,6 +621,9 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("TriggerPrescales", 1);
   fChain->SetBranchStatus("Weight", 1);
   fChain->SetBranchStatus("puWeight", 1);
+  fChain->SetBranchStatus("PDFweights", 1);
+  fChain->SetBranchStatus("ScaleWeights", 1);
+  fChain->SetBranchStatus("selectedIDElectrons", 1);
   fChain->SetBranchStatus("genHT", 1);
 
   fChain->SetBranchAddress("GenElec_MT2Activity", &GenElec_MT2Activity, &b_GenElec_MT2Activity);
@@ -683,15 +672,11 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("HT", &HT, &b_HT);
   fChain->SetBranchAddress("isoElectronTracks", &isoElectronTracks, &b_isoElectronTracks);
   fChain->SetBranchAddress("IsolatedElectronTracksVeto", &IsolatedElectronTracksVeto, &b_IsolatedElectronTracksVeto);
-  fChain->SetBranchAddress("IsolatedElectronTracksVeto_MTW", &IsolatedElectronTracksVeto_MTW, &b_IsolatedElectronTracksVeto_MTW);
   fChain->SetBranchAddress("IsolatedMuonTracksVeto", &IsolatedMuonTracksVeto, &b_IsolatedMuonTracksVeto);
-  fChain->SetBranchAddress("IsolatedMuonTracksVeto_MTW", &IsolatedMuonTracksVeto_MTW, &b_IsolatedMuonTracksVeto_MTW);
   fChain->SetBranchAddress("IsolatedPionTracksVeto", &IsolatedPionTracksVeto, &b_IsolatedPionTracksVeto);
-  fChain->SetBranchAddress("IsolatedPionTracksVeto_MTW", &IsolatedPionTracksVeto_MTW, &b_IsolatedPionTracksVeto_MTW);
   fChain->SetBranchAddress("isoMuonTracks", &isoMuonTracks, &b_isoMuonTracks);
   fChain->SetBranchAddress("isoPionTracks", &isoPionTracks, &b_isoPionTracks);
   fChain->SetBranchAddress("JetID", &JetID, &b_JetID);
-  fChain->SetBranchAddress("JetIDloose", &JetIDloose, &b_JetIDloose);
   fChain->SetBranchAddress("Jets", &Jets, &b_Jets);
   fChain->SetBranchAddress("Jets_bDiscriminatorCSV", &Jets_bDiscriminatorCSV, &b_Jets_bDiscriminatorCSV);
   fChain->SetBranchAddress("Jets_bDiscriminatorMVA", &Jets_bDiscriminatorMVA, &b_Jets_bDiscriminatorMVA);
@@ -699,7 +684,6 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("Jets_chargedHadronEnergyFraction", &Jets_chargedHadronEnergyFraction, &b_Jets_chargedHadronEnergyFraction);
   fChain->SetBranchAddress("Jets_chargedHadronMultiplicity", &Jets_chargedHadronMultiplicity, &b_Jets_chargedHadronMultiplicity);
   fChain->SetBranchAddress("Jets_electronMultiplicity", &Jets_electronMultiplicity, &b_Jets_electronMultiplicity);
-  fChain->SetBranchAddress("Jets_flavor", &Jets_flavor, &b_Jets_flavor);
   fChain->SetBranchAddress("Jets_jetArea", &Jets_jetArea, &b_Jets_jetArea);
   fChain->SetBranchAddress("Jets_muonEnergyFraction", &Jets_muonEnergyFraction, &b_Jets_muonEnergyFraction);
   fChain->SetBranchAddress("Jets_muonMultiplicity", &Jets_muonMultiplicity, &b_Jets_muonMultiplicity);
@@ -735,6 +719,8 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
   fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
   fChain->SetBranchAddress("puWeight", &puWeight, &b_puWeight);
+  fChain->SetBranchAddress("PDFweights", &PDFweights, &b_PDFweights);
+  fChain->SetBranchAddress("ScaleWeights", &ScaleWeights, &b_ScaleWeights);
 }
 
 Bool_t ExpecMaker::Notify()

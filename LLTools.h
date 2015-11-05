@@ -25,8 +25,131 @@ static double PTWCalculator(double metPt,double  metPhi,double  lepPt,double  le
 }
 
 static double GetTriggerEffWeight(Double_t MHT){
-  if (MHT<150) return 0.0389;
-    else if (MHT<200) return 0.3208;
-    else if (MHT<500) return 0.987;
-    else return 1.0;
+  if (MHT<50) return 0.0080;
+  else if (MHT<100) return 0.0988;
+  else if (MHT<150) return 0.5424;
+  else if (MHT<200) return 0.9011;
+  else if (MHT<250) return 0.9846;
+  else if (MHT<300) return 0.9961;
+  else if (MHT<400) return 0.9865;
+  else if (MHT<500) return 1.0000;
+  else return 1.0000;
+}
+
+static double getMuonIDSF(Double_t pt, Double_t eta){
+  double sf = 1.;
+
+  if(std::abs(eta)<1.2){
+    if(pt < 20) sf = 0.983;
+    else if(pt < 30) sf = 0.985;
+    else if(pt < 40) sf = 0.992;
+    else if(pt < 50) sf = 0.994;
+    else if(pt < 60) sf = 0.988;
+    else if(pt < 80) sf = 0.986;
+    else if(pt < 120) sf = 0.979;
+    else sf = 1.016;
+  }
+  else{
+    if(pt < 20) sf = 1.004;
+    else if(pt < 30) sf = 0.994;
+    else if(pt < 40) sf = 0.99;
+    else if(pt < 50) sf = 0.992;
+    else if(pt < 60) sf = 0.986;
+    else if(pt < 80) sf = 0.981;
+    else if(pt < 120) sf = 0.955;
+    else sf = 1.005;
+  }
+
+  return std::abs(1. - sf);
+}
+
+static double getMuonIsoSF(Double_t pt, Double_t eta, Double_t act){
+  double sf = 1.;
+
+  if(std::abs(eta)<1.2){
+    if(pt < 20) sf = 1.002;
+    else if(pt < 30) sf = 1.001;
+    else if(pt < 40) sf = 1.000;
+    else if(pt < 50) sf = 1.000;
+    else if(pt < 60) sf = 1.001;
+    else if(pt < 80) sf = 1.001;
+    else if(pt < 120) sf = 1.000;
+    else sf = 1.000;
+  }
+  else{
+    if(pt < 20) sf = 0.995;
+    else if(pt < 30) sf = 1.001;
+    else if(pt < 40) sf = 1.000;
+    else if(pt < 50) sf = 1.000;
+    else if(pt < 60) sf = 1.000;
+    else if(pt < 80) sf = 1.000;
+    else if(pt < 120) sf = 1.000;
+    else sf = 1.000;
+  }
+
+  return std::abs(1. - sf);
+}
+
+static double getElecIDSF(Double_t pt, Double_t eta){
+  double sf = 1.;
+
+  if(std::abs(eta)<1.442){
+    if(pt < 20) sf = 0.941;
+    else if(pt < 30) sf = 0.981;
+    else if(pt < 40) sf = 0.995;
+    else if(pt < 50) sf = 0.996;
+    else sf = 1.001;
+  }else if(std::abs(eta)<1.5){
+    if(pt < 20) sf = 1.135;
+    else if(pt < 30) sf = 1.035;
+    else if(pt < 40) sf = 0.974;
+    else if(pt < 50) sf = 1.006;
+    else sf = 1.000;
+  }else{
+    if(pt < 20) sf = 0.970;
+    else if(pt < 30) sf = 0.965;
+    else if(pt < 40) sf = 1.002;
+    else if(pt < 50) sf = 1.016;
+    else sf = 1.006;
+  }
+
+  return std::abs(1. - sf);
+}
+
+static double getElecIsoSF(Double_t pt, Double_t eta, Double_t act){
+  double sf = 1.;
+
+  if(act<0.02){
+    if(pt < 20) sf = 0.988;
+    else if(pt < 30) sf = 0.996;
+    else if(pt < 40) sf = 0.996;
+    else if(pt < 50) sf = 0.997;
+    else sf = 1.001;
+  }else if(act<0.05){
+    if(pt < 20) sf = 0.948;
+    else if(pt < 30) sf = 0.991;
+    else if(pt < 40) sf = 0.997;
+    else if(pt < 50) sf = 0.996;
+    else sf = 0.995;
+  }else if(act<0.15){
+    if(pt < 20) sf = 1.007;
+    else if(pt < 30) sf = 0.992;
+    else if(pt < 40) sf = 0.997;
+    else if(pt < 50) sf = 0.997;
+    else sf = 0.996;
+  }else if(act<1.){
+    if(pt < 20) sf = 0.992;
+    else if(pt < 30) sf = 0.972;
+    else if(pt < 40) sf = 0.989;
+    else if(pt < 50) sf = 1.004;
+    else sf = 0.977;
+  }else{
+    if(pt < 20) sf = 0.826;
+    else if(pt < 30) sf = 0.952;
+    else if(pt < 40) sf = 1.090;
+    else if(pt < 50) sf = 0.891;
+    else sf = 0.930;
+  }
+
+  return std::abs(1. - sf);
 }

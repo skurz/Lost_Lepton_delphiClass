@@ -33,13 +33,16 @@ const bool applyDiLepCorrection_=true;
 const bool useTrigger = false;
 const bool useTriggerEffWeight = true;
 
-// Fix for central production v3
-const bool dividePUweight = true;
+// Unblinded data only
+const bool restrictRunNum = false;
 
 // useDeltaPhiCut = 0: no deltaPhiCut
 // useDeltaPhiCut = 1: deltaPhiCut
 // useDeltaPhiCut = -1: inverted deltaPhiCut
 const int useDeltaPhiCut = 1;
+
+// ScaleFactors from SUSY lepton SG groups: presentation from Oct 23 (preliminary!!)
+const bool usePrelimSFs = true;
 
 // scaleMet = 0: keep things the way they are
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
@@ -70,19 +73,19 @@ const bool UseTagAndProbeEffReco_=false; // warning overriges all other choices 
 
 
 // uncertainties
-const double muIsoTrackUncertaintyUp_ = 10; // dummies as long as TAP is not available 20
-const double muIsoTrackUncertaintyDown_ = 10; // dummies as long as TAP is not available 20
-const double elecIsoTrackUncertaintyUp_ = 10; // dummies as long as TAP is not available 20
-const double elecIsoTrackUncertaintyDown_ = 10; // dummies as long as TAP is not available 20
-const double pionIsoTrackUncertaintyUp_ = 10; // dummies as long as TAP is not available 20
-const double pionIsoTrackUncertaintyDown_ = 10; // dummies as long as TAP is not available 20
-const double isoTrackUncertaintyUp_ = 10; // inclusive Isotracks. Not used any more
-const double isoTrackUncertaintyDown_ = 10; // inclusive Isotracks. Not used any more
+const double muIsoTrackUncertaintyUp_ = 5; // dummies as long as TAP is not available 20
+const double muIsoTrackUncertaintyDown_ = 5; // dummies as long as TAP is not available 20
+const double elecIsoTrackUncertaintyUp_ = 5; // dummies as long as TAP is not available 20
+const double elecIsoTrackUncertaintyDown_ = 5; // dummies as long as TAP is not available 20
+const double pionIsoTrackUncertaintyUp_ = 5; // dummies as long as TAP is not available 20
+const double pionIsoTrackUncertaintyDown_ = 5; // dummies as long as TAP is not available 20
+const double isoTrackUncertaintyUp_ = 5; // inclusive Isotracks (if used)
+const double isoTrackUncertaintyDown_ = 5; // inclusive Isotracks (if used)
 
-const double MuMTWUncertaintyUp_ = 40;  //40
-const double MuMTWUncertaintyDown_ = 40;
-const double ElecMTWUncertaintyUp_ = 40;
-const double ElecMTWUncertaintyDown_ = 40;
+const double MuMTWUncertaintyUp_ = 20;  //20
+const double MuMTWUncertaintyDown_ = 20;
+const double ElecMTWUncertaintyUp_ = 20;
+const double ElecMTWUncertaintyDown_ = 20;
 
 const double ElecPurityUncertaintyUp_ = 20; // no purity correction for muCS (>99%)
 const double ElecPurityUncertaintyDown_ = 20; // no purity correction for muCS (>99%)
@@ -101,6 +104,10 @@ const double MuAccUncertaintyUp_ = 5;  // pdf // 9
 const double MuAccUncertaintyDown_ = 5;  // pdf
 const double ElecAccUncertaintyUp_ = 5;  // pdf
 const double ElecAccUncertaintyDown_ = 5;  // pdf
+const double MuAccQsquareUncertaintyUp_ = 1;  // Q^2
+const double MuAccQsquareUncertaintyDown_ = 1;  // Q^2
+const double ElecAccQsquareUncertaintyUp_ = 1;  // Q^2
+const double ElecAccQsquareUncertaintyDown_ = 1;  // Q^2
 
 const double MuRecoUncertaintyUp_ = 5;  // dummies as long as TAP is not available 10
 const double MuRecoUncertaintyDown_ = 5;  // dummies as long as TAP is not available
@@ -229,12 +236,16 @@ class Prediction : public TSelector {
   Float_t muRecoSysDown;
   Float_t muAccSysUp;
   Float_t muAccSysDown;
+  Float_t muAccQsquareSysUp;
+  Float_t muAccQsquareSysDown;
   Float_t elecIsoSysUp;
   Float_t elecIsoSysDown;
   Float_t elecRecoSysUp;
   Float_t elecRecoSysDown;
   Float_t elecAccSysUp;
   Float_t elecAccSysDown;
+  Float_t elecAccQsquareSysUp;
+  Float_t elecAccQsquareSysDown;
   
   Float_t diBosonUp;
   Float_t diBosonDown;
@@ -303,6 +314,7 @@ class Prediction : public TSelector {
   TH2Eff *MuIsoActivityPT_;
   TH2Eff *MuIsoRelPTDeltaRJet_;
   TH2Eff *MuRecoActivityPT_;
+  TH2Eff *MuRecoPTEta_;
   TH2Eff *MuAccBTagNJets_;
   TH2Eff *MuAccMHTNJets_;
   TH2Eff *MuAccHTNJets_;
@@ -317,6 +329,8 @@ class Prediction : public TSelector {
   TH2Eff *MuAccHTMHT_NJets4_;
   TH2Eff *MuAccHTMHT_NJets5_;
   TH2Eff *MuAccHTMHT_NJets6_;
+  TH2Eff *MuAccHTMHT_NJets78_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_;
   TH2Eff *MuAccHTMHT_NJetsHigh_;
   TH2Eff *MuAccHTMHTB0_;
   TH2Eff *MuAccHTMHTB1_Inf_;
@@ -325,6 +339,7 @@ class Prediction : public TSelector {
   TH2Eff *ElecIsoActivityPT_;
   TH2Eff *ElecIsoRelPTDeltaRJet_;
   TH2Eff *ElecRecoActivityPT_;
+  TH2Eff *ElecRecoPTEta_;
   TH2Eff *ElecAccBTagNJets_;
   TH2Eff *ElecAccMHTNJets_;
   TH2Eff *ElecAccHTNJets_;
@@ -342,6 +357,8 @@ class Prediction : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets4_;
   TH2Eff *ElecAccHTMHT_NJets5_;
   TH2Eff *ElecAccHTMHT_NJets6_;
+  TH2Eff *ElecAccHTMHT_NJets78_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_;
   TH2Eff *ElecAccHTMHT_NJetsHigh_;
   TH2Eff *ElecAccMHTNJetsB0_;
   TH2Eff *ElecAccMHTNJetsB1_Inf_; 
@@ -388,10 +405,10 @@ class Prediction : public TSelector {
   
   UInt_t          RunNum;
   UInt_t          LumiBlockNum;
-  UInt_t          EvtNum;
+  ULong64_t       EvtNum;
   std::vector<TLorentzVector> *bestPhoton=0;
   Int_t           BTags;
-  Int_t           CSCTightHaloFilter;
+  Bool_t           CSCTightHaloFilter;
   Double_t        DeltaPhi1;
   Double_t        DeltaPhi2;
   Double_t        DeltaPhi3;
@@ -415,15 +432,11 @@ class Prediction : public TSelector {
   Double_t        HT;
   Int_t           isoElectronTracks;
   std::vector<TLorentzVector> *IsolatedElectronTracksVeto=0;
-  std::vector<double>  *IsolatedElectronTracksVeto_MTW=0;
   std::vector<TLorentzVector> *IsolatedMuonTracksVeto=0;
-  std::vector<double>  *IsolatedMuonTracksVeto_MTW=0;
   std::vector<TLorentzVector> *IsolatedPionTracksVeto=0;
-  std::vector<double>  *IsolatedPionTracksVeto_MTW=0;
   Int_t           isoMuonTracks;
   Int_t           isoPionTracks;
   Bool_t          JetID;
-  Bool_t          JetIDloose;
   std::vector<TLorentzVector> *Jets=0;
   std::vector<double>  *Jets_bDiscriminatorCSV=0;
   std::vector<double>  *Jets_bDiscriminatorMVA=0;
@@ -431,7 +444,6 @@ class Prediction : public TSelector {
   std::vector<double>  *Jets_chargedHadronEnergyFraction=0;
   std::vector<int>     *Jets_chargedHadronMultiplicity=0;
   std::vector<int>     *Jets_electronMultiplicity=0;
-  std::vector<int>     *Jets_flavor=0;
   std::vector<double>  *Jets_jetArea=0;
   std::vector<double>  *Jets_muonEnergyFraction=0;
   std::vector<int>     *Jets_muonMultiplicity=0;
@@ -520,15 +532,11 @@ class Prediction : public TSelector {
   TBranch        *b_HT=0;   //!
   TBranch        *b_isoElectronTracks=0;   //!
   TBranch        *b_IsolatedElectronTracksVeto=0;   //!
-  TBranch        *b_IsolatedElectronTracksVeto_MTW=0;   //!
   TBranch        *b_IsolatedMuonTracksVeto=0;   //!
-  TBranch        *b_IsolatedMuonTracksVeto_MTW=0;   //!
   TBranch        *b_IsolatedPionTracksVeto=0;   //!
-  TBranch        *b_IsolatedPionTracksVeto_MTW=0;   //!
   TBranch        *b_isoMuonTracks=0;   //!
   TBranch        *b_isoPionTracks=0;   //!
   TBranch        *b_JetID=0;   //!
-  TBranch        *b_JetIDloose=0;   //!
   TBranch        *b_Jets=0;   //!
   TBranch        *b_Jets_bDiscriminatorCSV=0;   //!
   TBranch        *b_Jets_bDiscriminatorMVA=0;   //!
@@ -536,7 +544,6 @@ class Prediction : public TSelector {
   TBranch        *b_Jets_chargedHadronEnergyFraction=0;   //!
   TBranch        *b_Jets_chargedHadronMultiplicity=0;   //!
   TBranch        *b_Jets_electronMultiplicity=0;   //!
-  TBranch        *b_Jets_flavor=0;   //!
   TBranch        *b_Jets_jetArea=0;   //!
   TBranch        *b_Jets_muonEnergyFraction=0;   //!
   TBranch        *b_Jets_muonMultiplicity=0;   //!
@@ -701,15 +708,11 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("HT", 1);
   fChain->SetBranchStatus("isoElectronTracks", 1);
   fChain->SetBranchStatus("IsolatedElectronTracksVeto", 1);
-  fChain->SetBranchStatus("IsolatedElectronTracksVeto_MTW", 1);
   fChain->SetBranchStatus("IsolatedMuonTracksVeto", 1);
-  fChain->SetBranchStatus("IsolatedMuonTracksVeto_MTW", 1);
   fChain->SetBranchStatus("IsolatedPionTracksVeto", 1);
-  fChain->SetBranchStatus("IsolatedPionTracksVeto_MTW", 1);
   fChain->SetBranchStatus("isoMuonTracks", 1);
   fChain->SetBranchStatus("isoPionTracks", 1);
   fChain->SetBranchStatus("JetID", 1);
-  fChain->SetBranchStatus("JetIDloose", 1);
   fChain->SetBranchStatus("Jets", 1);
   fChain->SetBranchStatus("Jets_bDiscriminatorCSV", 1);
   fChain->SetBranchStatus("Jets_bDiscriminatorMVA", 1);
@@ -717,7 +720,6 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("Jets_chargedHadronEnergyFraction", 1);
   fChain->SetBranchStatus("Jets_chargedHadronMultiplicity", 1);
   fChain->SetBranchStatus("Jets_electronMultiplicity", 1);
-  fChain->SetBranchStatus("Jets_flavor", 1);
   fChain->SetBranchStatus("Jets_jetArea", 1);
   fChain->SetBranchStatus("Jets_muonEnergyFraction", 1);
   fChain->SetBranchStatus("Jets_muonMultiplicity", 1);
@@ -752,7 +754,6 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("TriggerPass", 1);
   fChain->SetBranchStatus("TriggerPrescales", 1);
   fChain->SetBranchStatus("Weight", 1);
-  fChain->SetBranchStatus("puWeight", 1);
   if(HTgen_cut>0.01)  fChain->SetBranchStatus("genHT", 1);
 
 
@@ -802,15 +803,11 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("HT", &HT, &b_HT);
   fChain->SetBranchAddress("isoElectronTracks", &isoElectronTracks, &b_isoElectronTracks);
   fChain->SetBranchAddress("IsolatedElectronTracksVeto", &IsolatedElectronTracksVeto, &b_IsolatedElectronTracksVeto);
-  fChain->SetBranchAddress("IsolatedElectronTracksVeto_MTW", &IsolatedElectronTracksVeto_MTW, &b_IsolatedElectronTracksVeto_MTW);
   fChain->SetBranchAddress("IsolatedMuonTracksVeto", &IsolatedMuonTracksVeto, &b_IsolatedMuonTracksVeto);
-  fChain->SetBranchAddress("IsolatedMuonTracksVeto_MTW", &IsolatedMuonTracksVeto_MTW, &b_IsolatedMuonTracksVeto_MTW);
   fChain->SetBranchAddress("IsolatedPionTracksVeto", &IsolatedPionTracksVeto, &b_IsolatedPionTracksVeto);
-  fChain->SetBranchAddress("IsolatedPionTracksVeto_MTW", &IsolatedPionTracksVeto_MTW, &b_IsolatedPionTracksVeto_MTW);
   fChain->SetBranchAddress("isoMuonTracks", &isoMuonTracks, &b_isoMuonTracks);
   fChain->SetBranchAddress("isoPionTracks", &isoPionTracks, &b_isoPionTracks);
   fChain->SetBranchAddress("JetID", &JetID, &b_JetID);
-  fChain->SetBranchAddress("JetIDloose", &JetIDloose, &b_JetIDloose);
   fChain->SetBranchAddress("Jets", &Jets, &b_Jets);
   fChain->SetBranchAddress("Jets_bDiscriminatorCSV", &Jets_bDiscriminatorCSV, &b_Jets_bDiscriminatorCSV);
   fChain->SetBranchAddress("Jets_bDiscriminatorMVA", &Jets_bDiscriminatorMVA, &b_Jets_bDiscriminatorMVA);
@@ -818,7 +815,6 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("Jets_chargedHadronEnergyFraction", &Jets_chargedHadronEnergyFraction, &b_Jets_chargedHadronEnergyFraction);
   fChain->SetBranchAddress("Jets_chargedHadronMultiplicity", &Jets_chargedHadronMultiplicity, &b_Jets_chargedHadronMultiplicity);
   fChain->SetBranchAddress("Jets_electronMultiplicity", &Jets_electronMultiplicity, &b_Jets_electronMultiplicity);
-  fChain->SetBranchAddress("Jets_flavor", &Jets_flavor, &b_Jets_flavor);
   fChain->SetBranchAddress("Jets_jetArea", &Jets_jetArea, &b_Jets_jetArea);
   fChain->SetBranchAddress("Jets_muonEnergyFraction", &Jets_muonEnergyFraction, &b_Jets_muonEnergyFraction);
   fChain->SetBranchAddress("Jets_muonMultiplicity", &Jets_muonMultiplicity, &b_Jets_muonMultiplicity);
@@ -853,7 +849,6 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("TriggerPass", &TriggerPass, &b_TriggerPass);
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
   fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
-  fChain->SetBranchAddress("puWeight", &puWeight, &b_puWeight);
   if(HTgen_cut>0.01) fChain->SetBranchAddress("genHT", &genHT, &b_genHT);
 
 }

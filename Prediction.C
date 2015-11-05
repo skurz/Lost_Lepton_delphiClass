@@ -47,6 +47,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   MuIsoActivityPT_ = new TH2Eff("MuIsoActivityPT", EffInputFolder);
   MuIsoRelPTDeltaRJet_ = new TH2Eff("MuIsoRelPTDeltaRJet", EffInputFolder);
   MuRecoActivityPT_= new TH2Eff("MuRecoActivityPT", EffInputFolder);
+  MuRecoPTEta_= new TH2Eff("MuRecoPTEta", EffInputFolder);
   MuPurityMHTNJets_ = new TH2Eff("MuonPurityMHTNJet", EffInputFolder); 
 
   MuAccHTNJets_ = new TH2Eff("MuAccHTNJets", EffInputFolder);
@@ -59,6 +60,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   MuAccHTMHT_NJets4_ = new TH2Eff("MuAccHTMHT_NJets4", EffInputFolder);
   MuAccHTMHT_NJets5_ = new TH2Eff("MuAccHTMHT_NJets5", EffInputFolder);
   MuAccHTMHT_NJets6_ = new TH2Eff("MuAccHTMHT_NJets6", EffInputFolder);
+  MuAccHTMHT_NJets78_ = new TH2Eff("MuAccHTMHT_NJets78", EffInputFolder);
+  MuAccHTMHT_NJets9Inf_ = new TH2Eff("MuAccHTMHT_NJets9Inf", EffInputFolder);
   MuAccHTMHT_NJetsHigh_ = new TH2Eff("MuAccHTMHT_NJetsHigh", EffInputFolder);
   MuAccHTMHTB0_ = new TH2Eff("MuAccHTMHTB0", EffInputFolder);
   MuAccHTMHTB1_Inf_ = new TH2Eff("MuAccHTMHTB1_Inf", EffInputFolder); 
@@ -67,6 +70,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   ElecIsoActivityPT_ = new TH2Eff("ElecIsoActivityPT", EffInputFolder);
   ElecIsoRelPTDeltaRJet_ = new TH2Eff("ElecIsoRelPTDeltaRJet", EffInputFolder);
   ElecRecoActivityPT_= new TH2Eff("ElecRecoActivityPT", EffInputFolder);
+  ElecRecoPTEta_= new TH2Eff("ElecRecoPTEta", EffInputFolder);
   
   ElecPurityMHTNJets_ = new TH2Eff("ElecPurityMHTNJet", EffInputFolder);
   ElecMTWNJets_ = new TH1Eff("ElecMTWNJets1D", EffInputFolder);
@@ -85,6 +89,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   ElecAccHTMHT_NJets4_ = new TH2Eff("ElecAccHTMHT_NJets4", EffInputFolder);
   ElecAccHTMHT_NJets5_ = new TH2Eff("ElecAccHTMHT_NJets5", EffInputFolder);
   ElecAccHTMHT_NJets6_ = new TH2Eff("ElecAccHTMHT_NJets6", EffInputFolder);
+  ElecAccHTMHT_NJets78_ = new TH2Eff("ElecAccHTMHT_NJets78", EffInputFolder);
+  ElecAccHTMHT_NJets9Inf_ = new TH2Eff("ElecAccHTMHT_NJets9Inf", EffInputFolder);
   ElecAccHTMHT_NJetsHigh_ = new TH2Eff("ElecAccHTMHT_NJetsHigh", EffInputFolder);
   ElecAccHTMHTB0_ = new TH2Eff("ElecAccHTMHTB0", EffInputFolder);
   ElecAccHTMHTB1_Inf_ = new TH2Eff("ElecAccHTMHTB1_Inf", EffInputFolder);
@@ -268,12 +274,16 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("muRecoSysDown", &muRecoSysDown);
   tPrediction_->Branch("muAccSysUp", &muAccSysUp);
   tPrediction_->Branch("muAccSysDown", &muAccSysDown);
+  tPrediction_->Branch("muAccQsquareSysUp", &muAccQsquareSysUp);
+  tPrediction_->Branch("muAccQsquareSysDown", &muAccQsquareSysDown);
   tPrediction_->Branch("elecIsoSysUp", &elecIsoSysUp);
   tPrediction_->Branch("elecIsoSysDown", &elecIsoSysDown);
   tPrediction_->Branch("elecRecoSysUp", &elecRecoSysUp);
   tPrediction_->Branch("elecRecoSysDown", &elecRecoSysDown);
   tPrediction_->Branch("elecAccSysUp", &elecAccSysUp);
   tPrediction_->Branch("elecAccSysDown", &elecAccSysDown);
+  tPrediction_->Branch("elecAccQsquareSysUp", &elecAccQsquareSysUp);
+  tPrediction_->Branch("elecAccQsquareSysDown", &elecAccQsquareSysDown);
 
 //  tPrediction_->Branch("diBosonUp", &diBosonUp);
 //  tPrediction_->Branch("diBosonDown", &diBosonDown);
@@ -307,6 +317,8 @@ Bool_t Prediction::Process(Long64_t entry)
   resetValues();
   fChain->GetTree()->GetEntry(entry);
 
+  if(restrictRunNum) if(RunNum > 257599) return kTRUE;
+
   if(HTgen_cut > 0.01) if(genHT > HTgen_cut) return kTRUE;
   
   if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_  ) return kTRUE;
@@ -336,15 +348,9 @@ Bool_t Prediction::Process(Long64_t entry)
   }
   if(useTrigger && !passTrigger) return kTRUE;
 
-  // Fix for weights in v3 trees
-  if(dividePUweight){
-    Weight = Weight / puWeight;
-    if(fname.find("TTJets_SingleLeptFromTbar")!=std::string::npos) Weight = 179.25 / 60068965;
-    if(fname.find("TTJets_DiLept")!=std::string::npos) Weight = 86.66 / 30498962;
-  }
+  Weight = 1.;
 
   if(useTriggerEffWeight) Weight = Weight * GetTriggerEffWeight(MHT);
-  
 
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
   BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
@@ -392,6 +398,7 @@ Bool_t Prediction::Process(Long64_t entry)
       muDiLepEffMTWAppliedEffVec_ = MuDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);      
 
       muIsoEffVec_ = MuIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
+      //muRecoEffVec_ = MuRecoPTEta_->GetEff(selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), useAsymmErrors);
       muRecoEffVec_ = MuRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
       //muAccEffVec_ = MuAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5){
@@ -400,17 +407,26 @@ Bool_t Prediction::Process(Long64_t entry)
         else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_->GetEff(HT,MHT, useAsymmErrors);
         else muAccEffVec_ = MuAccHTMHT_NJets6_->GetEff(HT,MHT, useAsymmErrors);
       }
-      else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+      else{
+        //muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<8.5) muAccEffVec_ = MuAccHTMHT_NJets78_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJets9Inf_->GetEff(HT,MHT, useAsymmErrors);
+      } 
 
       //elecAccEffVec_ = ElecAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5){
-        // elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+         elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
         if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_->GetEff(HT,MHT, useAsymmErrors);
         else elecAccEffVec_ = ElecAccHTMHT_NJets6_->GetEff(HT,MHT, useAsymmErrors);
       }
-      else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+      else{
+        //elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<8.5) elecAccEffVec_ = ElecAccHTMHT_NJets78_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJets9Inf_->GetEff(HT,MHT, useAsymmErrors);
+      }
 
+      //elecRecoEffVec_ = ElecRecoPTEta_->GetEff(selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), useAsymmErrors);
       elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
       elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
       /*
@@ -488,21 +504,23 @@ Bool_t Prediction::Process(Long64_t entry)
       // 3a: iso(e),reco(e),acc(e)
       // 4: diLeptonic contribution: singleLep purity, diLep found
 
-      Float_t w1 = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/muMTWEff_; // * muPurityCorrection_
+      Float_t w1 = Weight * (1 - expectationReductionIsoTrackEff_) * 1/muMTWEff_; // * muPurityCorrection_
       Float_t w2 = muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccEff_);
       Float_t w3a = (1-muIsoEff_)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_);
       Float_t w3b = (1-elecIsoEff_)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_);
       Float_t w4 = (1-muDiLepContributionMTWAppliedEff_) * (1-muDiLepEffMTWAppliedEff_)/muDiLepEffMTWAppliedEff_;
       Float_t wGes = w1 * (w2 * (w3a+w3b) + w4); // should be identical to totalWeightDiLepIsoTrackReducedCombined_
 
+      isoTrackStatDown = Weight * (1 - expectationReductionIsoTrackEff_ - expectationReductionIsoTrackEffVec_.errUp) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
+      isoTrackStatUp = Weight * (1 - expectationReductionIsoTrackEff_ + expectationReductionIsoTrackEffVec_.errDown) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
       muIsoTrackStatDown = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_) - expectationReductionMuIsoTrackEffVec_.errUp) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
       muIsoTrackStatUp = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_) + expectationReductionMuIsoTrackEffVec_.errDown) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
       elecIsoTrackStatDown = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_) - expectationReductionElecIsoTrackEffVec_.errUp) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
       elecIsoTrackStatUp = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_) + expectationReductionElecIsoTrackEffVec_.errDown) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
       pionIsoTrackStatDown = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_) - expectationReductionPionIsoTrackEffVec_.errUp) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
       pionIsoTrackStatUp = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_) + expectationReductionPionIsoTrackEffVec_.errDown) * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4) - wGes;
-      MTWStatDown = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/(muMTWEff_ + muMTWEffVec_.errUp) * (w2 * (w3a+w3b) + w4) - wGes;
-      MTWStatUp = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/(muMTWEff_ - muMTWEffVec_.errDown) * (w2 * (w3a+w3b) + w4) - wGes;
+      MTWStatDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/(muMTWEff_ + muMTWEffVec_.errUp) * (w2 * (w3a+w3b) + w4) - wGes;
+      MTWStatUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/(muMTWEff_ - muMTWEffVec_.errDown) * (w2 * (w3a+w3b) + w4) - wGes;
       purityStatUp = 0; // no purity correction for muCS (>99%)
       purityStatDown = 0; // no purity correction for muCS (>99%)
 
@@ -553,9 +571,9 @@ Bool_t Prediction::Process(Long64_t entry)
 
       double MTWMax = muMTWEff_ + (1-muMTWEff_) * 0.01 * MuMTWUncertaintyUp_;
       if(MTWMax > 1) MTWMax = 1;
-      MTWSysDown = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/MTWMax * (w2 * (w3a+w3b) + w4) - wGes;
+      MTWSysDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/MTWMax * (w2 * (w3a+w3b) + w4) - wGes;
       double MTWMin = muMTWEff_ - (1-muMTWEff_) * 0.01 * MuMTWUncertaintyDown_;
-      MTWSysUp = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/MTWMin * (w2 * (w3a+w3b) + w4) - wGes;
+      MTWSysUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/MTWMin * (w2 * (w3a+w3b) + w4) - wGes;
 
       puritySysUp = 0; // no purity correction for muCS (>99%)    
       puritySysDown = 0; // no purity correction for muCS (>99%)
@@ -573,15 +591,19 @@ Bool_t Prediction::Process(Long64_t entry)
       diLepFoundSysUp = w1 * (w2 * (w3a+w3b) + (1-muDiLepContributionMTWAppliedEff_) * (1-diLepFoundMin)/diLepFoundMin) - wGes;
 
       double muIsoMax = muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_);
+      if(usePrelimSFs) muIsoMax = muIsoEff_ *(1 + 0.01 * getMuonIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
       if(muIsoMax > 1) muIsoMax = 1;
       muIsoSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoMax*muRecoEff_*muAccEff_) * ((1-muIsoMax)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
       double muIsoMin = muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_);
+      if(usePrelimSFs) muIsoMin = muIsoEff_ *(1 - 0.01 * getMuonIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
       muIsoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoMin*muRecoEff_*muAccEff_) * ((1-muIsoMin)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
 
       double muRecoMax = muRecoEff_ *(1 + 0.01 * MuRecoUncertaintyUp_);
+      if(usePrelimSFs) muRecoMax = muRecoEff_ *(1 + 0.01 * getMuonIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
       if(muRecoMax > 1) muRecoMax = 1;
       muRecoSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoMax*muAccEff_) * ((1-muIsoEff_)*muRecoMax*muAccEff_ + (1-muRecoMax)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
       double muRecoMin = muRecoEff_ *(1 - 0.01 * MuRecoUncertaintyDown_);
+      if(usePrelimSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * getMuonIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
       muRecoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoMin*muAccEff_) * ((1-muIsoEff_)*muRecoMin*muAccEff_ + (1-muRecoMin)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
 
       double muAccMax = muAccEff_ *(1 + 0.01 * MuAccUncertaintyUp_);
@@ -589,17 +611,27 @@ Bool_t Prediction::Process(Long64_t entry)
       muAccSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccMax) * ((1-muIsoEff_)*muRecoEff_*muAccMax + (1-muRecoEff_)*muAccMax + (1-muAccMax) +w3b) + w4) - wGes;
       double muAccMin = muAccEff_ *(1 - 0.01 * MuAccUncertaintyDown_);
       muAccSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccMin) * ((1-muIsoEff_)*muRecoEff_*muAccMin + (1-muRecoEff_)*muAccMin + (1-muAccMin) +w3b) + w4) - wGes;
+
+      double muAccQsquareMax = muAccEff_ *(1 + 0.01 * MuAccQsquareUncertaintyUp_);
+      if(muAccQsquareMax > 1) muAccQsquareMax = 1;
+      muAccQsquareSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccQsquareMax) * ((1-muIsoEff_)*muRecoEff_*muAccQsquareMax + (1-muRecoEff_)*muAccQsquareMax + (1-muAccQsquareMax) +w3b) + w4) - wGes;
+      double muAccQsquareMin = muAccEff_ *(1 - 0.01 * MuAccQsquareUncertaintyDown_);
+      muAccQsquareSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccQsquareMin) * ((1-muIsoEff_)*muRecoEff_*muAccQsquareMin + (1-muRecoEff_)*muAccQsquareMin + (1-muAccQsquareMin) +w3b) + w4) - wGes;
       
       double elecIsoMax = elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_);
+      if(usePrelimSFs) elecIsoMax = elecIsoEff_ *(1 + 0.01 * getElecIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
       if(elecIsoMax > 1) elecIsoMax = 1;
       elecIsoSysDown = w1 * (w2 * (w3a + (1-elecIsoMax)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
       double elecIsoMin = elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_);
+      if(usePrelimSFs) elecIsoMin = elecIsoEff_ *(1 - 0.01 * getElecIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
       elecIsoSysUp = w1 * (w2 * (w3a + (1-elecIsoMin)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
 
       double elecRecoMax = elecRecoEff_*(1 + 0.01 * ElecRecoUncertaintyUp_);
+      if(usePrelimSFs) elecRecoMax = elecRecoEff_ *(1 + 0.01 * getElecIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
       if(elecRecoMax > 1) elecRecoMax = 1;
       elecRecoSysDown = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoMax*elecAccEff_ + (1-elecRecoMax)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
       double elecRecoMin = elecRecoEff_*(1 - 0.01 * ElecRecoUncertaintyDown_);
+      if(usePrelimSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * getElecIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
       elecRecoSysUp = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoMin*elecAccEff_ + (1-elecRecoMin)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
 
       double elecAccMax = elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_);
@@ -607,6 +639,12 @@ Bool_t Prediction::Process(Long64_t entry)
       elecAccSysDown = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*elecAccMax + (1-elecRecoEff_)*elecAccMax + (1-elecAccMax)) + w4) - wGes;
       double elecAccMin = elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_);
       elecAccSysUp = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*elecAccMin + (1-elecRecoEff_)*elecAccMin + (1-elecAccMin)) + w4) - wGes;
+
+      double elecAccQsquareMax = elecAccEff_*(1 + 0.01 * ElecAccQsquareUncertaintyUp_);
+      if(elecAccQsquareMax > 1) elecAccQsquareMax = 1;
+      elecAccQsquareSysDown = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*elecAccQsquareMax + (1-elecRecoEff_)*elecAccQsquareMax + (1-elecAccQsquareMax)) + w4) - wGes;
+      double elecAccQsquareMin = elecAccEff_*(1 - 0.01 * ElecAccQsquareUncertaintyDown_);
+      elecAccQsquareSysUp = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*elecAccQsquareMin + (1-elecRecoEff_)*elecAccQsquareMin + (1-elecAccQsquareMin)) + w4) - wGes;
 
 
       totalStatUp = sqrt(muIsoTrackStatUp*muIsoTrackStatUp+elecIsoTrackStatUp*elecIsoTrackStatUp+pionIsoTrackStatUp*pionIsoTrackStatUp+MTWStatUp*MTWStatUp+purityStatUp*purityStatUp+singleLepPurityStatUp*singleLepPurityStatUp+diLepFoundStatUp*diLepFoundStatUp+muIsoStatUp*muIsoStatUp+muRecoStatUp*muRecoStatUp+muAccStatUp*muAccStatUp+elecIsoStatUp*elecIsoStatUp+elecRecoStatUp*elecRecoStatUp+elecAccStatUp*elecAccStatUp);
@@ -638,6 +676,7 @@ Bool_t Prediction::Process(Long64_t entry)
       elecDiLepEffMTWAppliedEffVec_ = ElecDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
 
       // cout << "get isolation efficiency...";
+      //elecRecoEffVec_ = ElecRecoPTEta_->GetEff(selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), useAsymmErrors);
       elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
       elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
 
@@ -648,7 +687,11 @@ Bool_t Prediction::Process(Long64_t entry)
         else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_->GetEff(HT,MHT, useAsymmErrors);
         else elecAccEffVec_ = ElecAccHTMHT_NJets6_->GetEff(HT,MHT, useAsymmErrors);
       }
-      else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+      else{
+        //elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<8.5) elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+      }
 
       // cout << "get acceptance efficiency...";
       //muAccEffVec_ = MuAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
@@ -658,9 +701,14 @@ Bool_t Prediction::Process(Long64_t entry)
         else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_->GetEff(HT,MHT, useAsymmErrors);
         else muAccEffVec_ = MuAccHTMHT_NJets6_->GetEff(HT,MHT, useAsymmErrors);
       }
-      else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+      else{
+        //muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<8.5) muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+      }
 
       muIsoEffVec_ = MuIsoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
+      //muRecoEffVec_ = MuRecoPTEta_->GetEff(selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), useAsymmErrors);
       muRecoEffVec_ = MuRecoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
       
       /*
@@ -725,23 +773,25 @@ Bool_t Prediction::Process(Long64_t entry)
 
       // Uncertainties
       // For explanation see muons
-      Float_t w1 = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/elecMTWEff_ * elecPurityCorrection_;
+      Float_t w1 = Weight * (1 - expectationReductionIsoTrackEff_) * 1/elecMTWEff_ * elecPurityCorrection_;
       Float_t w2 = elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_);
       Float_t w3a = (1-elecIsoEff_)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_);
       Float_t w3b = (1-muIsoEff_)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_);
       Float_t w4 = (1-elecDiLepContributionMTWAppliedEff_) * (1-elecDiLepEffMTWAppliedEff_)/elecDiLepEffMTWAppliedEff_;
       Float_t wGes = w1 * (w2 * (w3a+w3b) + w4); // should be identical to totalWeightDiLepIsoTrackReducedCombined_
 
+      isoTrackStatDown = Weight * (1 - expectationReductionIsoTrackEff_ - expectationReductionIsoTrackEffVec_.errUp) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
+      isoTrackStatUp = Weight * (1 - expectationReductionIsoTrackEff_ + expectationReductionIsoTrackEffVec_.errDown) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
       muIsoTrackStatDown = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_) - expectationReductionMuIsoTrackEffVec_.errUp) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
       muIsoTrackStatUp = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_) + expectationReductionMuIsoTrackEffVec_.errDown) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
       elecIsoTrackStatDown = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_) - expectationReductionElecIsoTrackEffVec_.errUp) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
       elecIsoTrackStatUp = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_) + expectationReductionElecIsoTrackEffVec_.errDown) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
       pionIsoTrackStatDown = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_) - expectationReductionPionIsoTrackEffVec_.errUp) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
       pionIsoTrackStatUp = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_) + expectationReductionPionIsoTrackEffVec_.errDown) * 1/elecMTWEff_ * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
-      MTWStatDown = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/(elecMTWEff_ + elecMTWEffVec_.errUp) * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
-      MTWStatUp = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/(elecMTWEff_ - elecMTWEffVec_.errDown) * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
-      purityStatUp = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/elecMTWEff_ * (elecPurityCorrection_ + elecPurityCorrectionVec_.errUp) * (w2 * (w3a+w3b) + w4) - wGes;
-      purityStatDown = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/elecMTWEff_ * (elecPurityCorrection_ - elecPurityCorrectionVec_.errUp) * (w2 * (w3a+w3b) + w4) - wGes;
+      MTWStatDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/(elecMTWEff_ + elecMTWEffVec_.errUp) * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
+      MTWStatUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/(elecMTWEff_ - elecMTWEffVec_.errDown) * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
+      purityStatUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/elecMTWEff_ * (elecPurityCorrection_ + elecPurityCorrectionVec_.errUp) * (w2 * (w3a+w3b) + w4) - wGes;
+      purityStatDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/elecMTWEff_ * (elecPurityCorrection_ - elecPurityCorrectionVec_.errUp) * (w2 * (w3a+w3b) + w4) - wGes;
 
       singleLepPurityStatUp = w1 * ((elecDiLepContributionMTWAppliedEff_ + elecDiLepContributionMTWAppliedEffVec_.errUp) * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_) * (w3a+w3b) + (1 - elecDiLepContributionMTWAppliedEff_-elecDiLepContributionMTWAppliedEffVec_.errUp) * (1-elecDiLepEffMTWAppliedEff_)/elecDiLepEffMTWAppliedEff_) - wGes;
       singleLepPurityStatDown = w1 * ((elecDiLepContributionMTWAppliedEff_ - elecDiLepContributionMTWAppliedEffVec_.errDown) * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_) * (w3a+w3b) + (1 - elecDiLepContributionMTWAppliedEff_+elecDiLepContributionMTWAppliedEffVec_.errDown) * (1-elecDiLepEffMTWAppliedEff_)/elecDiLepEffMTWAppliedEff_) - wGes;
@@ -790,15 +840,15 @@ Bool_t Prediction::Process(Long64_t entry)
  
       double MTWMax = elecMTWEff_ + (1-elecMTWEff_) * 0.01 * ElecMTWUncertaintyUp_;
       if(MTWMax > 1) MTWMax = 1;
-      MTWSysDown = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/MTWMax * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
+      MTWSysDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/MTWMax * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
       double MTWMin = elecMTWEff_ - (1-elecMTWEff_) * 0.01 * ElecMTWUncertaintyDown_;
-      MTWSysUp = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/MTWMin * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
+      MTWSysUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/MTWMin * elecPurityCorrection_ * (w2 * (w3a+w3b) + w4) - wGes;
 
       double purityMax = elecPurityCorrection_ + (1-elecPurityCorrection_) * 0.01 * ElecPurityUncertaintyUp_;
       if(purityMax > 1) purityMax = 1;
-      puritySysUp = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/elecMTWEff_ * purityMax * (w2 * (w3a+w3b) + w4) - wGes;
+      puritySysUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/elecMTWEff_ * purityMax * (w2 * (w3a+w3b) + w4) - wGes;
       double purityMin = elecPurityCorrection_ - (1-elecPurityCorrection_) * 0.01 * ElecPurityUncertaintyDown_;
-      puritySysDown = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/elecMTWEff_ * purityMin * (w2 * (w3a+w3b) + w4) - wGes;
+      puritySysDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/elecMTWEff_ * purityMin * (w2 * (w3a+w3b) + w4) - wGes;
 
       double singleLepPurityMax = elecDiLepContributionMTWAppliedEff_ + (1-elecDiLepContributionMTWAppliedEff_) * 0.01 * ElecSingleLepPurityUp_;
       if(singleLepPurityMax > 1) singleLepPurityMax = 1;
@@ -813,15 +863,19 @@ Bool_t Prediction::Process(Long64_t entry)
       diLepFoundSysUp = w1 * (w2 * (w3a+w3b) + (1-elecDiLepContributionMTWAppliedEff_) * (1-diLepFoundMin)/diLepFoundMin) - wGes;
 
       double elecIsoMax = elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_);
+      if(usePrelimSFs) elecIsoMax = elecIsoEff_ *(1 + 0.01 * getElecIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
       if(elecIsoMax > 1) elecIsoMax = 1;
       elecIsoSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoMax*elecRecoEff_*elecAccEff_) * ((1-elecIsoMax)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
       double elecIsoMin = elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_);
+      if(usePrelimSFs) elecIsoMin = elecIsoEff_ *(1 - 0.01 * getElecIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
       elecIsoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoMin*elecRecoEff_*elecAccEff_) * ((1-elecIsoMin)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
 
       double elecRecoMax = elecRecoEff_ *(1 + 0.01 * ElecRecoUncertaintyUp_);
+      if(usePrelimSFs) elecRecoMax = elecRecoEff_ *(1 + 0.01 * getElecIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
       if(elecRecoMax > 1) elecRecoMax = 1;
       elecRecoSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoMax*elecAccEff_) * ((1-elecIsoEff_)*elecRecoMax*elecAccEff_ + (1-elecRecoMax)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
       double elecRecoMin = elecRecoEff_ *(1 - 0.01 * ElecRecoUncertaintyDown_);
+      if(usePrelimSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * getElecIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
       elecRecoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoMin*elecAccEff_) * ((1-elecIsoEff_)*elecRecoMin*elecAccEff_ + (1-elecRecoMin)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
 
       double elecAccMax = elecAccEff_ *(1 + 0.01 * ElecAccUncertaintyUp_);
@@ -830,16 +884,26 @@ Bool_t Prediction::Process(Long64_t entry)
       double elecAccMin = elecAccEff_ *(1 - 0.01 * ElecAccUncertaintyDown_);
       elecAccSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*elecAccMin) * ((1-elecIsoEff_)*elecRecoEff_*elecAccMin + (1-elecRecoEff_)*elecAccMin + (1-elecAccMin) +w3b) + w4) - wGes;
       
+      double elecAccQsquareMax = elecAccEff_ *(1 + 0.01 * ElecAccQsquareUncertaintyUp_);
+      if(elecAccQsquareMax > 1) elecAccQsquareMax = 1;
+      elecAccQsquareSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*elecAccQsquareMax) * ((1-elecIsoEff_)*elecRecoEff_*elecAccQsquareMax + (1-elecRecoEff_)*elecAccQsquareMax + (1-elecAccQsquareMax) +w3b) + w4) - wGes;
+      double elecAccQsquareMin = elecAccEff_ *(1 - 0.01 * ElecAccQsquareUncertaintyDown_);
+      elecAccQsquareSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*elecAccQsquareMin) * ((1-elecIsoEff_)*elecRecoEff_*elecAccQsquareMin + (1-elecRecoEff_)*elecAccQsquareMin + (1-elecAccQsquareMin) +w3b) + w4) - wGes;
+      
       double muIsoMax = muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_);
+      if(usePrelimSFs) muIsoMax = muIsoEff_ *(1 + 0.01 * getMuonIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
       if(muIsoMax > 1) muIsoMax = 1;
       muIsoSysDown = w1 * (w2 * (w3a + (1-muIsoMax)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
       double muIsoMin = muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_);
+      if(usePrelimSFs) muIsoMin = muIsoEff_ *(1 - 0.01 * getMuonIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
       muIsoSysUp = w1 * (w2 * (w3a + (1-muIsoMin)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
 
       double muRecoMax = muRecoEff_*(1 + 0.01 * MuRecoUncertaintyUp_);
+      if(usePrelimSFs) muRecoMax = muRecoEff_ *(1 + 0.01 * getMuonIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
       if(muRecoMax > 1) muRecoMax = 1;
       muRecoSysDown = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoMax*muAccEff_ + (1-muRecoMax)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
       double muRecoMin = muRecoEff_*(1 - 0.01 * MuRecoUncertaintyDown_);
+      if(usePrelimSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * getMuonIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
       muRecoSysUp = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoMin*muAccEff_ + (1-muRecoMin)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
 
       double muAccMax = muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_);
@@ -847,6 +911,12 @@ Bool_t Prediction::Process(Long64_t entry)
       muAccSysDown = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*muAccMax + (1-muRecoEff_)*muAccMax + (1-muAccMax)) + w4) - wGes;
       double muAccMin = muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_);
       muAccSysUp = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*muAccMin + (1-muRecoEff_)*muAccMin + (1-muAccMin)) + w4) - wGes;
+
+      double muAccQsquareMax = muAccEff_*(1 + 0.01 * MuAccQsquareUncertaintyUp_);
+      if(muAccQsquareMax > 1) muAccQsquareMax = 1;
+      muAccQsquareSysDown = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*muAccQsquareMax + (1-muRecoEff_)*muAccQsquareMax + (1-muAccQsquareMax)) + w4) - wGes;
+      double muAccQsquareMin = muAccEff_*(1 - 0.01 * MuAccQsquareUncertaintyDown_);
+      muAccQsquareSysUp = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*muAccQsquareMin + (1-muRecoEff_)*muAccQsquareMin + (1-muAccQsquareMin)) + w4) - wGes;
       
       totalStatUp = sqrt(muIsoTrackStatUp*muIsoTrackStatUp+elecIsoTrackStatUp*elecIsoTrackStatUp+pionIsoTrackStatUp*pionIsoTrackStatUp+MTWStatUp*MTWStatUp+purityStatUp*purityStatUp+singleLepPurityStatUp*singleLepPurityStatUp+diLepFoundStatUp*diLepFoundStatUp+muIsoStatUp*muIsoStatUp+muRecoStatUp*muRecoStatUp+muAccStatUp*muAccStatUp+elecIsoStatUp*elecIsoStatUp+elecRecoStatUp*elecRecoStatUp+elecAccStatUp*elecAccStatUp);
       totalSysUp = sqrt(muIsoTrackSysUp*muIsoTrackSysUp+elecIsoTrackSysUp*elecIsoTrackSysUp+pionIsoTrackSysUp*pionIsoTrackSysUp+MTWSysUp*MTWSysUp+puritySysUp*puritySysUp+singleLepPuritySysUp*singleLepPuritySysUp+diLepFoundSysUp*diLepFoundSysUp+muIsoSysUp*muIsoSysUp+muRecoSysUp*muRecoSysUp+muAccSysUp*muAccSysUp+elecIsoSysUp*elecIsoSysUp+elecRecoSysUp*elecRecoSysUp+elecAccSysUp*elecAccSysUp);
@@ -966,7 +1036,7 @@ bool Prediction::FiltersPass()
     if(!HBHENoiseFilter) result=false;
     if(!HBHEIsoNoiseFilter) result=false;
   }
-  if(JetIDloose!=1) result=false;
+  if(JetID!=1) result=false;
   return result;
 }
 

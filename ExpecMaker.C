@@ -116,6 +116,8 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("selectedIDElectrons_MTW", &selectedIDElectrons_MTW);
   tExpectation_->Branch("selectedIDElectrons_MiniIso", &selectedIDElectrons_MiniIso);
   tExpectation_->Branch("selectedIDElectrons_MT2Activity", &selectedIDElectrons_MT2Activity);
+  tExpectation_->Branch("PDFweights", &PDFweights);
+  tExpectation_->Branch("ScaleWeights", &ScaleWeights);
   
   if(!DY_)
     {
@@ -213,16 +215,9 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   }
   if(useTrigger && !passTrigger) return kTRUE;
 
-  // Fix for weights in v3 trees
-  if(dividePUweight){
-    Weight = Weight / puWeight;
-    if(fname.find("TTJets_SingleLeptFromTbar")!=std::string::npos) Weight = 179.25 / 60068965;
-    if(fname.find("TTJets_DiLept")!=std::string::npos) Weight = 86.66 / 30498962;
-  }
-
   if(useTriggerEffWeight) Weight = Weight * GetTriggerEffWeight(MHT);
 
-
+  
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
   BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
   //    std::cout << "Event falls in bin " << Bin_ << std::endl;
@@ -963,7 +958,7 @@ bool ExpecMaker::FiltersPass()
     if(!HBHENoiseFilter) result=false;
     if(!HBHEIsoNoiseFilter) result=false;
   }
-  if(JetIDloose!=1) result=false;
+  if(JetID!=1) result=false;
   return result;
 }
 

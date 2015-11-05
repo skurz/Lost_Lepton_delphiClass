@@ -82,11 +82,13 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuAccBTagNJets_ = new TH2Eff("MuAccBTagNJets","MuAccBTagNJets",muaccBTags_-1,muAccBTags_, muaccNJets_-1, muAccNJets_);
   MuAccMHTNJetsB0_ = new TH2Eff("MuAccMHTNJetsB0","MuAccMHTNJetsB0",muaccMHT_-1,muAccMHT_, muaccNJets_-1, muAccNJets_);
   MuAccMHTNJetsB1_Inf_ = new TH2Eff("MuAccMHTNJetsB1_Inf","MuAccMHTNJetsB1_Inf",muaccMHT_-1,muAccMHT_, muaccNJets_-1, muAccNJets_);
-  MuAccHTMHT_NJetsLow_ = new TH2Eff("MuAccHTMHT_NJetsLow","MuAccHTMHT_NJetsLow",muaccHT_-1,muAccHT_, muaccMHT_-1,muAccMHT_);
-  MuAccHTMHT_NJets4_ = new TH2Eff("MuAccHTMHT_NJets4","MuAccHTMHT_NJets4",muaccHT_-1,muAccHT_, muaccMHT_-1,muAccMHT_);
-  MuAccHTMHT_NJets5_ = new TH2Eff("MuAccHTMHT_NJets5","MuAccHTMHT_NJets5",muaccHT_-1,muAccHT_, muaccMHT_-1,muAccMHT_);
-  MuAccHTMHT_NJets6_ = new TH2Eff("MuAccHTMHT_NJets6","MuAccHTMHT_NJets6",muaccHT_-1,muAccHT_, muaccMHT_-1,muAccMHT_);
-  MuAccHTMHT_NJetsHigh_ = new TH2Eff("MuAccHTMHT_NJetsHigh"," MuAccHTMHT_NJetsHigh",muaccHT_-1,muAccHT_, muaccMHT_-1,muAccMHT_);
+  MuAccHTMHT_NJetsLow_ = new TH2Eff("MuAccHTMHT_NJetsLow","MuAccHTMHT_NJetsLow",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
+  MuAccHTMHT_NJets4_ = new TH2Eff("MuAccHTMHT_NJets4","MuAccHTMHT_NJets4",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
+  MuAccHTMHT_NJets5_ = new TH2Eff("MuAccHTMHT_NJets5","MuAccHTMHT_NJets5",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
+  MuAccHTMHT_NJets6_ = new TH2Eff("MuAccHTMHT_NJets6","MuAccHTMHT_NJets6",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
+  MuAccHTMHT_NJets78_ = new TH2Eff("MuAccHTMHT_NJets78","MuAccHTMHT_NJets78",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
+  MuAccHTMHT_NJets9Inf_ = new TH2Eff("MuAccHTMHT_NJets9Inf","MuAccHTMHT_NJets9Inf",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
+  MuAccHTMHT_NJetsHigh_ = new TH2Eff("MuAccHTMHT_NJetsHigh"," MuAccHTMHT_NJetsHigh",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
   MuAccHTMHTB0_ = new TH2Eff("MuAccHTMHTB0","MuAccHTMHTB0",muaccHT_-1,muAccHT_, muaccMHT_-1,muAccMHT_);
   MuAccHTMHTB1_Inf_ = new TH2Eff("MuAccHTMHTB1_Inf","MuAccHTMHTB1_Inf",muaccHT_-1,muAccHT_, muaccMHT_-1,muAccMHT_);
   
@@ -103,11 +105,13 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecAccBTagNJets_ = new TH2Eff("ElecAccBTagNJets","ElecAccBTagNJets",elecaccBTags_-1,elecAccBTags_, elecaccNJets_-1, elecAccNJets_);
   ElecAccMHTNJetsB0_ = new TH2Eff("ElecAccMHTNJetsB0","ElecAccMHTNJetsB0",elecaccMHT_-1,elecAccMHT_, elecaccNJets_-1, elecAccNJets_);
   ElecAccMHTNJetsB1_Inf_ = new TH2Eff("ElecAccMHTNJetsB1_Inf","ElecAccMHTNJetsB1_Inf",elecaccMHT_-1,elecAccMHT_, elecaccNJets_-1, elecAccNJets_);
-  ElecAccHTMHT_NJetsLow_ = new TH2Eff("ElecAccHTMHT_NJetsLow","ElecAccHTMHT_NJetsLow",elecaccHT_-1,elecAccHT_, elecaccMHT_-1,elecAccMHT_);
-  ElecAccHTMHT_NJets4_ = new TH2Eff("ElecAccHTMHT_NJets4","ElecAccHTMHT_NJets4",elecaccHT_-1,elecAccHT_, elecaccMHT_-1,elecAccMHT_);
-  ElecAccHTMHT_NJets5_ = new TH2Eff("ElecAccHTMHT_NJets5","ElecAccHTMHT_NJets5",elecaccHT_-1,elecAccHT_, elecaccMHT_-1,elecAccMHT_);
-  ElecAccHTMHT_NJets6_ = new TH2Eff("ElecAccHTMHT_NJets6","ElecAccHTMHT_NJets6",elecaccHT_-1,elecAccHT_, elecaccMHT_-1,elecAccMHT_);
-  ElecAccHTMHT_NJetsHigh_ = new TH2Eff("ElecAccHTMHT_NJetsHigh"," ElecAccHTMHT_NJetsHigh",elecaccHT_-1,elecAccHT_, elecaccMHT_-1,elecAccMHT_);
+  ElecAccHTMHT_NJetsLow_ = new TH2Eff("ElecAccHTMHT_NJetsLow","ElecAccHTMHT_NJetsLow",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
+  ElecAccHTMHT_NJets4_ = new TH2Eff("ElecAccHTMHT_NJets4","ElecAccHTMHT_NJets4",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
+  ElecAccHTMHT_NJets5_ = new TH2Eff("ElecAccHTMHT_NJets5","ElecAccHTMHT_NJets5",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
+  ElecAccHTMHT_NJets6_ = new TH2Eff("ElecAccHTMHT_NJets6","ElecAccHTMHT_NJets6",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
+  ElecAccHTMHT_NJets78_ = new TH2Eff("ElecAccHTMHT_NJets78","ElecAccHTMHT_NJets78",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
+  ElecAccHTMHT_NJets9Inf_ = new TH2Eff("ElecAccHTMHT_NJets9Inf","ElecAccHTMHT_NJets9Inf",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
+  ElecAccHTMHT_NJetsHigh_ = new TH2Eff("ElecAccHTMHT_NJetsHigh"," ElecAccHTMHT_NJetsHigh",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
   ElecAccHTMHTB0_ = new TH2Eff("ElecAccHTMHTB0","ElecAccHTMHTB0",elecaccHT_-1,elecAccHT_, elecaccMHT_-1,elecAccMHT_);
   ElecAccHTMHTB1_Inf_ = new TH2Eff("ElecAccHTMHTB1_Inf","ElecAccHTMHTB1_Inf",elecaccHT_-1,elecAccHT_, elecaccMHT_-1,elecAccMHT_);
 
@@ -282,6 +286,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecIsoActivityPT_ = new TH2Eff("ElecIsoActivityPT","ElecIsoActivityPT", oneDActivity_-1,OneDActivity_,oneDPT_-1,OneDPT_);
   MuRecoActivityPT_ = new TH2Eff("MuRecoActivityPT","MuRecoActivityPT", oneDActivity_-1,OneDActivity_,oneDPT_-1,OneDPT_);
   ElecRecoActivityPT_ = new TH2Eff("ElecRecoActivityPT","ElecRecoActivityPT", oneDActivity_-1,OneDActivity_,oneDPT_-1,OneDPT_);
+  MuRecoPTEta_ = new TH2Eff("MuRecoPTEta","MuRecoPTEta", oneDPT_-1,OneDPT_, oneDEta_-1,OneDEta_);
+  ElecRecoPTEta_ = new TH2Eff("ElecRecoPTEta","ElecRecoPTEta", oneDPT_-1,OneDPT_, oneDEta_-1,OneDEta_);
   
   // mtw 2d
   MuMTWPTActivity_ = new TH2Eff("MuMTWPTActivity","MuMTWPTActivity",muMTWActivity2D_-1,MuMTWActivity2D_,muMTWPT2D_-1,MuMTWPT2D_);
@@ -513,6 +519,8 @@ Bool_t EffMaker::Process(Long64_t entry)
   if(NJets > 3.5 && NJets < 4.5) MuAccHTMHT_NJets4_->Fill(HT,MHT,Weight,true);
   if(NJets > 4.5 && NJets < 5.5) MuAccHTMHT_NJets5_->Fill(HT,MHT,Weight,true);
   if(NJets > 5.5 && NJets < 6.5) MuAccHTMHT_NJets6_->Fill(HT,MHT,Weight,true);
+  if(NJets > 6.5 && NJets < 8.5) MuAccHTMHT_NJets78_->Fill(HT,MHT,Weight,true);
+  if(NJets > 8.5) MuAccHTMHT_NJets9Inf_->Fill(HT,MHT,Weight,true);
     }
   if(muAcc==0)
     {
@@ -549,6 +557,8 @@ Bool_t EffMaker::Process(Long64_t entry)
   if(NJets > 3.5 && NJets < 4.5) MuAccHTMHT_NJets4_->Fill(HT,MHT,Weight,false);
   if(NJets > 4.5 && NJets < 5.5) MuAccHTMHT_NJets5_->Fill(HT,MHT,Weight,false);
   if(NJets > 5.5 && NJets < 6.5) MuAccHTMHT_NJets6_->Fill(HT,MHT,Weight,false);
+  if(NJets > 6.5 && NJets < 8.5) MuAccHTMHT_NJets78_->Fill(HT,MHT,Weight,false);
+  if(NJets > 8.5) MuAccHTMHT_NJets9Inf_->Fill(HT,MHT,Weight,false);
     }
   
   // single elecon control sample
@@ -587,6 +597,8 @@ Bool_t EffMaker::Process(Long64_t entry)
   if(NJets > 3.5 && NJets < 4.5) ElecAccHTMHT_NJets4_->Fill(HT,MHT,Weight,true);
   if(NJets > 4.5 && NJets < 5.5) ElecAccHTMHT_NJets5_->Fill(HT,MHT,Weight,true);
   if(NJets > 5.5 && NJets < 6.5) ElecAccHTMHT_NJets6_->Fill(HT,MHT,Weight,true);
+  if(NJets > 6.5 && NJets < 8.5) ElecAccHTMHT_NJets78_->Fill(HT,MHT,Weight,true);
+  if(NJets > 8.5) ElecAccHTMHT_NJets9Inf_->Fill(HT,MHT,Weight,true);
     }
   if(elecAcc==0)
     {
@@ -623,6 +635,8 @@ Bool_t EffMaker::Process(Long64_t entry)
   if(NJets > 3.5 && NJets < 4.5) ElecAccHTMHT_NJets4_->Fill(HT,MHT,Weight,false);
   if(NJets > 4.5 && NJets < 5.5) ElecAccHTMHT_NJets5_->Fill(HT,MHT,Weight,false);
   if(NJets > 5.5 && NJets < 6.5) ElecAccHTMHT_NJets6_->Fill(HT,MHT,Weight,false);
+  if(NJets > 6.5 && NJets < 8.5) ElecAccHTMHT_NJets78_->Fill(HT,MHT,Weight,false);
+  if(NJets > 8.5) ElecAccHTMHT_NJets9Inf_->Fill(HT,MHT,Weight,false);
     }
   
   // reconstruction
@@ -641,6 +655,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       MuRecoActivityPT_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),Weight,true);
       MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),Weight,true);
+      MuRecoPTEta_->Fill(GenMus->at(0).Pt(),std::abs(GenMus->at(0).Eta()),Weight,true);
     }
   if(muReco==0)
     {
@@ -656,6 +671,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       MuRecoActivityPT_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),Weight,false);
       MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),Weight,false);
+      MuRecoPTEta_->Fill(GenMus->at(0).Pt(),std::abs(GenMus->at(0).Eta()),Weight,false);
     }
   
   // single elecon control sample
@@ -673,6 +689,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       ElecRecoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),Weight,true);
       ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,true);
+      ElecRecoPTEta_->Fill(GenEls->at(0).Pt(),std::abs(GenEls->at(0).Eta()),Weight,true);
     }
   if(elecReco==0)
     {
@@ -688,6 +705,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       ElecRecoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),Weight,false);
       ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,false);
+      ElecRecoPTEta_->Fill(GenEls->at(0).Pt(),std::abs(GenEls->at(0).Eta()),Weight,false);
     }
   
   // isolation
@@ -1272,11 +1290,13 @@ void EffMaker::Terminate()
   MuAccBTagNJets_->SaveEff("#mu acc; B_{Tags}; N_{Jets}", dEfficiencies);   
   MuAccMHTNJetsB0_->SaveEff("#mu acc B_{Tags}=0; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   MuAccMHTNJetsB1_Inf_->SaveEff("#mu acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  MuAccHTMHT_NJetsLow_->SaveEff("#mu acc N_{Jets}=4-6; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets4_->SaveEff("#mu acc N_{Jets}=4; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets5_->SaveEff("#mu acc N_{Jets}=5; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets6_->SaveEff("#mu acc N_{Jets}=6; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJetsHigh_->SaveEff("#mu acc N_{Jets}#geq7; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJetsLow_->SaveEff("#mu acc N_{Jets}=4-6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets4_->SaveEff("#mu acc N_{Jets}=4;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets5_->SaveEff("#mu acc N_{Jets}=5;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets6_->SaveEff("#mu acc N_{Jets}=6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets78_->SaveEff("#mu acc N_{Jets}=7-8;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets9Inf_->SaveEff("#mu acc N_{Jets}=9+;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJetsHigh_->SaveEff("#mu acc N_{Jets}#geq7;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   MuAccHTMHTB0_->SaveEff("#mu acc B_{Tags}=0;H_{T} [GeV] ; #slash{H}_{T} [GeV]", dEfficiencies);   
   MuAccHTMHTB1_Inf_->SaveEff("#mu acc B_{Tags}#geq1; H_{T} [GeV]; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
 
@@ -1293,11 +1313,13 @@ void EffMaker::Terminate()
   ElecAccBTagNJets_->SaveEff("e acc; B_{Tags}; N_{Jets}", dEfficiencies);   
   ElecAccMHTNJetsB0_->SaveEff("e acc B_{Tags}=0; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   ElecAccMHTNJetsB1_Inf_->SaveEff("e acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  ElecAccHTMHT_NJetsLow_->SaveEff("e acc N_{Jets}=4-6; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets4_->SaveEff("e acc N_{Jets}=4; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets5_->SaveEff("e acc N_{Jets}=5; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets6_->SaveEff("e acc N_{Jets}=6; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJetsHigh_->SaveEff("e acc N_{Jets}#geq7; #slash{H}_{T} [GeV];H_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJetsLow_->SaveEff("e acc N_{Jets}=4-6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets4_->SaveEff("e acc N_{Jets}=4;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets5_->SaveEff("e acc N_{Jets}=5;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets6_->SaveEff("e acc N_{Jets}=6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets78_->SaveEff("e acc N_{Jets}=7-8;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets9Inf_->SaveEff("e acc N_{Jets}=9+;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJetsHigh_->SaveEff("e acc N_{Jets}#geq7;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   ElecAccHTMHTB0_->SaveEff("e acc B_{Tags}=0;H_{T} [GeV] ; #slash{H}_{T} [GeV]", dEfficiencies);   
   ElecAccHTMHTB1_Inf_->SaveEff("e acc B_{Tags}#geq1; H_{T} [GeV]; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
 
@@ -1417,6 +1439,7 @@ void EffMaker::Terminate()
   MuMTWPT_->SaveEff("#mu m_{T}^{W}; p_{T}(#mu) [GeV]", dEfficiencies);   
   MuMTWActivity_->SaveEff("#mu m_{T}^{W}; Activity", dEfficiencies, true);   
   MuIsoActivityPT_->SaveEff("#mu Iso; Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);   
+  MuRecoPTEta_->SaveEff("#mu reco; p_{T}(#mu) [GeV]; #eta(#mu)", dEfficiencies, true);   
 
   //elec
   ElecPurityPT_->SaveEff("e purity; p_{T}(e) [GeV]", dEfficiencies);   
@@ -1431,6 +1454,8 @@ void EffMaker::Terminate()
   ElecMTWPT_->SaveEff("e m_{T}^{W}; p_{T}(e) [GeV]", dEfficiencies);   
   ElecMTWActivity_->SaveEff("e m_{T}^{W}; Activity", dEfficiencies, true);   
   ElecIsoActivityPT_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
+  ElecRecoPTEta_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
+
 
   //Isotracks
   //1D

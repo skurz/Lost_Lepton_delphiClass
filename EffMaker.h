@@ -59,9 +59,11 @@ double OneDPTRel_[oneDPTRel_]={0, 0.2 ,0.4 ,0.6 ,0.8 ,1.0 , 10.0};
 // double OneDActivity_[oneDActivity_]={0,5,10,20,40,60,80,100,1600};
 // used to compare with tag and probe eff.
 const int oneDPT_=8;
-double OneDPT_[oneDPT_]={10,20,25,30,40,50,200,2000};
+double OneDPT_[oneDPT_]={10,15,20,30,40,50,100,2500};
 const int oneDActivity_=6;
 double OneDActivity_[oneDActivity_]={0, 0.02, 0.05, 0.2, 1., 50.};
+const int oneDEta_=7;
+double OneDEta_[oneDEta_]={0., 0.5, 1., 1.442, 1.566, 2., 2.52};
 
 const int oneDActivityOld_=6;
 double OneDActivityOld_[oneDActivityOld_]={0,20,40,60,150,1600};
@@ -92,6 +94,8 @@ const int muaccHT_ = 4;
 double muAccHT_ [muaccHT_] = {500,800,1200,10000};
 const int muaccMHT_ = 4;
 double muAccMHT_ [muaccMHT_] = {200,500,750,1900};
+const int muaccMHT2D_ = 3;
+double muAccMHT2D_ [muaccMHT2D_] = {200,500,1900};
 const int muaccBTags_ = 5;
 double muAccBTags_[muaccBTags_] = {0,1,2,3,10};
 const int muaccNJets_ = 6;
@@ -103,6 +107,8 @@ const int elecaccHT_ = 4;
 double elecAccHT_ [elecaccHT_] = {500,800,1200,10000};
 const int elecaccMHT_ = 4;
 double elecAccMHT_ [elecaccMHT_] = {200,500,750,1900};
+const int elecaccMHT2D_ = 3;
+double elecAccMHT2D_ [elecaccMHT2D_] = {200,500,1900};
 const int elecaccBTags_ = 5;
 double elecAccBTags_[elecaccBTags_] = {0,1,2,3,10};
 const int elecaccNJets_ = 6;
@@ -122,10 +128,14 @@ double ElecMTWActivity2D_[elecMTWActivity2D_]={0, 0.02, 0.05, 0.2, 1.};
 
 // isotrack reduction
 // 1D
-const int isotrackreductionHT_ = 4;
-double isoTrackReductionHT_ [isotrackreductionHT_] = {500,800,1200,10000};
-const int isotrackreductionMHT_ = 4;
-double isoTrackReductionMHT_ [isotrackreductionMHT_] = {200,500,750,1900};
+//const int isotrackreductionHT_ = 4;
+//double isoTrackReductionHT_ [isotrackreductionHT_] = {500,800,1200,10000};
+const int isotrackreductionHT_ = 3;
+double isoTrackReductionHT_ [isotrackreductionHT_] = {500,1200,10000};
+const int isotrackreductionMHT_ = 3;
+double isoTrackReductionMHT_ [isotrackreductionMHT_] = {200,500,1900};
+//const int isotrackreductionMHT_ = 3;
+//double isoTrackReductionMHT_ [isotrackreductionMHT_] = {200,500,1900};
 const int isotrackreductionBTags_ = 5;
 double isoTrackReductionBTags_[isotrackreductionBTags_] = {0,1,2,3,10};
 const int isotrackreductionNJets_ = 6;
@@ -222,6 +232,8 @@ class EffMaker : public TSelector {
   TH2Eff *MuAccHTMHT_NJets4_;
   TH2Eff *MuAccHTMHT_NJets5_;
   TH2Eff *MuAccHTMHT_NJets6_;
+  TH2Eff *MuAccHTMHT_NJets78_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_;
   TH2Eff *MuAccHTMHT_NJetsHigh_;
   TH2Eff *MuAccHTMHTB0_;
   TH2Eff *MuAccHTMHTB1_Inf_;
@@ -245,6 +257,8 @@ class EffMaker : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets4_;
   TH2Eff *ElecAccHTMHT_NJets5_;
   TH2Eff *ElecAccHTMHT_NJets6_;
+  TH2Eff *ElecAccHTMHT_NJets78_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_;
   TH2Eff *ElecAccHTMHT_NJetsHigh_;
   TH2Eff *ElecAccHTMHTB0_;
   TH2Eff *ElecAccHTMHTB1_Inf_;
@@ -264,6 +278,8 @@ class EffMaker : public TSelector {
   //2D
   TH2Eff *MuRecoActivityPT_;
   TH2Eff *MuRecoRelPTDeltaRJet_;
+  TH2Eff *MuRecoPTEta_;
+
   
   // elec
   //1D
@@ -278,6 +294,8 @@ class EffMaker : public TSelector {
   //2D
   TH2Eff *ElecRecoActivityPT_;
   TH2Eff *ElecRecoRelPTDeltaRJet_;
+  TH2Eff *ElecRecoPTEta_;
+
   
   // Iso
   // mu 
