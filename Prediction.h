@@ -30,6 +30,9 @@ const bool useAsymmErrors = true;
 const bool useFilterData = true;
 const bool applyFilters_=true;
 const bool applyDiLepCorrection_=true;
+
+// Seta data specific options, e.g. Trigger
+const bool runOnData = false;
 const bool useTrigger = false;
 const bool useTriggerEffWeight = true;
 
@@ -71,7 +74,6 @@ const UShort_t NJetsHigh_=8;
 const bool UseTagAndProbeEffIso_=false; // warning overriges all other choices for isolation efficiency
 const bool UseTagAndProbeEffReco_=false; // warning overriges all other choices for reconstruction efficiency
 
-
 // uncertainties
 const double muIsoTrackUncertaintyUp_ = 5; // dummies as long as TAP is not available 20
 const double muIsoTrackUncertaintyDown_ = 5; // dummies as long as TAP is not available 20
@@ -100,14 +102,18 @@ const double MuDiLepFoundDown_ = 20;
 const double ElecDiLepFoundUp_ = 20;
 const double ElecDiLepFoundDown_ = 20;
 
-const double MuAccUncertaintyUp_ = 5;  // pdf // 9
-const double MuAccUncertaintyDown_ = 5;  // pdf
-const double ElecAccUncertaintyUp_ = 5;  // pdf
-const double ElecAccUncertaintyDown_ = 5;  // pdf
-const double MuAccQsquareUncertaintyUp_ = 1;  // Q^2
-const double MuAccQsquareUncertaintyDown_ = 1;  // Q^2
-const double ElecAccQsquareUncertaintyUp_ = 1;  // Q^2
-const double ElecAccQsquareUncertaintyDown_ = 1;  // Q^2
+const double MuAccUncertaintyUp_LowMHT_ = 0.7;  // pdf //  MHT < 500
+const double MuAccUncertaintyDown_LowMHT_ = 0.7;  // pdf
+const double ElecAccUncertaintyUp_LowMHT_ = 0.7;  // pdf
+const double ElecAccUncertaintyDown_LowMHT_ = 0.7;  // pdf
+const double MuAccUncertaintyUp_HighMHT_ = 1.9;  // pdf // MHT > 500
+const double MuAccUncertaintyDown_HighMHT_ = 1.9;  // pdf
+const double ElecAccUncertaintyUp_HighMHT_ = 1.9;  // pdf
+const double ElecAccUncertaintyDown_HighMHT_ = 1.9;  // pdf
+const double MuAccQsquareUncertaintyUp_ = 0.7;  // Q^2
+const double MuAccQsquareUncertaintyDown_ = 0.7;  // Q^2
+const double ElecAccQsquareUncertaintyUp_ = 0.7;  // Q^2
+const double ElecAccQsquareUncertaintyDown_ = 0.7;  // Q^2
 
 const double MuRecoUncertaintyUp_ = 5;  // dummies as long as TAP is not available 10
 const double MuRecoUncertaintyDown_ = 5;  // dummies as long as TAP is not available
@@ -753,7 +759,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("TriggerNames", 1);
   fChain->SetBranchStatus("TriggerPass", 1);
   fChain->SetBranchStatus("TriggerPrescales", 1);
-  fChain->SetBranchStatus("Weight", 1);
+  if(!runOnData) fChain->SetBranchStatus("Weight", 1);
   if(HTgen_cut>0.01)  fChain->SetBranchStatus("genHT", 1);
 
 
@@ -848,7 +854,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("TriggerNames", &TriggerNames, &b_TriggerNames);
   fChain->SetBranchAddress("TriggerPass", &TriggerPass, &b_TriggerPass);
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
-  fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
+  if(!runOnData) fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
   if(HTgen_cut>0.01) fChain->SetBranchAddress("genHT", &genHT, &b_genHT);
 
 }

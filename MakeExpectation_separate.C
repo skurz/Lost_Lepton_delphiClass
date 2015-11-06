@@ -53,7 +53,7 @@ void MakeExpectation_separate()
 
   
 
-  for(Int_t i=0; i<14; i++){ // i<nChains
+  for(Int_t i=0; i<nChains; i++){ // i<nChains
     std::cout<<"Processing Tree: "<<i<<std::endl;
     if(i > 2){ //2
       //Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d.root",i)); // folder already has to exist for the time beeing...

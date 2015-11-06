@@ -350,6 +350,8 @@ Bool_t Prediction::Process(Long64_t entry)
 
   if(useTriggerEffWeight) Weight = Weight * GetTriggerEffWeight(MHT);
 
+  if(runOnData) Weight = 1.;
+
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
   BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
 
@@ -604,10 +606,12 @@ Bool_t Prediction::Process(Long64_t entry)
       if(usePrelimSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * getMuonIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
       muRecoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoMin*muAccEff_) * ((1-muIsoEff_)*muRecoMin*muAccEff_ + (1-muRecoMin)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
 
-      double muAccMax = muAccEff_ *(1 + 0.01 * MuAccUncertaintyUp_);
+      double muAccMax = muAccEff_ *(1 + 0.01 * MuAccUncertaintyUp_LowMHT_);
+      if(MHT>500) muAccMax = muAccEff_ *(1 + 0.01 * MuAccUncertaintyUp_HighMHT_);
       if(muAccMax > 1) muAccMax = 1;
       muAccSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccMax) * ((1-muIsoEff_)*muRecoEff_*muAccMax + (1-muRecoEff_)*muAccMax + (1-muAccMax) +w3b) + w4) - wGes;
-      double muAccMin = muAccEff_ *(1 - 0.01 * MuAccUncertaintyDown_);
+      double muAccMin = muAccEff_ *(1 - 0.01 * MuAccUncertaintyDown_LowMHT_);
+      if(MHT>500) muAccMin = muAccEff_ *(1 - 0.01 * MuAccUncertaintyDown_HighMHT_);
       muAccSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccMin) * ((1-muIsoEff_)*muRecoEff_*muAccMin + (1-muRecoEff_)*muAccMin + (1-muAccMin) +w3b) + w4) - wGes;
 
       double muAccQsquareMax = muAccEff_ *(1 + 0.01 * MuAccQsquareUncertaintyUp_);
@@ -632,10 +636,12 @@ Bool_t Prediction::Process(Long64_t entry)
       if(usePrelimSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * getElecIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
       elecRecoSysUp = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoMin*elecAccEff_ + (1-elecRecoMin)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
 
-      double elecAccMax = elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_);
+      double elecAccMax = elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_LowMHT_);
+      if(MHT>500) elecAccMax = elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_HighMHT_);
       if(elecAccMax > 1) elecAccMax = 1;
       elecAccSysDown = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*elecAccMax + (1-elecRecoEff_)*elecAccMax + (1-elecAccMax)) + w4) - wGes;
-      double elecAccMin = elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_);
+      double elecAccMin = elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_LowMHT_);
+      if(MHT>500) elecAccMin = elecAccEff_*(1 - 0.01 * ElecAccUncertaintyDown_HighMHT_);
       elecAccSysUp = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoEff_*elecAccMin + (1-elecRecoEff_)*elecAccMin + (1-elecAccMin)) + w4) - wGes;
 
       double elecAccQsquareMax = elecAccEff_*(1 + 0.01 * ElecAccQsquareUncertaintyUp_);
@@ -876,10 +882,12 @@ Bool_t Prediction::Process(Long64_t entry)
       if(usePrelimSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * getElecIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
       elecRecoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoMin*elecAccEff_) * ((1-elecIsoEff_)*elecRecoMin*elecAccEff_ + (1-elecRecoMin)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
 
-      double elecAccMax = elecAccEff_ *(1 + 0.01 * ElecAccUncertaintyUp_);
+      double elecAccMax = elecAccEff_ *(1 + 0.01 * ElecAccUncertaintyUp_LowMHT_);
+      if(MHT>500) elecAccMax = elecAccEff_ *(1 + 0.01 * ElecAccUncertaintyUp_HighMHT_);
       if(elecAccMax > 1) elecAccMax = 1;
       elecAccSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*elecAccMax) * ((1-elecIsoEff_)*elecRecoEff_*elecAccMax + (1-elecRecoEff_)*elecAccMax + (1-elecAccMax) +w3b) + w4) - wGes;
-      double elecAccMin = elecAccEff_ *(1 - 0.01 * ElecAccUncertaintyDown_);
+      double elecAccMin = elecAccEff_ *(1 - 0.01 * ElecAccUncertaintyDown_LowMHT_);
+      if(MHT>500) elecAccMin = elecAccEff_ *(1 - 0.01 * ElecAccUncertaintyDown_HighMHT_);
       elecAccSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*elecAccMin) * ((1-elecIsoEff_)*elecRecoEff_*elecAccMin + (1-elecRecoEff_)*elecAccMin + (1-elecAccMin) +w3b) + w4) - wGes;
       
       double elecAccQsquareMax = elecAccEff_ *(1 + 0.01 * ElecAccQsquareUncertaintyUp_);
@@ -904,10 +912,12 @@ Bool_t Prediction::Process(Long64_t entry)
       if(usePrelimSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * getMuonIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
       muRecoSysUp = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoMin*muAccEff_ + (1-muRecoMin)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
 
-      double muAccMax = muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_);
+      double muAccMax = muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_LowMHT_);
+      if(MHT>500) muAccMax = muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_HighMHT_);
       if(muAccMax > 1) muAccMax = 1;
       muAccSysDown = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*muAccMax + (1-muRecoEff_)*muAccMax + (1-muAccMax)) + w4) - wGes;
-      double muAccMin = muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_);
+      double muAccMin = muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_LowMHT_);
+      if(MHT>500) muAccMin = muAccEff_*(1 - 0.01 * MuAccUncertaintyDown_HighMHT_);
       muAccSysUp = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoEff_*muAccMin + (1-muRecoEff_)*muAccMin + (1-muAccMin)) + w4) - wGes;
 
       double muAccQsquareMax = muAccEff_*(1 + 0.01 * MuAccQsquareUncertaintyUp_);
