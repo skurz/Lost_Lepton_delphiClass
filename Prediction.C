@@ -348,8 +348,6 @@ Bool_t Prediction::Process(Long64_t entry)
   }
   if(useTrigger && !passTrigger) return kTRUE;
 
-  Weight = 1.;
-
   if(useTriggerEffWeight) Weight = Weight * GetTriggerEffWeight(MHT);
 
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
