@@ -148,6 +148,11 @@ effVec TH1Eff::GetEff(double xValue, bool asymm)
 
 	int nxBin = RatioTH1D_->GetXaxis()->FindBin(xValue);
 
+	if(nxBin > RatioTH1D_->GetNbinsX()){
+		std::cout <<"Problem getting Efficiencies!"<<std::endl;
+		nxBin = RatioTH1D_->GetNbinsX();
+	}
+
 	result = RatioTH1D_->GetBinContent(nxBin);
 	errUp_ = RatioTH1D_->GetBinErrorUp(nxBin);
 	errDown_ = RatioTH1D_->GetBinErrorLow(nxBin);
@@ -364,6 +369,10 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
 
   int nxBin = RatioTH2D_->GetXaxis()->FindBin(xValue);
   int nyBin = RatioTH2D_->GetYaxis()->FindBin(yValue);
+
+  if(nxBin > RatioTH2D_->GetNbinsX() || nyBin > RatioTH2D_->GetNbinsY()) std::cout<<"Problem in getting Efficiencies!"<<std::endl;
+  if(nxBin > RatioTH2D_->GetNbinsX()) nxBin = RatioTH2D_->GetNbinsX();
+  if(nyBin > RatioTH2D_->GetNbinsY()) nyBin = RatioTH2D_->GetNbinsY();
 
   result = RatioTH2D_->GetBinContent(nxBin, nyBin);
   errUp_ = RatioTH2D_->GetBinErrorUp(nxBin, nyBin);
