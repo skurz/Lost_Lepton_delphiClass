@@ -381,6 +381,7 @@ Bool_t EffMaker::Process(Long64_t entry)
   fChain->GetTree()->GetEntry(entry);
 
   if(Weight<0) return kTRUE;
+  if(Bin > 900) return kTRUE;
   
   // purity
   // single muon control sample

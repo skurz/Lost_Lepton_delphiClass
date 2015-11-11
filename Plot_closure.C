@@ -5,6 +5,7 @@
 #include <TStyle.h>
 #include <vector>
 #include <cstdio>
+#include <tdrstyle.C>
 
 using namespace std;
 
@@ -54,7 +55,7 @@ root.exe -b -q 'Plot_closure.C("J46_HT5001200_MHT500750","DelPhi4","stacked","El
 
  */
 
-Plot_closure(string cutname="nocut", string histname="MHT",string sample="stacked",string elogForPre="",string elogForExp="",bool zoom=true, bool debug=false){
+void Plot_closure(string cutname="nocut", string histname="MHT",string option="",bool zoom=true, bool debug=false){
 
   //
   ///////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +65,7 @@ Plot_closure(string cutname="nocut", string histname="MHT",string sample="stacke
   //
   gROOT->LoadMacro("tdrstyle.C");
   setTDRStyle();
-  gROOT->LoadMacro("CMS_lumi_v2.C");
+  //gROOT->LoadMacro("CMS_lumi_v2.C");
 
   int W = 600;
   int H = 600;
@@ -79,8 +80,8 @@ Plot_closure(string cutname="nocut", string histname="MHT",string sample="stacke
   // Various vertical line coordinates
   float ymax_top = 100000.;
   float ymin_top = 0.04.;
-  float ymax_bottom = 2.65;
-  float ymin_bottom = 0.0;
+  float ymax_bottom = 1.99;
+  float ymin_bottom = 0.01;
   float ytext_top = 3200.;
   float x_legend = 10.;
   float y_legend = 4000.;
@@ -93,11 +94,12 @@ Plot_closure(string cutname="nocut", string histname="MHT",string sample="stacke
 
   //
   // Luminosity information for scaling
-  double lumi = 3.; // normaliza to 3 (fb-1)
+  double lumi = 3.00; // normaliza to 3 (fb-1)
 
-  double xsec_ttbar   = 806.1; // (pb) https://twiki.cern.ch/twiki/bin/viewauth/CMS/RA2b13TeV
-  int    nevent_ttbar = 25348009;
-  double lumi_ttbar   = 31.445; // (fb-1)
+  // true: do closure test (MC prediction vs MC truth)
+  // false: do data driven prediction and compare to MC truth
+  bool doDataVsMC = false;
+
 
   ///////////////////////////////////////////////////////////////////////////////////////////
   //

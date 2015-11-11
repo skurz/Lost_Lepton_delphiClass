@@ -173,7 +173,7 @@ void ResultPlot()
   bool doExtrapolation = false; // not fully implemented yet
 
   // Present output in QCD binning
-  bool doQCDbinning = true;
+  bool doQCDbinning = false;
   //Merge QCDbins (bTags) = 55 bins // only works if doQCDbinning = true;
   //BUT: Output table does not work! However, histograms are filled properly
   bool mergeQCDbins = false; 
