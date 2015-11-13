@@ -222,6 +222,10 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("IsolatedPionTracksVeto", "std::vector<TLorentzVector>", &IsolatedPionTracksVeto, 32000, 0);
   tPrediction_->Branch("IsolatedPionTracksVetoActivity", &IsolatedPionTracksVetoActivity);
   tPrediction_->Branch("IsolatedPionTracksVetoMTW", &IsolatedPionTracksVetoMTW);
+  if(signalScan){
+    tPrediction_->Branch("SusyLSPMass", &SusyLSPMass);
+    tPrediction_->Branch("SusyMotherMass", &SusyMotherMass);
+  }
 
   tPrediction_->Branch("isoTrackStatUp", &isoTrackStatUp);
   tPrediction_->Branch("isoTrackStatDown", &isoTrackStatDown);
@@ -348,7 +352,15 @@ Bool_t Prediction::Process(Long64_t entry)
   }
   if(useTrigger && !passTrigger) return kTRUE;
 
-  if(useTriggerEffWeight) Weight = Weight * GetTriggerEffWeight(MHT);
+  if(useTriggerEffWeight){
+    if(signalScan){
+      Weight *= GetSignalTriggerEffWeight(MHT);
+    }else{
+      Weight *= GetTriggerEffWeight(MHT);
+    }
+  }
+
+  if(doPUreweighting) Weight *= puhist->GetBinContent(puhist->GetXaxis()->FindBin(min(TrueNumInteractions,puhist->GetBinLowEdge(puhist->GetNbinsX()+1))));
 
   if(runOnData) Weight = 1.;
 
@@ -1039,11 +1051,11 @@ bool Prediction::FiltersPass()
   bool result=true;
   if(useFilterData){
     //if(CSCTightHaloFilter==0) result=false;
-    if(NVtx==0) result=false;
     if(eeBadScFilter!=1) result=false;
     if(!HBHENoiseFilter) result=false;
     if(!HBHEIsoNoiseFilter) result=false;
   }
+  if(NVtx==0) result=false;
   if(JetID!=1) result=false;
   return result;
 }

@@ -27,7 +27,6 @@
 // Header file for the classes stored in the TTree if any.
 
 const bool useAsymmErrors = true;
-const bool useFilterData = true;
 const bool applyFilters_=true;
 const bool applyDiLepCorrection_=true;
 
@@ -35,6 +34,11 @@ const bool applyDiLepCorrection_=true;
 const bool runOnData = false;
 const bool useTrigger = false;
 const bool useTriggerEffWeight = true;
+
+// Option for SignalScan
+const bool signalScan = true;
+const bool doPUreweighting = true;
+const bool useFilterData = false; //Set to false for FastSim Samples
 
 // Unblinded data only
 const bool restrictRunNum = false;
@@ -162,6 +166,8 @@ class Prediction : public TSelector {
   std::string fname; // for fetching file name
   TString fileName;
   Double_t HTgen_cut = 0;
+  TFile* pufile = 0;
+  TH1* puhist = 0;
 
 
   SearchBins *SearchBins_;
@@ -487,6 +493,9 @@ class Prediction : public TSelector {
   Double_t        Weight;
   Double_t        puWeight;
   Double_t        genHT;
+  Double_t        SusyLSPMass;
+  Double_t        SusyMotherMass;
+  Double_t        TrueNumInteractions;
 
 
   // List of branches
@@ -587,6 +596,9 @@ class Prediction : public TSelector {
   TBranch        *b_Weight=0;   //!
   TBranch        *b_puWeight=0;   //!
   TBranch        *b_genHT=0;
+  TBranch        *b_SusyLSPMass=0;
+  TBranch        *b_SusyMotherMass=0;
+  TBranch        *b_TrueNumInteractions=0;
 
   
  Prediction(TTree * /*tree*/ =0) : fChain(0) { }
@@ -693,13 +705,18 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("LumiBlockNum", 1);
   fChain->SetBranchStatus("EvtNum", 1);
   fChain->SetBranchStatus("BTags", 1);
-  fChain->SetBranchStatus("CSCTightHaloFilter", 1);
   fChain->SetBranchStatus("DeltaPhi1", 1);
   fChain->SetBranchStatus("DeltaPhi2", 1);
   fChain->SetBranchStatus("DeltaPhi3", 1);
   fChain->SetBranchStatus("DeltaPhi4", 1);
-  fChain->SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter", 1);
-  fChain->SetBranchStatus("eeBadScFilter", 1);
+  if(!signalScan){
+    fChain->SetBranchStatus("CSCTightHaloFilter", 1);
+    fChain->SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter", 1);
+    fChain->SetBranchStatus("eeBadScFilter", 1);
+    fChain->SetBranchStatus("HBHENoiseFilter", 1);
+    fChain->SetBranchStatus("HBHEIsoNoiseFilter", 1);
+    fChain->SetBranchStatus("METFilters", 1);
+  }
   fChain->SetBranchStatus("ElectronCharge", 1);
   fChain->SetBranchStatus("Electrons", 1);
 /*  fChain->SetBranchStatus("GenElec_GenElecFromTau", 1);
@@ -709,9 +726,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("GenTau_GenTauHad", 1);
   fChain->SetBranchStatus("GenTauNu", 1);
   fChain->SetBranchStatus("GenTaus", 1);
-*/  fChain->SetBranchStatus("HBHENoiseFilter", 1);
-  fChain->SetBranchStatus("HBHEIsoNoiseFilter", 1);
-  fChain->SetBranchStatus("HT", 1);
+*/ fChain->SetBranchStatus("HT", 1);
   fChain->SetBranchStatus("isoElectronTracks", 1);
   fChain->SetBranchStatus("IsolatedElectronTracksVeto", 1);
   fChain->SetBranchStatus("IsolatedMuonTracksVeto", 1);
@@ -734,7 +749,6 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("Jets_photonEnergyFraction", 1);
   fChain->SetBranchStatus("Jets_photonMultiplicity", 1);
   fChain->SetBranchStatus("Leptons", 1);
-  fChain->SetBranchStatus("METFilters", 1);
   fChain->SetBranchStatus("METPhi", 1);
   fChain->SetBranchStatus("METPt", 1);
   fChain->SetBranchStatus("MHT", 1);
@@ -761,6 +775,11 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("TriggerPrescales", 1);
   if(!runOnData) fChain->SetBranchStatus("Weight", 1);
   if(HTgen_cut>0.01)  fChain->SetBranchStatus("genHT", 1);
+  if(signalScan){
+    fChain->SetBranchStatus("SusyLSPMass", 1);
+    fChain->SetBranchStatus("SusyMotherMass", 1);
+    fChain->SetBranchStatus("TrueNumInteractions", 1);
+  }
 
 
 
@@ -788,13 +807,18 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("LumiBlockNum", &LumiBlockNum, &b_LumiBlockNum);
   fChain->SetBranchAddress("EvtNum", &EvtNum, &b_EvtNum);
   fChain->SetBranchAddress("BTags", &BTags, &b_BTags);
-  fChain->SetBranchAddress("CSCTightHaloFilter", &CSCTightHaloFilter, &b_CSCTightHaloFilter);
   fChain->SetBranchAddress("DeltaPhi1", &DeltaPhi1, &b_DeltaPhi1);
   fChain->SetBranchAddress("DeltaPhi2", &DeltaPhi2, &b_DeltaPhi2);
   fChain->SetBranchAddress("DeltaPhi3", &DeltaPhi3, &b_DeltaPhi3);
   fChain->SetBranchAddress("DeltaPhi4", &DeltaPhi4, &b_DeltaPhi4);
-  fChain->SetBranchAddress("EcalDeadCellTriggerPrimitiveFilter", &EcalDeadCellTriggerPrimitiveFilter, &b_EcalDeadCellTriggerPrimitiveFilter);
-  fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
+  if(!signalScan){
+    fChain->SetBranchAddress("CSCTightHaloFilter", &CSCTightHaloFilter, &b_CSCTightHaloFilter);
+    fChain->SetBranchAddress("EcalDeadCellTriggerPrimitiveFilter", &EcalDeadCellTriggerPrimitiveFilter, &b_EcalDeadCellTriggerPrimitiveFilter);
+    fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
+    fChain->SetBranchAddress("HBHENoiseFilter", &HBHENoiseFilter, &b_HBHENoiseFilter);
+    fChain->SetBranchAddress("HBHEIsoNoiseFilter", &HBHEIsoNoiseFilter, &b_HBHEIsoNoiseFilter);
+    fChain->SetBranchAddress("METFilters", &METFilters, &b_METFilters);
+  }
   fChain->SetBranchAddress("ElectronCharge", &ElectronCharge, &b_ElectronCharge);
   fChain->SetBranchAddress("Electrons", &Electrons, &b_Electrons);
 /*  fChain->SetBranchAddress("GenElec_GenElecFromTau", &GenElec_GenElecFromTau, &b_GenElec_GenElecFromTau);
@@ -804,9 +828,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("GenTau_GenTauHad", &GenTau_GenTauHad, &b_GenTau_GenTauHad);
   fChain->SetBranchAddress("GenTauNu", &GenTauNu, &b_GenTauNu);
   fChain->SetBranchAddress("GenTaus", &GenTaus, &b_GenTaus);
-*/  fChain->SetBranchAddress("HBHENoiseFilter", &HBHENoiseFilter, &b_HBHENoiseFilter);
-  fChain->SetBranchAddress("HBHEIsoNoiseFilter", &HBHEIsoNoiseFilter, &b_HBHEIsoNoiseFilter);
-  fChain->SetBranchAddress("HT", &HT, &b_HT);
+*/  fChain->SetBranchAddress("HT", &HT, &b_HT);
   fChain->SetBranchAddress("isoElectronTracks", &isoElectronTracks, &b_isoElectronTracks);
   fChain->SetBranchAddress("IsolatedElectronTracksVeto", &IsolatedElectronTracksVeto, &b_IsolatedElectronTracksVeto);
   fChain->SetBranchAddress("IsolatedMuonTracksVeto", &IsolatedMuonTracksVeto, &b_IsolatedMuonTracksVeto);
@@ -829,7 +851,6 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("Jets_photonEnergyFraction", &Jets_photonEnergyFraction, &b_Jets_photonEnergyFraction);
   fChain->SetBranchAddress("Jets_photonMultiplicity", &Jets_photonMultiplicity, &b_Jets_photonMultiplicity);
   fChain->SetBranchAddress("Leptons", &Leptons, &b_Leptons);
-  fChain->SetBranchAddress("METFilters", &METFilters, &b_METFilters);
   fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
   fChain->SetBranchAddress("METPt", &METPt, &b_METPt);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
@@ -856,8 +877,18 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
   if(!runOnData) fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
   if(HTgen_cut>0.01) fChain->SetBranchAddress("genHT", &genHT, &b_genHT);
+  if(signalScan){
+    fChain->SetBranchAddress("SusyLSPMass", &SusyLSPMass, &b_SusyLSPMass);
+    fChain->SetBranchAddress("SusyMotherMass", &SusyMotherMass, &b_SusyMotherMass);
+    fChain->SetBranchAddress("TrueNumInteractions", &TrueNumInteractions, &b_TrueNumInteractions);
+  }
 
+  if(doPUreweighting){
+    pufile = TFile::Open("PileupHistograms_1104.root","READ");
+    puhist = (TH1*)pufile->Get("pu_weights_central");
+  }
 }
+
 
 Bool_t Prediction::Notify()
 {

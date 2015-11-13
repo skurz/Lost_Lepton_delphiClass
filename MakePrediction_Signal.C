@@ -19,12 +19,12 @@ void MakePrediction_Signal()
 	  Effchain[i] = new TChain("TreeMaker2/PreSelection");
 	}   
 
-	Effchain[0]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/signal_v3/*SMS-T1tttt_mGluino-1200_mLSP-800*.root");
-	Effchain[1]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/signal_v3/*SMS-T1tttt_mGluino-1500_mLSP-100*.root");
-	Effchain[2]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/signal_v3/*SMS-T1bbbb_mGluino-1000_mLSP-900*.root");
-	Effchain[3]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/signal_v3/*SMS-T1bbbb_mGluino-1500_mLSP-100*.root");
-	Effchain[4]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/signal_v3/*SMS-T1qqqq_mGluino-1000_mLSP-800*.root");
-	Effchain[5]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/signal_v3/*SMS-T1qqqq_mGluino-1400_mLSP-100*.root");
+	Effchain[0]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v4_signal/*SMS-T1tttt_mGluino-1200_mLSP-800*.root");
+	Effchain[1]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v4_signal/*SMS-T1tttt_mGluino-1500_mLSP-100*.root");
+	Effchain[2]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v4_signal/*SMS-T1bbbb_mGluino-1000_mLSP-900*.root");
+	Effchain[3]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v4_signal/*SMS-T1bbbb_mGluino-1500_mLSP-100*.root");
+	Effchain[4]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v4_signal/*SMS-T1qqqq_mGluino-1000_mLSP-800*.root");
+	Effchain[5]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v4_signal/*SMS-T1qqqq_mGluino-1400_mLSP-100*.root");
 
 	Effchain[0]->Process("Prediction", "Prediction_signal_T1tttt_1200_800.root");
 	Effchain[1]->Process("Prediction", "Prediction_signal_T1tttt_1500_100.root");

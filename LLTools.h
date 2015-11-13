@@ -36,6 +36,12 @@ static double GetTriggerEffWeight(Double_t MHT){
   else return 1.0000;
 }
 
+static double GetSignalTriggerEffWeight(Double_t MHT) {
+    if (MHT<200) return 0;
+    else if (MHT<500) return 0.9887;
+    else return 1.0000;
+}
+
 static double getMuonIDSF(Double_t pt, Double_t eta){
   double sf = 1.;
 
