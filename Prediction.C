@@ -352,6 +352,11 @@ Bool_t Prediction::Process(Long64_t entry)
   }
   if(useTrigger && !passTrigger) return kTRUE;
 
+  if(signalScan){
+    //MC xsecs stored in vector<pair> xsecs: DONE
+    //also need to take number of processed evts into account: stored in histogram in skims!
+  }
+
   if(useTriggerEffWeight){
     if(signalScan){
       Weight *= GetSignalTriggerEffWeight(MHT);

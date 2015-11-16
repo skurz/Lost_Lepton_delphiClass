@@ -24,6 +24,7 @@
 #include "TGraphAsymmErrors.h"
 #include "TKey.h"
 #include "TLorentzVector.h"
+#include <fstream>
 // Header file for the classes stored in the TTree if any.
 
 const bool useAsymmErrors = true;
@@ -168,6 +169,8 @@ class Prediction : public TSelector {
   Double_t HTgen_cut = 0;
   TFile* pufile = 0;
   TH1* puhist = 0;
+
+  std::vector<std::pair<double, double>> xsecs;
 
 
   SearchBins *SearchBins_;
@@ -678,6 +681,17 @@ void Prediction::Init(TTree *tree)
   std::cout << "genHT cut: " << HTgen_cut << std::endl;
 
   std::cout << "Saving file to: " << fileName << std::endl;
+
+  std::ifstream signal_xsec("dict_xsec.txt");
+  std::string str;
+  double xsec, mass;
+  while (std::getline(signal_xsec, str))
+  {
+    TObjArray *tokens = TString(str).Tokenize(",");
+    //std::cout<<((TObjString *)(tokens->At(0)))->String()<<"; "<<((TObjString *)(tokens->At(1)))->String()<<";"<<std::endl;
+    xsecs.push_back(std::make_pair(std::atof(((TObjString *)(tokens->At(0)))->String()), std::atof(((TObjString *)(tokens->At(1)))->String())));
+  }  
+
 
   fChain->SetBranchStatus("*",0);
 
