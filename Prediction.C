@@ -225,6 +225,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   if(signalScan){
     tPrediction_->Branch("SusyLSPMass", &SusyLSPMass);
     tPrediction_->Branch("SusyMotherMass", &SusyMotherMass);
+    tPrediction_->Branch("w_isr", &w_isr);
   }
 
   tPrediction_->Branch("isoTrackStatUp", &isoTrackStatUp);
@@ -352,9 +353,12 @@ Bool_t Prediction::Process(Long64_t entry)
   }
   if(useTrigger && !passTrigger) return kTRUE;
 
+  w_isr=-1.;
   if(signalScan){
     //MC xsecs stored in vector<pair> xsecs: DONE
     //also need to take number of processed evts into account: stored in histogram in skims!
+    //in event loop
+    w_isr = isrcorr.GetCorrection(genParticles,genParticles_PDGid);
   }
 
   if(useTriggerEffWeight){

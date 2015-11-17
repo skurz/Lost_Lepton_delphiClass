@@ -25,6 +25,7 @@
 #include "TKey.h"
 #include "TLorentzVector.h"
 #include <fstream>
+#include "isr_corrections/ISRCorrector.h"
 // Header file for the classes stored in the TTree if any.
 
 const bool useAsymmErrors = true;
@@ -171,6 +172,14 @@ class Prediction : public TSelector {
   TH1* puhist = 0;
 
   std::vector<std::pair<double, double>> xsecs;
+
+    //open skim file as skimfile
+  TH1* h_genpt;
+  ISRCorrector isrcorr;
+  TFile* isrfile;
+  //choose central, up, or down
+  TH1* h_isr;
+  Double_t w_isr;
 
 
   SearchBins *SearchBins_;
@@ -396,9 +405,14 @@ class Prediction : public TSelector {
 
   
   UShort_t elecActivityMethod, muActivityMethod, isoTrackActivityMethod;
-  
+
+
   
   // Declaration of leaf types
+
+  std::vector<TLorentzVector> *genParticles=0;
+  std::vector<int> *genParticles_PDGid=0;
+  
   std::vector<double>  *GenElec_MT2Activity=0;
   std::vector<double>  *GenElec_RA2Activity=0;
   std::vector<double>  *GenMu_MT2Activity=0;
@@ -502,6 +516,8 @@ class Prediction : public TSelector {
 
 
   // List of branches
+  TBranch        *b_genParticles=0;
+  TBranch        *b_genParticles_PDGid=0;
   TBranch        *b_GenElec_MT2Activity=0;   //!
   TBranch        *b_GenElec_RA2Activity=0;
   TBranch        *b_GenMu_MT2Activity=0;   //!
@@ -644,6 +660,8 @@ void Prediction::Init(TTree *tree)
   TChain* temp = (TChain*)fChain;
   std::string infname=temp->GetFile()->GetName();
 
+  TFile* skimfile = temp->GetFile();
+
   std::string baseName(infname);
   size_t pos=baseName.rfind("/");
   if(pos!=std::string::npos){
@@ -692,9 +710,23 @@ void Prediction::Init(TTree *tree)
     xsecs.push_back(std::make_pair(std::atof(((TObjString *)(tokens->At(0)))->String()), std::atof(((TObjString *)(tokens->At(1)))->String())));
   }  
 
+  // ISR setup
+  //open skim file as skimfile
+  h_genpt = (TH1*)skimfile->Get("GenPt");
+  isrfile = TFile::Open("isr_corrections/ISRWeights.root","READ");
+  //choose central, up, or down
+  h_isr = (TH1*)isrfile->Get("isr_weights_central");
+  isrcorr.SetWeights(h_isr,h_genpt);
+//PDG ID for gluino
+  isrcorr.SetMother(1000021);
+
+  
 
   fChain->SetBranchStatus("*",0);
 
+
+  fChain->SetBranchStatus("genParticles",1);
+  fChain->SetBranchStatus("genParticles_PDGid",1);
 /*  fChain->SetBranchStatus("GenElec_MT2Activity",1);
   fChain->SetBranchStatus("GenElec_RA2Activity",1);
   fChain->SetBranchStatus("GenMu_MT2Activity", 1);
@@ -796,7 +828,8 @@ void Prediction::Init(TTree *tree)
   }
 
 
-
+  fChain->SetBranchAddress("genParticles", &genParticles, &b_genParticles);
+  fChain->SetBranchAddress("genParticles_PDGid", &genParticles_PDGid, &b_genParticles_PDGid);
 /*  fChain->SetBranchAddress("GenElec_MT2Activity", &GenElec_MT2Activity, &b_GenElec_MT2Activity);
   fChain->SetBranchAddress("GenElec_RA2Activity", &GenElec_RA2Activity, &b_GenElec_RA2Activity);
   fChain->SetBranchAddress("GenMu_MT2Activity", &GenMu_MT2Activity, &b_GenMu_MT2Activity);
