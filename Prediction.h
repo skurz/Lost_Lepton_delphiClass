@@ -26,6 +26,7 @@
 #include "TLorentzVector.h"
 #include <fstream>
 #include "isr_corrections/ISRCorrector.h"
+#include "btag/BTagCorrector.h"
 // Header file for the classes stored in the TTree if any.
 
 const bool useAsymmErrors = true;
@@ -175,11 +176,17 @@ class Prediction : public TSelector {
 
     //open skim file as skimfile
   TH1* h_genpt;
+  double nEvtsTotal;
+  Double_t xsec;
   ISRCorrector isrcorr;
   TFile* isrfile;
-  //choose central, up, or down
   TH1* h_isr;
   Double_t w_isr;
+  Double_t w_pu;
+  BTagCorrector btagcorr;
+  std::vector<double> bTagProb;
+
+  TString treeName = " ";
 
 
   SearchBins *SearchBins_;
@@ -480,6 +487,8 @@ class Prediction : public TSelector {
   std::vector<int>     *Jets_neutralHadronMultiplicity=0;
   std::vector<double>  *Jets_photonEnergyFraction=0;
   std::vector<int>     *Jets_photonMultiplicity=0;
+  std::vector<int>     *Jets_partonFlavor=0;
+  std::vector<bool>    *HTJetsMask=0;
   Int_t           Leptons;
   Int_t           METFilters;
   Double_t        METPhi;
@@ -585,6 +594,8 @@ class Prediction : public TSelector {
   TBranch        *b_Jets_neutralHadronMultiplicity=0;   //!
   TBranch        *b_Jets_photonEnergyFraction=0;   //!
   TBranch        *b_Jets_photonMultiplicity=0;   //!
+  TBranch        *b_Jets_partonFlavor=0;   //!
+  TBranch        *b_HTJetsMask=0;   //!
   TBranch        *b_Leptons=0;   //!
   TBranch        *b_METFilters=0;   //!
   TBranch        *b_METPhi=0;   //!
@@ -702,31 +713,24 @@ void Prediction::Init(TTree *tree)
 
   std::ifstream signal_xsec("dict_xsec.txt");
   std::string str;
-  double xsec, mass;
   while (std::getline(signal_xsec, str))
   {
     TObjArray *tokens = TString(str).Tokenize(",");
     //std::cout<<((TObjString *)(tokens->At(0)))->String()<<"; "<<((TObjString *)(tokens->At(1)))->String()<<";"<<std::endl;
     xsecs.push_back(std::make_pair(std::atof(((TObjString *)(tokens->At(0)))->String()), std::atof(((TObjString *)(tokens->At(1)))->String())));
-  }  
+  }
 
-  // ISR setup
-  //open skim file as skimfile
-  h_genpt = (TH1*)skimfile->Get("GenPt");
-  isrfile = TFile::Open("isr_corrections/ISRWeights.root","READ");
-  //choose central, up, or down
-  h_isr = (TH1*)isrfile->Get("isr_weights_central");
-  isrcorr.SetWeights(h_isr,h_genpt);
-//PDG ID for gluino
-  isrcorr.SetMother(1000021);
 
-  
+  if(signalScan){
+    // ISR setup
+    //open skim file as skimfile
+    isrfile = TFile::Open("isr_corrections/ISRWeights.root","READ");
+    h_isr = (TH1*)isrfile->Get("isr_weights_central");
+    // everything else: done in loop!
+  }
 
   fChain->SetBranchStatus("*",0);
 
-
-  fChain->SetBranchStatus("genParticles",1);
-  fChain->SetBranchStatus("genParticles_PDGid",1);
 /*  fChain->SetBranchStatus("GenElec_MT2Activity",1);
   fChain->SetBranchStatus("GenElec_RA2Activity",1);
   fChain->SetBranchStatus("GenMu_MT2Activity", 1);
@@ -794,6 +798,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("Jets_neutralHadronMultiplicity", 1);
   fChain->SetBranchStatus("Jets_photonEnergyFraction", 1);
   fChain->SetBranchStatus("Jets_photonMultiplicity", 1);
+  fChain->SetBranchStatus("HTJetsMask", 1);
   fChain->SetBranchStatus("Leptons", 1);
   fChain->SetBranchStatus("METPhi", 1);
   fChain->SetBranchStatus("METPt", 1);
@@ -825,11 +830,11 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchStatus("SusyLSPMass", 1);
     fChain->SetBranchStatus("SusyMotherMass", 1);
     fChain->SetBranchStatus("TrueNumInteractions", 1);
+    fChain->SetBranchStatus("genParticles",1);
+    fChain->SetBranchStatus("genParticles_PDGid",1);
+    fChain->SetBranchStatus("Jets_partonFlavor", 1);
   }
 
-
-  fChain->SetBranchAddress("genParticles", &genParticles, &b_genParticles);
-  fChain->SetBranchAddress("genParticles_PDGid", &genParticles_PDGid, &b_genParticles_PDGid);
 /*  fChain->SetBranchAddress("GenElec_MT2Activity", &GenElec_MT2Activity, &b_GenElec_MT2Activity);
   fChain->SetBranchAddress("GenElec_RA2Activity", &GenElec_RA2Activity, &b_GenElec_RA2Activity);
   fChain->SetBranchAddress("GenMu_MT2Activity", &GenMu_MT2Activity, &b_GenMu_MT2Activity);
@@ -897,6 +902,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("Jets_neutralHadronMultiplicity", &Jets_neutralHadronMultiplicity, &b_Jets_neutralHadronMultiplicity);
   fChain->SetBranchAddress("Jets_photonEnergyFraction", &Jets_photonEnergyFraction, &b_Jets_photonEnergyFraction);
   fChain->SetBranchAddress("Jets_photonMultiplicity", &Jets_photonMultiplicity, &b_Jets_photonMultiplicity);
+  fChain->SetBranchAddress("HTJetsMask", &HTJetsMask, &b_HTJetsMask);
   fChain->SetBranchAddress("Leptons", &Leptons, &b_Leptons);
   fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
   fChain->SetBranchAddress("METPt", &METPt, &b_METPt);
@@ -928,6 +934,9 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchAddress("SusyLSPMass", &SusyLSPMass, &b_SusyLSPMass);
     fChain->SetBranchAddress("SusyMotherMass", &SusyMotherMass, &b_SusyMotherMass);
     fChain->SetBranchAddress("TrueNumInteractions", &TrueNumInteractions, &b_TrueNumInteractions);
+    fChain->SetBranchAddress("genParticles", &genParticles, &b_genParticles);
+    fChain->SetBranchAddress("genParticles_PDGid", &genParticles_PDGid, &b_genParticles_PDGid);
+    fChain->SetBranchAddress("Jets_partonFlavor", &Jets_partonFlavor, &b_Jets_partonFlavor);
   }
 
   if(doPUreweighting){

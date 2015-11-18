@@ -222,10 +222,16 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("IsolatedPionTracksVeto", "std::vector<TLorentzVector>", &IsolatedPionTracksVeto, 32000, 0);
   tPrediction_->Branch("IsolatedPionTracksVetoActivity", &IsolatedPionTracksVetoActivity);
   tPrediction_->Branch("IsolatedPionTracksVetoMTW", &IsolatedPionTracksVetoMTW);
+  tPrediction_->Branch("HTJetsMask", &HTJetsMask);
   if(signalScan){
     tPrediction_->Branch("SusyLSPMass", &SusyLSPMass);
     tPrediction_->Branch("SusyMotherMass", &SusyMotherMass);
     tPrediction_->Branch("w_isr", &w_isr);
+    tPrediction_->Branch("w_pu", &w_pu);
+    tPrediction_->Branch("xsec", &xsec);
+    tPrediction_->Branch("nEvtsTotal", &nEvtsTotal);
+    tPrediction_->Branch("Jets_partonFlavor", &Jets_partonFlavor);
+    tPrediction_->Branch("bTagProb", &bTagProb);
   }
 
   tPrediction_->Branch("isoTrackStatUp", &isoTrackStatUp);
@@ -353,12 +359,41 @@ Bool_t Prediction::Process(Long64_t entry)
   }
   if(useTrigger && !passTrigger) return kTRUE;
 
-  w_isr=-1.;
+
   if(signalScan){
-    //MC xsecs stored in vector<pair> xsecs: DONE
-    //also need to take number of processed evts into account: stored in histogram in skims!
-    //in event loop
+    TString currentTree = TString(fChain->GetCurrentFile()->GetName());
+    if(currentTree != treeName){
+      treeName = currentTree;   
+         
+      TH1F *nEventProc = (TH1F*)fChain->GetCurrentFile()->Get("nEventProc");
+      TH1F *nEventNeg = (TH1F*)fChain->GetCurrentFile()->Get("nEventNeg");
+      nEvtsTotal = nEventProc->GetBinContent(1) - 2*nEventNeg->GetBinContent(1);
+
+      h_genpt = (TH1*)fChain->GetCurrentFile()->Get("GenPt");
+      isrcorr.SetWeights(h_isr,h_genpt);
+      isrcorr.SetMother(1000021);
+
+      btagcorr.SetEffs(fChain->GetCurrentFile());
+      btagcorr.SetCalib("btag/CSVSLV1.csv");
+      btagcorr.SetFastSim(true);
+      btagcorr.SetCalibFastSim("btag/CSV_13TEV_TTJets_12_10_2015_prelimUnc.csv");
+    }
+
+    xsec = 0;
+    for (std::vector<std::pair<double, double>>::iterator it = xsecs.begin() ; it != xsecs.end(); ++it){
+      if(std::abs(SusyMotherMass - it->first) < 0.1){
+        xsec = it->second;
+        break;
+      }
+    }
+
+    Weight = xsec / nEvtsTotal;
+    if(Weight < 0) Weight *= -1;
+
     w_isr = isrcorr.GetCorrection(genParticles,genParticles_PDGid);
+    Weight *= w_isr;
+
+    bTagProb = btagcorr.GetCorrections(Jets,Jets_partonFlavor,HTJetsMask);
   }
 
   if(useTriggerEffWeight){
@@ -369,7 +404,10 @@ Bool_t Prediction::Process(Long64_t entry)
     }
   }
 
-  if(doPUreweighting) Weight *= puhist->GetBinContent(puhist->GetXaxis()->FindBin(min(TrueNumInteractions,puhist->GetBinLowEdge(puhist->GetNbinsX()+1))));
+  if(doPUreweighting){
+    w_pu = puhist->GetBinContent(puhist->GetXaxis()->FindBin(min(TrueNumInteractions,puhist->GetBinLowEdge(puhist->GetNbinsX()+1))));
+    Weight *= w_pu;
+  }
 
   if(runOnData) Weight = 1.;
 

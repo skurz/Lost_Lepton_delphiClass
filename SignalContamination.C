@@ -139,18 +139,19 @@ void SignalContamination()
 {
 
   // General Settings
-  TString InputPath_Prediction("Prediction_Scan_T1bbbb_SLm.root");
+  TString InputPath_Prediction("Prediction_Scan_T1bbbb.root");
   TString OutputPath_Prediction("LLContamination_T1bbbb.root");
 
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 1; //1280 //150
+  Double_t scaleFactorWeight = 3000; //1280 //150
 
   // Present output in QCD binning
   bool doQCDbinning = false;
 
-
   // Begin of Code
+  SearchBins *SearchBins_ = new SearchBins(doQCDbinning);
+
   int nSearchBinsTotal = 72;
   if(doQCDbinning){
     nSearchBinsTotal = 220;
@@ -161,6 +162,7 @@ void SignalContamination()
   //Declaration of leaves types for both trees (Expectation/Prediction)
   UShort_t         Bin;
   UShort_t         BinQCD;
+
   Double_t         Weight;
   Double_t         scaledWeight;
   Double_t         HT;
@@ -178,7 +180,8 @@ void SignalContamination()
   Float_t         totalWeightDiLepIsoTrackReduced;
   Float_t         totalWeightDiLepIsoTrackReducedCombined;
 
-
+  std::vector<UShort_t> Bin_bTags(4, 0.);
+  std::vector<double> *bTagProb=0;
 
   std::vector<TH1D*> histVec;  
   std::vector<double> mothMass;  
@@ -208,6 +211,8 @@ void SignalContamination()
   LostLeptonPrediction->SetBranchStatus("totalWeightDiLepIsoTrackReducedCombined",1);
   LostLeptonPrediction->SetBranchStatus("SusyLSPMass", 1);
   LostLeptonPrediction->SetBranchStatus("SusyMotherMass", 1);
+  LostLeptonPrediction->SetBranchStatus("bTagProb", 1);
+
   
   LostLeptonPrediction->SetBranchAddress("HT",&HT);
   LostLeptonPrediction->SetBranchAddress("MHT",&MHT);
@@ -227,6 +232,8 @@ void SignalContamination()
   LostLeptonPrediction->SetBranchAddress("SusyLSPMass",&SusyLSPMass);
   LostLeptonPrediction->SetBranchAddress("SusyMotherMass",&SusyMotherMass);
 
+  LostLeptonPrediction->SetBranchAddress("bTagProb",&bTagProb);
+
 
   std::cout<<"Loop on Prediction (MC)"<<std::endl;
   
@@ -243,6 +250,10 @@ void SignalContamination()
     if(SearchBin > 900) continue;
     if(MTW>100)continue;
     if(selectedIDIsoMuonsNum+selectedIDIsoElectronsNum!=1)continue;
+
+    for(int i = 0; i < 4; i++){
+      Bin_bTags.at(i)=SearchBins_->GetBinNumber(HT,MHT,NJets,i);
+    }
 
     scaledWeight = Weight * scaleFactorWeight;
 
@@ -264,7 +275,10 @@ void SignalContamination()
       mothMass.push_back(SusyMotherMass);
     }
 
-    histVec.at(found)->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);    
+    //fill event 4 times weighting with the btag probability
+    for(int i = 0; i < 4; i++){
+      histVec.at(found)->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2*bTagProb->at(i));
+    }
   }
 
   std::cout<<"Finished"<<std::endl;
