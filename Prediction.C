@@ -370,13 +370,17 @@ Bool_t Prediction::Process(Long64_t entry)
       nEvtsTotal = nEventProc->GetBinContent(1) - 2*nEventNeg->GetBinContent(1);
 
       h_genpt = (TH1*)fChain->GetCurrentFile()->Get("GenPt");
-      isrcorr.SetWeights(h_isr,h_genpt);
-      isrcorr.SetMother(1000021);
+      delete isrcorr;
+      isrcorr = new ISRCorrector();
+      isrcorr->SetWeights(h_isr,h_genpt);
+      isrcorr->SetMother(1000021);
 
-      btagcorr.SetEffs(fChain->GetCurrentFile());
-      btagcorr.SetCalib("btag/CSVSLV1.csv");
-      btagcorr.SetFastSim(true);
-      btagcorr.SetCalibFastSim("btag/CSV_13TEV_TTJets_12_10_2015_prelimUnc.csv");
+      delete btagcorr;
+      btagcorr = new BTagCorrector();
+      btagcorr->SetEffs(fChain->GetCurrentFile());
+      btagcorr->SetCalib("btag/CSVSLV1.csv");
+      btagcorr->SetFastSim(true);
+      btagcorr->SetCalibFastSim("btag/CSV_13TEV_TTJets_12_10_2015_prelimUnc.csv");
     }
 
     xsec = 0;
@@ -390,10 +394,10 @@ Bool_t Prediction::Process(Long64_t entry)
     Weight = xsec / nEvtsTotal;
     if(Weight < 0) Weight *= -1;
 
-    w_isr = isrcorr.GetCorrection(genParticles,genParticles_PDGid);
+    w_isr = isrcorr->GetCorrection(genParticles,genParticles_PDGid);
     Weight *= w_isr;
 
-    bTagProb = btagcorr.GetCorrections(Jets,Jets_partonFlavor,HTJetsMask);
+    bTagProb = btagcorr->GetCorrections(Jets,Jets_partonFlavor,HTJetsMask);
   }
 
   if(useTriggerEffWeight){

@@ -178,12 +178,12 @@ class Prediction : public TSelector {
   TH1* h_genpt;
   double nEvtsTotal;
   Double_t xsec;
-  ISRCorrector isrcorr;
+  ISRCorrector *isrcorr = 0;
   TFile* isrfile;
   TH1* h_isr;
   Double_t w_isr;
   Double_t w_pu;
-  BTagCorrector btagcorr;
+  BTagCorrector *btagcorr = 0;
   std::vector<double> bTagProb;
 
   TString treeName = " ";
