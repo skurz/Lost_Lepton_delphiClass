@@ -34,14 +34,14 @@ const bool applyFilters_=true;
 const bool applyDiLepCorrection_=true;
 
 // Seta data specific options, e.g. Trigger
-const bool runOnData = false;
-const bool useTrigger = false;
-const bool useTriggerEffWeight = true;
+const bool runOnData = true;
+const bool useTrigger = true;
+const bool useTriggerEffWeight = false;
 
 // Option for SignalScan
-const bool signalScan = true;
-const bool doPUreweighting = true;
-const bool useFilterData = false; //Set to false for FastSim Samples
+const bool signalScan = false; //ISR not recommended for Jamboree. Commented in Prediction.C
+const bool doPUreweighting = false;
+const bool useFilterData = true; //Set to false for FastSim Samples
 
 // Unblinded data only
 const bool restrictRunNum = false;
@@ -454,6 +454,7 @@ class Prediction : public TSelector {
   Double_t        DeltaPhiN3;
   Int_t           EcalDeadCellTriggerPrimitiveFilter;
   Int_t           eeBadScFilter;
+  Int_t           eeBadSc4Filter;
   std::vector<int>     *ElectronCharge=0;
   std::vector<TLorentzVector> *Electrons=0;
   std::vector<int>     *GenElec_GenElecFromTau=0;
@@ -488,6 +489,7 @@ class Prediction : public TSelector {
   std::vector<double>  *Jets_photonEnergyFraction=0;
   std::vector<int>     *Jets_photonMultiplicity=0;
   std::vector<int>     *Jets_partonFlavor=0;
+  std::vector<int>     *Jets_hadronFlavor=0;
   std::vector<bool>    *HTJetsMask=0;
   Int_t           Leptons;
   Int_t           METFilters;
@@ -561,6 +563,7 @@ class Prediction : public TSelector {
   TBranch        *b_DeltaPhiN3=0;   //!
   TBranch        *b_EcalDeadCellTriggerPrimitiveFilter=0;   //!
   TBranch        *b_eeBadScFilter=0;   //!
+  TBranch        *b_eeBadSc4Filter=0;   //!
   TBranch        *b_ElectronCharge=0;   //!
   TBranch        *b_Electrons=0;   //!
   TBranch        *b_GenElec_GenElecFromTau=0;   //!
@@ -595,6 +598,7 @@ class Prediction : public TSelector {
   TBranch        *b_Jets_photonEnergyFraction=0;   //!
   TBranch        *b_Jets_photonMultiplicity=0;   //!
   TBranch        *b_Jets_partonFlavor=0;   //!
+  TBranch        *b_Jets_hadronFlavor=0;   //!
   TBranch        *b_HTJetsMask=0;   //!
   TBranch        *b_Leptons=0;   //!
   TBranch        *b_METFilters=0;   //!
@@ -723,7 +727,6 @@ void Prediction::Init(TTree *tree)
 
   if(signalScan){
     // ISR setup
-    //open skim file as skimfile
     isrfile = TFile::Open("isr_corrections/ISRWeights.root","READ");
     h_isr = (TH1*)isrfile->Get("isr_weights_central");
     // everything else: done in loop!
@@ -867,6 +870,7 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchAddress("CSCTightHaloFilter", &CSCTightHaloFilter, &b_CSCTightHaloFilter);
     fChain->SetBranchAddress("EcalDeadCellTriggerPrimitiveFilter", &EcalDeadCellTriggerPrimitiveFilter, &b_EcalDeadCellTriggerPrimitiveFilter);
     fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
+    fChain->SetBranchAddress("eeBadSc4Filter", &eeBadSc4Filter, &b_eeBadSc4Filter);
     fChain->SetBranchAddress("HBHENoiseFilter", &HBHENoiseFilter, &b_HBHENoiseFilter);
     fChain->SetBranchAddress("HBHEIsoNoiseFilter", &HBHEIsoNoiseFilter, &b_HBHEIsoNoiseFilter);
     fChain->SetBranchAddress("METFilters", &METFilters, &b_METFilters);
@@ -937,10 +941,11 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchAddress("genParticles", &genParticles, &b_genParticles);
     fChain->SetBranchAddress("genParticles_PDGid", &genParticles_PDGid, &b_genParticles_PDGid);
     fChain->SetBranchAddress("Jets_partonFlavor", &Jets_partonFlavor, &b_Jets_partonFlavor);
+    fChain->SetBranchAddress("Jets_hadronFlavor", &Jets_hadronFlavor, &b_Jets_hadronFlavor);
   }
 
   if(doPUreweighting){
-    pufile = TFile::Open("PileupHistograms_1104.root","READ");
+    pufile = TFile::Open("PileupHistograms_1117.root","READ");
     puhist = (TH1*)pufile->Get("pu_weights_central");
   }
 }

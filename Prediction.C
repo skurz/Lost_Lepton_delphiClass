@@ -231,6 +231,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
     tPrediction_->Branch("xsec", &xsec);
     tPrediction_->Branch("nEvtsTotal", &nEvtsTotal);
     tPrediction_->Branch("Jets_partonFlavor", &Jets_partonFlavor);
+    tPrediction_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
     tPrediction_->Branch("bTagProb", &bTagProb);
   }
 
@@ -348,7 +349,8 @@ Bool_t Prediction::Process(Long64_t entry)
 
   if((selectedIDIsoMuonsNum_+selectedIDIsoElectronsNum_) !=1) return kTRUE;
 
-  bool passTrigger = false; 
+  /*
+  bool passTrigger = false;
   for (std::vector<string>::iterator it = TriggerNames->begin() ; it != TriggerNames->end(); ++it){
     if(it->find("HLT_PFHT350_PFMET100_NoiseCleaned_v")!=std::string::npos){  // Run2015A,B
       if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
@@ -356,8 +358,13 @@ Bool_t Prediction::Process(Long64_t entry)
     if(it->find("HLT_PFHT350_PFMET100_JetIdCleaned_v")!=std::string::npos){  // Run2015C.D
       if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
     }
+    if(it->find("HLT_PFHT350_PFMET100_v")!=std::string::npos){  // Run2015C.D
+      if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
+    }
   }
   if(useTrigger && !passTrigger) return kTRUE;
+  */
+  if(useTrigger) if(!TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
 
 
   if(signalScan){
@@ -378,9 +385,9 @@ Bool_t Prediction::Process(Long64_t entry)
       delete btagcorr;
       btagcorr = new BTagCorrector();
       btagcorr->SetEffs(fChain->GetCurrentFile());
-      btagcorr->SetCalib("btag/CSVSLV1.csv");
+      btagcorr->SetCalib("btag/CSVv2_mod.csv");
       btagcorr->SetFastSim(true);
-      btagcorr->SetCalibFastSim("btag/CSV_13TEV_TTJets_12_10_2015_prelimUnc.csv");
+      btagcorr->SetCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
     }
 
     xsec = 0;
@@ -395,9 +402,10 @@ Bool_t Prediction::Process(Long64_t entry)
     if(Weight < 0) Weight *= -1;
 
     w_isr = isrcorr->GetCorrection(genParticles,genParticles_PDGid);
-    Weight *= w_isr;
+    // not recommended for Jamboree
+    //Weight *= w_isr;
 
-    bTagProb = btagcorr->GetCorrections(Jets,Jets_partonFlavor,HTJetsMask);
+    bTagProb = btagcorr->GetCorrections(Jets,Jets_hadronFlavor,HTJetsMask);
   }
 
   if(useTriggerEffWeight){
@@ -1101,12 +1109,13 @@ bool Prediction::FiltersPass()
 {
   bool result=true;
   if(useFilterData){
-    //if(CSCTightHaloFilter==0) result=false;
+    if(!CSCTightHaloFilter) result=false;
     if(eeBadScFilter!=1) result=false;
+    if(!eeBadSc4Filter) result=false;
     if(!HBHENoiseFilter) result=false;
     if(!HBHEIsoNoiseFilter) result=false;
   }
-  if(NVtx==0) result=false;
+  if(NVtx<=0) result=false;
   if(JetID!=1) result=false;
   return result;
 }

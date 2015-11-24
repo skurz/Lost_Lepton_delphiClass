@@ -163,7 +163,7 @@ void ResultPlot()
   bool useMCForDataTree = false;
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 1280; //1280 //150
+  Double_t scaleFactorWeight = 2109; //1280 //150
 
   // Do approximation of statistical uncertainties if full MC statistics are used (stat. unc. then refers to a given luminosity of data)
   // Leave at 'false' if doing a closure test so stat. uncertainty is the one using full MC statistics
@@ -376,7 +376,17 @@ void ResultPlot()
   TH1D* totalExp_LL_ = new TH1D("totalExp_LL","totalExp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* nEvtsExp_LL_ = new TH1D("nEvtsExp_LL","nEvtsExp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
+  TH1D* totalExp_HT_LL_ = new TH1D("totalExp_HT_LL","totalExp_HT_LL", 20, 500., 2500.);
+  TH1D* totalExp_MHT_LL_ = new TH1D("totalExp_MHT_LL","totalExp_MHT_LL", 20, 200., 1200.);
+  TH1D* totalExp_NJets_LL_ = new TH1D("totalExp_NJets_LL","totalExp_NJets_LL", 7, 3.5, 10.5);
+  TH1D* totalExp_BTags_LL_ = new TH1D("totalExp_BTags_LL","totalExp_BTags_LL", 7, -0.5, 6.5);
+
   TH1D* totalPred_LL_ = new TH1D("totalPred_LL","totalPred_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1D* totalPred_HT_LL_ = new TH1D("totalPred_HT_LL","totalPred_HT_LL", 20, 500., 2500.);
+  TH1D* totalPred_MHT_LL_ = new TH1D("totalPred_MHT_LL","totalPred_MHT_LL", 20, 200., 1200.);
+  TH1D* totalPred_NJets_LL_ = new TH1D("totalPred_NJets_LL","totalPred_NJets_LL", 7, 3.5, 10.5);
+  TH1D* totalPred_BTags_LL_ = new TH1D("totalPred_BTags_LL","totalPred_BTags_LL", 7, -0.5, 6.5);
+
   TH1D* totalPredIsoTrackSysUp_LL_ = new TH1D("totalPredIsoTrackSysUp_LL","totalPredIsoTrackSysUp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPredIsoTrackSysDown_LL_ = new TH1D("totalPredIsoTrackSysDown_LL","totalPredIsoTrackSysDown_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPredMuIsoTrackSysUp_LL_ = new TH1D("totalPredMuIsoTrackSysUp_LL","totalPredMuIsoTrackSysUp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
@@ -524,6 +534,11 @@ void ResultPlot()
 
   // Define histrograms to do totalPrediction per SearchBin (MC)
   TH1D* totalPred_LL_MC_ = new TH1D("totalPred_LL_MC","totalPred_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1D* totalPred_HT_LL_MC_ = new TH1D("totalPred_HT_LL_MC","totalPred_HT_LL_MC", 20, 500., 2500.);
+  TH1D* totalPred_MHT_LL_MC_ = new TH1D("totalPred_MHT_LL_MC","totalPred_MHT_LL_MC", 20, 200., 1200.);
+  TH1D* totalPred_NJets_LL_MC_ = new TH1D("totalPred_NJets_LL_MC","totalPred_NJets_LL_MC", 7, 3.5, 10.5);
+  TH1D* totalPred_BTags_LL_MC_ = new TH1D("totalPred_BTags_LL_MC","totalPred_BTags_LL_MC", 7, -0.5, 6.5);
+
   TH1D* totalPredIsoTrackSysUp_LL_MC_ = new TH1D("totalPredIsoTrackSysUp_LL_MC","totalPredIsoTrackSysUp_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPredIsoTrackSysDown_LL_MC_ = new TH1D("totalPredIsoTrackSysDown_LL_MC","totalPredIsoTrackSysDown_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPredMuIsoTrackSysUp_LL_MC_ = new TH1D("totalPredMuIsoTrackSysUp_LL_MC","totalPredMuIsoTrackSysUp_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
@@ -595,6 +610,15 @@ void ResultPlot()
   TH1D* nEvtsCS_LL_MC_ = new TH1D("nEvtsCS_LL_MC","nEvtsCS_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
   TProfile* avgWeight_LL_MC_ = new TProfile("avgWeight_LL_MC","avgWeight_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TProfile* avgWeight_HT_LL_MC_ = new TProfile("avgWeight_HT_LL_MC","avgWeight_HT_LL_MC", 20, 500., 2500.);
+  TProfile* avgWeight_MHT_LL_MC_ = new TProfile("avgWeight_MHT_LL_MC","avgWeight_MHT_LL_MC", 20, 200., 1200.);
+  TProfile* avgWeight_NJets_LL_MC_ = new TProfile("avgWeight_NJets_LL_MC","avgWeight_NJets_LL_MC", 7, 3.5, 10.5);
+  TProfile* avgWeight_BTags_LL_MC_ = new TProfile("avgWeight_BTags_LL_MC","avgWeight_BTags_LL_MC", 7, -0.5, 6.5);
+  TProfile* avgWeight_MHT_HT500_800_LL_MC_ = new TProfile("avgWeight_HT500_800_MHT_LL_MC","avgWeight_HT500_800_MHT_LL_MC", 20, 200., 1200.);
+  TProfile* avgWeight_MHT_HT800_1200_LL_MC_ = new TProfile("avgWeight_HT800_1200_MHT_LL_MC","avgWeight_HT800_1200_MHT_LL_MC", 20, 200., 1200.);
+  TProfile* avgWeight_MHT_HT1200_Inf_LL_MC_ = new TProfile("avgWeight_HT1200_Inf_MHT_LL_MC","avgWeight_HT1200_Inf_MHT_LL_MC", 20, 200., 1200.);
+  
+
 
   totalPred_LL_MC_->Sumw2();
   totalPredIsoTrackSysUp_LL_MC_->Sumw2();
@@ -792,6 +816,11 @@ void ResultPlot()
     	totalExpIsoTrack+=scaledWeight;
     	totalExpIsoTrackError+= scaledWeight*scaledWeight;
       totalExp_LL_->Fill(SearchBin, scaledWeight);
+
+      totalExp_HT_LL_->Fill(HT, scaledWeight);
+      totalExp_MHT_LL_->Fill(MHT, scaledWeight);
+      totalExp_NJets_LL_->Fill(NJets, scaledWeight);
+      totalExp_BTags_LL_->Fill(BTags, scaledWeight);
 
       nEvtsExp_LL_->Fill(SearchBin);
 
@@ -1033,6 +1062,11 @@ void ResultPlot()
     scaledWeight = Weight * scaleFactorWeight;
 
     totalPred_LL_MC_->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+    totalPred_HT_LL_MC_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+    totalPred_MHT_LL_MC_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+    totalPred_NJets_LL_MC_->Fill(NJets, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+    totalPred_BTags_LL_MC_->Fill(BTags, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+
     totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, isoTrackSysUp*scaleFactorWeight/2);
     totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, isoTrackSysDown*scaleFactorWeight/2);
     totalPredMuIsoTrackSysUp_LL_MC_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2);
@@ -1105,6 +1139,16 @@ void ResultPlot()
     nEvtsCS_LL_MC_->Fill(SearchBin);
 
     avgWeight_LL_MC_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+    avgWeight_HT_LL_MC_->Fill(HT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+    avgWeight_MHT_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+    avgWeight_NJets_LL_MC_->Fill(NJets, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+    avgWeight_BTags_LL_MC_->Fill(BTags, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+
+    if(NJets < 6.5){
+      if(HT<800) avgWeight_MHT_HT500_800_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+      else if(HT<1200) avgWeight_MHT_HT800_1200_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+      else avgWeight_MHT_HT1200_Inf_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+    }
     
     hAvgWeightAllBins->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2));
     if(BTags==0) hAvgWeightHTMHT0b->Fill(getHTMHTBox(HT, MHT), abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2));
@@ -1317,6 +1361,11 @@ void ResultPlot()
     if(!useMCForDataTree && InputPath_Prediction_Data != InputPath_Prediction) scaleMC = Weight;
 
     totalPred_LL_->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
+    totalPred_HT_LL_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
+    totalPred_MHT_LL_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
+    totalPred_NJets_LL_->Fill(NJets, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
+    totalPred_BTags_LL_->Fill(BTags, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
+
     totalPredIsoTrackSysUp_LL_->Fill(SearchBin, isoTrackSysUp*scaleFactorWeight/2);
     totalPredIsoTrackSysDown_LL_->Fill(SearchBin, isoTrackSysDown*scaleFactorWeight/2);
     totalPredMuIsoTrackSysUp_LL_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2);
@@ -1599,6 +1648,26 @@ void ResultPlot()
   TFile *LLoutPutFile = new TFile(OutputPath_Prediction,"RECREATE");
 
   LLoutPutFile->cd();
+  LLoutPutFile->mkdir("SearchVariables");
+  TDirectory *dSearchVariables = (TDirectory*)LLoutPutFile->Get("SearchVariables");
+  dSearchVariables->cd();
+
+  totalExp_HT_LL_->Write();
+  totalExp_MHT_LL_->Write();
+  totalExp_NJets_LL_->Write();
+  totalExp_BTags_LL_->Write();
+
+  totalPred_HT_LL_MC_->Write();
+  totalPred_MHT_LL_MC_->Write();
+  totalPred_NJets_LL_MC_->Write();
+  totalPred_BTags_LL_MC_->Write();
+
+  totalPred_HT_LL_->Write();
+  totalPred_MHT_LL_->Write();
+  totalPred_NJets_LL_->Write();
+  totalPred_BTags_LL_->Write();
+
+  LLoutPutFile->cd();
   LLoutPutFile->mkdir("Closure");
   TDirectory *dClosure = (TDirectory*)LLoutPutFile->Get("Closure");
   dClosure->cd();
@@ -1608,6 +1677,31 @@ void ResultPlot()
   ClosureTest->SetTitle("Expectation / Prediction");
   SetBinLabel(ClosureTest);
   ClosureTest->Write();
+
+  TH1D *ClosureTest_HT = (TH1D*) totalExp_HT_LL_->Clone("ClosureTest_HT");
+  ClosureTest_HT->Divide(totalPred_HT_LL_MC_);
+  ClosureTest_HT->SetTitle("Expectation / Prediction");
+  SetBinLabel(ClosureTest_HT);
+  ClosureTest_HT->Write();
+
+  TH1D *ClosureTest_MHT = (TH1D*) totalExp_MHT_LL_->Clone("ClosureTest_MHT");
+  ClosureTest_MHT->Divide(totalPred_MHT_LL_MC_);
+  ClosureTest_MHT->SetTitle("Expectation / Prediction");
+  SetBinLabel(ClosureTest_MHT);
+  ClosureTest_MHT->Write();
+
+  TH1D *ClosureTest_NJets = (TH1D*) totalExp_NJets_LL_->Clone("ClosureTest_NJets");
+  ClosureTest_NJets->Divide(totalPred_NJets_LL_MC_);
+  ClosureTest_NJets->SetTitle("Expectation / Prediction");
+  SetBinLabel(ClosureTest_NJets);
+  ClosureTest_NJets->Write();
+
+  TH1D *ClosureTest_BTags = (TH1D*) totalExp_BTags_LL_->Clone("ClosureTest_BTags");
+  ClosureTest_BTags->Divide(totalPred_BTags_LL_MC_);
+  ClosureTest_BTags->SetTitle("Expectation / Prediction");
+  SetBinLabel(ClosureTest_BTags);
+  ClosureTest_BTags->Write();
+
 /*
   TH1D *ClosureTest_HT = (TH1D*) totalExp_LL_->Clone("ClosureTest_HT");
   ClosureTest_HT->SetTitle("Expectation / Prediction (HT bins)");
@@ -1852,6 +1946,7 @@ void ResultPlot()
   SetBinLabel(totalPred_LL_MC_);
   totalPred_LL_MC_->Write();
 
+
   std::vector<TH1D*> allUncUp_LL_MC_;
   allUncUp_LL_MC_.push_back(totalPredIsoTrackSysUp_LL_MC_);
   allUncUp_LL_MC_.push_back(totalPredMTWSysUp_LL_MC_);
@@ -1987,6 +2082,24 @@ void ResultPlot()
 
   SetBinLabel(avgWeight_LL_MC_);
   avgWeight_LL_MC_->Write();
+
+  LLoutPutFile->cd();
+  LLoutPutFile->mkdir("AvgWeight_MC");
+  TDirectory *dAvgWeight = (TDirectory*)LLoutPutFile->Get("AvgWeight_MC");
+  dAvgWeight->cd();
+
+  SetBinLabel(avgWeight_LL_MC_);
+  avgWeight_LL_MC_->Write();
+
+  avgWeight_HT_LL_MC_->Write();
+  avgWeight_MHT_LL_MC_->Write();
+  avgWeight_NJets_LL_MC_->Write();
+  avgWeight_BTags_LL_MC_->Write();
+
+  avgWeight_MHT_HT500_800_LL_MC_->Write();
+  avgWeight_MHT_HT800_1200_LL_MC_->Write();
+  avgWeight_MHT_HT1200_Inf_LL_MC_->Write();
+
 
   if(doMergedHistograms){
     LLoutPutFile->cd();

@@ -1,10 +1,18 @@
 #include <vector>
 #include <cstdio>
+#include <iostream>   // std::cout
+#include <string>     // std::string, std::to_string
 #include <tdrstyle.C>
+#include <CMS_lumi.C>
+
 
 using namespace std;
 
 /*
+
+root.exe -b -q 'Plot_searchBin_full.C("stacked","searchH_b","Elog408_","Elog404_")'
+root.exe -b -q 'Plot_searchBin_full.C("stacked","QCD_Low",  "Elog408_","Elog404_")'
+root.exe -b -q 'Plot_searchBin_full.C("stacked","QCD_Up",   "Elog408_","Elog404_")'
 
 .L Plot_searchBin_full.C
 Plot_searchBin_full("stacked","searchH_b","Elog365_");
@@ -17,7 +25,30 @@ root.exe -b -q 'Plot_searchBin_full.C("stacked","QCD_Up","Elog365_")'
 
 */
 
-void Plot_searchBin_full(string option="", int pull=0,int choice=1){
+void shift_bin(TH1* input, TH1* output){
+
+  char tempname[200];  
+  char temptitle[200];  
+  output->SetName(tempname);
+  output->SetTitle(temptitle);
+  output->SetBins(input->GetNbinsX(),input->GetBinLowEdge(1)-0.5,input->GetBinLowEdge(input->GetNbinsX()+1)-0.5);
+  //input->Print("all");
+  //output = new TH1D(tempname,temptitle,input->GetNbinsX(),input->GetBinLowEdge(1)-0.5,input->GetBinLowEdge(input->GetNbinsX()+1)-0.5); 
+  // 0: underflow
+  // 1: first bin [Use the lowedge of this bin]
+  // input->GetNbinsX(): highest bin 
+  // input->GetNbinsX()+1: overflow bin [use the lowedge of this bin]
+  //
+
+  for (int ibin=1;ibin<=input->GetNbinsX();ibin++){
+    output->SetBinContent(ibin,input->GetBinContent(ibin));    
+    output->SetBinError(ibin,input->GetBinError(ibin));    
+    //std::cout << input->GetBinContent(ibin) << std::endl;
+  }
+
+}
+
+void Plot_searchBin_full(string option="", int pull=0){
 
   ///////////////////////////////////////////////////////////////////////////////////////////
   ////Some cosmetic work for official documents.
@@ -26,7 +57,6 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
   //
   setTDRStyle();
   gStyle->SetPalette(1) ; // for better color output
-  //gROOT->LoadMacro("CMS_lumi_v2.C");
 
   //
   // Canvas size
@@ -34,10 +64,10 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
   int H = 600;
   int H_ref = 600;
   int W_ref = 800;
-  float T = 0.08*H_ref;
-  float B = 0.12*H_ref;
-  float L = 0.12*W_ref;
-  float R = 0.08*W_ref;
+  float T = 0.10*H_ref;
+  float B = 0.06*H_ref;
+  float L = 0.16*W_ref;
+  float R = 0.04*W_ref;
 
   //
   // Various vertical line coordinates
@@ -50,16 +80,15 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
 
   float ymax_bottom = 1.99;
   float ymin_bottom = 0.01;
-  //float ymax_bottom = 1.50;
-  //float ymin_bottom = 0.5;
 
   float ymax2_bottom = 2.15;
   float ymax3_bottom = 2.15;
   float ymax4_bottom = 2.15;
 
   //
-  // Luminosity
-  double lumi = 1.28; // normaliza to 10 (fb-1)
+  // Luminosity information for scaling
+  double lumi     = 2.109271; // normaliza to this lumi (fb-1)
+  double lumi_ref = 2.109271; // normaliza to 3 (fb-1)
 
   // true: do closure test (MC prediction vs MC truth)
   // false: do data driven prediction and compare to MC truth
@@ -74,6 +103,7 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
   // More specific style set, opening input files etc
 
   gStyle->SetOptStat(0);  ///to avoid the stat. on the plots
+  //gStyle->SetErrorX(0);
   char tempname[200];
   char xtitlename[200];
   char ytitlename[200];
@@ -85,20 +115,18 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
   //
   // Define legend
   //
-  Float_t legendX1 = .66; //.50;
-  Float_t legendX2 = .85; //.70;
-  Float_t legendY1 = .80; //.65;
-  Float_t legendY2 = .92;
+  Float_t legendX1 = .65; //.50;
+  Float_t legendX2 = .95; //.70;
+  Float_t legendY1 = .50; //.65;
+  Float_t legendY2 = .75;
 
   TLegend* catLeg1 = new TLegend(legendX1,legendY1,legendX2,legendY2);
-  catLeg1->SetTextSize(0.032);
-  catLeg1->SetTextFont(42);
-
-  catLeg1->SetTextSize(0.042);
+  //catLeg1->SetTextSize(0.060);
+  catLeg1->SetTextSize(0.055);
   catLeg1->SetTextFont(42);
   catLeg1->SetFillColor(0);
-  catLeg1->SetLineColor(0);
-  catLeg1->SetBorderSize(0);
+  catLeg1->SetLineColor(1);
+  catLeg1->SetBorderSize(1);
 
   //
   // Define canvas
@@ -111,7 +139,6 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
   canvas->SetFrameBorderMode(0);
   canvas->SetLeftMargin( L/W );
   canvas->SetRightMargin( R/W );
-  canvas->SetRightMargin( 0.1 );
   canvas->SetTopMargin( T/H );
   canvas->SetBottomMargin( B/H );
   canvas->SetTickx(0);
@@ -130,22 +157,24 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
   double up_height     = 0.8;  // please tune so that the upper figures size will meet your requirement
   double dw_correction = 1.30; // please tune so that the smaller canvas size will work in your environment
   double font_size_dw  = 0.1;  // please tune the font size parameter for bottom figure
-  double dw_height    = (1. - up_height) * dw_correction;
-  double dw_height_offset = 0.040; // KH, added to put the bottom one closer to the top panel
+  double dw_height     = (1. - up_height) * dw_correction;
+  double dw_height_offset = 0.04; // KH, added to put the bottom one closer to the top panel
 
   //
   // set pad size
-  canvas_up->SetPad(0., 1 - up_height, 0.97, 1.);
-  canvas_dw->SetPad(0., dw_height_offset, 0.97, dw_height+dw_height_offset);
+  canvas_up->SetPad(0., 1 - up_height,    1., 1.00);
+  canvas_dw->SetPad(0., 0.,               1., dw_height+dw_height_offset);
+  //
   canvas_up->SetFrameFillColor(0);
   canvas_up->SetFillColor(0);
+  canvas_up->SetTopMargin(0.12);
+  canvas_up->SetLeftMargin(0.1);
+  //
   canvas_dw->SetFillColor(0);
   canvas_dw->SetFrameFillColor(0);
-  canvas_dw->SetBottomMargin(0.25);
-  
-  //
-  // set top margin 0 for bottom figure
+  canvas_dw->SetBottomMargin(0.35);
   canvas_dw->SetTopMargin(0);
+  canvas_dw->SetLeftMargin(0.1);
   
   //
   // draw top figure
@@ -163,9 +192,9 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
   double MHT_x_max=1000.;
   double NJet_x_max=15.;
   double NBtag_x_max=4.;
-  double search_x_max=73.;
+  double search_x_max=73.-0.5;
   if(option.find("QCD")!=string::npos)search_x_max=224.;
-  double search_x_min=1.;
+  double search_x_min=1.-0.5;
 
   TDirectory *dPre = 0;
   TDirectory *dExp = (TDirectory*)LLFile->Get("Expectation");
@@ -195,14 +224,13 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
       EstSystematics=(TH1D*) dSys->Get("totalPropSysUp_LL_MC")->Clone();
     }
   }
-  
 
   if(EstHistTemp->GetNbinsX() != GenHistTemp->GetNbinsX()) std::cout<<"NbinsX of Expectation and Prediction don't agree!"<<std::endl;
 
-  EstHist = new TH1D("Expectation", "Expectation", EstHistTemp->GetNbinsX(), 1, EstHistTemp->GetNbinsX()+1);
-  EstHistD = new TH1D("ExpectationD", "ExpectationD", EstHistDTemp->GetNbinsX(), 1, EstHistDTemp->GetNbinsX()+1);
-  GenHist = new TH1D("Prediction", "Prediction", GenHistTemp->GetNbinsX(), 1, GenHistTemp->GetNbinsX()+1);
-  GenHistD = new TH1D("PredictionD", "PredictionD", GenHistDTemp->GetNbinsX(), 1, GenHistDTemp->GetNbinsX()+1);
+  EstHist = new TH1D("Exp", "Exp", EstHistTemp->GetNbinsX(), 0.5, EstHistTemp->GetNbinsX()+0.5);
+  EstHistD = new TH1D("ExpD", "ExpD", EstHistDTemp->GetNbinsX(), 0.5, EstHistDTemp->GetNbinsX()+0.5);
+  GenHist = new TH1D("Pred", "Pred", GenHistTemp->GetNbinsX(), 0.5, GenHistTemp->GetNbinsX()+0.5);
+  GenHistD = new TH1D("PredD", "PredD", GenHistDTemp->GetNbinsX(), 0.5, GenHistDTemp->GetNbinsX()+0.5);
 
   for(int i = 0; i <= EstHistTemp->GetNbinsX()+1; i++){
     EstHist->SetBinContent(i, EstHistTemp->GetBinContent(i));    
@@ -222,63 +250,72 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
     GenHistD->SetBinError(i, GenHistDTemp->GetBinError(i));
   }
 
-  GenHist->SetLineColor(2);
+  GenHist->SetLineColor(4);
   EstHist->SetLineColor(4);
   //GenHist->GetXaxis()->SetLabelFont(42);
   //GenHist->GetXaxis()->SetLabelOffset(0.007);
   //GenHist->GetXaxis()->SetLabelSize(0.04);
-  GenHist->GetXaxis()->SetTitleSize(0.05);
-  GenHist->GetXaxis()->SetTitleOffset(0.9);
-  GenHist->GetXaxis()->SetTitleFont(42);
+  //GenHist->GetXaxis()->SetTitleSize(0.05);
+  //GenHist->GetXaxis()->SetTitleOffset(0.9);
+  //GenHist->GetXaxis()->SetTitleOffset(0.5);
+  //GenHist->GetXaxis()->SetTitleFont(42);
   //GenHist->GetYaxis()->SetLabelFont(42);
   //GenHist->GetYaxis()->SetLabelOffset(0.007);
   //GenHist->GetYaxis()->SetLabelSize(0.04);
-  GenHist->GetYaxis()->SetTitleSize(0.05);
+  GenHist->GetYaxis()->SetLabelSize(0.045*1.15);
+  GenHist->GetYaxis()->SetTitleSize(0.06*1.15);
   GenHist->GetYaxis()->SetTitleOffset(0.6);
   GenHist->GetYaxis()->SetTitleFont(42);
+
 
   //EstHist->GetXaxis()->SetLabelFont(42);
   //EstHist->GetXaxis()->SetLabelOffset(0.007);
   //EstHist->GetXaxis()->SetLabelSize(0.04);
-  EstHist->GetXaxis()->SetTitleSize(0.05);
-  EstHist->GetXaxis()->SetTitleOffset(0.9);
-  EstHist->GetXaxis()->SetTitleFont(42);
+  //EstHist->GetXaxis()->SetTitleSize(0.05);
+  //EstHist->GetXaxis()->SetTitleOffset(0.9);
+  //EstHist->GetXaxis()->SetTitleFont(42);
   //EstHist->GetYaxis()->SetLabelFont(42);
   //EstHist->GetYaxis()->SetLabelOffset(0.007);
   //EstHist->GetYaxis()->SetLabelSize(0.04);
-  EstHist->GetYaxis()->SetTitleSize(0.05);
-  EstHist->GetYaxis()->SetTitleOffset(1.25);
-  EstHist->GetYaxis()->SetTitleFont(42);
-  sprintf(xtitlename,"Search bin");
+  //EstHist->GetYaxis()->SetTitleSize(0.08);
+  //EstHist->GetYaxis()->SetTitleOffset(2.0);
+  //EstHist->GetYaxis()->SetTitleFont(42);
+  sprintf(xtitlename,"Search region bin number");
   sprintf(ytitlename,"Events");
   gPad->SetLogy();
   GenHist->SetMaximum(ymax_top);
   GenHist->SetMinimum(ymin_top);
   GenHist->GetXaxis()->SetRangeUser(search_x_min,search_x_max);
 
+  //GenHist->GetYaxis()->SetTickLength(0.015);
+  //GenHist->GetXaxis()->SetTickLength(0.02);
+
   //gPad->SetGridx(1);
+  TExec *ex1 = new TExec("ex1","gStyle->SetErrorX(0);");
+  TExec *ex2 = new TExec("ex2","gStyle->SetErrorX(0.5);");
+
   GenHist->SetTitle("");
   GenHist->SetMarkerStyle(20);
+  GenHist->SetMarkerSize(1.2);
   GenHist->SetLineColor(1);
   GenHist->GetXaxis()->SetTitle(xtitlename);
   GenHist->GetYaxis()->SetTitle(ytitlename);
+  GenHist->Scale(lumi/lumi_ref);
+  EstHist->Scale(lumi/lumi_ref);
   TH1D * GenHist_Normalize = static_cast<TH1D*>(GenHist->Clone("GenHist_Normalize"));
-  //KH  GenHist_Normalize->Scale(lumi/lumi_ttbar);
   GenHist_Normalize->SetMaximum(ymax_top);
   GenHist_Normalize->SetMinimum(ymin_top);
-  //GenHist->Draw("e");
-  //KH GenHist->Draw("same");
+  ex1->Draw();
+  //GenHist_Normalize->GetListOfFunctions()->Add(ex1);
   GenHist_Normalize->DrawCopy("e");
 
-  //EstHist->SetFillStyle(3004);
   EstHist->SetFillStyle(3144);
-  EstHist->SetFillColor(kGreen-3);
+  EstHist->SetFillColor(kRed-10);
   EstHist->SetMarkerStyle(20);
   EstHist->SetMarkerSize(0.0001);
-  //EstHist->Draw("e2same");
-  //EstHist->Draw("esame");
   TH1D * EstHist_Normalize = static_cast<TH1D*>(EstHist->Clone("EstHist_Normalize"));
-  //  EstHist_Normalize->Scale(lumi/lumi_ttbar);
+  ex2->Draw();
+  //EstHist_Normalize->GetListOfFunctions()->Add(ex2);
   EstHist_Normalize->DrawCopy("e2same");
   EstHist_Normalize->DrawCopy("esame");
 
@@ -287,53 +324,40 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
   
   //
   // Re-draw to have "expectation" on top of "prediction"
+  ex1->Draw();
   GenHist_Normalize->DrawCopy("esame");
   //
-    // Legend & texts
-    sprintf(tempname,"Lost lepton BG expectation (MC truth)");
-    catLeg1->AddEntry(GenHist,tempname,"p");
-    sprintf(tempname,"Prediction from MC");
-    catLeg1->AddEntry(EstHist,tempname);
-    catLeg1->Draw();
 
   TString line = "";
-  line+=lumi;
+  sprintf(tempname,"%8.1f",lumi);
+  line+=tempname;
   line+=" fb^{-1} (13 TeV)";
- 
-  double x0 = gStyle->GetPadLeftMargin();
-  double x1 = 1.-gStyle->GetPadRightMargin();
-  double y0 = 1.005-gStyle->GetPadTopMargin();
-  double y1 = 0.96;
-  TPaveText *Lumitxt = new TPaveText(x0,y0,x1,y1,"NDC");
-  Lumitxt->SetBorderSize(0);
-  Lumitxt->SetFillColor(0);
-  Lumitxt->SetTextFont(42);
-  Lumitxt->SetTextAlign(31);
-  Lumitxt->SetTextSize(0.8*gStyle->GetPadTopMargin());
-  Lumitxt->SetMargin(0.);
-  Lumitxt->AddText(line);
-  Lumitxt->Draw("same");
+  
+  int iPeriod = 0;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV, 0=free form (uses lumi_sqrtS)
+  int iPos=0;
+    
+  writeExtraText = true;
+  extraText   = "      Simulation";
+  //float extraTextFont = 52;  // default is helvetica-italics
 
-  TString CMSlabel = "";
-  if(doDataVsMC){
-    CMSlabel += "#splitline{#bf{CMS}}{#scale[0.6]{#it{Preliminary}}}";    
-  }else{
-    CMSlabel += "#splitline{#bf{CMS}}{#scale[0.6]{#it{Simulation}}}";
-  }
- 
-  x0 = gStyle->GetPadLeftMargin()+0.03;
-  x1 = gStyle->GetPadLeftMargin()+0.13;
-  y0 = 0.905-gStyle->GetPadTopMargin();
-  y1 = 0.88;
-  TPaveText *CMStxt = new TPaveText(x0,y0,x1,y1,"NDC");
-  CMStxt->SetBorderSize(0);
-  CMStxt->SetFillColor(0);
-  CMStxt->SetTextFont(42);
-  CMStxt->SetTextAlign(11);
-  CMStxt->SetTextSize(0.95*gStyle->GetPadTopMargin());
-  CMStxt->SetMargin(0.);
-  CMStxt->AddText(CMSlabel);
-  CMStxt->Draw("same");
+  // text sizes and text offsets with respect to the top frame
+  // in unit of the top margin size
+  //lumiTextSize     = 0.5;
+  //float lumiTextOffset   = 0.2;
+  //cmsTextSize      = 0.65;
+  //float cmsTextOffset    = 0.1;  // only used in outOfFrame version
+  
+  //relPosX    = 0.045;
+  //relPosY    = 0.035;
+  //relExtraDY = 1.2;
+  
+  // ratio of "CMS" and extra text size
+  //float extraOverCmsTextSize  = 0.76;
+    
+  //TString lumi_13TeV = "20.1 fb^{-1}";
+  //TString lumi_8TeV  = "19.7 fb^{-1}";
+  //TString lumi_7TeV  = "5.1 fb^{-1}";
+  TString lumi_sqrtS = line;
 
   //
   if(option.find("QCD")==string::npos ){
@@ -342,54 +366,80 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
     // Putting lines and labels explaining search region definitions
     //-----------------------------------------------------------
 
+    //TString CMSlabel = "";
+    //cmsText = "#bf{CMS} #it{Simulation}";
+    //CMSlabel += "#splitline{#bf{CMS}}{#scale[0.6]{#it{Simulation}}}";
+
+    /*
+    double x0 = gStyle->GetPadLeftMargin();
+    double x1 = 1.-gStyle->GetPadRightMargin();
+    double y0 = 1.005-gStyle->GetPadTopMargin();
+    double y1 = 0.96;
+    TPaveText *Lumitxt = new TPaveText(x0,y0,x1,y1,"NDC");
+    Lumitxt->SetBorderSize(0);
+    Lumitxt->SetFillColor(0);
+    Lumitxt->SetTextFont(42);
+    Lumitxt->SetTextAlign(31);
+    Lumitxt->SetTextSize(1.2*gStyle->GetPadTopMargin());
+    Lumitxt->SetMargin(0.);
+    Lumitxt->AddText(line);
+    //Lumitxt->Draw("same");
+
+    x0 = gStyle->GetPadLeftMargin()+0.03;
+    x1 = gStyle->GetPadLeftMargin()+0.13;
+    y0 = 0.905-gStyle->GetPadTopMargin();
+    y1 = 0.88;
+    TPaveText *CMStxt = new TPaveText(x0,y0,x1,y1,"NDC");
+    CMStxt->SetBorderSize(0);
+    CMStxt->SetFillColor(0);
+    CMStxt->SetTextFont(42);
+    CMStxt->SetTextAlign(11);
+    CMStxt->SetTextSize(1.2*gStyle->GetPadTopMargin());
+    CMStxt->SetMargin(0.);
+    CMStxt->AddText(CMSlabel);
+    //CMStxt->Draw("same");
+    */
+
     // Njet separation lines
     TLine *tl_njet = new TLine();
     tl_njet->SetLineStyle(2);
-    tl_njet->DrawLine(25.,ymin_top,25.,ymax_top); 
-    tl_njet->DrawLine(49.,ymin_top,49.,ymax2_top); 
+    tl_njet->DrawLine(25.-0.5,ymin_top,25.-0.5,ymax_top); 
+    tl_njet->DrawLine(49.-0.5,ymin_top,49.-0.5,ymax_top); 
 
     // Njet labels
     TLatex * ttext_njet = new TLatex();
     ttext_njet->SetTextFont(42);
-    ttext_njet->SetTextSize(0.04);
+    ttext_njet->SetTextSize(0.060);
     ttext_njet->SetTextAlign(22);
-    ttext_njet->DrawLatex(13. , ymax_top/4. , "4 #leq N_{jets} #leq 6");
-    ttext_njet->DrawLatex(37. , ymax_top/4. , "7 #leq N_{jets} #leq 8");
-    ttext_njet->DrawLatex(61. , ymax_top/400. , "N_{jets} #geq 9");
+    ttext_njet->DrawLatex(13.-0.5 , ymax_top/4. , "4 #leq N_{#scale[0.2]{ }jet} #leq 6");
+    ttext_njet->DrawLatex(37.-0.5 , ymax_top/4. , "7 #leq N_{#scale[0.2]{ }jet} #leq 8");
+    ttext_njet->DrawLatex(61.-0.5 , ymax_top/4. , "N_{#scale[0.2]{ }jet} #geq 9");
 
     // Nb separation lines
     TLine *tl_nb = new TLine();
     tl_nb->SetLineStyle(3);
-    tl_nb->DrawLine( 7.,ymin_top, 7.,ymax2_top); 
-    tl_nb->DrawLine(13.,ymin_top,13.,ymax2_top); 
-    tl_nb->DrawLine(19.,ymin_top,19.,ymax2_top); 
-    tl_nb->DrawLine(31.,ymin_top,31.,ymax3_top); 
-    tl_nb->DrawLine(37.,ymin_top,37.,ymax3_top); 
-    tl_nb->DrawLine(43.,ymin_top,43.,ymax3_top); 
-    tl_nb->DrawLine(55.,ymin_top,55.,ymax4_top); 
-    tl_nb->DrawLine(61.,ymin_top,61.,ymax4_top); 
-    tl_nb->DrawLine(67.,ymin_top,67.,ymax4_top); 
+    tl_nb->DrawLine( 7.-0.5,ymin_top, 7.-0.5,ymax2_top); 
+    tl_nb->DrawLine(13.-0.5,ymin_top,13.-0.5,ymax2_top); 
+    tl_nb->DrawLine(19.-0.5,ymin_top,19.-0.5,ymax2_top); 
+    tl_nb->DrawLine(31.-0.5,ymin_top,31.-0.5,ymax3_top); 
+    tl_nb->DrawLine(37.-0.5,ymin_top,37.-0.5,ymax3_top); 
+    tl_nb->DrawLine(43.-0.5,ymin_top,43.-0.5,ymax3_top); 
+    tl_nb->DrawLine(55.-0.5,ymin_top,55.-0.5,ymax4_top); 
+    tl_nb->DrawLine(61.-0.5,ymin_top,61.-0.5,ymax4_top); 
+    tl_nb->DrawLine(67.-0.5,ymin_top,67.-0.5,ymax4_top); 
     
     // Nb labels
     TLatex * ttext_nb = new TLatex();
     ttext_nb->SetTextFont(42);
-    ttext_nb->SetTextSize(0.04);
+    ttext_nb->SetTextSize(0.060);
     ttext_nb->SetTextAlign(22);
+    
+    ttext_nb->DrawLatex( 4.-0.5 , ymax_top/12. , "N_{#scale[0.2]{ }b-jet}");
+    ttext_nb->DrawLatex( 4.-0.5 , ymax_top/40. , "0");
+    ttext_nb->DrawLatex(10.-0.5 , ymax_top/40. , "1");
+    ttext_nb->DrawLatex(16.-0.5 , ymax_top/40. , "2");
+    ttext_nb->DrawLatex(22.-0.5 , ymax_top/40. , "#geq 3");
 
-    ttext_nb->DrawLatex( 4. , ymax_top/20. , "N_{b} = 0");
-    ttext_nb->DrawLatex(10. , ymax_top/20. , "N_{b} = 1");
-    ttext_nb->DrawLatex(16. , ymax_top/20. , "N_{b} = 2");
-    ttext_nb->DrawLatex(22. , ymax_top/20. , "N_{b} #geq 3");
-
-  /*  TString lumiStr = "Normalized to ";
-    lumiStr+=lumi;
-    lumiStr+=" fb^{-1}";
-    TText * ttext = new TLatex(60. , ymax_top/50. , lumiStr);
-    ttext->SetTextFont(42);
-    ttext->SetTextSize(0.045);
-    ttext->SetTextAlign(22);
-    ttext->Draw();
-  */
     //
   } else {
     
@@ -403,7 +453,7 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
     tl_njet->DrawLine( 45.,ymin_top, 45.,ymax_top); 
     tl_njet->DrawLine( 89.,ymin_top, 89.,ymax_top); 
     tl_njet->DrawLine(133.,ymin_top,133.,ymax_top); 
-    tl_njet->DrawLine(177.,ymin_top,177.,ymax_top/100.); 
+    tl_njet->DrawLine(177.,ymin_top,177.,ymax_top); 
 
     // Njet labels
     TLatex * ttext_njet = new TLatex();
@@ -413,8 +463,8 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
     ttext_njet->DrawLatex(23. , ymax_top/4. , "N_{jets} = 4");
     ttext_njet->DrawLatex(67. , ymax_top/4. , "N_{jets} = 5");
     ttext_njet->DrawLatex(111., ymax_top/4. , "N_{jets} = 6");
-    ttext_njet->DrawLatex(155., ymax_top/400. , "7 #leq N_{jets} #leq 8");
-    ttext_njet->DrawLatex(199., ymax_top/400. , "N_{jets} #geq 9");
+    ttext_njet->DrawLatex(155., ymax_top/4. , "7 #leq N_{jets} #leq 8");
+    ttext_njet->DrawLatex(199., ymax_top/4. , "N_{jets} #geq 9");
 
     // Nb separation lines
     TLine *tl_nb = new TLine();
@@ -459,64 +509,23 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
 
   }
 
+  // Legend & texts
+  sprintf(tempname,"Lost-lepton background");
+  catLeg1->SetHeader(tempname);
+  //sprintf(tempname,"#tau_{hadronic} BG expectation (MC truth)");
+  sprintf(tempname,"Direct from simulation");
+  catLeg1->AddEntry(GenHist,tempname,"p");
+  //sprintf(tempname,"Prediction from MC");
+  sprintf(tempname,"Treat simulation like data");
+  catLeg1->AddEntry(EstHist,tempname);
+  catLeg1->Draw();
+
+  gPad->RedrawAxis();
 
   //
   // Bottom ratio plot
   //
   // ----------
-
-  if(choice==0){
-      //KH -- flip the numerator and denominator
-      EstHistD->Divide(GenHistD);
-
-      // draw bottom figure
-      canvas_dw->cd();
-      // font size
-      EstHistD->GetXaxis()->SetLabelSize(font_size_dw);
-      EstHistD->GetXaxis()->SetTitleSize(font_size_dw);
-      EstHistD->GetYaxis()->SetLabelSize(font_size_dw);
-      EstHistD->GetYaxis()->SetTitleSize(font_size_dw);
-      
-      //
-      // Common to all bottom plots
-      //
-      sprintf(ytitlename,"Estimate / lost lepton BG");
-      EstHistD->SetMaximum(2.65);
-      EstHistD->SetMinimum(0.0);
-
-      //
-      // Specific to each bottom plot
-      //
-      sprintf(xtitlename,"search bin");
-      EstHistD->GetXaxis()->SetRangeUser(search_x_min,search_x_max);
-      TLine *tline = new TLine(search_x_min,1.,search_x_max,1.);
-
-      // Setting style
-      //EstHistD->SetMaximum(1.4);
-      //EstHistD->GetXaxis()->SetLabelFont(42);
-      //EstHistD->GetXaxis()->SetLabelOffset(0.007);
-      //EstHistD->GetXaxis()->SetLabelSize(0.04);
-      EstHistD->GetXaxis()->SetTitleSize(0.12);
-      EstHistD->GetXaxis()->SetTitleOffset(0.9);
-      EstHistD->GetXaxis()->SetTitleFont(42);
-      //EstHistD->GetYaxis()->SetLabelFont(42);
-      //EstHistD->GetYaxis()->SetLabelOffset(0.007);
-      //EstHistD->GetYaxis()->SetLabelSize(0.04);
-      EstHistD->GetYaxis()->SetTitleSize(0.13);
-      EstHistD->GetYaxis()->SetTitleOffset(0.5);
-      EstHistD->GetYaxis()->SetTitleFont(42);
-
-      EstHistD->GetXaxis()->SetTitle(xtitlename);
-      EstHistD->GetYaxis()->SetTitle(ytitlename);
-
-      //gPad->SetGridx(1);
-      EstHistD->SetTitle("");
-      EstHistD->Draw();
-      tline->SetLineStyle(2);
-      tline->Draw();
-  }
-
-  if(choice==1){
 
     //
     // Preparing ratio histograms
@@ -529,9 +538,9 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
       TH1D * EstHist_NoError = static_cast<TH1D*>(EstHist->Clone("EstHist_NoError"));
       TH1D * One_NoError = static_cast<TH1D*>(EstHist->Clone("EstHist_NoError"));
       for (int ibin=0; ibin<EstHist_NoError->GetNbinsX()+2; ibin++){ // scan including underflow and overflow bins
-      	EstHist_NoError->SetBinError(ibin,0.);
-      	One_NoError->SetBinContent(ibin,1.);
-      	One_NoError->SetBinError(ibin,0.);
+	EstHist_NoError->SetBinError(ibin,0.);
+	One_NoError->SetBinContent(ibin,1.);
+	One_NoError->SetBinError(ibin,0.);
       }
 
       //EstHistD->Add(GenHistD,-1);
@@ -558,7 +567,7 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
       // Common to all bottom plots
       //
       //sprintf(ytitlename,"#frac{Estimate - #tau_{had} BG}{#tau_{had} BG} ");
-      sprintf(ytitlename,"#frac{Expectation}{Prediction} ");
+      sprintf(ytitlename,"#frac{Direct}{Prediction} ");
       numerator->SetMaximum(ymax_bottom);
       numerator->SetMinimum(ymin_bottom);
 
@@ -569,14 +578,15 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
       //numerator->SetMaximum(1.4);
       //numerator->GetXaxis()->SetLabelFont(42);
       //numerator->GetXaxis()->SetLabelOffset(0.007);
-      //numerator->GetXaxis()->SetLabelSize(0.04);
-      numerator->GetXaxis()->SetTitleSize(0.12);
+      numerator->GetXaxis()->SetLabelSize(0.18*0.045/0.06);
+      numerator->GetXaxis()->SetTitleSize(0.18);
       numerator->GetXaxis()->SetTitleOffset(0.9);
       numerator->GetXaxis()->SetTitleFont(42);
       //numerator->GetYaxis()->SetLabelFont(42);
       //numerator->GetYaxis()->SetLabelOffset(0.007);
-      //numerator->GetYaxis()->SetLabelSize(0.04);
-      numerator->GetYaxis()->SetTitleSize(0.13);
+      numerator->GetYaxis()->SetLabelSize(0.18*0.045/0.06);
+      numerator->GetYaxis()->SetTitleSize(0.18);
+      //numerator->GetYaxis()->SetTitleOffset(0.5);
       numerator->GetYaxis()->SetTitleOffset(0.25);
       numerator->GetYaxis()->SetTitleFont(42);
 
@@ -588,42 +598,43 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
 
       if (pull==1){
 
-      	sprintf(ytitlename,"#frac{Exp - Pre}{Stat Error} ");
-      	numerator->SetMaximum(8.);
-      	numerator->SetMinimum(-8.);
-      	
-      	//
-      	// Specific to each bottom plot
-      	//
-      	// Setting style
+	sprintf(ytitlename,"#frac{Exp - Pre}{Stat Error} ");
+	numerator->SetMaximum(8.);
+	numerator->SetMinimum(-8.);
+	
+	//
+	// Specific to each bottom plot
+	//
+	// Setting style
 
-      	for (int ibin=0; ibin<numerator_fullstaterr->GetNbinsX()+2; ibin++){ // scan including underflow and overflow bins
-      	  numerator_fullstaterr->SetBinContent(ibin,numerator_fullstaterr->GetBinContent(ibin)/numerator_fullstaterr->GetBinError(ibin));
-      	  numerator_fullstaterr->SetBinError(ibin,0.);
-      	}
-      	numerator_fullstaterr->Print("all");
-      	
-      	numerator_fullstaterr->GetXaxis()->SetLabelSize(font_size_dw);
-      	numerator_fullstaterr->GetXaxis()->SetTitleSize(font_size_dw);
-      	numerator_fullstaterr->GetYaxis()->SetLabelSize(font_size_dw);
-      	numerator_fullstaterr->GetYaxis()->SetTitleSize(font_size_dw);
+	for (int ibin=0; ibin<numerator_fullstaterr->GetNbinsX()+2; ibin++){ // scan including underflow and overflow bins
+	  numerator_fullstaterr->SetBinContent(ibin,numerator_fullstaterr->GetBinContent(ibin)/numerator_fullstaterr->GetBinError(ibin));
+	  numerator_fullstaterr->SetBinError(ibin,0.);
+	}
+	numerator_fullstaterr->Print("all");
+	
+	numerator_fullstaterr->GetXaxis()->SetLabelSize(font_size_dw);
+	numerator_fullstaterr->GetXaxis()->SetTitleSize(font_size_dw);
+	numerator_fullstaterr->GetYaxis()->SetLabelSize(font_size_dw);
+	numerator_fullstaterr->GetYaxis()->SetTitleSize(font_size_dw);
 
-      	numerator_fullstaterr->GetXaxis()->SetTitleSize(0.12);
-      	numerator_fullstaterr->GetXaxis()->SetTitleOffset(0.9);
-      	numerator_fullstaterr->GetXaxis()->SetTitleFont(42);
-      	numerator_fullstaterr->GetYaxis()->SetTitleSize(0.13);
-      	numerator_fullstaterr->GetYaxis()->SetTitleOffset(0.5);
-      	numerator_fullstaterr->GetYaxis()->SetTitleFont(42);
-      	
-      	numerator_fullstaterr->GetXaxis()->SetTitle(xtitlename);
-      	numerator_fullstaterr->GetYaxis()->SetTitle(ytitlename);
-      	numerator_fullstaterr->SetFillColor(kGreen-3);
-      	numerator_fullstaterr->DrawCopy();
+	numerator_fullstaterr->GetXaxis()->SetTitleSize(0.12);
+	numerator_fullstaterr->GetXaxis()->SetTitleOffset(0.9);
+	numerator_fullstaterr->GetXaxis()->SetTitleFont(42);
+	numerator_fullstaterr->GetYaxis()->SetTitleSize(0.13);
+	numerator_fullstaterr->GetYaxis()->SetTitleOffset(0.5);
+	numerator_fullstaterr->GetYaxis()->SetTitleFont(42);
+	
+	numerator_fullstaterr->GetXaxis()->SetTitle(xtitlename);
+	numerator_fullstaterr->GetYaxis()->SetTitle(ytitlename);
+	//numerator_fullstaterr->SetFillColor(kGreen-3);
+	numerator_fullstaterr->SetFillColor(kRed-10);
+	numerator_fullstaterr->DrawCopy();
 
-      	//
-      	// Drawing lines
-      	tline0->SetLineStyle(2);
-      	tline0->Draw();
+	//
+	// Drawing lines
+	tline0->SetLineStyle(2);
+	//tline0->Draw();
 
       }
       else {
@@ -631,12 +642,17 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
       //
       // Plotting
       numerator->GetYaxis()->SetNdivisions(505);
+      numerator->GetYaxis()->SetTickLength(0.015);
+      numerator->GetXaxis()->SetTickLength(0.08);
       numerator->SetTitle("");
+      ex1->Draw();
       numerator->DrawCopy();
 
+      ex2->Draw();
       denominator->DrawCopy("e2same");
       denominator->DrawCopy("same");
 
+      ex1->Draw();
       numerator->DrawCopy("same");
 
       numerator->Print("all");
@@ -646,7 +662,7 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
       //
       // Drawing lines
       tline->SetLineStyle(2);
-      tline->Draw();
+      //tline->Draw();
 
       }
       
@@ -657,23 +673,23 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
       // Njet separation lines
       TLine *tl_njet = new TLine();
       tl_njet->SetLineStyle(2);
-      tl_njet->DrawLine( 25.,ymin_bottom, 25.,ymax_bottom); 
-      tl_njet->DrawLine( 49.,ymin_bottom, 49.,ymax_bottom); 
+      tl_njet->DrawLine( 25.-0.5,ymin_bottom, 25.-0.5,ymax_bottom); 
+      tl_njet->DrawLine( 49.-0.5,ymin_bottom, 49.-0.5,ymax_bottom); 
 
       // Nb separation lines
       TLine *tl_nb = new TLine();
       tl_nb->SetLineStyle(3);
-      tl_nb->DrawLine( 7.,ymin_bottom, 7.,ymax2_bottom); 
-      tl_nb->DrawLine(13.,ymin_bottom,13.,ymax2_bottom); 
-      tl_nb->DrawLine(19.,ymin_bottom,19.,ymax2_bottom); 
+      tl_nb->DrawLine( 7.-0.5,ymin_bottom, 7.-0.5,ymax2_bottom); 
+      tl_nb->DrawLine(13.-0.5,ymin_bottom,13.-0.5,ymax2_bottom); 
+      tl_nb->DrawLine(19.-0.5,ymin_bottom,19.-0.5,ymax2_bottom); 
       
-      tl_nb->DrawLine(31.,ymin_bottom,31.,ymax2_bottom); 
-      tl_nb->DrawLine(37.,ymin_bottom,37.,ymax2_bottom); 
-      tl_nb->DrawLine(43.,ymin_bottom,43.,ymax2_bottom); 
+      tl_nb->DrawLine(31.-0.5,ymin_bottom,31.-0.5,ymax2_bottom); 
+      tl_nb->DrawLine(37.-0.5,ymin_bottom,37.-0.5,ymax2_bottom); 
+      tl_nb->DrawLine(43.-0.5,ymin_bottom,43.-0.5,ymax2_bottom); 
       
-      tl_nb->DrawLine(55.,ymin_bottom,55.,ymax2_bottom); 
-      tl_nb->DrawLine(61.,ymin_bottom,61.,ymax2_bottom); 
-      tl_nb->DrawLine(67.,ymin_bottom,67.,ymax2_bottom); 
+      tl_nb->DrawLine(55.-0.5,ymin_bottom,55.-0.5,ymax2_bottom); 
+      tl_nb->DrawLine(61.-0.5,ymin_bottom,61.-0.5,ymax2_bottom); 
+      tl_nb->DrawLine(67.-0.5,ymin_bottom,67.-0.5,ymax2_bottom); 
 
       } else {
 	
@@ -709,15 +725,15 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
       tl_nb->DrawLine(199.,ymin_bottom,199.,ymax2_bottom); 
       tl_nb->DrawLine(210.,ymin_bottom,210.,ymax2_bottom); 
     
-  }
+      }
 
-  }
-/*
-  sprintf(tempname,"Closure_Full_Plot.png");
-  if (pull==1) 
-    sprintf(tempname,"ClosurePull_Full_Plot.png");
-  canvas->Print(tempname);
-*/
+      gPad->RedrawAxis();
+
+      //
+      //
+
+  CMS_lumi(canvas, iPeriod, iPos, lumi_sqrtS);
+
   if(doDataVsMC){
     sprintf(tempname,"DataMC_Full_Plot.pdf");
     if (pull==1)    sprintf(tempname,"DataMCPull_Full_Plot.pdf");
@@ -725,7 +741,8 @@ void Plot_searchBin_full(string option="", int pull=0,int choice=1){
     sprintf(tempname,"Closure_Full_Plot.pdf");
     if (pull==1)    sprintf(tempname,"ClosurePull_Full_Plot.pdf");
   }
-  
+
   canvas->Print(tempname);
 
-  }
+}
+
