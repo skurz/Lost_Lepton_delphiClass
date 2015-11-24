@@ -1,5 +1,7 @@
 #include "TVector2.h"
+#include "TH2.h"
 #include <cmath>
+#include <iostream>
 
 static double deltaR(double eta1, double phi1, double eta2, double phi2)
 {
@@ -40,6 +42,40 @@ static double GetSignalTriggerEffWeight(Double_t MHT) {
     if (MHT<200) return 0;
     else if (MHT<500) return 0.9887;
     else return 1.0000;
+}
+
+static double GetSF(TH2 *hist, Double_t xVal, Double_t yVal) {
+  // Dont use overflow bins!
+  if(xVal < hist->GetXaxis()->GetXmin() )
+  {
+    //std::cout<<"SF: Warning xVal: "<<xVal<<" is smaller than minimum of histo: "<<hist->GetName()<<std::endl;
+    xVal= hist->GetXaxis()->GetXmin()+0.01;
+  }
+  else if(xVal > hist->GetXaxis()->GetXmax() )
+  {
+    //std::cout<<"SF: Warning xVal: "<<xVal<<" is bigger than maximum of histo: "<<hist->GetName()<<" which is: "<<hist->GetXaxis()->GetXmax()<<std::endl;
+    xVal= hist->GetXaxis()->GetXmax()-0.01;
+  }
+  
+  if(yVal < hist->GetYaxis()->GetXmin() )
+  {
+    //std::cout<<"SF: Warning yVal: "<<yVal<<" is smaller than minimum of histo: "<<hist->GetName()<<std::endl;
+    yVal= hist->GetYaxis()->GetXmin()+0.01;
+  }
+  else if(yVal > hist->GetYaxis()->GetXmax() )
+  {
+    //std::cout<<"SF: Warning yVal: "<<yVal<<" is bigger than maximum of histo: "<<hist->GetName()<<std::endl;
+    yVal= hist->GetYaxis()->GetXmax()-0.01;
+  }
+
+  int nxBin = hist->GetXaxis()->FindBin(xVal);
+  int nyBin = hist->GetYaxis()->FindBin(yVal);
+
+  if(nxBin > hist->GetNbinsX() || nyBin > hist->GetNbinsY()) std::cout<<"SF: Problem in getting Efficiencies!"<<std::endl;
+  if(nxBin > hist->GetNbinsX()) nxBin = hist->GetNbinsX();
+  if(nyBin > hist->GetNbinsY()) nyBin = hist->GetNbinsY();
+
+  return std::abs(1-hist->GetBinContent(nxBin, nyBin));
 }
 
 static double getMuonIDSF(Double_t pt, Double_t eta){

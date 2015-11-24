@@ -338,6 +338,12 @@ Bool_t Prediction::Process(Long64_t entry)
   if(useDeltaPhiCut == -1) if(!(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_)) return kTRUE;
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
 
+  if(useFilterList){
+    bool CSCTightHaloFilterUpdate = evtListFilter->CheckEvent(RunNum,LumiBlockNum,EvtNum);
+    if(!CSCTightHaloFilterUpdate) return kTRUE;
+  } 
+
+
   isoTracks= isoElectronTracks + isoMuonTracks + isoPionTracks;
 
   selectedIDMuonsNum_ = selectedIDMuons->size();
@@ -663,18 +669,22 @@ Bool_t Prediction::Process(Long64_t entry)
 
       double muIsoMax = muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_);
       if(usePrelimSFs) muIsoMax = muIsoEff_ *(1 + 0.01 * getMuonIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
+      if(useSFs) muIsoMax = muIsoEff_ *(1 + 0.01 * GetSF(h_muIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())));
       if(muIsoMax > 1) muIsoMax = 1;
       muIsoSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoMax*muRecoEff_*muAccEff_) * ((1-muIsoMax)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
       double muIsoMin = muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_);
       if(usePrelimSFs) muIsoMin = muIsoEff_ *(1 - 0.01 * getMuonIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
+      if(useSFs) muIsoMin = muIsoEff_ *(1 - 0.01 * GetSF(h_muIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())));
       muIsoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoMin*muRecoEff_*muAccEff_) * ((1-muIsoMin)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
 
       double muRecoMax = muRecoEff_ *(1 + 0.01 * MuRecoUncertaintyUp_);
       if(usePrelimSFs) muRecoMax = muRecoEff_ *(1 + 0.01 * getMuonIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
+      if(useSFs) muRecoMax = muRecoEff_ *(1 + 0.01 * GetSF(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())));
       if(muRecoMax > 1) muRecoMax = 1;
       muRecoSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoMax*muAccEff_) * ((1-muIsoEff_)*muRecoMax*muAccEff_ + (1-muRecoMax)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
       double muRecoMin = muRecoEff_ *(1 - 0.01 * MuRecoUncertaintyDown_);
       if(usePrelimSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * getMuonIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
+      if(useSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * GetSF(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())));
       muRecoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoMin*muAccEff_) * ((1-muIsoEff_)*muRecoMin*muAccEff_ + (1-muRecoMin)*muAccEff_ + (1-muAccEff_) +w3b) + w4) - wGes;
 
       double muAccMax = muAccEff_ *(1 + 0.01 * MuAccUncertaintyUp_LowMHT_);
@@ -693,18 +703,22 @@ Bool_t Prediction::Process(Long64_t entry)
       
       double elecIsoMax = elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_);
       if(usePrelimSFs) elecIsoMax = elecIsoEff_ *(1 + 0.01 * getElecIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
+      if(useSFs) elecIsoMax = elecIsoEff_ *(1 + 0.01 * GetSF(h_elecIsoSF, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons_MT2Activity->at(0)));
       if(elecIsoMax > 1) elecIsoMax = 1;
       elecIsoSysDown = w1 * (w2 * (w3a + (1-elecIsoMax)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
       double elecIsoMin = elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_);
       if(usePrelimSFs) elecIsoMin = elecIsoEff_ *(1 - 0.01 * getElecIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
+      if(useSFs) elecIsoMin = elecIsoEff_ *(1 - 0.01 * GetSF(h_elecIsoSF, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons_MT2Activity->at(0)));
       elecIsoSysUp = w1 * (w2 * (w3a + (1-elecIsoMin)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
 
       double elecRecoMax = elecRecoEff_*(1 + 0.01 * ElecRecoUncertaintyUp_);
       if(usePrelimSFs) elecRecoMax = elecRecoEff_ *(1 + 0.01 * getElecIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
+      if(useSFs) elecRecoMax = elecRecoEff_ *(1 + 0.01 * GetSF(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())));
       if(elecRecoMax > 1) elecRecoMax = 1;
       elecRecoSysDown = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoMax*elecAccEff_ + (1-elecRecoMax)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
       double elecRecoMin = elecRecoEff_*(1 - 0.01 * ElecRecoUncertaintyDown_);
       if(usePrelimSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * getElecIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
+      if(useSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * GetSF(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())));
       elecRecoSysUp = w1 * (w2 * (w3a + (1-elecIsoEff_)*elecRecoMin*elecAccEff_ + (1-elecRecoMin)*elecAccEff_ + (1-elecAccEff_)) + w4) - wGes;
 
       double elecAccMax = elecAccEff_*(1 + 0.01 * ElecAccUncertaintyUp_LowMHT_);
@@ -939,18 +953,22 @@ Bool_t Prediction::Process(Long64_t entry)
 
       double elecIsoMax = elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_);
       if(usePrelimSFs) elecIsoMax = elecIsoEff_ *(1 + 0.01 * getElecIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
+      if(useSFs) elecIsoMax = elecIsoEff_ *(1 + 0.01 * GetSF(h_elecIsoSF, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons_MT2Activity->at(0)));
       if(elecIsoMax > 1) elecIsoMax = 1;
       elecIsoSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoMax*elecRecoEff_*elecAccEff_) * ((1-elecIsoMax)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
       double elecIsoMin = elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_);
       if(usePrelimSFs) elecIsoMin = elecIsoEff_ *(1 - 0.01 * getElecIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
+      if(useSFs) elecIsoMin = elecIsoEff_ *(1 - 0.01 * GetSF(h_elecIsoSF, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons_MT2Activity->at(0)));
       elecIsoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoMin*elecRecoEff_*elecAccEff_) * ((1-elecIsoMin)*elecRecoEff_*elecAccEff_ + (1-elecRecoEff_)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
 
       double elecRecoMax = elecRecoEff_ *(1 + 0.01 * ElecRecoUncertaintyUp_);
       if(usePrelimSFs) elecRecoMax = elecRecoEff_ *(1 + 0.01 * getElecIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
+      if(useSFs) elecRecoMax = elecRecoEff_ *(1 + 0.01 * GetSF(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())));
       if(elecRecoMax > 1) elecRecoMax = 1;
       elecRecoSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoMax*elecAccEff_) * ((1-elecIsoEff_)*elecRecoMax*elecAccEff_ + (1-elecRecoMax)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
       double elecRecoMin = elecRecoEff_ *(1 - 0.01 * ElecRecoUncertaintyDown_);
       if(usePrelimSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * getElecIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
+      if(useSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * GetSF(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())));
       elecRecoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoMin*elecAccEff_) * ((1-elecIsoEff_)*elecRecoMin*elecAccEff_ + (1-elecRecoMin)*elecAccEff_ + (1-elecAccEff_) +w3b) + w4) - wGes;
 
       double elecAccMax = elecAccEff_ *(1 + 0.01 * ElecAccUncertaintyUp_LowMHT_);
@@ -969,18 +987,22 @@ Bool_t Prediction::Process(Long64_t entry)
       
       double muIsoMax = muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_);
       if(usePrelimSFs) muIsoMax = muIsoEff_ *(1 + 0.01 * getMuonIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
+      if(useSFs) muIsoMax = muIsoEff_ *(1 + 0.01 * GetSF(h_muIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())));
       if(muIsoMax > 1) muIsoMax = 1;
       muIsoSysDown = w1 * (w2 * (w3a + (1-muIsoMax)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
       double muIsoMin = muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_);
       if(usePrelimSFs) muIsoMin = muIsoEff_ *(1 - 0.01 * getMuonIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
+      if(useSFs) muIsoMin = muIsoEff_ *(1 - 0.01 * GetSF(h_muIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())));
       muIsoSysUp = w1 * (w2 * (w3a + (1-muIsoMin)*muRecoEff_*muAccEff_ + (1-muRecoEff_)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
 
       double muRecoMax = muRecoEff_*(1 + 0.01 * MuRecoUncertaintyUp_);
       if(usePrelimSFs) muRecoMax = muRecoEff_ *(1 + 0.01 * getMuonIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
+      if(useSFs) muRecoMax = muRecoEff_ *(1 + 0.01 * GetSF(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())));
       if(muRecoMax > 1) muRecoMax = 1;
       muRecoSysDown = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoMax*muAccEff_ + (1-muRecoMax)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
       double muRecoMin = muRecoEff_*(1 - 0.01 * MuRecoUncertaintyDown_);
       if(usePrelimSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * getMuonIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
+      if(useSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * GetSF(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())));
       muRecoSysUp = w1 * (w2 * (w3a + (1-muIsoEff_)*muRecoMin*muAccEff_ + (1-muRecoMin)*muAccEff_ + (1-muAccEff_)) + w4) - wGes;
 
       double muAccMax = muAccEff_*(1 + 0.01 * MuAccUncertaintyUp_LowMHT_);

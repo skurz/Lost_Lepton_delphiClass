@@ -27,6 +27,8 @@
 #include <fstream>
 #include "isr_corrections/ISRCorrector.h"
 #include "btag/BTagCorrector.h"
+#include "eventFilter/EventListFilter.h"
+
 // Header file for the classes stored in the TTree if any.
 
 const bool useAsymmErrors = true;
@@ -43,6 +45,9 @@ const bool signalScan = false; //ISR not recommended for Jamboree. Commented in 
 const bool doPUreweighting = false;
 const bool useFilterData = true; //Set to false for FastSim Samples
 
+// CSCTightHaloFilterUpdate
+const bool useFilterList = true;
+
 // Unblinded data only
 const bool restrictRunNum = false;
 
@@ -52,7 +57,8 @@ const bool restrictRunNum = false;
 const int useDeltaPhiCut = 1;
 
 // ScaleFactors from SUSY lepton SG groups: presentation from Oct 23 (preliminary!!)
-const bool usePrelimSFs = true;
+const bool usePrelimSFs = false;
+const bool useSFs = true;
 
 // scaleMet = 0: keep things the way they are
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
@@ -185,6 +191,13 @@ class Prediction : public TSelector {
   Double_t w_pu;
   BTagCorrector *btagcorr = 0;
   std::vector<double> bTagProb;
+
+  EventListFilter *evtListFilter = 0;
+
+  TH2F* h_muIDSF;
+  TH2F* h_muIsoSF;
+  TH2D* h_elecIsoSF;
+  TH2D* h_elecIDSF;
 
   TString treeName = " ";
 
@@ -724,6 +737,18 @@ void Prediction::Init(TTree *tree)
     xsecs.push_back(std::make_pair(std::atof(((TObjString *)(tokens->At(0)))->String()), std::atof(((TObjString *)(tokens->At(1)))->String())));
   }
 
+  // store histograms in SFs/
+  TFile *muIDSF_histFile = TFile::Open("SFs/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root","READ");
+  h_muIDSF = (TH2F*) muIDSF_histFile->Get("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_tag_IsoMu20_pass")->Clone();;
+
+  TFile *muIsoSF_histFile = TFile::Open("SFs/TnP_MuonID_NUM_MiniIsoTight_DENOM_LooseID_VAR_map_pt_eta.root","READ");
+  h_muIsoSF = (TH2F*) muIsoSF_histFile->Get("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass")->Clone();
+
+  TFile *elecIDSF_histFile = TFile::Open("SFs/kinematicBinSFele.root","READ");
+  h_elecIDSF = (TH2D*) elecIDSF_histFile->Get("CutBasedVeto")->Clone();;
+
+  TFile *elecIsoSF_histFile = TFile::Open("SFs/kinematicBinSFele.root","READ");
+  h_elecIsoSF = (TH2D*) elecIsoSF_histFile->Get("MiniIso0p1_vs_RelActivity")->Clone();
 
   if(signalScan){
     // ISR setup
@@ -731,6 +756,8 @@ void Prediction::Init(TTree *tree)
     h_isr = (TH1*)isrfile->Get("isr_weights_central");
     // everything else: done in loop!
   }
+
+  evtListFilter = new EventListFilter("eventFilter/HTMHT_csc2015.txt");
 
   fChain->SetBranchStatus("*",0);
 
