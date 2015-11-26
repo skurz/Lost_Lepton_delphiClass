@@ -225,6 +225,7 @@ void VaryQ2(){
 	  		else MuAccControl_NJetsHigh_pass->Fill(HT,MHT,Weight);
 
 	  		for(int i = 0; i<ScaleWeights->size(); ++i){
+	  			if(i == 5 || i == 7) continue;
     			mu_pass.at(i) += ScaleWeights->at(i)*Weight;
     			if(NJets > 3.5 && NJets < 4.5) h_mu_pass4.at(i)->Fill(HT,MHT,ScaleWeights->at(i)*Weight);
 		  		else if(NJets > 4.5 && NJets < 5.5) h_mu_pass5.at(i)->Fill(HT,MHT,ScaleWeights->at(i)*Weight);
@@ -239,6 +240,7 @@ void VaryQ2(){
 	  		else MuAccControl_NJetsHigh_fail->Fill(HT,MHT,Weight);
 
 	  		for(int i = 0; i<ScaleWeights->size(); ++i){
+	  			if(i == 5 || i == 7) continue;
     			mu_fail.at(i) += ScaleWeights->at(i)*Weight;
     			if(NJets > 3.5 && NJets < 4.5) h_mu_fail4.at(i)->Fill(HT,MHT,ScaleWeights->at(i)*Weight);
 		  		else if(NJets > 4.5 && NJets < 5.5) h_mu_fail5.at(i)->Fill(HT,MHT,ScaleWeights->at(i)*Weight);

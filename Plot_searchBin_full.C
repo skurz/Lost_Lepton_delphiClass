@@ -92,7 +92,7 @@ void Plot_searchBin_full(string option="", int pull=0){
 
   // true: do closure test (MC prediction vs MC truth)
   // false: do data driven prediction and compare to MC truth
-  bool doDataVsMC = true;
+  bool doDataVsMC = false;
 
   // Add systematics in quadrature to stat. uncertainty on prediction
   // Non-closure systematic not included yet!
@@ -108,7 +108,7 @@ void Plot_searchBin_full(string option="", int pull=0){
   char xtitlename[200];
   char ytitlename[200];
 
-  sprintf(tempname,"LLPrediction.root");
+  sprintf(tempname,"LLPrediction_Nov23.root");
   TFile * LLFile = new TFile(tempname,"R");
   printf("Opened %s\n",tempname);
 
@@ -738,7 +738,8 @@ void Plot_searchBin_full(string option="", int pull=0){
     sprintf(tempname,"DataMC_Full_Plot.pdf");
     if (pull==1)    sprintf(tempname,"DataMCPull_Full_Plot.pdf");
   }else{
-    sprintf(tempname,"Closure_Full_Plot.pdf");
+    if(option.find("QCD")!=string::npos) sprintf(tempname,"Closure_QCD_LDP_Full_Plot.pdf");
+      else sprintf(tempname,"Closure_Full_Plot.pdf");
     if (pull==1)    sprintf(tempname,"ClosurePull_Full_Plot.pdf");
   }
 
