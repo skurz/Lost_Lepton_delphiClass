@@ -877,6 +877,7 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchStatus("genParticles",1);
     fChain->SetBranchStatus("genParticles_PDGid",1);
     fChain->SetBranchStatus("Jets_partonFlavor", 1);
+    fChain->SetBranchStatus("Jets_hadronFlavor", 1);
   }
 
 /*  fChain->SetBranchAddress("GenElec_MT2Activity", &GenElec_MT2Activity, &b_GenElec_MT2Activity);

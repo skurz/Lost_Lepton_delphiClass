@@ -44,7 +44,9 @@ static double GetSignalTriggerEffWeight(Double_t MHT) {
     else return 1.0000;
 }
 
-static double GetSF(TH2 *hist, Double_t xVal, Double_t yVal) {
+static double GetSF(TH2 *hist, Double_t xVal, Double_t yVal, bool addSys) {
+  // addSys: for muons, 1% systematic has to be added to total uncertainty
+
   // Dont use overflow bins!
   if(xVal < hist->GetXaxis()->GetXmin() )
   {
@@ -75,8 +77,15 @@ static double GetSF(TH2 *hist, Double_t xVal, Double_t yVal) {
   if(nxBin > hist->GetNbinsX()) nxBin = hist->GetNbinsX();
   if(nyBin > hist->GetNbinsY()) nyBin = hist->GetNbinsY();
 
-  return std::max(std::abs(1-hist->GetBinContent(nxBin, nyBin)), hist->GetBinError(nxBin, nyBin));
-  //return std::abs(1-hist->GetBinContent(nxBin, nyBin));
+  //double SF = std::abs(1-hist->GetBinContent(nxBin, nyBin));
+  double SF = 0.;
+
+  if(addSys) SF = std::max(std::abs(1-hist->GetBinContent(nxBin, nyBin)), std::sqrt(hist->GetBinError(nxBin, nyBin)*hist->GetBinError(nxBin, nyBin) + 0.01*hist->GetBinContent(nxBin, nyBin)*0.01*hist->GetBinContent(nxBin, nyBin)));
+  else SF = std::max(std::abs(1-hist->GetBinContent(nxBin, nyBin)), hist->GetBinError(nxBin, nyBin));
+
+  //std::cout << std::abs(1-hist->GetBinContent(nxBin, nyBin)) << " " << std::sqrt(hist->GetBinError(nxBin, nyBin)*hist->GetBinError(nxBin, nyBin) + 0.01*hist->GetBinContent(nxBin, nyBin)*0.01*hist->GetBinContent(nxBin, nyBin)) << " " << hist->GetBinError(nxBin, nyBin)<<std::endl;
+
+  return SF;
 }
 
 static double getMuonIDSF(Double_t pt, Double_t eta){
