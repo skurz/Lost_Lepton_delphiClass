@@ -34,15 +34,21 @@ using std::vector;
 using std::cout;
 using std::cerr;
 using std::endl;
+// useFilterData = true; unless you want to run without MET filters
 const bool useFilterData = true;
+// useTrigger = false; no simulated triggers in MC
 const bool useTrigger = false;
+// useTriggerEffWeight = true; correct for trigger inefficiency
 const bool useTriggerEffWeight = true;
+
+// Do PU reweighting. true for signal scan
+const bool doPUreweighting = false;  //<-check------------------------
 
 
 // useDeltaPhiCut = 0: no deltaPhiCut
 // useDeltaPhiCut = 1: deltaPhiCut
 // useDeltaPhiCut = -1: inverted deltaPhiCut
-const int useDeltaPhiCut = 1;
+const int useDeltaPhiCut = 1;  //<-check------------------------
 
 // scaleMet = 0: keep things the way they are
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
@@ -279,6 +285,7 @@ public :
   Double_t        DeltaPhiN3;
   Int_t           EcalDeadCellTriggerPrimitiveFilter;
   Int_t           eeBadScFilter;
+  Bool_t           eeBadSc4Filter;
   std::vector<int>     *ElectronCharge=0;
   std::vector<TLorentzVector> *Electrons=0;
   std::vector<int>     *GenElec_GenElecFromTau=0;
@@ -316,6 +323,8 @@ public :
   Int_t           METFilters;
   Double_t        METPhi;
   Double_t        METPt;
+  std::vector<double>   *METPtUp;
+  std::vector<double>   *METPtDown;
   Double_t        MHT;
   Double_t        MHT_Phi;
   Double_t        minDeltaPhiN;
@@ -380,6 +389,7 @@ public :
   TBranch        *b_DeltaPhiN3=0;   //!
   TBranch        *b_EcalDeadCellTriggerPrimitiveFilter=0;   //!
   TBranch        *b_eeBadScFilter=0;   //!
+  TBranch        *b_eeBadSc4Filter=0;   //!
   TBranch        *b_ElectronCharge=0;   //!
   TBranch        *b_Electrons=0;   //!
   TBranch        *b_GenElec_GenElecFromTau=0;   //!
@@ -417,6 +427,8 @@ public :
   TBranch        *b_METFilters=0;   //!
   TBranch        *b_METPhi=0;   //!
   TBranch        *b_METPt=0;   //!
+  TBranch        *b_METPtUp=0;   //!
+  TBranch        *b_METPtDown=0;   //!
   TBranch        *b_MHT=0;   //!
   TBranch        *b_MHT_Phi=0;   //!
   TBranch        *b_minDeltaPhiN=0;   //!
@@ -526,6 +538,11 @@ void ExpecMaker::Init(TTree *tree)
 
   std::cout << "Saving file to: " << fileName << std::endl;
 
+  if(doPUreweighting){
+    pufile = TFile::Open("PU/PileupHistograms_1117.root","READ");
+    puhist = (TH1*)pufile->Get("pu_weights_central");
+  }
+
 
   fChain->SetBranchStatus("*",0);
 
@@ -560,6 +577,7 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("DeltaPhi4", 1);
   fChain->SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter", 1);
   fChain->SetBranchStatus("eeBadScFilter", 1);
+  fChain->SetBranchStatus("eeBadSc4Filter", 1);
   fChain->SetBranchStatus("ElectronCharge", 1);
   fChain->SetBranchStatus("Electrons", 1);
   fChain->SetBranchStatus("GenElec_GenElecFromTau", 1);
@@ -597,6 +615,8 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("METFilters", 1);
   fChain->SetBranchStatus("METPhi", 1);
   fChain->SetBranchStatus("METPt", 1);
+  fChain->SetBranchStatus("METPtUp", 1);
+  fChain->SetBranchStatus("METPtDown", 1);
   fChain->SetBranchStatus("MHT", 1);
   fChain->SetBranchStatus("MHT_Phi", 1);
   fChain->SetBranchStatus("MuonCharge", 1);
@@ -658,6 +678,7 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("DeltaPhi4", &DeltaPhi4, &b_DeltaPhi4);
   fChain->SetBranchAddress("EcalDeadCellTriggerPrimitiveFilter", &EcalDeadCellTriggerPrimitiveFilter, &b_EcalDeadCellTriggerPrimitiveFilter);
   fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
+  fChain->SetBranchAddress("eeBadSc4Filter", &eeBadSc4Filter, &b_eeBadSc4Filter);
   fChain->SetBranchAddress("ElectronCharge", &ElectronCharge, &b_ElectronCharge);
   fChain->SetBranchAddress("Electrons", &Electrons, &b_Electrons);
   fChain->SetBranchAddress("GenElec_GenElecFromTau", &GenElec_GenElecFromTau, &b_GenElec_GenElecFromTau);
@@ -694,7 +715,8 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("Leptons", &Leptons, &b_Leptons);
   fChain->SetBranchAddress("METFilters", &METFilters, &b_METFilters);
   fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
-  fChain->SetBranchAddress("METPt", &METPt, &b_METPt);
+  fChain->SetBranchAddress("METPtUp", &METPtUp, &b_METPtUp);
+  fChain->SetBranchAddress("METPtDown", &METPtDown, &b_METPtDown);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
   fChain->SetBranchAddress("MHT_Phi", &MHT_Phi, &b_MHT_Phi);
   fChain->SetBranchAddress("MuonCharge", &MuonCharge, &b_MuonCharge);

@@ -63,7 +63,6 @@ void Plot_closure(string cutname="nocut", string histname="MHT",string option=""
   //
   // Set basic style
   //
-  gROOT->LoadMacro("tdrstyle.C");
   setTDRStyle();
   //gROOT->LoadMacro("CMS_lumi_v2.C");
 
@@ -111,16 +110,9 @@ void Plot_closure(string cutname="nocut", string histname="MHT",string option=""
   char xtitlename[200];
   char ytitlename[200];
   
-  vector<TFile *> filevec;
-  
-  if(sample.find("stack")==string::npos)sprintf(tempname,"TauHad/%sGenInfo_HadTauEstimation_%s.root",elogForExp.c_str(),sample.c_str());
-  else sprintf(tempname,"TauHad/Stack/%sGenInfo_HadTauEstimation_%s.root",elogForExp.c_str(),sample.c_str());
-  filevec.push_back(TFile::Open(tempname,"R"));
-
-  if(sample.find("stack")==string::npos)sprintf(tempname,"TauHad2/%sHadTauEstimation_%s.root",elogForPre.c_str(),sample.c_str());
-  else sprintf(tempname,"TauHad2/Stack/%sHadTauEstimation_%s.root",elogForPre.c_str(),sample.c_str());
-  // sprintf(tempname,"TauHad2/Storage/HadTauEstimation_TTbar_Feb_17_2015.root");
-  filevec.push_back(TFile::Open(tempname,"R"));
+  sprintf(tempname,"LLPrediction_Nov23.root");
+  TFile * LLFile = new TFile(tempname,"R");
+  printf("Opened %s\n",tempname);
 
   //
   // Define legend

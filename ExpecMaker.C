@@ -37,6 +37,8 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("DeltaPhi4",&DeltaPhi4);
   tExpectation_->Branch("Weight", &Weight);
   tExpectation_->Branch("MET",&METPt);
+  tExpectation_->Branch("METUp",&METPtUp);
+  tExpectation_->Branch("METDown",&METPtDown);
   tExpectation_->Branch("METPhi",&METPhi);
   tExpectation_->Branch("PTW",&ptw);  
   tExpectation_->Branch("GenPTW",&gen_ptw);
@@ -216,6 +218,11 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   if(useTrigger && !passTrigger) return kTRUE;
 
   if(useTriggerEffWeight) Weight = Weight * GetTriggerEffWeight(MHT);
+
+  if(doPUreweighting){
+    w_pu = puhist->GetBinContent(puhist->GetXaxis()->FindBin(min(TrueNumInteractions,puhist->GetBinLowEdge(puhist->GetNbinsX()+1))));
+    Weight *= w_pu;
+  }
 
   
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
@@ -952,12 +959,13 @@ bool ExpecMaker::FiltersPass()
 {
   bool result=true;
   if(useFilterData){
-    //if(CSCTightHaloFilter==0) result=false;
-    if(NVtx==0) result=false;
+    if(!CSCTightHaloFilter) result=false;
     if(eeBadScFilter!=1) result=false;
+    if(!eeBadSc4Filter) result=false;
     if(!HBHENoiseFilter) result=false;
     if(!HBHEIsoNoiseFilter) result=false;
   }
+  if(NVtx<=0) result=false;
   if(JetID!=1) result=false;
   return result;
 }

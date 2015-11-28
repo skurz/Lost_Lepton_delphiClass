@@ -30,34 +30,41 @@
 #include "eventFilter/EventListFilter.h"
 
 // Header file for the classes stored in the TTree if any.
-
+// useAsymmErrors = true; use assym. uncertainties in efficiency histograms
 const bool useAsymmErrors = true;
-const bool applyFilters_=true;
 const bool applyDiLepCorrection_=true;
 
 // Seta data specific options, e.g. Trigger
-const bool runOnData = true;
-const bool useTrigger = true;
-const bool useTriggerEffWeight = false;
+// Usually:
+// MC: false, false, true
+// data: true, true, false
+const bool runOnData = false;  //<-check------------------------
+const bool useTrigger = false;  //<-check------------------------
+const bool useTriggerEffWeight = true;  //<-check------------------------
 
 // Option for SignalScan
-const bool signalScan = false; //ISR not recommended for Jamboree. Commented in Prediction.C
-const bool doPUreweighting = false;
-const bool useFilterData = true; //Set to false for FastSim Samples
+//ISR not recommended for Jamboree. Commented in Prediction.C
+const bool signalScan = false;  //<-check------------------------
+// Do PU reweighting. true for signal scan
+const bool doPUreweighting = false;  //<-check------------------------
+// useFilterData = true; unless you want to run without MET filters
+// useFilterData = false; For FastSim Samples, e.g. Signal Scans! Met filters not simulated
+const bool useFilterData = true;  //<-check------------------------
 
-// CSCTightHaloFilterUpdate
+// CSCTightHaloFilterUpdate from list
 const bool useFilterList = true;
 
-// Unblinded data only
+// Unblinded data only, not needed any more (readiness report)
 const bool restrictRunNum = false;
 
 // useDeltaPhiCut = 0: no deltaPhiCut
 // useDeltaPhiCut = 1: deltaPhiCut
 // useDeltaPhiCut = -1: inverted deltaPhiCut
-const int useDeltaPhiCut = 1;
+const int useDeltaPhiCut = 1;  //<-check------------------------
 
-// ScaleFactors from SUSY lepton SG groups: presentation from Oct 23 (preliminary!!)
+// ScaleFactors from SUSY lepton SG groups: presentation from Oct 23 (preliminary!!): not needed any more
 const bool usePrelimSFs = false;
+// Those are the SFs you want! Read from root file
 const bool useSFs = true;
 
 // scaleMet = 0: keep things the way they are
@@ -66,6 +73,7 @@ const int scaleMet = 0;
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 // use gen infomation to fix purityy of muon controlsample
+const bool applyFilters_=true;
 const bool useGenInfoToMatchCSMuonToGen_=0; // changed 20 Nov from 1 to 0
 const double maxDeltaRGenToRecoIsoMuon_=0.3;
 const double maxDiffPtGenToRecoIsoMuon_=0.3;
@@ -467,7 +475,7 @@ class Prediction : public TSelector {
   Double_t        DeltaPhiN3;
   Int_t           EcalDeadCellTriggerPrimitiveFilter;
   Int_t           eeBadScFilter;
-  Int_t           eeBadSc4Filter;
+  Bool_t           eeBadSc4Filter;
   std::vector<int>     *ElectronCharge=0;
   std::vector<TLorentzVector> *Electrons=0;
   std::vector<int>     *GenElec_GenElecFromTau=0;
@@ -759,6 +767,11 @@ void Prediction::Init(TTree *tree)
 
   evtListFilter = new EventListFilter("eventFilter/HTMHT_csc2015.txt");
 
+  if(doPUreweighting){
+    pufile = TFile::Open("PU/PileupHistograms_1117.root","READ");
+    puhist = (TH1*)pufile->Get("pu_weights_central");
+  }
+
   fChain->SetBranchStatus("*",0);
 
 /*  fChain->SetBranchStatus("GenElec_MT2Activity",1);
@@ -793,6 +806,7 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchStatus("CSCTightHaloFilter", 1);
     fChain->SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter", 1);
     fChain->SetBranchStatus("eeBadScFilter", 1);
+    fChain->SetBranchStatus("eeBadSc4Filter", 1);
     fChain->SetBranchStatus("HBHENoiseFilter", 1);
     fChain->SetBranchStatus("HBHEIsoNoiseFilter", 1);
     fChain->SetBranchStatus("METFilters", 1);
@@ -969,11 +983,6 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchAddress("genParticles_PDGid", &genParticles_PDGid, &b_genParticles_PDGid);
     fChain->SetBranchAddress("Jets_partonFlavor", &Jets_partonFlavor, &b_Jets_partonFlavor);
     fChain->SetBranchAddress("Jets_hadronFlavor", &Jets_hadronFlavor, &b_Jets_hadronFlavor);
-  }
-
-  if(doPUreweighting){
-    pufile = TFile::Open("PileupHistograms_1117.root","READ");
-    puhist = (TH1*)pufile->Get("pu_weights_central");
   }
 }
 

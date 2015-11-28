@@ -155,15 +155,15 @@ void ResultPlot()
   // General Settings
   TString InputPath_Expectation("Expectation.root");
   TString InputPath_Prediction("Prediction.root");
-  TString InputPath_Prediction_Data("Prediction_data.root"); // Use same path as above if pure MC prediction wanted
+  TString InputPath_Prediction_Data("Prediction_dataSkim.root"); // Use same path as above if pure MC prediction wanted
   TString OutputPath_Closure("Closure.root");
-  TString OutputPath_Prediction("LLPrediction.root");
+  TString OutputPath_Prediction("LLPredictionSkim.root");
 
   // If you want to compare MC to MC set this to true. E.g. prediction with and without signal contamination
   bool useMCForDataTree = false;
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 2109; //1280 //150
+  Double_t scaleFactorWeight = 2109.271; //1280 //150
 
   // Do approximation of statistical uncertainties if full MC statistics are used (stat. unc. then refers to a given luminosity of data)
   // Leave at 'false' if doing a closure test so stat. uncertainty is the one using full MC statistics
