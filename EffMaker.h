@@ -526,6 +526,8 @@ class EffMaker : public TSelector {
   Double_t        DeltaPhiN3;
   Double_t        Weight;
   Double_t        MET;
+  std::vector<double>   *METPtUp;
+  std::vector<double>   *METPtDown;
   Double_t        METPhi;
   UShort_t        GenMuNum;
    std::vector<double>  *GenElec_MT2Activity=0;
@@ -675,6 +677,8 @@ class EffMaker : public TSelector {
   TBranch        *b_DeltaPhiN3=0;   //!
   TBranch        *b_Weight=0;   //!
   TBranch        *b_MET=0;   //!
+  TBranch        *b_METPtUp=0;   //!
+  TBranch        *b_METPtDown=0;   //!
   TBranch        *b_METPhi=0;   //!
   TBranch        *b_GenMuNum=0;   //!
   TBranch        *b_GenMus=0;   //!
@@ -1028,6 +1032,8 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("DeltaPhi3", &DeltaPhi3, &b_DeltaPhi3);
   fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
   fChain->SetBranchAddress("MET", &MET, &b_MET);
+  fChain->SetBranchAddress("METPtUp", &METPtUp, &b_METPtUp);
+  fChain->SetBranchAddress("METPtDown", &METPtDown, &b_METPtDown);
   fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
   fChain->SetBranchAddress("GenMuNum", &GenMuNum, &b_GenMuNum);
   fChain->SetBranchAddress("GenMus", &GenMus, &b_GenMus);

@@ -20,9 +20,9 @@ void MakePrediction()
   gSystem->Load("libPhysics.so");
   gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
   
-  TChain *Effchain = new TChain("PreSelection");
+  TChain *Effchain = new TChain("TreeMaker2/PreSelection");
   //Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb_0309/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
-  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/central_v4/TTJets_SingleLeptFromT.root");
+  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v5/TTJets_SingleLeptFromT.root");
   
     
 //  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb_0309/WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");

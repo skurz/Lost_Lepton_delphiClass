@@ -53,6 +53,8 @@ const int useDeltaPhiCut = 1;  //<-check------------------------
 // scaleMet = 0: keep things the way they are
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
 const int scaleMet = 0;
+// propagate JEC only. +/-1 = up/down
+const int propagateJECtoMET = 0;
 
 // cuts baseline
 const double minHT_=500;
@@ -138,10 +140,14 @@ public :
   double PionActivity( double pionEta, double pionPhi, unsigned int method);
   std::pair <double,double> minDeltaRLepJet(double lepPT, double lepEta, double lepPhi);
   
-  TTree          *fChain;   //!pointer to the analyzed TTree or TChain
+  TTree          *fChain=0;   //!pointer to the analyzed TTree or TChain
   std::string fname; // for fetching file name
   TString fileName;
   Double_t HTgen_cut = 0;
+
+  TFile* pufile = 0;
+  TH1* puhist = 0;
+  Double_t w_pu;
 
 
  // Storing stuff
@@ -323,8 +329,8 @@ public :
   Int_t           METFilters;
   Double_t        METPhi;
   Double_t        METPt;
-  std::vector<double>   *METPtUp;
-  std::vector<double>   *METPtDown;
+  std::vector<double>   *METPtUp=0;
+  std::vector<double>   *METPtDown=0;
   Double_t        MHT;
   Double_t        MHT_Phi;
   Double_t        minDeltaPhiN;
@@ -350,6 +356,8 @@ public :
   std::vector<int>     *TriggerPrescales=0;
   Double_t        Weight;
   Double_t        puWeight;
+  Double_t        TrueNumInteractions;
+
 
 
   // List of branches
@@ -371,6 +379,7 @@ public :
   TBranch        *b_selectedIDMuons_MiniIso=0;   //!
   TBranch        *b_selectedIDMuons_MT2Activity=0;   //!
   TBranch        *b_selectedIDMuons_RA2Activity=0;   //!
+
 
   TBranch        *b_genHT=0;
 
@@ -456,6 +465,8 @@ public :
   TBranch        *b_puWeight=0;   //!
   TBranch        *b_PDFweights=0;   //!
   TBranch        *b_ScaleWeights=0;   //!
+  TBranch        *b_TrueNumInteractions=0;   //!
+
 
  ExpecMaker(TTree * /*tree*/ =0) : fChain(0) { }
   virtual ~ExpecMaker() { }
@@ -645,6 +656,7 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("ScaleWeights", 1);
   fChain->SetBranchStatus("selectedIDElectrons", 1);
   fChain->SetBranchStatus("genHT", 1);
+  fChain->SetBranchStatus("TrueNumInteractions", 1);
 
   fChain->SetBranchAddress("GenElec_MT2Activity", &GenElec_MT2Activity, &b_GenElec_MT2Activity);
 //  fChain->SetBranchAddress("GenElec_RA2Activity", &GenElec_RA2Activity, &b_GenElec_RA2Activity);
@@ -715,6 +727,7 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("Leptons", &Leptons, &b_Leptons);
   fChain->SetBranchAddress("METFilters", &METFilters, &b_METFilters);
   fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
+  fChain->SetBranchAddress("METPt", &METPt, &b_METPt);
   fChain->SetBranchAddress("METPtUp", &METPtUp, &b_METPtUp);
   fChain->SetBranchAddress("METPtDown", &METPtDown, &b_METPtDown);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
@@ -743,6 +756,7 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("puWeight", &puWeight, &b_puWeight);
   fChain->SetBranchAddress("PDFweights", &PDFweights, &b_PDFweights);
   fChain->SetBranchAddress("ScaleWeights", &ScaleWeights, &b_ScaleWeights);
+  fChain->SetBranchAddress("TrueNumInteractions", &TrueNumInteractions, &b_TrueNumInteractions);
 }
 
 Bool_t ExpecMaker::Notify()

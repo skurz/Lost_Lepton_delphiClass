@@ -37,8 +37,8 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("DeltaPhi4",&DeltaPhi4);
   tExpectation_->Branch("Weight", &Weight);
   tExpectation_->Branch("MET",&METPt);
-  tExpectation_->Branch("METUp",&METPtUp);
-  tExpectation_->Branch("METDown",&METPtDown);
+  tExpectation_->Branch("METPtUp",&METPtUp);
+  tExpectation_->Branch("METPtDown",&METPtDown);
   tExpectation_->Branch("METPhi",&METPhi);
   tExpectation_->Branch("PTW",&ptw);  
   tExpectation_->Branch("GenPTW",&gen_ptw);
@@ -223,7 +223,6 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     w_pu = puhist->GetBinContent(puhist->GetXaxis()->FindBin(min(TrueNumInteractions,puhist->GetBinLowEdge(puhist->GetNbinsX()+1))));
     Weight *= w_pu;
   }
-
   
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
   BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
@@ -240,6 +239,9 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   selectedIDIsoElectronsNum_ = selectedIDIsoElectrons->size();
 
   JetsNum_ = Jets->size();
+
+  if(propagateJECtoMET == +1) METPt = METPtUp->at(1);
+  if(propagateJECtoMET == -1) METPt = METPtDown->at(1);
 
   //    printf("Gen e/mu/tau: %d/%d/%d\n", GenElecNum_, GenMuNum_, GenTauNum_);
   //    printf("Selected e/mu: %d/%d\n", selectedIDIsoElectronsNum_, selectedIDIsoMuonsNum_);
