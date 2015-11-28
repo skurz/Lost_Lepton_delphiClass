@@ -144,7 +144,7 @@ void SignalContamination()
 
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 3000; //1280 //150
+  Double_t scaleFactorWeight = 2109.271; //1280 //150
 
   // Present output in QCD binning
   bool doQCDbinning = false;

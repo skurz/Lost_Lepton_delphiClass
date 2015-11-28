@@ -125,6 +125,7 @@ void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir){
   for(int i = 1; i<Bottom->GetNbinsX()+1; ++i){
       if(Bottom->GetBinContent(i)>0) Top->SetBinContent(i, 1.+Top->GetBinContent(i)/Bottom->GetBinContent(i));
       else Top->SetBinContent(i, -999);
+      //else Top->SetBinContent(i, 0);
       Top->SetBinError(i, 0);
   } 
 
@@ -155,9 +156,9 @@ void ResultPlot()
   // General Settings
   TString InputPath_Expectation("Expectation.root");
   TString InputPath_Prediction("Prediction.root");
-  TString InputPath_Prediction_Data("Prediction_dataSkim.root"); // Use same path as above if pure MC prediction wanted
+  TString InputPath_Prediction_Data("Prediction_data.root"); // Use same path as above if pure MC prediction wanted
   TString OutputPath_Closure("Closure.root");
-  TString OutputPath_Prediction("LLPredictionSkim.root");
+  TString OutputPath_Prediction("LLPrediction.root");
 
   // If you want to compare MC to MC set this to true. E.g. prediction with and without signal contamination
   bool useMCForDataTree = false;
@@ -179,7 +180,7 @@ void ResultPlot()
   bool mergeQCDbins = false; 
 
   // Histograms for Readiness Talk
-  bool doMergedHistograms = false;
+  bool doMergedHistograms = true;
 
 
 
@@ -1067,8 +1068,13 @@ void ResultPlot()
     totalPred_NJets_LL_MC_->Fill(NJets, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
     totalPred_BTags_LL_MC_->Fill(BTags, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
 
-    totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, isoTrackSysUp*scaleFactorWeight/2);
-    totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, isoTrackSysDown*scaleFactorWeight/2);
+    totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2);
+    totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeight/2);
+    totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, elecIsoTrackSysUp*scaleFactorWeight/2);
+    totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, elecIsoTrackSysDown*scaleFactorWeight/2);
+    totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, pionIsoTrackSysUp*scaleFactorWeight/2);
+    totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, pionIsoTrackSysDown*scaleFactorWeight/2);
+
     totalPredMuIsoTrackSysUp_LL_MC_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2);
     totalPredMuIsoTrackSysDown_LL_MC_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeight/2);
     totalPredElecIsoTrackSysUp_LL_MC_->Fill(SearchBin, elecIsoTrackSysUp*scaleFactorWeight/2);
@@ -1102,6 +1108,13 @@ void ResultPlot()
 
     totalPredIsoTrackStatUp_LL_MC_->Fill(SearchBin, isoTrackStatUp*scaleFactorWeight/2);
     totalPredIsoTrackStatDown_LL_MC_->Fill(SearchBin, isoTrackStatDown*scaleFactorWeight/2);
+/*    totalPredIsoTrackStatUp_LL_MC_->Fill(SearchBin, muIsoTrackStatUp*scaleFactorWeight/2);
+    totalPredIsoTrackStatDown_LL_MC_->Fill(SearchBin, muIsoTrackStatDown*scaleFactorWeight/2);
+    totalPredIsoTrackStatUp_LL_MC_->Fill(SearchBin, elecIsoTrackStatUp*scaleFactorWeight/2);
+    totalPredIsoTrackStatDown_LL_MC_->Fill(SearchBin, elecIsoTrackStatDown*scaleFactorWeight/2);
+    totalPredIsoTrackStatUp_LL_MC_->Fill(SearchBin, pionIsoTrackStatUp*scaleFactorWeight/2);
+    totalPredIsoTrackStatDown_LL_MC_->Fill(SearchBin, pionIsoTrackStatDown*scaleFactorWeight/2);
+*/
     totalPredMuIsoTrackStatUp_LL_MC_->Fill(SearchBin, muIsoTrackStatUp*scaleFactorWeight/2);
     totalPredMuIsoTrackStatDown_LL_MC_->Fill(SearchBin, muIsoTrackStatDown*scaleFactorWeight/2);
     totalPredElecIsoTrackStatUp_LL_MC_->Fill(SearchBin, elecIsoTrackStatUp*scaleFactorWeight/2);
@@ -1366,8 +1379,13 @@ void ResultPlot()
     totalPred_NJets_LL_->Fill(NJets, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
     totalPred_BTags_LL_->Fill(BTags, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
 
-    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, isoTrackSysUp*scaleFactorWeight/2);
-    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, isoTrackSysDown*scaleFactorWeight/2);
+    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2);
+    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeight/2);
+    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, elecIsoTrackSysUp*scaleFactorWeight/2);
+    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, elecIsoTrackSysDown*scaleFactorWeight/2);
+    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, pionIsoTrackSysUp*scaleFactorWeight/2);
+    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, pionIsoTrackSysDown*scaleFactorWeight/2);
+
     totalPredMuIsoTrackSysUp_LL_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2);
     totalPredMuIsoTrackSysDown_LL_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeight/2);
     totalPredElecIsoTrackSysUp_LL_->Fill(SearchBin, elecIsoTrackSysUp*scaleFactorWeight/2);
@@ -1401,6 +1419,13 @@ void ResultPlot()
 
     totalPredIsoTrackStatUp_LL_->Fill(SearchBin, isoTrackStatUp*scaleFactorWeight/2/scaleMC);
     totalPredIsoTrackStatDown_LL_->Fill(SearchBin, isoTrackStatDown*scaleFactorWeight/2/scaleMC);
+/*    totalPredIsoTrackStatUp_LL_->Fill(SearchBin, muIsoTrackStatUp*scaleFactorWeight/2/scaleMC);
+    totalPredIsoTrackStatDown_LL_->Fill(SearchBin, muIsoTrackStatDown*scaleFactorWeight/2/scaleMC);
+    totalPredIsoTrackStatUp_LL_->Fill(SearchBin, elecIsoTrackStatUp*scaleFactorWeight/2/scaleMC);
+    totalPredIsoTrackStatDown_LL_->Fill(SearchBin, elecIsoTrackStatDown*scaleFactorWeight/2/scaleMC);
+    totalPredIsoTrackStatUp_LL_->Fill(SearchBin, pionIsoTrackStatUp*scaleFactorWeight/2/scaleMC);
+    totalPredIsoTrackStatDown_LL_->Fill(SearchBin, pionIsoTrackStatDown*scaleFactorWeight/2/scaleMC);
+*/
     totalPredMuIsoTrackStatUp_LL_->Fill(SearchBin, muIsoTrackStatUp*scaleFactorWeight/2/scaleMC);
     totalPredMuIsoTrackStatDown_LL_->Fill(SearchBin, muIsoTrackStatDown*scaleFactorWeight/2/scaleMC);
     totalPredElecIsoTrackStatUp_LL_->Fill(SearchBin, elecIsoTrackStatUp*scaleFactorWeight/2/scaleMC);

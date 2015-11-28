@@ -96,19 +96,19 @@ const bool UseTagAndProbeEffIso_=false; // warning overriges all other choices f
 const bool UseTagAndProbeEffReco_=false; // warning overriges all other choices for reconstruction efficiency
 
 // uncertainties
-const double muIsoTrackUncertaintyUp_ = 5; // dummies as long as TAP is not available 20
-const double muIsoTrackUncertaintyDown_ = 5; // dummies as long as TAP is not available 20
-const double elecIsoTrackUncertaintyUp_ = 5; // dummies as long as TAP is not available 20
-const double elecIsoTrackUncertaintyDown_ = 5; // dummies as long as TAP is not available 20
-const double pionIsoTrackUncertaintyUp_ = 5; // dummies as long as TAP is not available 20
-const double pionIsoTrackUncertaintyDown_ = 5; // dummies as long as TAP is not available 20
-const double isoTrackUncertaintyUp_ = 5; // inclusive Isotracks (if used)
-const double isoTrackUncertaintyDown_ = 5; // inclusive Isotracks (if used)
+const double muIsoTrackUncertaintyUp_ = 8; // dummies as long as TAP is not available 20
+const double muIsoTrackUncertaintyDown_ = 8; // dummies as long as TAP is not available 20
+const double elecIsoTrackUncertaintyUp_ = 15; // dummies as long as TAP is not available 20
+const double elecIsoTrackUncertaintyDown_ = 15; // dummies as long as TAP is not available 20
+const double pionIsoTrackUncertaintyUp_ = 10; // dummies as long as TAP is not available 20
+const double pionIsoTrackUncertaintyDown_ = 10; // dummies as long as TAP is not available 20
+const double isoTrackUncertaintyUp_ = 10; // inclusive Isotracks (if used)
+const double isoTrackUncertaintyDown_ = 10; // inclusive Isotracks (if used)
 
-const double MuMTWUncertaintyUp_ = 20;  //20
-const double MuMTWUncertaintyDown_ = 20;
-const double ElecMTWUncertaintyUp_ = 20;
-const double ElecMTWUncertaintyDown_ = 20;
+const double MuMTWUncertaintyUp_ = 5;  //5
+const double MuMTWUncertaintyDown_ = 5;
+const double ElecMTWUncertaintyUp_ = 5;
+const double ElecMTWUncertaintyDown_ = 5;
 
 const double ElecPurityUncertaintyUp_ = 20; // no purity correction for muCS (>99%)
 const double ElecPurityUncertaintyDown_ = 20; // no purity correction for muCS (>99%)

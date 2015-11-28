@@ -75,7 +75,8 @@ static double GetSF(TH2 *hist, Double_t xVal, Double_t yVal) {
   if(nxBin > hist->GetNbinsX()) nxBin = hist->GetNbinsX();
   if(nyBin > hist->GetNbinsY()) nyBin = hist->GetNbinsY();
 
-  return std::abs(1-hist->GetBinContent(nxBin, nyBin));
+  return std::max(std::abs(1-hist->GetBinContent(nxBin, nyBin)), hist->GetBinError(nxBin, nyBin));
+  //return std::abs(1-hist->GetBinContent(nxBin, nyBin));
 }
 
 static double getMuonIDSF(Double_t pt, Double_t eta){
