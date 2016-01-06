@@ -16,138 +16,25 @@
 #include "LLTools.h"
 #include "THEff.h"
 
-void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // prediction durch expectation
-{
-  TH1D* Closure = (TH1D*) prediction->Clone();
-  Closure->Divide(prediction,expectation,1,1,"B");
-  TString title = prediction->GetTitle();
-  title +="_closure";
-  // 	title = "#mu & e Control-Sample Ratio in Search Bins; Search bins; #mu / e CS";
-  Closure->SetTitle(title);
-  title = prediction->GetName();
-  title+="_closure";
-  Closure->SetName(title);
-  Folder->cd();
-  Closure->Write();
-}
-
-UShort_t getMergedBinQCD(UShort_t BinQCD, Int_t NJets){
-  if(BinQCD > 900) return 900;
-  if(NJets < 4) return 900;
-
-  UShort_t bin = 0;
-
-  switch(NJets){
-    case 4:
-      bin = BinQCD % 11;
-      if(bin == 0) bin = 11;
-      break;
-    case 5:
-      bin = BinQCD % 11 + 11;
-      if(bin == 11) bin = 22;
-      break;
-    case 6:
-      bin = BinQCD % 11 + 22;
-      if(bin == 22) bin = 33;
-      break;
-    case 7:
-    case 8:
-      bin = BinQCD % 11 + 33;
-      if(bin == 33) bin = 44;
-      break;
-    default:
-      bin = BinQCD % 11 + 44;
-      if(bin == 44) bin = 55;
-      break;
-  }
-
-  return bin;
-}
-
-UShort_t getHTMHTBox(Double_t HT, Double_t MHT){
-  if(MHT < 200 || HT < 500) return -1;
-  if(MHT >= 750 && HT < 800) return -1;
-
-  if(MHT < 500){
-    if(HT < 800) return 1;
-    if(HT < 1200) return 2;
-    else return 3;
-  }else if(MHT < 750){
-    if(HT < 1200) return 4;
-    else return 5;
-  }else{
-    return 6;
-  }
-
-  return -1; // Should not be reached
-}
-
-void SetBinLabel(TH1D* hist){
-  if(hist->GetNbinsX()==72)
-  for(int nji = 0; nji<3; ++nji){
-    for(int nbi = 0; nbi<4; ++nbi){
-        for(int hti = 0; hti<6; ++hti){
-          int mhti =0;
-          if(hti >=0 && hti <=2) mhti = 0;
-          else if(hti >=3 && hti <=4) mhti = 1;
-          else mhti = 2;
-          char binlabel[100];
-          int bi = nji * 24 + nbi * 6 + hti + 1;
-          //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
-          sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
-          hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
-        }
-    }
-  }
-
-  if(hist->GetNbinsX()==220)
-  for(int nji = 0; nji<5; ++nji){
-    for(int nbi = 0; nbi<4; ++nbi){
-        for(int mhti = 0; mhti<4; ++mhti){
-          int htiMin = 0;
-          if(mhti==3) htiMin = 1;
-          for(int hti = htiMin; hti<3; ++hti){
-            char binlabel[100];
-            int bi = nji * 44 + nbi * 11 + mhti * 3 + hti + 1;
-            if(htiMin==1) bi = nji * 44 + nbi * 11 + mhti * 3 + hti;
-            //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
-            sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
-            hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
-          }
-        }
-    }
-  }
-  
-  hist -> GetXaxis() -> LabelsOption("v");
-}
-
-void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir){
-  for(int i = 1; i<Bottom->GetNbinsX()+1; ++i){
-      if(Bottom->GetBinContent(i)>0) Top->SetBinContent(i, 1.+Top->GetBinContent(i)/Bottom->GetBinContent(i));
-      else Top->SetBinContent(i, -999);
-      Top->SetBinError(i, 0);
-  } 
-
-  SetBinLabel(Top);
-
-  dir->cd();
-  Top->Write();
-}
-
+void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder);
+UShort_t getMergedBinQCD(UShort_t BinQCD, Int_t NJets);
+UShort_t getHTMHTBox(Double_t HT, Double_t MHT);
+void SetBinLabel(TH1D* hist);
+void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir);
 
 void SignalContamination()
 {
 
   // General Settings
-  TString InputPath_Prediction("Prediction_Scan_T1bbbb.root");
-  TString OutputPath_Prediction("LLContamination_T1bbbb.root");
+  TString InputPath_Prediction("Prediction_Scan_T1tttt.root");
+  TString OutputPath_Prediction("LLContamination_T1tttt_QCD.root");
 
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 2109.271; //1280 //150
+  Double_t scaleFactorWeight = 2262; // in units of [pb] //<-check------------------------
 
   // Present output in QCD binning
-  bool doQCDbinning = false;
+  bool doQCDbinning = true;  //<-check------------------------;
 
   // Begin of Code
   SearchBins *SearchBins_ = new SearchBins(doQCDbinning);
@@ -295,4 +182,123 @@ void SignalContamination()
   }
 
   std::cout<<"Saved Output to "<<OutputPath_Prediction<<std::endl;
+}
+
+
+void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // prediction durch expectation
+{
+  TH1D* Closure = (TH1D*) prediction->Clone();
+  Closure->Divide(prediction,expectation,1,1,"B");
+  TString title = prediction->GetTitle();
+  title +="_closure";
+  //  title = "#mu & e Control-Sample Ratio in Search Bins; Search bins; #mu / e CS";
+  Closure->SetTitle(title);
+  title = prediction->GetName();
+  title+="_closure";
+  Closure->SetName(title);
+  Folder->cd();
+  Closure->Write();
+}
+
+UShort_t getMergedBinQCD(UShort_t BinQCD, Int_t NJets){
+  if(BinQCD > 900) return 900;
+  if(NJets < 4) return 900;
+
+  UShort_t bin = 0;
+
+  switch(NJets){
+    case 4:
+      bin = BinQCD % 11;
+      if(bin == 0) bin = 11;
+      break;
+    case 5:
+      bin = BinQCD % 11 + 11;
+      if(bin == 11) bin = 22;
+      break;
+    case 6:
+      bin = BinQCD % 11 + 22;
+      if(bin == 22) bin = 33;
+      break;
+    case 7:
+    case 8:
+      bin = BinQCD % 11 + 33;
+      if(bin == 33) bin = 44;
+      break;
+    default:
+      bin = BinQCD % 11 + 44;
+      if(bin == 44) bin = 55;
+      break;
+  }
+
+  return bin;
+}
+
+UShort_t getHTMHTBox(Double_t HT, Double_t MHT){
+  if(MHT < 200 || HT < 500) return -1;
+  if(MHT >= 750 && HT < 800) return -1;
+
+  if(MHT < 500){
+    if(HT < 800) return 1;
+    if(HT < 1200) return 2;
+    else return 3;
+  }else if(MHT < 750){
+    if(HT < 1200) return 4;
+    else return 5;
+  }else{
+    return 6;
+  }
+
+  return -1; // Should not be reached
+}
+
+void SetBinLabel(TH1D* hist){
+  if(hist->GetNbinsX()==72)
+  for(int nji = 0; nji<3; ++nji){
+    for(int nbi = 0; nbi<4; ++nbi){
+        for(int hti = 0; hti<6; ++hti){
+          int mhti =0;
+          if(hti >=0 && hti <=2) mhti = 0;
+          else if(hti >=3 && hti <=4) mhti = 1;
+          else mhti = 2;
+          char binlabel[100];
+          int bi = nji * 24 + nbi * 6 + hti + 1;
+          //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
+          sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
+          hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
+        }
+    }
+  }
+
+  if(hist->GetNbinsX()==220)
+  for(int nji = 0; nji<5; ++nji){
+    for(int nbi = 0; nbi<4; ++nbi){
+        for(int mhti = 0; mhti<4; ++mhti){
+          int htiMin = 0;
+          if(mhti==3) htiMin = 1;
+          for(int hti = htiMin; hti<3; ++hti){
+            char binlabel[100];
+            int bi = nji * 44 + nbi * 11 + mhti * 3 + hti + 1;
+            if(htiMin==1) bi = nji * 44 + nbi * 11 + mhti * 3 + hti;
+            //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
+            sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
+            hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
+          }
+        }
+    }
+  }
+  
+  hist -> GetXaxis() -> LabelsOption("v");
+}
+
+void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir){
+  for(int i = 1; i<Bottom->GetNbinsX()+1; ++i){
+      if(Bottom->GetBinContent(i)>0) Top->SetBinContent(i, 1.+Top->GetBinContent(i)/Bottom->GetBinContent(i));
+      else Top->SetBinContent(i, -999);
+      Top->SetBinError(i, 0);
+  } 
+
+  SetBinLabel(Top);
+
+  dir->cd();
+  Top->Write();
 }

@@ -28,33 +28,51 @@
 #include "TProofServ.h"
 #include "TProof.h"
 
-TFile *outPutFile = 0;
-
 using std::vector;
 using std::cout;
 using std::cerr;
 using std::endl;
-// useFilterData = true; unless you want to run without MET filters
-const bool useFilterData = true;
-// useTrigger = false; no simulated triggers in MC
-const bool useTrigger = false;
-// useTriggerEffWeight = true; correct for trigger inefficiency
-const bool useTriggerEffWeight = true;
 
-// Do PU reweighting. true for signal scan
-const bool doPUreweighting = false;  //<-check------------------------
+TFile *outPutFile = 0;
 
+
+////////////////////////
+//////// Options
+///////////////////////
 
 // useDeltaPhiCut = 0: no deltaPhiCut
 // useDeltaPhiCut = 1: deltaPhiCut
 // useDeltaPhiCut = -1: inverted deltaPhiCut
 const int useDeltaPhiCut = 1;  //<-check------------------------
 
+////////////////////////
+//////// Usually none of these have to be changed
+///////////////////////
+
+// Do PU reweighting.
+const bool doPUreweighting = false;
+// Root file:
+const TString puFile("PU/PileupHistograms_1117.root");
+
+// useFilterData = true; unless you want to run without MET filters (fastSim)
+const bool useFilterData = true;
+// useTrigger = false; no simulated triggers in MC
+const bool useTrigger = false;
+// useTriggerEffWeight = true; correct for trigger inefficiency
+// Trigger weights hardcoded in LLTools.h. Change there if any updates
+const bool useTriggerEffWeight = true;
+
 // scaleMet = 0: keep things the way they are
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
+// usually option below is used
 const int scaleMet = 0;
 // propagate JEC only. +/-1 = up/down
 const int propagateJECtoMET = 0;
+
+
+////////////////////////
+//////// Don't change anything below here
+///////////////////////
 
 // cuts baseline
 const double minHT_=500;
@@ -550,7 +568,7 @@ void ExpecMaker::Init(TTree *tree)
   std::cout << "Saving file to: " << fileName << std::endl;
 
   if(doPUreweighting){
-    pufile = TFile::Open("PU/PileupHistograms_1117.root","READ");
+    pufile = TFile::Open(puFile,"READ");
     puhist = (TH1*)pufile->Get("pu_weights_central");
   }
 

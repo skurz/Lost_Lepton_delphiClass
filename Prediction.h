@@ -29,51 +29,82 @@
 #include "btag/BTagCorrector.h"
 #include "eventFilter/EventListFilter.h"
 
-// Header file for the classes stored in the TTree if any.
-// useAsymmErrors = true; use assym. uncertainties in efficiency histograms
-const bool useAsymmErrors = true;
-const bool applyDiLepCorrection_=true;
 
-// Seta data specific options, e.g. Trigger
-// Usually:
-// MC: false, false, true
-// data: true, true, false
-const bool runOnData = false;  //<-check------------------------
-const bool useTrigger = false;  //<-check------------------------
-const bool useTriggerEffWeight = true;  //<-check------------------------
-
-// Option for SignalScan
-//ISR not recommended for Jamboree. Commented in Prediction.C
-const bool signalScan = false;  //<-check------------------------
-// Do PU reweighting. true for signal scan
-const bool doPUreweighting = false;  //<-check------------------------
-// useFilterData = true; unless you want to run without MET filters
-// useFilterData = false; For FastSim Samples, e.g. Signal Scans! Met filters not simulated
-const bool useFilterData = true;  //<-check------------------------
-
-// CSCTightHaloFilterUpdate from list
-const bool useFilterList = true;
-
-// Unblinded data only, not needed any more (readiness report)
-const bool restrictRunNum = false;
+////////////////////////
+//////// Options
+///////////////////////
 
 // useDeltaPhiCut = 0: no deltaPhiCut
 // useDeltaPhiCut = 1: deltaPhiCut
 // useDeltaPhiCut = -1: inverted deltaPhiCut
 const int useDeltaPhiCut = 1;  //<-check------------------------
 
-// ScaleFactors from SUSY lepton SG groups: presentation from Oct 23 (preliminary!!): not needed any more
+// Seta data specific options, e.g. Trigger
+// Usually:
+// MC: false, false, true
+// data: true, true, false
+const bool runOnData = false;  //<-check------------------------
+// Apply trigger
+const bool useTrigger = false;  //<-check------------------------
+// Apply weights if trigger not simulated
+const bool useTriggerEffWeight = true;  //<-check------------------------
+
+// Option for SignalScan
+const bool signalScan = false;  //<-check------------------------
+// Do PU reweighting. true for signal scan
+const bool doPUreweighting = false;  //<-check------------------------
+const TString path_puHist("PU/PileupHistograms_1117.root");
+// bTag corrections. Use for signal scan
+const bool doBTagCorr = false;  //<-check------------------------
+const string path_bTagCalib("btag/CSVv2_mod.csv");
+const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
+// ISR corrections. NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond
+const bool doISRcorr = false;  //<-check------------------------
+const TString path_ISRcorr("isr_corrections/ISRWeights.root");
+
+// useFilterData = true; unless you want to run without MET filters
+// useFilterData = false; For FastSim Samples, e.g. Signal Scans! Met filters not simulated
+const bool useFilterData = false;  //<-check------------------------
+const string path_evtListFilter("eventFilter/csc2015.txt");
+
+// CSCTightHaloFilterUpdate from list
+// Can be turned of for MC (not necessaary but faster)
+const bool useFilterList = false;  //<-check------------------------
+
+
+// ScaleFactors from SUSY lepton SG groups: presentation from Oct 23 (preliminary!!)
+// NOT USED ANYMORE
 const bool usePrelimSFs = false;
 // Those are the SFs you want! Read from root file
 const bool useSFs = true;
+const TString path_elecID("SFs/kinematicBinSFele.root");
+const TString hist_elecID("CutBasedVeto");
+const TString path_elecIso("SFs/kinematicBinSFele.root");
+const TString hist_elecIso("MiniIso0p1_vs_RelActivity");
+
+const TString path_muID("SFs/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root");
+const TString hist_muID("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_tag_IsoMu20_pass");
+const TString path_muIso("SFs/TnP_MuonID_NUM_MiniIsoTight_DENOM_LooseID_VAR_map_pt_eta.root");
+// muIso: still binned in pt/eta since this was recommended! Has to be changed for Moriond (also in Prediction.C when getting the uncertainties)!
+const TString hist_muIso("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass");
 
 // scaleMet = 0: keep things the way they are
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
+// NOT USED ANYMORE
 const int scaleMet = 0;
+
+// useAsymmErrors = true; use assym. uncertainties in efficiency histograms
+const bool useAsymmErrors = true;
+const bool applyDiLepCorrection_=true;
+const bool applyFilters_=true;
+
+
+////////////////////////
+//////// Don't change anything below
+///////////////////////
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 // use gen infomation to fix purityy of muon controlsample
-const bool applyFilters_=true;
 const bool useGenInfoToMatchCSMuonToGen_=0; // changed 20 Nov from 1 to 0
 const double maxDeltaRGenToRecoIsoMuon_=0.3;
 const double maxDiffPtGenToRecoIsoMuon_=0.3;
@@ -91,7 +122,7 @@ const UShort_t NJetsMedium_=5;
 const UShort_t NJetsMedium2_=7;
 const UShort_t NJetsHigh_=8;
 
-// TAP
+// Directly use TAP efficiencies: NOT USED
 const bool UseTagAndProbeEffIso_=false; // warning overriges all other choices for isolation efficiency
 const bool UseTagAndProbeEffReco_=false; // warning overriges all other choices for reconstruction efficiency
 
@@ -737,38 +768,38 @@ void Prediction::Init(TTree *tree)
   std::cout << "Saving file to: " << fileName << std::endl;
 
   std::ifstream signal_xsec("dict_xsec.txt");
-  std::string str;
-  while (std::getline(signal_xsec, str))
+  std::string str_xsec;
+  while (std::getline(signal_xsec, str_xsec))
   {
-    TObjArray *tokens = TString(str).Tokenize(",");
+    TObjArray *tokens = TString(str_xsec).Tokenize(",");
     //std::cout<<((TObjString *)(tokens->At(0)))->String()<<"; "<<((TObjString *)(tokens->At(1)))->String()<<";"<<std::endl;
     xsecs.push_back(std::make_pair(std::atof(((TObjString *)(tokens->At(0)))->String()), std::atof(((TObjString *)(tokens->At(1)))->String())));
   }
 
-  // store histograms in SFs/
-  TFile *muIDSF_histFile = TFile::Open("SFs/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root","READ");
-  h_muIDSF = (TH2F*) muIDSF_histFile->Get("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_tag_IsoMu20_pass")->Clone();;
+  // Open histograms for SFs
+  TFile *muIDSF_histFile = TFile::Open(path_muID, "READ");
+  h_muIDSF = (TH2F*) muIDSF_histFile->Get(hist_muID)->Clone();
 
-  TFile *muIsoSF_histFile = TFile::Open("SFs/TnP_MuonID_NUM_MiniIsoTight_DENOM_LooseID_VAR_map_pt_eta.root","READ");
-  h_muIsoSF = (TH2F*) muIsoSF_histFile->Get("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass")->Clone();
+  TFile *muIsoSF_histFile = TFile::Open(path_muIso, "READ");
+  h_muIsoSF = (TH2F*) muIsoSF_histFile->Get(hist_muIso)->Clone();
 
-  TFile *elecIDSF_histFile = TFile::Open("SFs/kinematicBinSFele.root","READ");
-  h_elecIDSF = (TH2D*) elecIDSF_histFile->Get("CutBasedVeto")->Clone();;
+  TFile *elecIDSF_histFile = TFile::Open(path_elecID, "READ");
+  h_elecIDSF = (TH2D*) elecIDSF_histFile->Get(hist_elecID)->Clone();
 
-  TFile *elecIsoSF_histFile = TFile::Open("SFs/kinematicBinSFele.root","READ");
-  h_elecIsoSF = (TH2D*) elecIsoSF_histFile->Get("MiniIso0p1_vs_RelActivity")->Clone();
+  TFile *elecIsoSF_histFile = TFile::Open(path_elecIso, "READ");
+  h_elecIsoSF = (TH2D*) elecIsoSF_histFile->Get(hist_elecIso)->Clone();
 
   if(signalScan){
     // ISR setup
-    isrfile = TFile::Open("isr_corrections/ISRWeights.root","READ");
+    isrfile = TFile::Open(path_ISRcorr, "READ");
     h_isr = (TH1*)isrfile->Get("isr_weights_central");
     // everything else: done in loop!
   }
 
-  evtListFilter = new EventListFilter("eventFilter/HTMHT_csc2015.txt");
+  evtListFilter = new EventListFilter(path_evtListFilter);
 
   if(doPUreweighting){
-    pufile = TFile::Open("PU/PileupHistograms_1117.root","READ");
+    pufile = TFile::Open(path_puHist,"READ");
     puhist = (TH1*)pufile->Get("pu_weights_central");
   }
 

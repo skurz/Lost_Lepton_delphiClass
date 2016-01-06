@@ -48,7 +48,21 @@ void shift_bin(TH1* input, TH1* output){
 
 }
 
-void Plot_searchBin_full(string option="", int pull=0){
+void Plot_searchBin_full(string option="", int pull=0){ // string option="QCD"
+
+  // Use option="QCD" to produce plots in QCD binning
+
+  char tempname[200];
+  // Open root file
+  sprintf(tempname,"LLPrediction.root");
+
+  // true: do closure test (MC prediction vs MC truth)
+  // false: do data driven prediction and compare to MC truth
+  bool doDataVsMC = false;
+
+  // Add systematics in quadrature to stat. uncertainty on prediction
+  // Non-closure systematic not included yet!
+  bool showSystematics = false;
 
   ///////////////////////////////////////////////////////////////////////////////////////////
   ////Some cosmetic work for official documents.
@@ -61,8 +75,8 @@ void Plot_searchBin_full(string option="", int pull=0){
   //
   // Canvas size
   int W = 1200;
-  int H = 600;
-  int H_ref = 600;
+  int H = 740;
+  int H_ref = 740;
   int W_ref = 800;
   float T = 0.10*H_ref;
   float B = 0.06*H_ref;
@@ -87,16 +101,8 @@ void Plot_searchBin_full(string option="", int pull=0){
 
   //
   // Luminosity information for scaling
-  double lumi     = 2.109271; // normaliza to this lumi (fb-1)
-  double lumi_ref = 2.109271; // normaliza to 3 (fb-1)
-
-  // true: do closure test (MC prediction vs MC truth)
-  // false: do data driven prediction and compare to MC truth
-  bool doDataVsMC = false;
-
-  // Add systematics in quadrature to stat. uncertainty on prediction
-  // Non-closure systematic not included yet!
-  bool showSystematics = false;
+  double lumi     = 2.3; // normaliza to this lumi (fb-1)
+  double lumi_ref = 2.3; // normaliza to 3 (fb-1)
   
   ///////////////////////////////////////////////////////////////////////////////////////////
   //
@@ -104,11 +110,9 @@ void Plot_searchBin_full(string option="", int pull=0){
 
   gStyle->SetOptStat(0);  ///to avoid the stat. on the plots
   //gStyle->SetErrorX(0);
-  char tempname[200];
   char xtitlename[200];
   char ytitlename[200];
 
-  sprintf(tempname,"LLPrediction_Nov23.root");
   TFile * LLFile = new TFile(tempname,"R");
   printf("Opened %s\n",tempname);
 
@@ -122,7 +126,7 @@ void Plot_searchBin_full(string option="", int pull=0){
 
   TLegend* catLeg1 = new TLegend(legendX1,legendY1,legendX2,legendY2);
   //catLeg1->SetTextSize(0.060);
-  catLeg1->SetTextSize(0.055);
+  catLeg1->SetTextSize(0.044);
   catLeg1->SetTextFont(42);
   catLeg1->SetFillColor(0);
   catLeg1->SetLineColor(1);
@@ -193,7 +197,7 @@ void Plot_searchBin_full(string option="", int pull=0){
   double NJet_x_max=15.;
   double NBtag_x_max=4.;
   double search_x_max=73.-0.5;
-  if(option.find("QCD")!=string::npos)search_x_max=224.;
+  if(option.find("QCD")!=string::npos)search_x_max=221.-0.5;
   double search_x_min=1.-0.5;
 
   TDirectory *dPre = 0;
@@ -336,8 +340,9 @@ void Plot_searchBin_full(string option="", int pull=0){
   int iPeriod = 0;    // 1=7TeV, 2=8TeV, 3=7+8TeV, 7=7+8+13TeV, 0=free form (uses lumi_sqrtS)
   int iPos=0;
     
-  writeExtraText = true;
-  extraText   = "      Simulation";
+  writeExtraText = true;  
+  if(doDataVsMC) extraText   = "        Preliminary";
+  else extraText   = "        Simulation";
   //float extraTextFont = 52;  // default is helvetica-italics
 
   // text sizes and text offsets with respect to the top frame
@@ -409,7 +414,7 @@ void Plot_searchBin_full(string option="", int pull=0){
     // Njet labels
     TLatex * ttext_njet = new TLatex();
     ttext_njet->SetTextFont(42);
-    ttext_njet->SetTextSize(0.060);
+    ttext_njet->SetTextSize(0.04);
     ttext_njet->SetTextAlign(22);
     ttext_njet->DrawLatex(13.-0.5 , ymax_top/4. , "4 #leq N_{#scale[0.2]{ }jet} #leq 6");
     ttext_njet->DrawLatex(37.-0.5 , ymax_top/4. , "7 #leq N_{#scale[0.2]{ }jet} #leq 8");
@@ -431,7 +436,7 @@ void Plot_searchBin_full(string option="", int pull=0){
     // Nb labels
     TLatex * ttext_nb = new TLatex();
     ttext_nb->SetTextFont(42);
-    ttext_nb->SetTextSize(0.060);
+    ttext_nb->SetTextSize(0.04);
     ttext_nb->SetTextAlign(22);
     
     ttext_nb->DrawLatex( 4.-0.5 , ymax_top/12. , "N_{#scale[0.2]{ }b-jet}");
@@ -516,7 +521,8 @@ void Plot_searchBin_full(string option="", int pull=0){
   sprintf(tempname,"Direct from simulation");
   catLeg1->AddEntry(GenHist,tempname,"p");
   //sprintf(tempname,"Prediction from MC");
-  sprintf(tempname,"Treat simulation like data");
+  if(doDataVsMC) sprintf(tempname,"Prediction from data");
+  else sprintf(tempname,"Treat simulation like data");
   catLeg1->AddEntry(EstHist,tempname);
   catLeg1->Draw();
 
@@ -738,7 +744,7 @@ void Plot_searchBin_full(string option="", int pull=0){
     sprintf(tempname,"DataMC_Full_Plot.pdf");
     if (pull==1)    sprintf(tempname,"DataMCPull_Full_Plot.pdf");
   }else{
-    if(option.find("QCD")!=string::npos) sprintf(tempname,"Closure_QCD_LDP_Full_Plot.pdf");
+    if(option.find("QCD")!=string::npos) sprintf(tempname,"Closure_QCD_HDP_Full_Plot.pdf");
       else sprintf(tempname,"Closure_Full_Plot.pdf");
     if (pull==1)    sprintf(tempname,"ClosurePull_Full_Plot.pdf");
   }

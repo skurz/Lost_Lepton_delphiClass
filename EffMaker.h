@@ -22,13 +22,16 @@
 #include <TLegend.h>
 
 
+////////////////////////
+//////// Usually no changes necessary
+///////////////////////
+
 using std::vector;
 using std::cout;
 using std::cerr;
 using std::endl;
 const bool useFilterData = true;
 const bool useTrigger = false;
-
 
 // output control
 const bool saveEffToPDF_=true;

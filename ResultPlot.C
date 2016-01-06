@@ -16,138 +16,12 @@
 #include "LLTools.h"
 #include "THEff.h"
 
-void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // prediction durch expectation
-{
-  TH1D* Closure = (TH1D*) prediction->Clone();
-  Closure->Divide(prediction,expectation,1,1,"B");
-  TString title = prediction->GetTitle();
-  title +="_closure";
-  // 	title = "#mu & e Control-Sample Ratio in Search Bins; Search bins; #mu / e CS";
-  Closure->SetTitle(title);
-  title = prediction->GetName();
-  title+="_closure";
-  Closure->SetName(title);
-  Folder->cd();
-  Closure->Write();
-}
-
-UShort_t getMergedBinQCD(UShort_t BinQCD, Int_t NJets){
-  if(BinQCD > 900) return 900;
-  if(NJets < 4) return 900;
-
-  UShort_t bin = 0;
-
-  switch(NJets){
-    case 4:
-      bin = BinQCD % 11;
-      if(bin == 0) bin = 11;
-      break;
-    case 5:
-      bin = BinQCD % 11 + 11;
-      if(bin == 11) bin = 22;
-      break;
-    case 6:
-      bin = BinQCD % 11 + 22;
-      if(bin == 22) bin = 33;
-      break;
-    case 7:
-    case 8:
-      bin = BinQCD % 11 + 33;
-      if(bin == 33) bin = 44;
-      break;
-    default:
-      bin = BinQCD % 11 + 44;
-      if(bin == 44) bin = 55;
-      break;
-  }
-
-  return bin;
-}
-
-UShort_t getHTMHTBox(Double_t HT, Double_t MHT){
-  if(MHT < 200 || HT < 500) return -1;
-  if(MHT >= 750 && HT < 800) return -1;
-
-  if(MHT < 500){
-    if(HT < 800) return 1;
-    if(HT < 1200) return 2;
-    else return 3;
-  }else if(MHT < 750){
-    if(HT < 1200) return 4;
-    else return 5;
-  }else{
-    return 6;
-  }
-
-  return -1; // Should not be reached
-}
-
-void SetBinLabel(TH1D* hist){
-  if(hist->GetNbinsX()==72)
-  for(int nji = 0; nji<3; ++nji){
-    for(int nbi = 0; nbi<4; ++nbi){
-        for(int hti = 0; hti<6; ++hti){
-          int mhti =0;
-          if(hti >=0 && hti <=2) mhti = 0;
-          else if(hti >=3 && hti <=4) mhti = 1;
-          else mhti = 2;
-          char binlabel[100];
-          int bi = nji * 24 + nbi * 6 + hti + 1;
-          //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
-          sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
-          hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
-        }
-    }
-  }
-
-  if(hist->GetNbinsX()==220)
-  for(int nji = 0; nji<5; ++nji){
-    for(int nbi = 0; nbi<4; ++nbi){
-        for(int mhti = 0; mhti<4; ++mhti){
-          int htiMin = 0;
-          if(mhti==3) htiMin = 1;
-          for(int hti = htiMin; hti<3; ++hti){
-            char binlabel[100];
-            int bi = nji * 44 + nbi * 11 + mhti * 3 + hti + 1;
-            if(htiMin==1) bi = nji * 44 + nbi * 11 + mhti * 3 + hti;
-            //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
-            sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
-            hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
-          }
-        }
-    }
-  }
-  
-  hist -> GetXaxis() -> LabelsOption("v");
-}
-
-void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir){
-  for(int i = 1; i<Bottom->GetNbinsX()+1; ++i){
-      if(Bottom->GetBinContent(i)>0) Top->SetBinContent(i, 1.+Top->GetBinContent(i)/Bottom->GetBinContent(i));
-      else Top->SetBinContent(i, -999);
-      //else Top->SetBinContent(i, 0);
-      Top->SetBinError(i, 0);
-  } 
-
-  SetBinLabel(Top);
-
-  dir->cd();
-  Top->Write();
-}
-
-void addUncertainties(TH1D* total, std::vector<TH1D*> uncertainties, bool upperUnc){
-  for(int i = 0; i <= total->GetNbinsX(); i++){
-    Double_t sumSq = 0.;
-
-    for (std::vector<TH1D*>::iterator it = uncertainties.begin() ; it != uncertainties.end(); ++it){
-      sumSq += (*it)->GetBinContent(i) * (*it)->GetBinContent(i);
-    }
-
-    if(upperUnc) total->SetBinContent(i, std::sqrt(sumSq));
-    else total->SetBinContent(i, -std::sqrt(sumSq));
-  }
-
-}
+void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder);
+UShort_t getMergedBinQCD(UShort_t BinQCD, Int_t NJets);
+UShort_t getHTMHTBox(Double_t HT, Double_t MHT);
+void SetBinLabel(TH1D* hist);
+void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir);
+void addUncertainties(TH1D* total, std::vector<TH1D*> uncertainties, bool upperUnc);
 
 
 void ResultPlot()
@@ -160,11 +34,14 @@ void ResultPlot()
   TString OutputPath_Closure("Closure.root");
   TString OutputPath_Prediction("LLPrediction.root");
 
+   // Present output in QCD binning
+  bool doQCDbinning = false;  //<-check------------------------
+
   // If you want to compare MC to MC set this to true. E.g. prediction with and without signal contamination
   bool useMCForDataTree = false;
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 2109.271; //1280 //150
+  Double_t scaleFactorWeight = 2262;  //in units of [pb] //<-check------------------------
 
   // Do approximation of statistical uncertainties if full MC statistics are used (stat. unc. then refers to a given luminosity of data)
   // Leave at 'false' if doing a closure test so stat. uncertainty is the one using full MC statistics
@@ -173,14 +50,12 @@ void ResultPlot()
   // Prepare Code for Extrapolation Method
   bool doExtrapolation = false; // not fully implemented yet
 
-  // Present output in QCD binning
-  bool doQCDbinning = false;
   //Merge QCDbins (bTags) = 55 bins // only works if doQCDbinning = true;
   //BUT: Output table does not work! However, histograms are filled properly
   bool mergeQCDbins = false; 
 
   // Histograms for Readiness Talk
-  bool doMergedHistograms = true;
+  bool doMergedHistograms = false;
 
 
 
@@ -1587,36 +1462,36 @@ void ResultPlot()
 
   std::cout<<"--------------------------------------------------------------------------------------------------------------------------\n";
   std::cout<<"\n Muon and Electron CS:"<<std::endl;
-  std::cout<<"TotalExpectationIsoTrack: "<<totalExpIsoTrack<<" +- " << sqrt(totalExpIsoTrackError)<<"\n TotalPredictionIsoTrack: "<<totalPreIsoTrack<<" +- "<<sqrt(totalPreIsoTrackError)<<std::endl;
-  std::cout<<"TotalExpectation: "<<totalExp<<" +- " << sqrt(totalExpError)<<"\n TotalPrediction: "<<totalPre<<" +- "<<sqrt(totalPreError)<<std::endl;
-  std::cout<<"MuAccExp: "<<totalExpMuAcc<<"\n MuAccPre: "<<totalPreMuAcc<<std::endl;
-  std::cout<<"MuRecoExp: "<<totalExpMuReco<<"\n MuRecoPre: "<<totalPreMuReco<<std::endl;
-  std::cout<<"MuIsoExp: "<<totalExpMuIso<<"\n MuIsoPre: "<<totalPreMuIso<<std::endl;
-  std::cout<<"ElecAccExp: "<<totalExpElecAcc<<"\n ElecAccPre: "<<totalPreElecAcc<<std::endl;
-  std::cout<<"ElecRecoExp: "<<totalExpElecReco<<"\n ElecRecoPre: "<<totalPreElecReco<<std::endl;
-  std::cout<<"ElecIsoExp: "<<totalExpElecIso<<"\n ElecIsoPre: "<<totalPreElecIso<<std::endl;
+  std::cout<<"TotalExpectationIsoTrack: "<<totalExpIsoTrack<<" +- " << sqrt(totalExpIsoTrackError)<<"\n TotalPredictionIsoTrack (from Data): "<<totalPreIsoTrack<<" +- "<<sqrt(totalPreIsoTrackError)<<std::endl;
+  std::cout<<"TotalExpectation: "<<totalExp<<" +- " << sqrt(totalExpError)<<"\n TotalPrediction (from Data): "<<totalPre<<" +- "<<sqrt(totalPreError)<<std::endl;
+  std::cout<<"MuAccExp: "<<totalExpMuAcc<<"\n MuAccPre (from Data): "<<totalPreMuAcc<<std::endl;
+  std::cout<<"MuRecoExp: "<<totalExpMuReco<<"\n MuRecoPre (from Data): "<<totalPreMuReco<<std::endl;
+  std::cout<<"MuIsoExp: "<<totalExpMuIso<<"\n MuIsoPre (from Data): "<<totalPreMuIso<<std::endl;
+  std::cout<<"ElecAccExp: "<<totalExpElecAcc<<"\n ElecAccPre (from Data): "<<totalPreElecAcc<<std::endl;
+  std::cout<<"ElecRecoExp: "<<totalExpElecReco<<"\n ElecRecoPre: (from Data) "<<totalPreElecReco<<std::endl;
+  std::cout<<"ElecIsoExp: "<<totalExpElecIso<<"\n ElecIsoPre (from Data): "<<totalPreElecIso<<std::endl;
   std::cout<<"--------------------------------------------------------------------------------------------------------------------------\n";
 
   std::cout<<"\n Muon CS only:"<<std::endl;
-  std::cout<<"TotalExpectationIsoTrack: "<<totalExpIsoTrack<<" +- " << sqrt(totalExpIsoTrackError)<<"\n TotalPredictionIsoTrack: "<<totalPreIsoTrackMu<<" +- "<<sqrt(totalPreIsoTrackMuError)<<std::endl;
-  std::cout<<"TotalExpectation: "<<totalExp<<" +- " << sqrt(totalExpError)<<"\n TotalPrediction: "<<totalPreMu<<" +- "<<sqrt(totalPreMuError)<<std::endl;	
-  std::cout<<"MuAccExp: "<<totalExpMuAcc<<"\n MuAccPre: "<<totalPreMuMuAcc<<std::endl;
-  std::cout<<"MuRecoExp: "<<totalExpMuReco<<"\n MuRecoPre: "<<totalPreMuMuReco<<std::endl;
-  std::cout<<"MuIsoExp: "<<totalExpMuIso<<"\n MuIsoPre: "<<totalPreMuMuIso<<std::endl;
-  std::cout<<"ElecAccExp: "<<totalExpElecAcc<<"\n ElecAccPre: "<<totalPreMuElecAcc<<std::endl;
-  std::cout<<"ElecRecoExp: "<<totalExpElecReco<<"\n ElecRecoPre: "<<totalPreMuElecReco<<std::endl;
-  std::cout<<"ElecIsoExp: "<<totalExpElecIso<<"\n ElecIsoPre: "<<totalPreMuElecIso<<std::endl;
+  std::cout<<"TotalExpectationIsoTrack: "<<totalExpIsoTrack<<" +- " << sqrt(totalExpIsoTrackError)<<"\n TotalPredictionIsoTrack (from Data): "<<totalPreIsoTrackMu<<" +- "<<sqrt(totalPreIsoTrackMuError)<<std::endl;
+  std::cout<<"TotalExpectation: "<<totalExp<<" +- " << sqrt(totalExpError)<<"\n TotalPrediction (from Data): "<<totalPreMu<<" +- "<<sqrt(totalPreMuError)<<std::endl;	
+  std::cout<<"MuAccExp: "<<totalExpMuAcc<<"\n MuAccPre (from Data): "<<totalPreMuMuAcc<<std::endl;
+  std::cout<<"MuRecoExp: "<<totalExpMuReco<<"\n MuRecoPre (from Data): "<<totalPreMuMuReco<<std::endl;
+  std::cout<<"MuIsoExp: "<<totalExpMuIso<<"\n MuIsoPre (from Data): "<<totalPreMuMuIso<<std::endl;
+  std::cout<<"ElecAccExp: "<<totalExpElecAcc<<"\n ElecAccPre (from Data): "<<totalPreMuElecAcc<<std::endl;
+  std::cout<<"ElecRecoExp: "<<totalExpElecReco<<"\n ElecRecoPre (from Data): "<<totalPreMuElecReco<<std::endl;
+  std::cout<<"ElecIsoExp: "<<totalExpElecIso<<"\n ElecIsoPre (from Data): "<<totalPreMuElecIso<<std::endl;
   std::cout<<"--------------------------------------------------------------------------------------------------------------------------\n";
 
   std::cout<<"\n Elec CS only:"<<std::endl;
-  std::cout<<"TotalExpectationIsoTrack: "<<totalExpIsoTrack<<" +- " << sqrt(totalExpIsoTrackError)<<"\n TotalPredictionIsoTrack: "<<totalPreIsoTrackElec<<" +- "<<sqrt(totalPreIsoTrackElecError)<<std::endl;
-  std::cout<<"TotalExpectation: "<<totalExp<<" +- " << sqrt(totalExpError)<<"\n TotalPrediction: "<<totalPreElec<<" +- "<<sqrt(totalPreElecError)<<std::endl;	
-  std::cout<<"MuAccExp: "<<totalExpMuAcc<<"\n MuAccPre: "<<totalPreElecMuAcc<<std::endl;
-  std::cout<<"MuRecoExp: "<<totalExpMuReco<<"\n MuRecoPre: "<<totalPreElecMuReco<<std::endl;
-  std::cout<<"MuIsoExp: "<<totalExpMuIso<<"\n MuIsoPre: "<<totalPreElecMuIso<<std::endl;
-  std::cout<<"ElecAccExp: "<<totalExpElecAcc<<"\n ElecAccPre: "<<totalPreElecElecAcc<<std::endl;
-  std::cout<<"ElecRecoExp: "<<totalExpElecReco<<"\n ElecRecoPre: "<<totalPreElecElecReco<<std::endl;
-  std::cout<<"ElecIsoExp: "<<totalExpElecIso<<"\n ElecIsoPre: "<<totalPreElecElecIso<<std::endl;
+  std::cout<<"TotalExpectationIsoTrack: "<<totalExpIsoTrack<<" +- " << sqrt(totalExpIsoTrackError)<<"\n TotalPredictionIsoTrack (from Data): "<<totalPreIsoTrackElec<<" +- "<<sqrt(totalPreIsoTrackElecError)<<std::endl;
+  std::cout<<"TotalExpectation: "<<totalExp<<" +- " << sqrt(totalExpError)<<"\n TotalPrediction (from Data): "<<totalPreElec<<" +- "<<sqrt(totalPreElecError)<<std::endl;	
+  std::cout<<"MuAccExp: "<<totalExpMuAcc<<"\n MuAccPre (from Data): "<<totalPreElecMuAcc<<std::endl;
+  std::cout<<"MuRecoExp: "<<totalExpMuReco<<"\n MuRecoPre (from Data): "<<totalPreElecMuReco<<std::endl;
+  std::cout<<"MuIsoExp: "<<totalExpMuIso<<"\n MuIsoPre (from Data): "<<totalPreElecMuIso<<std::endl;
+  std::cout<<"ElecAccExp: "<<totalExpElecAcc<<"\n ElecAccPre (from Data): "<<totalPreElecElecAcc<<std::endl;
+  std::cout<<"ElecRecoExp: "<<totalExpElecReco<<"\n ElecRecoPre (from Data): "<<totalPreElecElecReco<<std::endl;
+  std::cout<<"ElecIsoExp: "<<totalExpElecIso<<"\n ElecIsoPre (from Data): "<<totalPreElecElecIso<<std::endl;
   std::cout<<"--------------------------------------------------------------------------------------------------------------------------\n";
 
 	
@@ -1706,103 +1581,23 @@ void ResultPlot()
   TH1D *ClosureTest_HT = (TH1D*) totalExp_HT_LL_->Clone("ClosureTest_HT");
   ClosureTest_HT->Divide(totalPred_HT_LL_MC_);
   ClosureTest_HT->SetTitle("Expectation / Prediction");
-  SetBinLabel(ClosureTest_HT);
   ClosureTest_HT->Write();
 
   TH1D *ClosureTest_MHT = (TH1D*) totalExp_MHT_LL_->Clone("ClosureTest_MHT");
   ClosureTest_MHT->Divide(totalPred_MHT_LL_MC_);
   ClosureTest_MHT->SetTitle("Expectation / Prediction");
-  SetBinLabel(ClosureTest_MHT);
   ClosureTest_MHT->Write();
 
   TH1D *ClosureTest_NJets = (TH1D*) totalExp_NJets_LL_->Clone("ClosureTest_NJets");
   ClosureTest_NJets->Divide(totalPred_NJets_LL_MC_);
   ClosureTest_NJets->SetTitle("Expectation / Prediction");
-  SetBinLabel(ClosureTest_NJets);
   ClosureTest_NJets->Write();
 
   TH1D *ClosureTest_BTags = (TH1D*) totalExp_BTags_LL_->Clone("ClosureTest_BTags");
   ClosureTest_BTags->Divide(totalPred_BTags_LL_MC_);
   ClosureTest_BTags->SetTitle("Expectation / Prediction");
-  SetBinLabel(ClosureTest_BTags);
   ClosureTest_BTags->Write();
 
-/*
-  TH1D *ClosureTest_HT = (TH1D*) totalExp_LL_->Clone("ClosureTest_HT");
-  ClosureTest_HT->SetTitle("Expectation / Prediction (HT bins)");
-
-  int nBin = 1;
-  for(int i =1; i<=6; i++){
-    for(int j =0; j<=11; j++){
-      ClosureTest_HT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i));
-      ClosureTest_HT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i));
-      ClosureTest_HT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i));
-      nBin++;
-    }
-  }
-  ClosureTest_HT->Write();
-
-  TH1D *ClosureTest_MHT = (TH1D*) totalExp_LL_->Clone("ClosureTest_MHT");
-  ClosureTest_MHT->SetTitle("Expectation / Prediction (MHT bins)");
-
-  nBin = 1;
-  for(int i =1; i<=3; i++){
-    for(int j =0; j<=11; j++){
-      if(i==1){
-        ClosureTest_MHT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i));
-        ClosureTest_MHT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i));
-        ClosureTest_MHT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i));
-        nBin++;
-        ClosureTest_MHT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i+1));
-        ClosureTest_MHT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i+1));
-        ClosureTest_MHT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i+1));
-        nBin++;
-        ClosureTest_MHT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i+2));
-        ClosureTest_MHT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i+2));
-        ClosureTest_MHT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i+2));
-        nBin++;
-      }if(i==2){
-        ClosureTest_MHT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i+2));
-        ClosureTest_MHT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i+2));
-        ClosureTest_MHT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i+2));
-        nBin++;
-        ClosureTest_MHT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i+3));
-        ClosureTest_MHT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i+3));
-        ClosureTest_MHT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i+3));
-        nBin++;
-      }if(i==3){
-        ClosureTest_MHT->SetBinContent(nBin, ClosureTest->GetBinContent(j*6+i+3));
-        ClosureTest_MHT->SetBinError(nBin, ClosureTest->GetBinError(j*6+i+3));
-        ClosureTest_MHT->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(j*6+i+3));
-        nBin++;
-      }      
-    }
-  }
-  ClosureTest_MHT->Write();
-
-  nBin = 1;
-  Double_t nCSmax = 10000000000.;
-  TH1D *ClosureTest_CS = (TH1D*) totalExp_LL_->Clone("ClosureTest_CS");
-  ClosureTest_CS->SetTitle("Expectation / Prediction (CS stats)");
-  while(nBin <= 72){
-    Double_t nCS = 0.;
-    int iMax = 0;
-    for(int i = 1; i <= 72; i++){
-      if(totalCS_LL_MC_->GetBinContent(i)<nCSmax){
-        if(nCS < totalCS_LL_MC_->GetBinContent(i)){
-          nCS = totalCS_LL_MC_->GetBinContent(i);
-          iMax = i;
-        }
-      }
-    }
-    nCSmax = nCS;
-    ClosureTest_CS->SetBinContent(nBin, ClosureTest->GetBinContent(iMax));
-    ClosureTest_CS->SetBinError(nBin, ClosureTest->GetBinError(iMax));
-    ClosureTest_CS->GetXaxis()->SetBinLabel(nBin, ClosureTest->GetXaxis()->GetBinLabel(iMax));
-    nBin++;
-  }
-  ClosureTest_CS->Write();
-*/
   TH1D *nonClosureSysUp = (TH1D*) ClosureTest->Clone("nonClosureSysUp");
   nonClosureSysUp->Reset();
   nonClosureSysUp->SetTitle("nonClosureSysUp");
@@ -2273,4 +2068,138 @@ void ResultPlot()
     printf("$%3.3f\\pm%3.3f$ \\\\\n", totalExp_LL_->GetBinContent(i), totalExp_LL_->GetBinError(i));
 
   }
+}
+
+
+void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // prediction durch expectation
+{
+  TH1D* Closure = (TH1D*) prediction->Clone();
+  Closure->Divide(prediction,expectation,1,1,"B");
+  TString title = prediction->GetTitle();
+  title +="_closure";
+  //  title = "#mu & e Control-Sample Ratio in Search Bins; Search bins; #mu / e CS";
+  Closure->SetTitle(title);
+  title = prediction->GetName();
+  title+="_closure";
+  Closure->SetName(title);
+  Folder->cd();
+  Closure->Write();
+}
+
+UShort_t getMergedBinQCD(UShort_t BinQCD, Int_t NJets){
+  if(BinQCD > 900) return 900;
+  if(NJets < 4) return 900;
+
+  UShort_t bin = 0;
+
+  switch(NJets){
+    case 4:
+      bin = BinQCD % 11;
+      if(bin == 0) bin = 11;
+      break;
+    case 5:
+      bin = BinQCD % 11 + 11;
+      if(bin == 11) bin = 22;
+      break;
+    case 6:
+      bin = BinQCD % 11 + 22;
+      if(bin == 22) bin = 33;
+      break;
+    case 7:
+    case 8:
+      bin = BinQCD % 11 + 33;
+      if(bin == 33) bin = 44;
+      break;
+    default:
+      bin = BinQCD % 11 + 44;
+      if(bin == 44) bin = 55;
+      break;
+  }
+
+  return bin;
+}
+
+UShort_t getHTMHTBox(Double_t HT, Double_t MHT){
+  if(MHT < 200 || HT < 500) return -1;
+  if(MHT >= 750 && HT < 800) return -1;
+
+  if(MHT < 500){
+    if(HT < 800) return 1;
+    if(HT < 1200) return 2;
+    else return 3;
+  }else if(MHT < 750){
+    if(HT < 1200) return 4;
+    else return 5;
+  }else{
+    return 6;
+  }
+
+  return -1; // Should not be reached
+}
+
+void SetBinLabel(TH1D* hist){
+  if(hist->GetNbinsX()==72)
+  for(int nji = 0; nji<3; ++nji){
+    for(int nbi = 0; nbi<4; ++nbi){
+        for(int hti = 0; hti<6; ++hti){
+          int mhti =0;
+          if(hti >=0 && hti <=2) mhti = 0;
+          else if(hti >=3 && hti <=4) mhti = 1;
+          else mhti = 2;
+          char binlabel[100];
+          int bi = nji * 24 + nbi * 6 + hti + 1;
+          //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
+          sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
+          hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
+        }
+    }
+  }
+
+  if(hist->GetNbinsX()==220)
+  for(int nji = 0; nji<5; ++nji){
+    for(int nbi = 0; nbi<4; ++nbi){
+        for(int mhti = 0; mhti<4; ++mhti){
+          int htiMin = 0;
+          if(mhti==3) htiMin = 1;
+          for(int hti = htiMin; hti<3; ++hti){
+            char binlabel[100];
+            int bi = nji * 44 + nbi * 11 + mhti * 3 + hti + 1;
+            if(htiMin==1) bi = nji * 44 + nbi * 11 + mhti * 3 + hti;
+            //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
+            sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
+            hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
+          }
+        }
+    }
+  }
+  
+  hist -> GetXaxis() -> LabelsOption("v");
+}
+
+void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir){
+  for(int i = 1; i<Bottom->GetNbinsX()+1; ++i){
+      if(Bottom->GetBinContent(i)>0) Top->SetBinContent(i, 1.+Top->GetBinContent(i)/Bottom->GetBinContent(i));
+      else Top->SetBinContent(i, -999);
+      //else Top->SetBinContent(i, 0);
+      Top->SetBinError(i, 0);
+  } 
+
+  SetBinLabel(Top);
+
+  dir->cd();
+  Top->Write();
+}
+
+void addUncertainties(TH1D* total, std::vector<TH1D*> uncertainties, bool upperUnc){
+  for(int i = 0; i <= total->GetNbinsX(); i++){
+    Double_t sumSq = 0.;
+
+    for (std::vector<TH1D*>::iterator it = uncertainties.begin() ; it != uncertainties.end(); ++it){
+      sumSq += (*it)->GetBinContent(i) * (*it)->GetBinContent(i);
+    }
+
+    if(upperUnc) total->SetBinContent(i, std::sqrt(sumSq));
+    else total->SetBinContent(i, -std::sqrt(sumSq));
+  }
+
 }

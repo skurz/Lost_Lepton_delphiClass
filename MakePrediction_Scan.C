@@ -13,20 +13,48 @@ void MakePrediction_Scan()
 
     gROOT->ProcessLine(".L Prediction.C+");
 
-	int nChains = 1;
+	int nChains = 15;
 	TChain *Effchain[nChains];
 	for(Int_t i=0; i<nChains; i++){
 	  Effchain[i] = new TChain("tree");
 	}   
 
-	Effchain[0]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T1tttt_*.root");
-	Effchain[0]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T1tttt_*.root");
+	Effchain[0]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_6*_*.root");
+	Effchain[0]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_6*_*.root");
+	Effchain[1]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_7*_*.root");
+	Effchain[1]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_7*_*.root");
+	Effchain[2]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_8*_*.root");
+	Effchain[2]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_8*_*.root");
+	Effchain[3]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_9*_*.root");
+	Effchain[3]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_9*_*.root");
+	Effchain[4]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_10*_*.root");
+	Effchain[4]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_10*_*.root");
 
-	//Effchain[0]->Process("Prediction", "Prediction_Scan/Prediction_Scan_T1tttt_1.root", 1000000, 0);
-	//Effchain[0]->Process("Prediction", "Prediction_Scan/Prediction_Scan_T1tttt_2.root", TChain::kBigNumber, 1000001);
+	Effchain[5]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_11*_*.root");
+	Effchain[5]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_11*_*.root");
+	Effchain[6]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_12*_*.root");
+	Effchain[6]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_12*_*.root");
+	Effchain[7]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_13*_*.root");
+	Effchain[7]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_13*_*.root");
+	Effchain[8]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_14*_*.root");
+	Effchain[8]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_14*_*.root");
+	Effchain[9]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_15*_*.root");
+	Effchain[9]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_15*_*.root");
 
-	Effchain[0]->Process("Prediction", TString::Format("Prediction_Scan/Prediction_Scan_T1tttt_%d.root", 0), 200000, 0);
-	for(int i = 1; i < 50; ++i){
-		Effchain[0]->Process("Prediction", TString::Format("Prediction_Scan/Prediction_Scan_T1tttt_%d.root", i), 200000*(i+1), 200000*i+1);
-	}
+	Effchain[10]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_16*_*.root");
+	Effchain[10]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_16*_*.root");
+	Effchain[11]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_17*_*.root");
+	Effchain[11]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_17*_*.root");
+	Effchain[12]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_18*_*.root");
+	Effchain[12]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_18*_*.root");
+	Effchain[13]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_19*_*.root");
+	Effchain[13]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_19*_*.root");
+	Effchain[14]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLm/tree_T5qqqqVV_20*_*.root");
+	Effchain[14]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/scan_v5/SLe/tree_T5qqqqVV_20*_*.root");
+
+
+	for(Int_t i=0; i<nChains; i++){ // i<nChains
+    	std::cout<<"Processing Tree: "<<i<<std::endl;
+    	Effchain[i]->Process("Prediction", TString::Format("Prediction_Scan/Prediction_Scan_T5qqqqVV_%d.root", (i+6)*100));
+    }
 }
