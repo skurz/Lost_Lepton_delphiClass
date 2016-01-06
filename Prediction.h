@@ -67,7 +67,8 @@ const TString path_ISRcorr("isr_corrections/ISRWeights.root");
 const bool useFilterData = false;  //<-check------------------------
 const string path_evtListFilter("eventFilter/csc2015.txt");
 
-// CSCTightHaloFilterUpdate from list
+// CSCTightHaloFilterUpdate from list\
+// True if running on data
 // Can be turned of for MC (not necessaary but faster)
 const bool useFilterList = false;  //<-check------------------------
 
