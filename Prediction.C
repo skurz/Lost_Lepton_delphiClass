@@ -223,7 +223,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("IsolatedPionTracksVetoActivity", &IsolatedPionTracksVetoActivity);
   tPrediction_->Branch("IsolatedPionTracksVetoMTW", &IsolatedPionTracksVetoMTW);
   tPrediction_->Branch("HTJetsMask", &HTJetsMask);
-  if(signalScan){
+  if(runOnSignalMC){
     tPrediction_->Branch("SusyLSPMass", &SusyLSPMass);
     tPrediction_->Branch("SusyMotherMass", &SusyMotherMass);
     tPrediction_->Branch("w_isr", &w_isr);
@@ -371,7 +371,7 @@ Bool_t Prediction::Process(Long64_t entry)
   if(useTrigger) if(!TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
 
 
-  if(signalScan){
+  if(runOnSignalMC){
     TString currentTree = TString(fChain->GetCurrentFile()->GetName());
     if(currentTree != treeName){
       treeName = currentTree;   
@@ -421,7 +421,7 @@ Bool_t Prediction::Process(Long64_t entry)
   }
 
   if(useTriggerEffWeight){
-    if(signalScan){
+    if(runOnSignalMC){
       Weight *= GetSignalTriggerEffWeight(MHT);
       //Account for efficiency of JetID since we cannot apply it on fastSim
       Weight *= 0.99;
@@ -1147,7 +1147,7 @@ bool Prediction::FiltersPass()
   }
   if(NVtx<=0) result=false;
   // Do not apply on fastSim samples!
-  if(!signalScan) if(JetID!=1) result=false;
+  if(!runOnSignalMC) if(JetID!=1) result=false;
   return result;
 }
 

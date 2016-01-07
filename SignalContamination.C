@@ -27,14 +27,14 @@ void SignalContamination()
 
   // General Settings
   TString InputPath_Prediction("Prediction_Scan_T1tttt.root");
-  TString OutputPath_Prediction("LLContamination_T1tttt_QCD.root");
+  TString OutputPath_Prediction("LLContamination_T1tttt.root");
 
 
   // Scale all MC weights by this factor
   Double_t scaleFactorWeight = 2262; // in units of [pb] //<-check------------------------
 
   // Present output in QCD binning
-  bool doQCDbinning = true;  //<-check------------------------;
+  bool doQCDbinning = false;  //<-check------------------------;
 
   // Begin of Code
   SearchBins *SearchBins_ = new SearchBins(doQCDbinning);

@@ -32,6 +32,7 @@
 
 ////////////////////////
 //////// Options
+//////// SET DEPENDING ON SAMPLE: data, MC, signal!
 ///////////////////////
 
 // useDeltaPhiCut = 0: no deltaPhiCut
@@ -39,45 +40,23 @@
 // useDeltaPhiCut = -1: inverted deltaPhiCut
 const int useDeltaPhiCut = 1;  //<-check------------------------
 
-// Seta data specific options, e.g. Trigger
-// Usually:
-// MC: false, false, true
-// data: true, true, false
 const bool runOnData = false;  //<-check------------------------
-// Apply trigger
-const bool useTrigger = false;  //<-check------------------------
-// Apply weights if trigger not simulated
-const bool useTriggerEffWeight = true;  //<-check------------------------
+const bool runOnStandardModelMC = true;  //<-check------------------------
+const bool runOnSignalMC = false;  //<-check------------------------
 
-// Option for SignalScan
-const bool signalScan = false;  //<-check------------------------
-// Do PU reweighting. true for signal scan
-const bool doPUreweighting = false;  //<-check------------------------
+
+// PU
 const TString path_puHist("PU/PileupHistograms_1117.root");
-// bTag corrections. Use for signal scan
-const bool doBTagCorr = false;  //<-check------------------------
+// bTag corrections
 const string path_bTagCalib("btag/CSVv2_mod.csv");
 const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
-// ISR corrections. NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond
-const bool doISRcorr = false;  //<-check------------------------
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// ISR corrections: NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond! Just uncomment in Prediction::Init(Tree*) of this file
 const TString path_ISRcorr("isr_corrections/ISRWeights.root");
 
-// useFilterData = true; unless you want to run without MET filters
-// useFilterData = false; For FastSim Samples, e.g. Signal Scans! Met filters not simulated
-const bool useFilterData = false;  //<-check------------------------
+// CSCTightHaloFilterUpdate from list
 const string path_evtListFilter("eventFilter/csc2015.txt");
 
-// CSCTightHaloFilterUpdate from list\
-// True if running on data
-// Can be turned of for MC (not necessaary but faster)
-const bool useFilterList = false;  //<-check------------------------
-
-
-// ScaleFactors from SUSY lepton SG groups: presentation from Oct 23 (preliminary!!)
-// NOT USED ANYMORE
-const bool usePrelimSFs = false;
-// Those are the SFs you want! Read from root file
-const bool useSFs = true;
 const TString path_elecID("SFs/kinematicBinSFele.root");
 const TString hist_elecID("CutBasedVeto");
 const TString path_elecIso("SFs/kinematicBinSFele.root");
@@ -86,8 +65,20 @@ const TString hist_elecIso("MiniIso0p1_vs_RelActivity");
 const TString path_muID("SFs/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root");
 const TString hist_muID("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_tag_IsoMu20_pass");
 const TString path_muIso("SFs/TnP_MuonID_NUM_MiniIsoTight_DENOM_LooseID_VAR_map_pt_eta.root");
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // muIso: still binned in pt/eta since this was recommended! Has to be changed for Moriond (also in Prediction.C when getting the uncertainties)!
 const TString hist_muIso("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass");
+
+
+////////////////////////
+//////// Usually don't have to be changed
+///////////////////////
+
+// ScaleFactors from SUSY lepton SG groups: presentation from Oct 23 (preliminary!!)
+// NOT USED ANYMORE
+const bool usePrelimSFs = false;
+// Those are the SFs you want! Read from root file
+const bool useSFs = true;
 
 // scaleMet = 0: keep things the way they are
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
@@ -209,6 +200,16 @@ class Prediction : public TSelector {
   double ElecActivity( double elecEta, double elecPhi, unsigned int method);
   double IsoTrackActivityCalc( double isoTrackEta, double isoTrackPhi, unsigned int method);
   std::pair <double,double> minDeltaRLepJet(double lepPT, double lepEta, double lepPhi);
+
+  //Options
+  bool useTrigger = false;
+  bool useTriggerEffWeight = false;
+  bool doPUreweighting = false;
+  bool doBTagCorr = false;
+  bool doISRcorr = false; 
+  bool useFilterData = false;
+  bool useFilterList = false;
+
   // output variables
   TTree *tPrediction_;
 
@@ -725,6 +726,42 @@ void Prediction::Init(TTree *tree)
   fChain = tree;
   fChain->SetMakeClass(1);
 
+
+  ////////////////////////
+  //////// Options
+  ///////////////////////
+
+  if(!((runOnData && !runOnStandardModelMC && !runOnSignalMC) || (!runOnData && runOnStandardModelMC && !runOnSignalMC) || (!runOnData && !runOnStandardModelMC && runOnSignalMC)))
+  std::cout<<"CHECK OPTIONS! EITHER RUN ON DATA, MC, OR SIGNAL!!!"<<std::endl;
+
+  // Seta data specific options, e.g. Trigger
+  // Apply trigger
+  if(runOnData) useTrigger = true;
+  // Apply weights if trigger not simulated
+  if(runOnStandardModelMC || runOnSignalMC) useTriggerEffWeight = true;
+
+  // Do PU reweighting. true for signal scan
+  if(runOnSignalMC) doPUreweighting = true;
+  // bTag corrections. Use for signal scan
+  if(runOnSignalMC) doBTagCorr = true;
+  // ISR corrections. NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond
+  //if(runOnSignalMC) doISRcorr = true; //<-check---------------------------------------
+
+  // useFilterData = true; unless you want to run without MET filters
+  // useFilterData = false; For FastSim Samples, e.g. Signal Scans! Met filters not simulated
+  if(runOnStandardModelMC || runOnData) useFilterData = true;
+
+  // CSCTightHaloFilterUpdate from list
+  // True if running on data
+  if(runOnData) useFilterList = true;  
+
+
+
+  ////////////////////////
+  //////// End Options
+  ///////////////////////
+
+
   TChain* temp = (TChain*)fChain;
   std::string infname=temp->GetFile()->GetName();
 
@@ -790,7 +827,7 @@ void Prediction::Init(TTree *tree)
   TFile *elecIsoSF_histFile = TFile::Open(path_elecIso, "READ");
   h_elecIsoSF = (TH2D*) elecIsoSF_histFile->Get(hist_elecIso)->Clone();
 
-  if(signalScan){
+  if(runOnSignalMC){
     // ISR setup
     isrfile = TFile::Open(path_ISRcorr, "READ");
     h_isr = (TH1*)isrfile->Get("isr_weights_central");
@@ -834,7 +871,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("DeltaPhi2", 1);
   fChain->SetBranchStatus("DeltaPhi3", 1);
   fChain->SetBranchStatus("DeltaPhi4", 1);
-  if(!signalScan){
+  if(!runOnSignalMC){
     fChain->SetBranchStatus("CSCTightHaloFilter", 1);
     fChain->SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter", 1);
     fChain->SetBranchStatus("eeBadScFilter", 1);
@@ -902,7 +939,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("TriggerPrescales", 1);
   if(!runOnData) fChain->SetBranchStatus("Weight", 1);
   if(HTgen_cut>0.01)  fChain->SetBranchStatus("genHT", 1);
-  if(signalScan){
+  if(runOnSignalMC){
     fChain->SetBranchStatus("SusyLSPMass", 1);
     fChain->SetBranchStatus("SusyMotherMass", 1);
     fChain->SetBranchStatus("TrueNumInteractions", 1);
@@ -940,7 +977,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("DeltaPhi2", &DeltaPhi2, &b_DeltaPhi2);
   fChain->SetBranchAddress("DeltaPhi3", &DeltaPhi3, &b_DeltaPhi3);
   fChain->SetBranchAddress("DeltaPhi4", &DeltaPhi4, &b_DeltaPhi4);
-  if(!signalScan){
+  if(!runOnSignalMC){
     fChain->SetBranchAddress("CSCTightHaloFilter", &CSCTightHaloFilter, &b_CSCTightHaloFilter);
     fChain->SetBranchAddress("EcalDeadCellTriggerPrimitiveFilter", &EcalDeadCellTriggerPrimitiveFilter, &b_EcalDeadCellTriggerPrimitiveFilter);
     fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
@@ -1008,7 +1045,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
   if(!runOnData) fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
   if(HTgen_cut>0.01) fChain->SetBranchAddress("genHT", &genHT, &b_genHT);
-  if(signalScan){
+  if(runOnSignalMC){
     fChain->SetBranchAddress("SusyLSPMass", &SusyLSPMass, &b_SusyLSPMass);
     fChain->SetBranchAddress("SusyMotherMass", &SusyMotherMass, &b_SusyMotherMass);
     fChain->SetBranchAddress("TrueNumInteractions", &TrueNumInteractions, &b_TrueNumInteractions);
