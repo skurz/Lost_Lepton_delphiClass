@@ -969,11 +969,11 @@ Bool_t EffMaker::Process(Long64_t entry)
     if(NJets > 5.5 && NJets < 6.5) IsoTrackReductionHTMHT_NJets6_->Fill(HT,MHT,Weight,true);
 
     if(isoMuonTracks>0 && GenMuNum>0){
-        IsoTrackReductionPTActivity_->Fill(IsolatedMuonTracksVetoActivity->at(0),IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
+        IsoTrackReductionPTActivity_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),Weight,true);
     }else if(isoElectronTracks>0 && GenElecNum>0){
-        IsoTrackReductionPTActivity_->Fill(IsolatedElectronTracksVetoActivity->at(0),IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
+        IsoTrackReductionPTActivity_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),Weight,true);
     }else if(isoPionTracks>0 && GenTauNum>0){
-        IsoTrackReductionPTActivity_->Fill(IsolatedPionTracksVetoActivity->at(0),IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
+        IsoTrackReductionPTActivity_->Fill(GenTau_MT2Activity->at(0),GenTaus->at(0).Pt(),Weight,true);
     }
   }
 
