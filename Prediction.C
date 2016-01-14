@@ -23,20 +23,6 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   TFile *effInput = new TFile("Efficiencies.root","READ");
   TDirectory *EffInputFolder =   (TDirectory*)effInput->Get("Efficiencies");
 
-  if(UseTagAndProbeEffIso_)
-    {
-      TDirectory *EffTagAndProbeInputFolder =   (TDirectory*)effInput->Get("TagAndProbe");
-      MuIsoPTActivityTAPMC_ = (TH2D*)EffTagAndProbeInputFolder->Get("MuIsoTagAndProbeMC");    
-      ElecIsoPTActivityTAPMC_ = (TH2D*)EffTagAndProbeInputFolder->Get("ElecIsoTagAndProbeMC");
-    
-    }
-  if(UseTagAndProbeEffReco_)
-    {
-      TDirectory *EffTagAndProbeInputFolder =   (TDirectory*)effInput->Get("TagAndProbe");
-      MuRecoPTActivityTAPMC_ = (TH2D*)EffTagAndProbeInputFolder->Get("MuRecoTagAndProbeMC");
-      ElecRecoPTActivityTAPMC_ = (TH2D*)EffTagAndProbeInputFolder->Get("ElecRecoTagAndProbeMC");    
-    }
-
   MuMTWPTActivity_ = new TH2Eff("MuMTWPTActivity", EffInputFolder);
   MuMTWNJets_ = new TH1Eff("MuMTWNJets1D", EffInputFolder);
   MuMTWHTNJets_ = new TH2Eff("MuMTWHTNJets", EffInputFolder);
@@ -141,7 +127,6 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("Bin",&Bin_);
   tPrediction_->Branch("BinQCD",&BinQCD_);
   tPrediction_->Branch("isoTracks",&isoTracks);
-  tPrediction_->Branch("Leptons",&Leptons);
   tPrediction_->Branch("DeltaPhi1",&DeltaPhi1);
   tPrediction_->Branch("DeltaPhi2",&DeltaPhi2);
   tPrediction_->Branch("DeltaPhi3",&DeltaPhi3);
@@ -151,25 +136,15 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("METPhi",&METPhi);
   tPrediction_->Branch("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum_);
   tPrediction_->Branch("selectedIDIsoMuons", "std::vector<TLorentzVector>", &selectedIDIsoMuons, 32000, 0);
-  tPrediction_->Branch("selectedIDIsoMuons_MTW", &selectedIDIsoMuons_MTW);
   tPrediction_->Branch("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity);
   tPrediction_->Branch("selectedIDIsoMuonsRelPTJet", &selectedIDIsoMuonsRelPTJet);
   tPrediction_->Branch("selectedIDIsoMuonsDeltaRJet", &selectedIDIsoMuonsDeltaRJet);
   tPrediction_->Branch("selectedIDIsoElectronsNum",&selectedIDIsoElectronsNum_);
   tPrediction_->Branch("selectedIDIsoElectrons", "std::vector<TLorentzVector>", &selectedIDIsoElectrons, 32000, 0);
-  tPrediction_->Branch("selectedIDIsoElectrons_MTW", &selectedIDIsoElectrons_MTW);
   tPrediction_->Branch("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity);
   tPrediction_->Branch("selectedIDIsoElectronsRelPTJet", &selectedIDIsoElectronsRelPTJet);
   tPrediction_->Branch("selectedIDIsoElectronsDeltaRJet", &selectedIDIsoElectronsDeltaRJet);
   tPrediction_->Branch("MTW",&mtw);
-  tPrediction_->Branch("PTW",&ptw);
-  //  tPrediction_->Branch("GenPTW",&genptw);
-  muActivityMethod=muActivityMethod_;
-  elecActivityMethod=elecActivityMethod_;
-  isoTrackActivityMethod=isoTrackActivityMethod_;
-  tPrediction_->Branch("muActivityMethod",&muActivityMethod);  
-  tPrediction_->Branch("elecActivityMethod",&elecActivityMethod);  
-  tPrediction_->Branch("isoTrackActivityMethod",&isoTrackActivityMethod);
   tPrediction_->Branch("muMTWEff",&muMTWEff_);
   tPrediction_->Branch("mtwCorrectedWeight",&mtwCorrectedWeight_);
   tPrediction_->Branch("muDiLepContributionMTWAppliedEff",&muDiLepContributionMTWAppliedEff_);
@@ -212,16 +187,10 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("totalWeightDiLep",&totalWeightDiLep_);
   tPrediction_->Branch("isoMuonTracks",&isoMuonTracks);
   tPrediction_->Branch("IsolatedMuonTracksVeto", "std::vector<TLorentzVector>", &IsolatedMuonTracksVeto, 32000, 0);
-  tPrediction_->Branch("IsolatedMuonTracksVetoActivity", &IsolatedMuonTracksVetoActivity);
-  tPrediction_->Branch("IsolatedMuonTracksVetoMTW", &IsolatedMuonTracksVetoMTW);
   tPrediction_->Branch("isoElectronTracks",&isoElectronTracks);
   tPrediction_->Branch("IsolatedElectronTracksVeto", "std::vector<TLorentzVector>", &IsolatedElectronTracksVeto, 32000, 0);
-  tPrediction_->Branch("IsolatedElectronTracksVetoActivity", &IsolatedElectronTracksVetoActivity);
-  tPrediction_->Branch("IsolatedElectronTracksVetoMTW", &IsolatedElectronTracksVetoMTW);
   tPrediction_->Branch("isoPionTracks",&isoPionTracks);
   tPrediction_->Branch("IsolatedPionTracksVeto", "std::vector<TLorentzVector>", &IsolatedPionTracksVeto, 32000, 0);
-  tPrediction_->Branch("IsolatedPionTracksVetoActivity", &IsolatedPionTracksVetoActivity);
-  tPrediction_->Branch("IsolatedPionTracksVetoMTW", &IsolatedPionTracksVetoMTW);
   tPrediction_->Branch("HTJetsMask", &HTJetsMask);
   if(runOnSignalMC){
     tPrediction_->Branch("SusyLSPMass", &SusyLSPMass);
@@ -230,7 +199,6 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
     tPrediction_->Branch("w_pu", &w_pu);
     tPrediction_->Branch("xsec", &xsec);
     tPrediction_->Branch("nEvtsTotal", &nEvtsTotal);
-    tPrediction_->Branch("Jets_partonFlavor", &Jets_partonFlavor);
     tPrediction_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
     tPrediction_->Branch("bTagProb", &bTagProb);
   }
@@ -297,11 +265,6 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("elecAccQsquareSysUp", &elecAccQsquareSysUp);
   tPrediction_->Branch("elecAccQsquareSysDown", &elecAccQsquareSysDown);
 
-//  tPrediction_->Branch("diBosonUp", &diBosonUp);
-//  tPrediction_->Branch("diBosonDown", &diBosonDown);
-//  tPrediction_->Branch("nonClosureUp", &nonClosureUp);
-//  tPrediction_->Branch("nonClosureDown", &nonClosureDown);
-
   tPrediction_->Branch("totalStatUp", &totalStatUp);
   tPrediction_->Branch("totalSysUp", &totalSysUp);
   tPrediction_->Branch("totalUncUp", &totalUncUp);
@@ -335,12 +298,6 @@ Bool_t Prediction::Process(Long64_t entry)
   if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_) return kTRUE;
   if(useDeltaPhiCut == -1) if(!(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_)) return kTRUE;
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
-
-  if(useFilterList){
-    bool CSCTightHaloFilterUpdate = evtListFilter->CheckEvent(RunNum,LumiBlockNum,EvtNum);
-    if(!CSCTightHaloFilterUpdate) return kTRUE;
-  } 
-
 
   isoTracks= isoElectronTracks + isoMuonTracks + isoPionTracks;
 
@@ -468,9 +425,6 @@ Bool_t Prediction::Process(Long64_t entry)
     {
       // cout << "Single muon event...";
       mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
-      ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
-      //selectedIDIsoMuonsActivity.push_back(MuActivity(selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi(),muActivityMethod_));
-      //double elecActivity = ElecActivity(selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi(),elecActivityMethod_);
 
       std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi());
       selectedIDIsoMuonsDeltaRJet.push_back(DeltaR_relPT.first);
@@ -514,12 +468,7 @@ Bool_t Prediction::Process(Long64_t entry)
       //elecRecoEffVec_ = ElecRecoPTEta_->GetEff(selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), useAsymmErrors);
       elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
       elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
-      /*
-    	if(UseTagAndProbeEffIso_)muIsoEff_ = getEff(MuIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0]); 
-    	if(UseTagAndProbeEffReco_)muRecoEff_ = getEff(MuRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),selectedIDIsoMuonsActivity[0]); 
-    	if(UseTagAndProbeEffReco_)elecRecoEff_ = getEff(ElecRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),elecActivity); 
-    	if(UseTagAndProbeEffIso_)elecIsoEff_ = getEff(ElecIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(),elecActivity); 
-      */
+
       //for compatibility
       muPurityCorrection_ = muPurityCorrectionVec_.eff;
       muMTWEff_ = muMTWEffVec_.eff;
@@ -758,9 +707,6 @@ Bool_t Prediction::Process(Long64_t entry)
       // cout << "Single electron event...";
       // cout << "get MTW...";
       mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
-      ptw =  PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
-      //selectedIDIsoElectronsActivity.push_back(ElecActivity(selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi(),elecActivityMethod_));
-      //double muActivity = MuActivity(selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi(),elecActivityMethod_);
 
       std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi());
       selectedIDIsoElectronsDeltaRJet.push_back(DeltaR_relPT.first);
@@ -808,12 +754,6 @@ Bool_t Prediction::Process(Long64_t entry)
       //muRecoEffVec_ = MuRecoPTEta_->GetEff(selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), useAsymmErrors);
       muRecoEffVec_ = MuRecoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
       
-      /*
-    	if(UseTagAndProbeEffIso_) elecIsoEff_ = getEff(ElecIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoElectronsActivity[0]); 
-    	if(UseTagAndProbeEffReco_)elecRecoEff_ = getEff(ElecRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoElectronsActivity[0]); 
-    	if(UseTagAndProbeEffReco_) muRecoEff_ = getEff(MuRecoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), muActivity); 
-    	if(UseTagAndProbeEffIso_) muIsoEff_ = getEff(MuIsoPTActivityTAPMC_, selectedIDIsoMuons->at(0).Pt(), muActivity); 
-      */    
       //for compatibility
       elecPurityCorrection_ = elecPurityCorrectionVec_.eff;
       elecMTWEff_ = elecMTWEffVec_.eff;
@@ -1085,6 +1025,7 @@ void Prediction::Terminate()
 
   outPutFile->Close();
 
+  cout << "mT cut not yet applied " << endl;
   cout << "Saved output to " << fileName << endl;
   
 }
@@ -1119,26 +1060,20 @@ void Prediction::resetValues()
   muIsoOnlyWeight_=0.;
   elecIsoOnlyWeight_=0.;
   // isolated track prediction
-  IsolatedTracksMuMatched_=false;
-  IsolatedTracksElecMatched_=false;
-  //selectedIDIsoMuonsActivity.clear(); 
-  //selectedIDIsoElectronsActivity.clear(); 
   selectedIDIsoMuonsDeltaRJet.clear();
   selectedIDIsoMuonsRelPTJet.clear(); 
   selectedIDIsoElectronsDeltaRJet.clear();
   selectedIDIsoElectronsRelPTJet.clear();
-  IsolatedMuonTracksVetoActivity.clear();
-  IsolatedMuonTracksVetoMTW.clear();
-  IsolatedElectronTracksVetoActivity.clear();
-  IsolatedElectronTracksVetoMTW.clear();
-  IsolatedPionTracksVetoActivity.clear();
-  IsolatedPionTracksVetoMTW.clear();
 }
 
 bool Prediction::FiltersPass()
 {
   bool result=true;
   if(useFilterData){
+    if(useFilterList){
+      bool CSCTightHaloFilterUpdate = evtListFilter->CheckEvent(RunNum,LumiBlockNum,EvtNum);
+      if(!CSCTightHaloFilterUpdate) result=false;
+    } 
     //if(!CSCTightHaloFilter) result=false;
     if(eeBadScFilter!=1) result=false;
     if(!eeBadSc4Filter) result=false;
@@ -1151,185 +1086,6 @@ bool Prediction::FiltersPass()
   return result;
 }
 
-double Prediction::getEff(TH2F* effTH2F, double xValue, double yValue)
-{
-  double result = 0;
-  if(xValue < effTH2F->GetXaxis()->GetXmin() )
-    {
-      //              std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<effTH2F->GetName()<<std::endl;
-      xValue= effTH2F->GetXaxis()->GetXmin()+0.01;
-    }
-  else if(xValue > effTH2F->GetXaxis()->GetXmax() )
-    {
-      //        std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<effTH2F->GetName()<<" which is: "<<effTH2F->GetXaxis()->GetXmax();
-      xValue= effTH2F->GetXaxis()->GetXmax()-0.01;
-      //              std::cout<<" Setting xValue to: "<<xValue<<std::endl;
-      if(xValue > effTH2F->GetXaxis()->GetXmax() )std::cout<<"Problem persists!!!!!!!!!"<<std::endl;
-    }
-  
-  if(yValue < effTH2F->GetYaxis()->GetXmin() )
-    {
-      //              std::cout<<"Warning yValue: "<<yValue<<" is smaller than minimum of histo: "<<effTH2F->GetName()<<std::endl;
-      yValue= effTH2F->GetYaxis()->GetXmin()+0.01;
-    }
-  else if(yValue > effTH2F->GetYaxis()->GetXmax() )
-    {
-      //              std::cout<<"Warning yValue: "<<yValue<<" is bigger than maximum of histo: "<<effTH2F->GetName()<<std::endl;
-      yValue= effTH2F->GetYaxis()->GetXmax()-0.01;
-    }
-  result = effTH2F->GetBinContent(effTH2F->GetXaxis()->FindBin(xValue),effTH2F->GetYaxis()->FindBin(yValue));
-  if(result<0.01)
-    {
-      std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.01 for histo: "<<effTH2F->GetName()<<std::endl;
-      result =0.01;
-    }
-  if(result>1)
-    {
-      std::cout<<"Warning efficiency is: "<<result<<" is bigger than 1 for histo: "<<effTH2F->GetName()<<std::endl;
-      result =0.99;
-    }
-  return result;
-}
-double Prediction::getEff(TH1F* effTH1F, double xValue)
-{
-  double result = 0;
-  if(xValue < effTH1F->GetXaxis()->GetXmin() )
-    {
-      std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<effTH1F->GetName()<<std::endl;
-      xValue= effTH1F->GetXaxis()->GetXmin()+0.01;
-    }
-  else if(xValue > effTH1F->GetXaxis()->GetXmax() )
-    {
-      std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<effTH1F->GetName()<<" which is: "<<effTH1F->GetXaxis()->GetXmax();
-      xValue= effTH1F->GetXaxis()->GetXmax()-0.01;
-      std::cout<<" Setting xValue to: "<<xValue<<std::endl;
-      if(xValue > effTH1F->GetXaxis()->GetXmax() )std::cout<<"Problem persists!!!!!!!!!"<<std::endl;
-    }
-  
-  
-  result = effTH1F->GetBinContent(effTH1F->GetXaxis()->FindBin(xValue));
-  if(result<0.01)
-    {
-      std::cout<<"Warning efficiency is: "<<result<<" is smaller than 1% for histo: "<<effTH1F->GetName()<<std::endl;
-      result =0.01;
-    }
-  if(result>1)
-    {
-      std::cout<<"Warning efficiency is: "<<result<<" is bigger than 1 for histo: "<<effTH1F->GetName()<<std::endl;
-      result =0.99;
-    }
-  return result;
-}
-
-double Prediction::MuActivity( double muEta, double muPhi, unsigned int method)
-{
-  double result =0;
-  if(method==0)
-    {
-      for (unsigned int i=0; i < JetsNum_ ; i++)
-	{
-	  if(deltaR(muEta,muPhi,Jets->at(i).Eta(),Jets->at(i).Phi())>maxDeltaRMuActivity_ ) continue;
-	  result+=Jets->at(i).Pt() * (Jets_chargedEmEnergyFraction->at(i) + Jets_chargedHadronEnergyFraction->at(i));
-	}
-    }
-  if(method==1)
-    {
-      for (unsigned int i=0; i < JetsNum_ ; i++)
-	{
-	  if(deltaR(muEta,muPhi,Jets->at(i).Eta(),Jets->at(i).Phi())>maxDeltaRMuActivity_ ) continue;
-	  result+=Jets->at(i).Pt() * (Jets_chargedEmEnergyFraction->at(i) + Jets_chargedHadronEnergyFraction->at(i))*(1/(deltaR(muEta,muPhi,Jets->at(i).Eta(),Jets->at(i).Phi())+0.5));
-	}
-    }
-  // if(method==2)
-  //   {
-  //     for(unsigned int i=0; i< SelectedPFCandidatesNum; i++)
-  // 	{
-  // 	  if(deltaR(muEta,muPhi,SelectedPFCandidatesEta->at(i),SelectedPFCandidatesPhi->at(i))>maxDeltaRElecActivity_ ) continue;
-  // 	  result+=SelectedPFCandidatesPt->at(i);
-  // 	}
-  //   }
-  // if(method==3)
-  //   {
-  //     for(unsigned int i=0; i< SelectedPFCandidatesNum; i++)
-  // 	{
-  // 	  if(SelectedPFCandidates_Charge->at(i)!=0) continue;
-  // 	  if(deltaR(muEta,muPhi,SelectedPFCandidatesEta->at(i),SelectedPFCandidatesPhi->at(i))>maxDeltaRElecActivity_ ) continue;
-  // 	  result+=SelectedPFCandidatesPt->at(i);
-  // 	}
-  //   }
-  return result;
-  
-}
-double Prediction::ElecActivity( double elecEta, double elecPhi, unsigned int method)
-{
-  double result =0;
-  if(method==0)
-    {
-      for (unsigned int i=0; i < JetsNum_ ; i++)
-	{
-	  if(deltaR(elecEta,elecPhi,Jets->at(i).Eta(),Jets->at(i).Phi())>maxDeltaRElecActivity_ ) continue;
-	  result+=Jets->at(i).Pt() * (Jets_chargedHadronEnergyFraction->at(i));
-	  //                      result+=Jets->at(i).Pt() * (Jets_chargedEmEnergyFraction->at(i) + Jets_chargedHadronEnergyFraction->at(i));
-	}
-    }
-  if(method==1)
-    {
-      for (unsigned int i=0; i < JetsNum_ ; i++)
-	{
-	  if(deltaR(elecEta,elecPhi,Jets->at(i).Eta(),Jets->at(i).Phi())>maxDeltaRElecActivity_ ) continue;
-	  result+=Jets->at(i).Pt() * (Jets_chargedHadronEnergyFraction->at(i))*(1/(deltaR(elecEta,elecPhi,Jets->at(i).Eta(),Jets->at(i).Phi())+0.5));
-	}
-    }
-  // if(method==2)
-  //   {
-  //     for(unsigned int i=0; i< SelectedPFCandidatesNum; i++)
-  // 	{
-  // 	  if(deltaR(elecEta,elecPhi,SelectedPFCandidatesEta->at(i),SelectedPFCandidatesPhi->at(i))>maxDeltaRElecActivity_ ) continue;
-  // 	  result+=SelectedPFCandidatesPt->at(i);
-  // 	}
-  //   }
-  // if(method==3)
-  //   {
-  //     for(unsigned int i=0; i< SelectedPFCandidatesNum; i++)
-  // 	{
-  // 	  if(SelectedPFCandidates_Charge->at(i)!=0) continue;
-  // 	  if(deltaR(elecEta,elecPhi,SelectedPFCandidatesEta->at(i),SelectedPFCandidatesPhi->at(i))>maxDeltaRElecActivity_ ) continue;
-  // 	  result+=SelectedPFCandidatesPt->at(i);
-  // 	}
-  //   }
-  return result;
-  
-}
-double Prediction::IsoTrackActivityCalc( double isoTrackEta, double isoTrackPhi, unsigned int method)
-{
-  double result =0;
-  if(method==0)
-    {
-      for (unsigned int i=0; i < JetsNum_ ; i++)
-	{
-	  if(deltaR(isoTrackEta,isoTrackPhi,Jets->at(i).Eta(),Jets->at(i).Phi())>maxDeltaRElecActivity_ ) continue;
-	  result+=Jets->at(i).Pt() * (Jets_neutralEmEnergyFraction->at(i) + Jets_photonEnergyFraction->at(i));
-	}
-    }
-  if(method==1)
-    {
-      for (unsigned int i=0; i < JetsNum_ ; i++)
-	{
-	  if(deltaR(isoTrackEta,isoTrackPhi,Jets->at(i).Eta(),Jets->at(i).Phi())>maxDeltaRElecActivity_ ) continue;
-	  result+=Jets->at(i).Pt() * (Jets_neutralEmEnergyFraction->at(i) + Jets_photonEnergyFraction->at(i))*(1/(deltaR(isoTrackEta,isoTrackPhi,Jets->at(i).Eta(),Jets->at(i).Phi())+0.5));
-	}
-    }
-  // if(method==2)
-  //   {
-  //     for(unsigned int i=0; i< SelectedPFCandidatesNum; i++)
-  // 	{
-  // 	  if(deltaR(isoTrackEta,isoTrackPhi,SelectedPFCandidatesEta->at(i),SelectedPFCandidatesPhi->at(i))>maxDeltaRElecActivity_ ) continue;
-  // 	  result+=SelectedPFCandidatesPt->at(i);
-  // 	}
-  //   }
-  return result;
-  
-}
 
 std::pair <double,double> Prediction::minDeltaRLepJet(double lepPt, double lepEta, double lepPhi)
 {
