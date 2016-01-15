@@ -12,73 +12,152 @@
   cd eventFilter
   tar -zxvf csc2015.tar.gz
   ```
-  
-3. Run on Standard Model MC:
 
-  - Check ExpecMaker.h and Prediction.h if
+## Run Package 
+### 1) Run on Standard Model MC:
+1. Check ExpecMaker.h and Prediction.h if
   
     ```
     const int useDeltaPhiCut = 1 // -1 for prediction in low delta Phi region
     ```
 
-  - Check Prediction.h if
+2. Check Prediction.h if
     
     ```
     const bool runOnData = false;
     const bool runOnStandardModelMC = true;
     const bool runOnSignalMC = false; 
     ```
-  
-  - Run code
+    
+3. Check source files (Trees/Skims) in
+
+    ```
+    MakeExpectation_separate.C  // has to be run on full Trees
+    MakePrediction_separate.C  // can also be run on Skims
+    ```
+
+4. Run code:
   
     ```
-    root -l MakeExpectation_separate.C+  // has to be run on full Trees
+    root -l MakeExpectation_separate.C+
     hadd Expectation.root Expectation_separate/*.root
     root -l MakeEff.C+
-    root -l MakePrediction_separate.C+  // can also be run on Skims
+    root -l MakePrediction_separate.C+
     hadd Prediction.root Prediction_separate/*.root
     ```
     
-4. Run on Data (after completing step 3):
+### 2) Run on Data (after completing step 1):
    
-  - Check Prediction.h if
+1. Check Prediction.h if
   
     ```
     const int useDeltaPhiCut = 1  // -1 for prediction in low delta Phi region
     ```
     
-  - Check Prediction.h if
+2. Check Prediction.h if
     
     ```
     const bool runOnData = true;
     const bool runOnStandardModelMC = false;
     const bool runOnSignalMC = false; 
     ```
-  
-  - Run code
-  
-    ```
-    root -l MakePrediction_Data.C+  // can also be run on Skims
-    ```
-  
-5. Produce 'LLPrediction.root' for e.g. integration, closure test etc. (after completing step 3&4):
+    
+3. Check source files (Trees/Skims) in
 
-  - Check ResultsPlot.C if
+    ```
+    MakePrediction_Data.C  // can be run on either full Trees or Skims
+
+    ```
+    
+4. Run code:
+  
+    ```
+    root -l MakePrediction_Data.C+
+    ```
+  
+### 3) Produce final output 'LLPrediction.root' for e.g. integration, closure test etc. (after completing step 1&2):
+
+1. Check ResultsPlot.C if
   
     ```
     bool doQCDbinning = false; // true for output in QCD binning
     Double_t scaleFactorWeight = 2262; // scale MC to this data luminosity
     ```
     
-  - If no data available, use MC tree for data tree:
+2. If no data available, use MC tree for data tree:
   
     ```
     TString InputPath_Prediction("Prediction.root");
     TString InputPath_Prediction_Data("Prediction.root"); // instead of Prediction_data.root
     ```
   
-  - Run Code
+3. Run code:
   
     ```
-    ResultsPlot.C+
+    root -l ResultsPlot.C+
     ```
+
+### 4) Produce closure plot or data/MC comparison for paper ('LLPrediction.root' has to exist):
+
+1. Check 'Plot_searchBin _full.C' if:
+   
+    ```
+    void Plot_searchBin_full(string option="", int pull=0){... // use option="QCD" to show in QCD binning -> needs LLPrediction.root in QCD binning!
+    
+    bool doDataVsMC = false; // true if you want to show data/MC instead
+    ```
+  
+2. Run code:
+  
+    ```
+    root -l Plot_searchBin_full.C
+    ```
+
+## Do signal contamination studies
+
+1. Check Prediction.h if
+  
+    ```
+    const int useDeltaPhiCut = 1  // -1 for prediction in low delta Phi region
+    ```
+    
+2. Check Prediction.h if
+    
+    ```
+    const bool runOnData = false;
+    const bool runOnStandardModelMC = false;
+    const bool runOnSignalMC = true; 
+    ```
+    
+3. Check source files (Trees/Skims) in
+
+    ```
+    MakePrediction_Scan.C  // has to be run on either full Trees or Skims, however Skims preferred (runtime)
+
+    ```
+    
+4. Produce trees:
+  
+    ```
+    root -l MakePrediction_Scan.C+
+    hadd MakePrediction_Scan_T1tttt.root Prediction_Scan/Prediction_T1tttt*.root // e.g. for T1tttt
+    ```
+
+5. Check settings for output in 'SignalContamination.C':
+
+    ```
+    Double_t scaleFactorWeight = 2262; // scale MC to this luminosity
+
+    bool doQCDbinning = false; // true for output in QCD binning
+  
+    TString InputPath_Prediction("Prediction_Scan_T1tttt.root");
+    TString OutputPath_Prediction("LLContamination_T1tttt.root");
+    ```
+
+6. Produce output for integration:
+
+    ```
+    root -l SignalContamination.C+
+    ```
+
+## Changes that might be necessary for new iteration
