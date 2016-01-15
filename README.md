@@ -119,7 +119,7 @@
     ```
 
 
-## Do signal contamination studies
+## Do signal contamination studies ('Efficiencies.root' has to exist)
 
 1. Check Prediction.h if
   
