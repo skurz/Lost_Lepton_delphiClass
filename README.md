@@ -104,7 +104,7 @@
 
 ### 4) Produce closure plot or data/MC comparison for paper ('LLPrediction.root' has to exist):
 
-1. Check 'Plot_searchBin _full.C' if:
+1. Check 'Plot_searchBin_full.C' if:
    
     ```
     void Plot_searchBin_full(string option="", int pull=0){... // use option="QCD" to show in QCD binning -> needs LLPrediction.root in QCD binning!
