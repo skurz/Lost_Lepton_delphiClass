@@ -13,8 +13,11 @@
   tar -zxvf csc2015.tar.gz
   ```
 
+
 ## Run Package 
+
 ### 1) Run on Standard Model MC:
+
 1. Check ExpecMaker.h and Prediction.h if
   
     ```
@@ -113,6 +116,7 @@
     root -l Plot_searchBin_full.C
     ```
 
+
 ## Do signal contamination studies
 
 1. Check Prediction.h if
@@ -140,7 +144,7 @@
   
     ```
     root -l MakePrediction_Scan.C+
-    hadd MakePrediction_Scan_T1tttt.root Prediction_Scan/Prediction_T1tttt*.root // e.g. for T1tttt
+    hadd MakePrediction_Scan_T1tttt.root Prediction_Scan/Prediction_Scan_T1tttt*.root // e.g. for T1tttt
     ```
 
 5. Check settings for output in 'SignalContamination.C':
@@ -160,4 +164,61 @@
     root -l SignalContamination.C+
     ```
 
-## Changes that might be necessary for new iteration
+
+## Changes that might be necessary for next iteration
+
+1. LLTools.h
+
+  - Trigger Efficiencies for SM and Signal. Hardcoded in the following methods:
+  
+    ```
+    static double GetTriggerEffWeight(Double_t MHT){...}
+    static double GetSignalTriggerEffWeight(Double_t MHT) {...}
+    ```
+
+2. Prediction.h
+ 
+  - CSCTightHaloFilter from list (only used for data):
+   
+    ```
+    const string path_evtListFilter("eventFilter/csc2015.txt");
+    ```
+
+  - Lepton SFs:
+  
+    ```
+    const TString path_elecID("SFs/kinematicBinSFele.root");
+    const TString hist_elecID("CutBasedVeto");
+    const TString path_elecIso("SFs/kinematicBinSFele.root");
+    const TString hist_elecIso("MiniIso0p1_vs_RelActivity");
+    
+    const TString path_muID("SFs/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root");
+    const TString hist_muID("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_tag_IsoMu20_pass");
+    const TString path_muIso("SFs/TnP_MuonID_NUM_MiniIsoTight_DENOM_LooseID_VAR_map_pt_eta.root");
+    // IMPORTANT!!!
+    // muIso: still binned in pt/eta since this was recommended! Has to be changed for Moriond (also in Prediction.C when getting the uncertainties)!
+    const TString hist_muIso("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass");
+    ```
+
+  - PileUp Corrections (only used for signal scan):
+   
+    ```
+    const TString path_puHist("PU/PileupHistograms_1117.root");
+    ```
+    
+  - bTag corrections (only used for signal scan):
+  
+    ```
+    const string path_bTagCalib("btag/CSVv2_mod.csv");
+    const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
+    ```
+  
+  - ISR corrections (not recommended right now - maybe used for signal scan in future):
+   
+    ```
+    const TString path_ISRcorr("isr_corrections/ISRWeights.root");
+    // has to be uncommented in Prediction::Init(Tree*)
+    //if(runOnSignalMC) doISRcorr = true;
+    ```
+    
+  
