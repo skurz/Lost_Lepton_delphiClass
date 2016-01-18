@@ -1,6 +1,6 @@
 # RA2b Lost Lepton Background Prediction
 
-- Optimied for CMSSW_7_4_6_patch6
+- Optimized for CMSSW_7_4_6_patch6
 
 ## How to set up the project
 1. Check out code:
