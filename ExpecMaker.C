@@ -130,7 +130,8 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
 
-  bool passTrigger = false;	
+  /*
+  bool passTrigger = false;
   for (std::vector<string>::iterator it = TriggerNames->begin() ; it != TriggerNames->end(); ++it){
     if(it->find("HLT_PFHT350_PFMET100_NoiseCleaned_v")!=std::string::npos){  // Run2015A,B
       if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
@@ -138,8 +139,14 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     if(it->find("HLT_PFHT350_PFMET100_JetIdCleaned_v")!=std::string::npos){  // Run2015C.D
       if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
     }
+    if(it->find("HLT_PFHT350_PFMET100_v")!=std::string::npos){  // Run2015C.D
+      if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
+    }
   }
   if(useTrigger && !passTrigger) return kTRUE;
+  */
+  if(useTrigger) if(!TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
+
 
   if(useTriggerEffWeight) Weight = Weight * GetTriggerEffWeight(MHT);
 
@@ -147,6 +154,9 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     w_pu = puhist->GetBinContent(puhist->GetXaxis()->FindBin(min(TrueNumInteractions,puhist->GetBinLowEdge(puhist->GetNbinsX()+1))));
     Weight *= w_pu;
   }
+
+  //Account for efficiency of JetID since we cannot apply it on fastSim
+  if(!applyJetID) Weight *= 0.99;
   
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
   BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
@@ -540,7 +550,7 @@ bool ExpecMaker::FiltersPass()
     if(!HBHEIsoNoiseFilter) result=false;
   }
   if(NVtx<=0) result=false;
-  if(JetID!=1) result=false;
+  if(applyJetID) if(JetID!=1) result=false;
   return result;
 }
 

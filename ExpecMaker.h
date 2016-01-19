@@ -34,6 +34,20 @@ using std::vector;
 using std::cout;
 using std::cerr;
 using std::endl;
+
+////////////////////////
+//////// Options
+///////////////////////
+
+// useDeltaPhiCut = 0: no deltaPhiCut
+// useDeltaPhiCut = 1: deltaPhiCut
+// useDeltaPhiCut = -1: inverted deltaPhiCut
+const int useDeltaPhiCut = 1;  //<-check------------------------
+
+////////////////////////
+//////// Usually don't have to be changed
+///////////////////////
+
 // useFilterData = true; unless you want to run without MET filters
 const bool useFilterData = true;
 // useTrigger = false; no simulated triggers in MC
@@ -41,23 +55,31 @@ const bool useTrigger = false;
 // useTriggerEffWeight = true; correct for trigger inefficiency
 const bool useTriggerEffWeight = true;
 
-// Do PU reweighting. true for signal scan
-const bool doPUreweighting = false;  //<-check------------------------
-
-
-// useDeltaPhiCut = 0: no deltaPhiCut
-// useDeltaPhiCut = 1: deltaPhiCut
-// useDeltaPhiCut = -1: inverted deltaPhiCut
-const int useDeltaPhiCut = 1;  //<-check------------------------
-
 // Write some variables to tree for isotrack studies
 const bool doIsoTrackStudies = false;
+
+//////////////////////
+//// IMPORTANT: running on signal not fully implemented yet (e.g. get x-sec/weight from txt file)
+// If needed, look up at Prediction.C
+// Do PU reweighting. true for signal scan
+const bool doPUreweighting = false;
+// False for FastSim (only!)
+const bool applyJetID = true;
 
 // scaleMet = 0: keep things the way they are
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
 const int scaleMet = 0;
 // propagate JEC only. +/-1 = up/down
 const int propagateJECtoMET = 0;
+
+// apply filters
+const bool applyFilters_=true;
+// run on DY sample
+const bool DY_=false;
+
+////////////////////////
+//////// Don't change anything below
+///////////////////////
 
 // cuts baseline
 const double minHT_=500;
@@ -68,8 +90,6 @@ const double deltaPhi2_=0.5;
 const double deltaPhi3_=0.3;
 const double deltaPhi4_=0.3;
 const double minDeltaPhiN_=4.0;
-const bool applyFilters_=true;
-const bool DY_=false;
 
 // lepton cuts
 const double minMuPt_=10;

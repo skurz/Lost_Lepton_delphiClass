@@ -257,7 +257,6 @@ class Prediction : public TSelector {
   Float_t muMTWEff_, elecMTWEff_, mtwCorrectedWeight_;
   Float_t muDiLepContributionMTWAppliedEff_, mtwDiLepCorrectedWeight_;
   Float_t muIsoEff_, muIsoWeight_;
-  Float_t muIsoOnlyWeight_, elecIsoOnlyWeight_;
   Float_t muRecoEff_, muRecoWeight_;
   Float_t muAccEff_, muAccWeight_;
   Float_t muTotalWeight_, totalMuons_;
