@@ -6,6 +6,13 @@
 #include "TROOT.h"
 #include "Prediction.h"
 
+using std::vector;
+
+//needed to write vector<TLorentzVector> to tree
+#ifdef __CINT__
+#pragma link C++ class std::vector<TLorentzVector>+;
+#endif
+
 void MakePrediction_Scan()
 {
 	gSystem->Load("libPhysics.so");
