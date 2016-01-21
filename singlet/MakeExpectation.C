@@ -1,33 +1,37 @@
 #include <TChain.h>
+#include <vector>
 #include "TProofServ.h"
 #include "TProof.h"
-//#include "EffMaker.h"
+#include "TLorentzVector.h"
+#include "ExpecMaker.h"
+
+using std::vector;
+
+//needed to write vector<TLorentzVector> to tree
+#ifdef __CINT__
+#pragma link C++ class std::vector<TLorentzVector>+;
+#endif
+
 void MakeExpectation()
 {
-	bool useTProof = false;
+  
+  gSystem->Load("libPhysics.so");
+  gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
 
- 	TChain *Effchain = new TChain("TreeMaker2/PreSelection");
-//	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
+  gROOT->ProcessLine(".L ExpecMaker.C+");
+  
+  int nChains = 1;
+  TChain *Effchain[nChains];
+  for(Int_t i=0; i<nChains; i++){
+    Effchain[i] = new TChain("TreeMaker2/PreSelection");
+  }   
 
-//	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning/WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
-//	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning/WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
-//	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning/WJetsToLNu_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
+  Effchain[0]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v5/ST_all.root");
+  
 
-////	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb/TBarToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola/*.root");
-////	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb/TToLeptons_s-channel-CSA14_Tune4C_13TeV-aMCatNLO-tauola/*.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning_JECv4/ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/*.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning_JECv4/ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1/*.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning_JECv4/ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/*.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_4fb_commissioning_JECv4/ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1/*.root");				
-	
-	TProof *proof = NULL;
-
-    if(useTProof){
-    	proof = TProof::Open("workers=10");
-    	Effchain->SetProof();     	
-    }
-
-	Effchain->Process("./../ExpecMaker.C++g");
-
-    delete proof;
+  for(Int_t i=0; i<nChains; i++){ // i<nChains
+      std::cout<<"Processing Tree: "<<i<<std::endl;
+      Effchain[i]->Process("ExpecMaker", TString::Format("singlet/Expectation_%d_1.root",i), 300000, 0);
+      Effchain[i]->Process("ExpecMaker", TString::Format("singlet/Expectation_%d_2.root",i), TChain::kBigNumber, 300001);
+  }
 }

@@ -25,8 +25,6 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TLorentzVector.h"
-#include "TProofServ.h"
-#include "TProof.h"
 
 TFile *outPutFile = 0;
 
