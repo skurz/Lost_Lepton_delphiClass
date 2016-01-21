@@ -1,7 +1,6 @@
 #!/bin/bash
 # My first script
 
-: '
 echo "->Removing old files"
 rm ttbar/Prediction_*.root&
 rm wpj/Prediction_*.root&
@@ -33,7 +32,7 @@ echo "->Merge files"
 hadd -f Prediction.root ttbar/Prediction_*.root wpj/Prediction_*.root singlet/Prediction_*.root rare/Prediction_*.root
 wait
 echo "->Done"
-'
+
 echo "->Prepare Prediction.h for run on Data"
 ed -s Prediction.h <<< $'/const bool runOnData/s/false/true/g\nw' &> /dev/null
 ed -s Prediction.h <<< $'/const bool runOnStandardModelMC/s/true/false/g\nw' &> /dev/null
