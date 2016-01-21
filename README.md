@@ -18,6 +18,8 @@
 
 ## Run Package 
 
+- If set up properly, the bash script runAll.sh can be used to run steps 1)-3) or runPrediction.sh for steps 2)+3)
+
 ### 1) Run on Standard Model MC:
 
 1. Check ExpecMaker.h and Prediction.h if

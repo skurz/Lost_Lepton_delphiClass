@@ -1,16 +1,35 @@
 #!/bin/bash
 # My first script
 
-: '
 echo "->Removing old files"
-rm ttbar/Prediction_*.root&
-rm wpj/Prediction_*.root&
-rm singlet/Prediction_*.root&
-rm rare/Prediction_*.root&
-rm ttbar/pred.log&
-rm wpj/pred.log&
-rm singlet/pred.log&
-rm rare/pred.log&
+rm Efficiencies/*.pdf&
+#rm *.root&
+rm ttbar/*.root&
+rm wpj/*.root&
+rm singlet/*.root&
+rm rare/*.root&
+rm ttbar/*.log&
+rm wpj/*.log&
+rm singlet/*.log&
+rm rare/*.log&
+wait
+echo "->Done"
+
+echo "->Running Expectation: ttbar/wpj/singlet/rare - output written to log files!"
+root -l -b -q ttbar/MakeExpectation.C+ > ttbar/expec.log&
+root -l -b -q wpj/MakeExpectation.C+ > wpj/expec.log&
+root -l -b -q singlet/MakeExpectation.C+ > singlet/expec.log&
+root -l -b -q rare/MakeExpectation.C+ > rare/expec.log&
+wait
+echo "->Done"
+
+echo "->Merge files"
+hadd -f Expectation.root ttbar/Expectation_*.root wpj/Expectation_*.root singlet/Expectation_*.root rare/Expectation_*.root
+wait
+echo "->Done"
+
+echo "->Create efficiency maps"
+root -l -b -q MakeEff.C+&
 wait
 echo "->Done"
 
@@ -33,7 +52,7 @@ echo "->Merge files"
 hadd -f Prediction.root ttbar/Prediction_*.root wpj/Prediction_*.root singlet/Prediction_*.root rare/Prediction_*.root
 wait
 echo "->Done"
-'
+
 echo "->Prepare Prediction.h for run on Data"
 ed -s Prediction.h <<< $'/const bool runOnData/s/false/true/g\nw' &> /dev/null
 ed -s Prediction.h <<< $'/const bool runOnStandardModelMC/s/true/false/g\nw' &> /dev/null
