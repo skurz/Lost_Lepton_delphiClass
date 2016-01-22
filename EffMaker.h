@@ -66,23 +66,19 @@ double OneDActivityOld_[oneDActivityOld_]={0,20,40,60,150,1600};
 
 // purity
 //mu
-//1D
-
 //2D
-const int mupurityMHT_ = 4;
-double muPurityMHT_[mupurityMHT_] ={200,500,750,1900};
+const int mupurityMHT_ = 5;
+double muPurityMHT_[mupurityMHT_] ={200,800,900,1200,9600};
 const int mupurityNJet_ = 3;
-double muPurityNJet_[mupurityNJet_] = {4,7,21};
+double muPurityNJet_[mupurityNJet_] ={4,5,21};
 
 // elec
-
-//1D
-
-
-const int elecpurityMHT_ = 4;
-double elecPurityMHT_[elecpurityMHT_] ={200,500,750,1900};
+//2D
+const int elecpurityMHT_ = 5;
+double elecPurityMHT_[elecpurityMHT_] ={200,800,900,1200,9600};
 const int elecpurityNJet_ = 3;
-double elecPurityNJet_[elecpurityNJet_] = {4,7,21};
+double elecPurityNJet_[elecpurityNJet_] ={4,5,21};
+
 // mu acceptance
 // 2D
 const int muaccHT_ = 4;
