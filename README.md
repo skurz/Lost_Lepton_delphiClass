@@ -127,6 +127,8 @@
   
     ```
     const int useDeltaPhiCut = 1  // -1 for prediction in low delta Phi region
+
+    const string path_xsec("xsec/dict_xsec.txt"); // using correct production xsec! gluino: dict_xsec.txt; stop: dict_xsec_T2.txt
     ```
     
 2. Check Prediction.h if
