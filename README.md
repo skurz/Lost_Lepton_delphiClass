@@ -162,6 +162,8 @@
   
     TString InputPath_Prediction("Prediction_Scan_T1tttt.root");
     TString OutputPath_Prediction("LLContamination_T1tttt.root");
+
+    bool motherName = true; // name of SUSY mother particle: true for gluino, false for stop
     ```
 
 6. Produce output for integration:
