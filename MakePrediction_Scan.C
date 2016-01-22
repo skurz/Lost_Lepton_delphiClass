@@ -66,6 +66,6 @@ void MakePrediction_Scan()
 
 	for(Int_t i=0; i<nChains; i++){ // i<nChains
     	std::cout<<"Processing Tree: "<<i<<std::endl;
-    	Effchain[i]->Process("Prediction", TString::Format("Prediction_Scan/Prediction_Scan_T1tttt_%d.root", (i+6)*100));
+    	Effchain[i]->Process("Prediction", TString::Format("Prediction_Scan/Prediction_Scan_T1tttt_%d.root", (i+1)*100));
     }
 }
