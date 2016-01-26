@@ -16,6 +16,8 @@ wait
 echo "->Done"
 
 echo "->Running Expectation: ttbar/wpj/singlet/rare - output written to log files!"
+root -l ExpecMaker.C+ # Needed to link libraries
+wait
 root -l -b -q ttbar/MakeExpectation.C++ > ttbar/expec.log&
 root -l -b -q wpj/MakeExpectation.C++ > wpj/expec.log&
 root -l -b -q singlet/MakeExpectation.C++ > singlet/expec.log&
@@ -34,6 +36,8 @@ wait
 echo "->Done"
 
 echo "->Prepare Prediction.h for run on MC"
+root -l Prediction.C+ # Needed to link libraries
+wait
 ed -s Prediction.h <<< $'/const bool runOnData/s/true/false/g\nw' &> /dev/null
 ed -s Prediction.h <<< $'/const bool runOnStandardModelMC/s/false/true/g\nw' &> /dev/null
 ed -s Prediction.h <<< $'/const bool runOnSignalMC/s/true/false/g\nw' &> /dev/null
@@ -60,6 +64,8 @@ wait
 echo "->Done"
 
 echo "->Running Prediction: data"
+root -l Prediction.C+ # Needed to link libraries
+wait
 root -l -b -q MakePrediction_Data.C++
 wait
 echo "->Done"

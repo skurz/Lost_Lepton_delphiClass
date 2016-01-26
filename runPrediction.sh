@@ -21,6 +21,8 @@ wait
 echo "->Done"
 
 echo "->Running Prediction: ttbar/wpj/singlet/rare - output written to log files!"
+root -l Prediction.C+ # Needed to link libraries
+wait
 root -l -b -q ttbar/MakePrediction.C++ > ttbar/pred.log&
 root -l -b -q wpj/MakePrediction.C++ > wpj/pred.log&
 root -l -b -q singlet/MakePrediction.C++ > singlet/pred.log&
@@ -40,6 +42,8 @@ wait
 echo "->Done"
 
 echo "->Running Prediction: data"
+root -l Prediction.C+ # Needed to link libraries
+wait
 root -l -b -q MakePrediction_Data.C++
 wait
 echo "->Done"

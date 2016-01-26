@@ -20,7 +20,7 @@ void MakePrediction()
   gSystem->Load("libPhysics.so");
   gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
 
-  gROOT->ProcessLine(".L Prediction.C++g");
+  gROOT->ProcessLine(".L Prediction.C+");
   
   int nChains = 7;
   TChain *Effchain[nChains];
