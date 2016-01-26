@@ -16,6 +16,7 @@ wait
 echo "->Done"
 
 echo "->Running Expectation: ttbar/wpj/singlet/rare - output written to log files!"
+echo "->Info: Might take a few minutes."
 root -l -b -q MakeExpectationLibraries.C+ # Needed to link libraries
 wait
 root -l -b -q ttbar/MakeExpectation.C+ > ttbar/expec.log&
@@ -45,6 +46,7 @@ wait
 echo "->Done"
 
 echo "->Running Prediction: ttbar/wpj/singlet/rare - output written to log files!"
+echo "->Info: Might take a few minutes."
 root -l -b -q ttbar/MakePrediction.C+ > ttbar/pred.log&
 root -l -b -q wpj/MakePrediction.C+ > wpj/pred.log&
 root -l -b -q singlet/MakePrediction.C+ > singlet/pred.log&

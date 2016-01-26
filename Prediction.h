@@ -610,8 +610,10 @@ void Prediction::Init(TTree *tree)
   //////// Options
   ///////////////////////
 
-  if(!((runOnData && !runOnStandardModelMC && !runOnSignalMC) || (!runOnData && runOnStandardModelMC && !runOnSignalMC) || (!runOnData && !runOnStandardModelMC && runOnSignalMC)))
-  std::cout<<"CHECK OPTIONS! EITHER RUN ON DATA, MC, OR SIGNAL!!!"<<std::endl;
+  if(!((runOnData && !runOnStandardModelMC && !runOnSignalMC) || (!runOnData && runOnStandardModelMC && !runOnSignalMC) || (!runOnData && !runOnStandardModelMC && runOnSignalMC))){
+    fprintf(stderr, "CHECK OPTIONS! EITHER RUN ON DATA, MC, OR SIGNAL!!!");
+    return;
+  }
 
   // Seta data specific options, e.g. Trigger
   // Apply trigger

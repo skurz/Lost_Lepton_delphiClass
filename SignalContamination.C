@@ -156,7 +156,7 @@ void SignalContamination()
 
     if(found < 0){
       char buffer [50];
-      sprintf(buffer, "m%s_%.0f_mLSP_%.0f", motherName, SusyMotherMass, SusyLSPMass);
+      sprintf(buffer, "m%s_%.0f_mLSP_%.0f", motherName.c_str(), SusyMotherMass, SusyLSPMass);
       histVec.push_back(new TH1D(buffer, buffer, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
       found = histVec.size()-1;
       histVec.at(found)->Sumw2();

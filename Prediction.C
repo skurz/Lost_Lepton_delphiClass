@@ -275,18 +275,12 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   SearchBins_ = new SearchBins(false); // 72 searchbins
   SearchBinsQCD_ = new SearchBins(true); // 220 QCD binning
 
-  
   std::cout<<"Run on Data: "<<runOnData<<std::endl;
   std::cout<<"Run on SM MC: "<<runOnStandardModelMC<<std::endl;
   std::cout<<"Run on Signal MC: "<<runOnSignalMC<<std::endl;
   std::cout<<"----------------"<<std::endl;
   std::cout<<"DeltaPhi Cut: "<<useDeltaPhiCut<<std::endl;
   std::cout<<"----------------"<<std::endl;
-  std::cout<<"Applying filters: "<<applyFilters_<<std::endl;
-  std::cout<<"Use MET filters: "<<useFilterData<<std::endl;
-  std::cout<<"Apply Triggers: "<<useTrigger<<std::endl;
-  
-  
 }
 
 Bool_t Prediction::Process(Long64_t entry)

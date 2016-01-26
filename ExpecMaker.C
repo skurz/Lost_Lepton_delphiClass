@@ -106,8 +106,9 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
 
   SearchBins_ = new SearchBins();
   SearchBinsQCD_ = new SearchBins(true); // 220 QCD binning
-  std::cout<<"Applying filters: "<<applyFilters_<<std::endl;
+  
   std::cout<<"DeltaPhi Cut: "<<useDeltaPhiCut<<std::endl;
+  std::cout<<"----------------"<<std::endl;
   
   GetOutputList()->Add(tExpectation_);
 }
