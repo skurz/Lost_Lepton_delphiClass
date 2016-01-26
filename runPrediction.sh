@@ -21,10 +21,10 @@ wait
 echo "->Done"
 
 echo "->Running Prediction: ttbar/wpj/singlet/rare - output written to log files!"
-root -l -b -q ttbar/MakePrediction.C+ > ttbar/pred.log&
-root -l -b -q wpj/MakePrediction.C+ > wpj/pred.log&
-root -l -b -q singlet/MakePrediction.C+ > singlet/pred.log&
-root -l -b -q rare/MakePrediction.C+ > rare/pred.log&
+root -l -b -q ttbar/MakePrediction.C++ > ttbar/pred.log&
+root -l -b -q wpj/MakePrediction.C++ > wpj/pred.log&
+root -l -b -q singlet/MakePrediction.C++ > singlet/pred.log&
+root -l -b -q rare/MakePrediction.C++ > rare/pred.log&
 wait
 echo "->Done"
 
@@ -40,7 +40,7 @@ wait
 echo "->Done"
 
 echo "->Running Prediction: data"
-root -l -b -q MakePrediction_Data.C+
+root -l -b -q MakePrediction_Data.C++
 wait
 echo "->Done"
 
@@ -51,6 +51,6 @@ wait
 echo "->Done"
 
 echo "->Generate output: LLPrediction.root"
-root -l -b -q ResultPlot.C+
+root -l -b -q ResultPlot.C++
 wait
 echo "->Done"

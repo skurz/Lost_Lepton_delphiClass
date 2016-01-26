@@ -53,6 +53,8 @@ const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // ISR corrections: NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond! Just uncomment in Prediction::Init(Tree*) of this file
 const TString path_ISRcorr("isr_corrections/ISRWeights.root");
+// Signal x-sec: "dict_xsec.txt" for gluino pair prod; "dict_xsec_T2.txt" for (anti)stop pair prod.
+const string path_xsec("xsec/dict_xsec.txt");
 
 // CSCTightHaloFilterUpdate from list
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -682,7 +684,7 @@ void Prediction::Init(TTree *tree)
 
   std::cout << "Saving file to: " << fileName << std::endl;
 
-  std::ifstream signal_xsec("dict_xsec.txt");
+  std::ifstream signal_xsec(path_xsec);
   std::string str_xsec;
   while (std::getline(signal_xsec, str_xsec))
   {

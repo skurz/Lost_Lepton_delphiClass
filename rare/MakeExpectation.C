@@ -18,7 +18,7 @@ void MakeExpectation()
   gSystem->Load("libPhysics.so");
   gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
 
-  gROOT->ProcessLine(".L ExpecMaker.C+");
+  gROOT->ProcessLine(".L ExpecMaker.C++g");
   
   int nChains = 6;
   TChain *Effchain[nChains];

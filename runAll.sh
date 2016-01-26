@@ -16,10 +16,10 @@ wait
 echo "->Done"
 
 echo "->Running Expectation: ttbar/wpj/singlet/rare - output written to log files!"
-root -l -b -q ttbar/MakeExpectation.C+ > ttbar/expec.log&
-root -l -b -q wpj/MakeExpectation.C+ > wpj/expec.log&
-root -l -b -q singlet/MakeExpectation.C+ > singlet/expec.log&
-root -l -b -q rare/MakeExpectation.C+ > rare/expec.log&
+root -l -b -q ttbar/MakeExpectation.C++ > ttbar/expec.log&
+root -l -b -q wpj/MakeExpectation.C++ > wpj/expec.log&
+root -l -b -q singlet/MakeExpectation.C++ > singlet/expec.log&
+root -l -b -q rare/MakeExpectation.C++ > rare/expec.log&
 wait
 echo "->Done"
 
@@ -29,7 +29,7 @@ wait
 echo "->Done"
 
 echo "->Create efficiency maps"
-root -l -b -q MakeEff.C+&
+root -l -b -q MakeEff.C++&
 wait
 echo "->Done"
 
@@ -41,10 +41,10 @@ wait
 echo "->Done"
 
 echo "->Running Prediction: ttbar/wpj/singlet/rare - output written to log files!"
-root -l -b -q ttbar/MakePrediction.C+ > ttbar/pred.log&
-root -l -b -q wpj/MakePrediction.C+ > wpj/pred.log&
-root -l -b -q singlet/MakePrediction.C+ > singlet/pred.log&
-root -l -b -q rare/MakePrediction.C+ > rare/pred.log&
+root -l -b -q ttbar/MakePrediction.C++ > ttbar/pred.log&
+root -l -b -q wpj/MakePrediction.C++ > wpj/pred.log&
+root -l -b -q singlet/MakePrediction.C++ > singlet/pred.log&
+root -l -b -q rare/MakePrediction.C++ > rare/pred.log&
 wait
 echo "->Done"
 
@@ -60,7 +60,7 @@ wait
 echo "->Done"
 
 echo "->Running Prediction: data"
-root -l -b -q MakePrediction_Data.C+
+root -l -b -q MakePrediction_Data.C++
 wait
 echo "->Done"
 
@@ -71,6 +71,6 @@ wait
 echo "->Done"
 
 echo "->Generate output: LLPrediction.root"
-root -l -b -q ResultPlot.C+
+root -l -b -q ResultPlot.C++
 wait
 echo "->Done"

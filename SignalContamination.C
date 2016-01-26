@@ -29,8 +29,8 @@ void SignalContamination()
   TString InputPath_Prediction("Prediction_Scan_T5qqqqVV.root");
   TString OutputPath_Prediction("LLContamination_T5qqqqVV.root");
 
-  // name of SUSY mother particle: true for gluino, false for stop
-  bool motherName = false; //<-check------------------------
+  // name of SUSY mother particle: T1/T5 "Gluino"; T2 "Stop" (capitalized!)
+  string motherName("Gluino"); //<-check------------------------
 
   // Scale all MC weights by this factor
   Double_t scaleFactorWeight = 2262; // in units of [pb] //<-check------------------------
@@ -156,8 +156,7 @@ void SignalContamination()
 
     if(found < 0){
       char buffer [50];
-      if(motherName) sprintf(buffer, "mGluino_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
-      else sprintf(buffer, "mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+      sprintf(buffer, "m%s_%.0f_mLSP_%.0f", motherName, SusyMotherMass, SusyLSPMass);
       histVec.push_back(new TH1D(buffer, buffer, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
       found = histVec.size()-1;
       histVec.at(found)->Sumw2();

@@ -127,8 +127,6 @@
   
     ```
     const int useDeltaPhiCut = 1  // -1 for prediction in low delta Phi region
-
-    const string path_xsec("xsec/dict_xsec.txt"); // using correct production xsec! gluino: dict_xsec.txt; stop: dict_xsec_T2.txt
     ```
     
 2. Check Prediction.h if
@@ -136,14 +134,15 @@
     ```
     const bool runOnData = false;
     const bool runOnStandardModelMC = false;
-    const bool runOnSignalMC = true; 
+    const bool runOnSignalMC = true;
+
+    const string path_xsec("xsec/dict_xsec.txt"); // using correct production xsec! gluino: dict_xsec.txt; stop: dict_xsec_T2.txt
     ```
     
 3. Check source files (Trees/Skims) in
 
     ```
     MakePrediction_Scan.C  // has to be run on either full Trees or Skims, however Skims preferred (runtime)
-
     ```
     
 4. Produce trees:
@@ -163,7 +162,7 @@
     TString InputPath_Prediction("Prediction_Scan_T1tttt.root");
     TString OutputPath_Prediction("LLContamination_T1tttt.root");
 
-    bool motherName = true; // name of SUSY mother particle: true for gluino, false for stop
+    string motherName("Gluino"); // name of SUSY mother particle: T1/T5 "Gluino"; T2 "Stop" (capitalized!)
     ```
 
 6. Produce output for integration:
