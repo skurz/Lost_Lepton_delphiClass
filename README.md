@@ -18,7 +18,7 @@
 
 ## Run Package 
 
-- If set up properly, the bash script runAll.sh can be used to run steps 1)-3) or runPrediction.sh for steps 2)+3)
+- If set up properly (check source files in ttbar/Make...C wpj/Make...C singlet/Make...C /rare/Make...C!), the bash script runAll.sh can be used to run steps 1)-3) or runPrediction.sh for steps 2)+3)
 
 ### 1) Run on Standard Model MC:
 
@@ -73,7 +73,6 @@
 
     ```
     MakePrediction_Data.C  // can be run on either full Trees or Skims
-
     ```
     
 4. Run code:
