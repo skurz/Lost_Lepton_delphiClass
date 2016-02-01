@@ -8,13 +8,19 @@
   ```
   git clone https://github.com/skurz/Lost_Lepton_delphiClass.git
   ```
-2. Extract eventFilter/csc2015.txt (>100MB):
+  
+2. Extract list for CSC beam halo filter: eventFilter/csc2015.txt (>100MB):
 
   ```
   cd eventFilter
   tar -zxvf csc2015.tar.gz
   ```
+  
+3. If necessary append lists for Bad resolution track / Bad muon track: 
 
+  ```
+  https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2#Event_Lists
+  ```
 
 ## Run Package 
 
