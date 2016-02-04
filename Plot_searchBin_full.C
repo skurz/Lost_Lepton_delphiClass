@@ -8,23 +8,6 @@
 
 using namespace std;
 
-/*
-
-root.exe -b -q 'Plot_searchBin_full.C("stacked","searchH_b","Elog408_","Elog404_")'
-root.exe -b -q 'Plot_searchBin_full.C("stacked","QCD_Low",  "Elog408_","Elog404_")'
-root.exe -b -q 'Plot_searchBin_full.C("stacked","QCD_Up",   "Elog408_","Elog404_")'
-
-.L Plot_searchBin_full.C
-Plot_searchBin_full("stacked","searchH_b","Elog365_");
-Plot_searchBin_full("stacked","QCD_Low","Elog365_");
-Plot_searchBin_full("stacked","QCD_Up","Elog365_");
-
-root.exe -b -q 'Plot_searchBin_full.C("stacked","searchH_b","Elog365_")'
-root.exe -b -q 'Plot_searchBin_full.C("stacked","QCD_Low","Elog365_")'
-root.exe -b -q 'Plot_searchBin_full.C("stacked","QCD_Up","Elog365_")'
-
-*/
-
 void shift_bin(TH1* input, TH1* output){
 
   char tempname[200];  
@@ -321,7 +304,14 @@ void Plot_searchBin_full(string option="", int pull=0){ // string option="QCD"
   ex2->Draw();
   //EstHist_Normalize->GetListOfFunctions()->Add(ex2);
   EstHist_Normalize->DrawCopy("e2same");
-  EstHist_Normalize->DrawCopy("esame");
+  //EstHist_Normalize->DrawCopy("esame");
+
+  TH1D *EstHist_Normalize_Clone = (TH1D*)EstHist_Normalize->Clone();
+  for(int i=1; i<72; i++) {
+    EstHist_Normalize_Clone->SetBinError(i,0);
+  }
+  EstHist_Normalize_Clone->SetFillColor(kWhite);
+  EstHist_Normalize_Clone->Draw("esame");
 
   GenHist->Print("all");
   EstHist->Print("all");
@@ -656,7 +646,11 @@ void Plot_searchBin_full(string option="", int pull=0){ // string option="QCD"
 
       ex2->Draw();
       denominator->DrawCopy("e2same");
-      denominator->DrawCopy("same");
+      //denominator->DrawCopy("same");
+
+      TH1D *denominator_Clone = (TH1D*)denominator->Clone();
+      denominator_Clone->SetFillColor(kWhite);
+      denominator_Clone->Draw("hist same");
 
       ex1->Draw();
       numerator->DrawCopy("same");
