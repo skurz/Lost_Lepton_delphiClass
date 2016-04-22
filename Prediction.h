@@ -86,8 +86,7 @@ const bool usePrelimSFs = false;
 const bool useSFs = true;
 
 // scaleMet = 0: keep things the way they are
-// scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
-// NOT USED ANYMORE
+// scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%// NOT USED ANYMORE
 const int scaleMet = 0;
 
 // useAsymmErrors = true; use assym. uncertainties in efficiency histograms
@@ -206,6 +205,9 @@ class Prediction : public TSelector {
   double IsoTrackActivityCalc( double isoTrackEta, double isoTrackPhi, unsigned int method);
   std::pair <double,double> minDeltaRLepJet(double lepPT, double lepEta, double lepPhi);
 
+  std::vector <int> GetPTWBin(int, double, double);
+
+  
   //Options
   bool useTrigger = false;
   bool useTriggerEffWeight = false;
@@ -368,7 +370,11 @@ class Prediction : public TSelector {
   Float_t elecTotalWeightDiLep_, elecTotalWeightDiLepIsoTrackReduced_;
   std::vector<Float_t> selectedIDIsoMuonsDeltaRJet, selectedIDIsoMuonsRelPTJet;
   std::vector<Float_t> selectedIDIsoElectronsDeltaRJet, selectedIDIsoElectronsRelPTJet;
+  std::vector<Float_t>         selectedIDIsoMuonsPTW;
+  std::vector<Float_t>         selectedIDIsoElectronsPTW;
 
+  std::vector<int> ptw_bins;
+  
   UShort_t Bin_, BinQCD_;
   
   // TProfiles

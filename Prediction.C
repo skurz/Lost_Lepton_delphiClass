@@ -126,7 +126,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("NVtx",&NVtx);
   tPrediction_->Branch("Bin",&Bin_);
   tPrediction_->Branch("BinQCD",&BinQCD_);
-  tPrediction_->Branch("isoTracks",&isoTracks);
+  tPrediction_->Branch("PTWBins", &ptw_bins);
+ tPrediction_->Branch("isoTracks",&isoTracks);
   tPrediction_->Branch("DeltaPhi1",&DeltaPhi1);
   tPrediction_->Branch("DeltaPhi2",&DeltaPhi2);
   tPrediction_->Branch("DeltaPhi3",&DeltaPhi3);
@@ -137,11 +138,15 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum_);
   tPrediction_->Branch("selectedIDIsoMuons", "std::vector<TLorentzVector>", &selectedIDIsoMuons, 32000, 0);
   tPrediction_->Branch("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity);
+  tPrediction_->Branch("selectedIDIsoMuonsPTW", &selectedIDIsoMuonsPTW);
+  //  tPrediction_->Branch("selectedIDIsoMuonsCDTT", &selectedIDIsoMuonsCDTT);
 //  tPrediction_->Branch("selectedIDIsoMuonsRelPTJet", &selectedIDIsoMuonsRelPTJet);
 //  tPrediction_->Branch("selectedIDIsoMuonsDeltaRJet", &selectedIDIsoMuonsDeltaRJet);
   tPrediction_->Branch("selectedIDIsoElectronsNum",&selectedIDIsoElectronsNum_);
   tPrediction_->Branch("selectedIDIsoElectrons", "std::vector<TLorentzVector>", &selectedIDIsoElectrons, 32000, 0);
   tPrediction_->Branch("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity);
+  tPrediction_->Branch("selectedIDIsoElectronsPTW", &selectedIDIsoElectronsPTW);
+  //  tPrediction_->Branch("selectedIDIsoElectronsCDTT", &selectedIDIsoElectronsCDTT);
 //  tPrediction_->Branch("selectedIDIsoElectronsRelPTJet", &selectedIDIsoElectronsRelPTJet);
 //  tPrediction_->Branch("selectedIDIsoElectronsDeltaRJet", &selectedIDIsoElectronsDeltaRJet);
   tPrediction_->Branch("MTW",&mtw);
@@ -306,6 +311,16 @@ Bool_t Prediction::Process(Long64_t entry)
 
   if((selectedIDIsoMuonsNum_+selectedIDIsoElectronsNum_) !=1) return kTRUE;
 
+  // fill PTW values for extrapolation
+  for (UShort_t ii=0; ii < selectedIDIsoMuonsNum_; ii++){
+    selectedIDIsoMuonsPTW.push_back(PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi()));
+    //    selectedIDIsoMuonsCDTT.push_back(GetCosDTT(MHT,MHT_Phi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi()));
+  }
+  for (UShort_t ii=0; ii < selectedIDIsoElectronsNum_; ii++){
+    selectedIDIsoElectronsPTW.push_back(PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi()));
+    //    selectedIDIsoElectronsCDTT.push_back(GetCosDTT(MHT,MHT_Phi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi()));
+  }
+
   /*
   bool passTrigger = false;
   for (std::vector<string>::iterator it = TriggerNames->begin() ; it != TriggerNames->end(); ++it){
@@ -392,6 +407,11 @@ Bool_t Prediction::Process(Long64_t entry)
 
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
   BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
+
+  double PTW(0.);
+  if (selectedIDIsoMuonsNum_==1) PTW=selectedIDIsoMuonsPTW[0];
+  else if (selectedIDIsoElectronsNum_==1) PTW=selectedIDIsoElectronsPTW[0];
+  ptw_bins = GetPTWBin(Bin_, PTW, HT);
 
   // get IsoTrack Effs
   //expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackHTNJetsEff_->GetEff(HT, NJets, useAsymmErrors);
@@ -807,6 +827,7 @@ Bool_t Prediction::Process(Long64_t entry)
         std::cout<<muIsoWeight_/Weight<<"; "<<muRecoWeight_/Weight<<"; "<<muAccWeight_/Weight<<std::endl;
       }
 
+     
       // Uncertainties
       // For explanation see muons
       Float_t w1 = Weight * (1 - expectationReductionIsoTrackEff_) * 1/elecMTWEff_ * elecPurityCorrection_;
@@ -1066,6 +1087,13 @@ void Prediction::resetValues()
   selectedIDIsoMuonsRelPTJet.clear(); 
   selectedIDIsoElectronsDeltaRJet.clear();
   selectedIDIsoElectronsRelPTJet.clear();
+
+  selectedIDIsoMuonsPTW.clear();
+  //  selectedIDIsoMuonsCDTT.clear();
+  selectedIDIsoElectronsPTW.clear();
+  //  selectedIDIsoElectronsCDTT.clear();
+
+  ptw_bins.clear();
 }
 
 bool Prediction::FiltersPass()
@@ -1122,3 +1150,21 @@ std::pair <double,double> Prediction::minDeltaRLepJet(double lepPt, double lepEt
 
   return std::make_pair(deltaRmin, relPt);
 }
+
+std::vector<int> Prediction::GetPTWBin(int Bin, double ptw, double ht) {
+
+  std::vector<int> ptw_bins;
+  if (Bin%6>0&&Bin%6<4) ptw_bins.push_back(Bin);
+  if (ptw > 500 && ptw < 750) {
+    if (ht>500&&ht<1200) ptw_bins.push_back(6*((Bin-1)/6)+4);
+    else if (ht>1200) ptw_bins.push_back(6*((Bin-1)/6)+5);
+  } else if (ptw > 750) {
+    if (ht>800) ptw_bins.push_back(6*((Bin-1)/6)+6);
+    if (ht>500&&ht<1200) ptw_bins.push_back(6*((Bin-1)/6)+4);
+    else if (ht>1200) ptw_bins.push_back(6*((Bin-1)/6)+5);
+  }
+
+  return ptw_bins;
+  
+}
+

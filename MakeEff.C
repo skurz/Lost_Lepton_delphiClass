@@ -10,9 +10,9 @@ using std::vector;
 #pragma link C++ class std::vector<TLorentzVector>+;
 #endif
 
-void MakeEff()
+void MakeEff(std::string ExpFile="Expectation.root", std::string EffFile="Efficiencies.root")
 {
   TChain *Effchain = new TChain("LostLeptonExpectation");
-  Effchain->Add("Expectation.root");
-  Effchain->Process("EffMaker.C+","Efficiencies.root"); //specify output path/file here // folder already has to exist for the time beeing...
+  Effchain->Add(ExpFile.c_str());
+  Effchain->Process("EffMaker.C+", EffFile.c_str()); //specify output path/file here // folder already has to exist for the time being...
 }

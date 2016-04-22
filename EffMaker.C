@@ -6,6 +6,8 @@
 #include "TSystem.h"
 #include "TMath.h"
 
+const int nEXTRAPBins(13);
+
 void EffMaker::Begin(TTree * /*tree*/)
 {
   // The Begin() function is called at the start of the query.
@@ -26,6 +28,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   TH1::SetDefaultSumw2();
 
   gSystem->mkdir("Efficiencies"); 
+
 
   // purity
 
@@ -352,12 +355,28 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecRecoRelPTJet_ = new TH1Eff("ElecRecoRelPTJet","ElecRecoRelPTJet",oneDPTRel_-1,OneDPTRel_);
   ElecRecoDeltaRJet_ = new TH1Eff("ElecRecoDeltaRJet","ElecRecoDeltaRJet",oneDDeltaR_-1,OneDDeltaR_);
   ElecRecoRelPTDeltaRJet_ = new TH2Eff("ElecRecoRelPTDeltaRJet","ElecRecoRelPTDeltaRJet",oneDPTRel_-1,OneDPTRel_,oneDDeltaR_-1,OneDDeltaR_);
-  
+
+  // MHT?PTW histograms
+  for (unsigned int inj(0); inj<3; inj++) {
+    for (unsigned int inb(0); inb<3; inb++) {
+      LostMuRATIO_HT12[inj*3+inb] = new TH1D(Form("LostMuRATIO_HT12_NJ%d_NB%d", inj+1, inb), ";H_{T}^{miss}/p_{T}^{W};Fraction of Events", nEXTRAPBins, 0., 1.3);
+      LostElecRATIO_HT12[inj*3+inb] = new TH1D(Form("LostElecRATIO_HT12_NJ%d_NB%d", inj+1, inb), ";H_{T}^{miss}/p_{T}^{W};Fraction of Events", nEXTRAPBins, 0., 1.3);
+      LostLepRATIO_HT12[inj*3+inb] = new TH1D(Form("LostLepRATIO_HT12_NJ%d_NB%d", inj+1, inb), ";H_{T}^{miss}/p_{T}^{W};Fraction of Events", nEXTRAPBins, 0., 1.3);
+      LostMuRATIO_HT3[inj*3+inb] = new TH1D(Form("LostMuRATIO_HT3_NJ%d_NB%d", inj+1, inb), ";H_{T}^{miss}/p_{T}^{W};Fraction of Events", nEXTRAPBins, 0., 1.3);
+      LostElecRATIO_HT3[inj*3+inb] = new TH1D(Form("LostElecRATIO_HT3_NJ%d_NB%d", inj+1, inb), ";H_{T}^{miss}/p_{T}^{W};Fraction of Events", nEXTRAPBins, 0., 1.3);
+      LostLepRATIO_HT3[inj*3+inb] = new TH1D(Form("LostLepRATIO_HT3_NJ%d_NB%d", inj+1, inb), ";H_{T}^{miss}/p_{T}^{W};Fraction of Events", nEXTRAPBins, 0., 1.3);
+      LostMuRATIO_HT23[inj*3+inb] = new TH1D(Form("LostMuRATIO_HT23_NJ%d_NB%d", inj+1, inb), ";H_{T}^{miss}/p_{T}^{W};Fraction of Events", nEXTRAPBins, 0., 1.3);
+      LostElecRATIO_HT23[inj*3+inb] = new TH1D(Form("LostElecRATIO_HT23_NJ%d_NB%d", inj+1, inb), ";H_{T}^{miss}/p_{T}^{W};Fraction of Events", nEXTRAPBins, 0., 1.3);
+      LostLepRATIO_HT23[inj*3+inb] = new TH1D(Form("LostLepRATIO_HT23_NJ%d_NB%d", inj+1, inb), ";H_{T}^{miss}/p_{T}^{W};Fraction of Events", nEXTRAPBins, 0., 1.3);
+    }
+  }
+
 }
 
 Bool_t EffMaker::Process(Long64_t entry)
 {
 
+  if (entry%10000==0) cout << "fChain->GetTree()->GetEntry(" << entry << ");" << endl;
   fChain->GetTree()->GetEntry(entry);
 
   if(Weight<0) return kTRUE;
@@ -1108,6 +1127,68 @@ Bool_t EffMaker::Process(Long64_t entry)
             else PionIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
             // cout << "DONE" << endl;    
         }
+
+	// MHT/PTW histograms
+	int INJ(-1);
+	if (NJets>=4&&NJets<=6) INJ=0;
+	else if (NJets>=7&&NJets<=8) INJ=1;
+	else if (NJets>=9) INJ=2;
+	int INB(BTags);
+	if (INB>2) INB=2;
+	int IHT(-1);
+	if (HT>500&&HT<800) IHT=0;
+	else if (HT>800&&HT<1200) IHT=1;
+	else if (HT>1200) IHT=2;
+	if (HT<800&&MHT>750) IHT=-1;
+
+	//	printf("INJ/INB/IHT = %d/%d/%d\n", INJ, INB, IHT);
+	if (INJ>=0&&INB>=0&&IHT>=0) {
+	  if (Expectation==1) {
+	    if (GenMuNum==1&&GenElecNum==0) {	         
+	      if (ExpectationReductionIsoTrack==0) {
+		double PTW = sqrt( (GenMus->at(0).Px()+MHT*cos(MHT_Phi))*(GenMus->at(0).Px()+MHT*cos(MHT_Phi)) +  (GenMus->at(0).Py()+MHT*sin(MHT_Phi))*(GenMus->at(0).Py()+MHT*sin(MHT_Phi)) );
+		if (HT>500&&HT<1200) LostMuRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>1200) LostMuRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>800) LostMuRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>500&&HT<1200) LostLepRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>1200) LostLepRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, Weight);
+	      }
+	    }
+	    else if (GenMuNum==0&&GenElecNum==1) {
+	      if (ExpectationReductionIsoTrack==0) {	      
+		double PTW = sqrt( (GenEls->at(0).Px()+MHT*cos(MHT_Phi))*(GenEls->at(0).Px()+MHT*cos(MHT_Phi)) +  (GenEls->at(0).Py()+MHT*sin(MHT_Phi))*(GenEls->at(0).Py()+MHT*sin(MHT_Phi)) );
+		if (HT>500&&HT<1200) LostElecRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>1200) LostElecRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>800) LostElecRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>500&&HT<1200) LostLepRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>1200) LostLepRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, Weight);
+	      }
+	    } // 1-electron events
+	    // what do we want to do with di/multi-lepton events?
+	    // commented out below: take sum of all leptons and MHT
+	    // else if (GenMuNum+GenElecNum>1) { 
+	    //   std::vector<TLorentzVector> GenLeps;
+	    //   for (unsigned int imu(0); imu<GenMuNum; imu++) {
+	    // 	GenLeps.push_back(GenMus->at(imu));
+	    //   }
+	    //   for (unsigned int iel(0); iel<GenElecNum; iel++) {
+	    // 	GenLeps.push_back(GenEls->at(iel));
+	    //   }
+	    //   double PXW(MHT*cos(MHT_Phi)), PYW(MHT*sin(MHT_Phi));
+	    //   for (unsigned int ilep(0); ilep<GenLeps.size(); ilep++) {
+	    // 	PXW+=GenLeps[ilep].Px();
+	    // 	PYW+=GenLeps[ilep].Py();
+	    //   }
+	    //   double PTW = sqrt(PXW*PXW+PYW*PYW);
+	    //   if (HT>500&&HT<1200) LostLepRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, Weight);
+	    //   if (HT>1200) LostLepRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, Weight);
+	    //   if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, Weight);
+	    // } // di/multi-lepton events
+	  }
+	}
+	
     }
   
   return kTRUE;
@@ -1125,7 +1206,7 @@ void EffMaker::Terminate()
 {
 
   
-  TFile *outPutFile = new TFile("Efficiencies.root","RECREATE"); 
+  TFile *outPutFile = new TFile(fileName,"RECREATE"); 
   outPutFile->cd();
   outPutFile->mkdir("Efficiencies");
   TDirectory *dEfficiencies = (TDirectory*)outPutFile->Get("Efficiencies");
@@ -1414,5 +1495,53 @@ void EffMaker::Terminate()
   PionIsoTrackReductionHTMHT_NJetsLow_->SaveEff("#pi iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   PionIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("#pi iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
 
+  outPutFile->cd();
+  outPutFile->mkdir("ExtrapPDFs");
+  TDirectory *dExtrapPDFs = (TDirectory*)outPutFile->Get("ExtrapPDFs");
+  dExtrapPDFs->cd();
+  for (unsigned int inj(0); inj<3; inj++) {
+    for (unsigned int inb(0); inb<3; inb++) {
+      // fix overflow bins
+      // lump remiaining tail into 1.2 < MHT/PTW < 1.3 -- does this make sense?
+      Double_t erro(0.);
+      LostMuRATIO_HT12[inj*3+inb]->SetBinContent(nEXTRAPBins, LostMuRATIO_HT12[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostMuRATIO_HT12[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      LostMuRATIO_HT3[inj*3+inb]->SetBinContent(nEXTRAPBins, LostMuRATIO_HT3[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostMuRATIO_HT3[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      LostMuRATIO_HT23[inj*3+inb]->SetBinContent(nEXTRAPBins, LostMuRATIO_HT23[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostMuRATIO_HT23[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      if (LostMuRATIO_HT12[inj*3+inb]->Integral()>0) LostMuRATIO_HT12[inj*3+inb]->Scale(1/LostMuRATIO_HT12[inj*3+inb]->Integral());
+      if (LostMuRATIO_HT3[inj*3+inb]->Integral()>0) LostMuRATIO_HT3[inj*3+inb]->Scale(1/LostMuRATIO_HT3[inj*3+inb]->Integral());
+      if (LostMuRATIO_HT23[inj*3+inb]->Integral()>0) LostMuRATIO_HT23[inj*3+inb]->Scale(1/LostMuRATIO_HT23[inj*3+inb]->Integral());
+      LostMuRATIO_HT12[inj*3+inb]->Write();
+      LostMuRATIO_HT3[inj*3+inb]->Write();
+      LostMuRATIO_HT23[inj*3+inb]->Write();
+      LostElecRATIO_HT12[inj*3+inb]->SetBinContent(nEXTRAPBins, LostElecRATIO_HT12[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostElecRATIO_HT12[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      LostElecRATIO_HT3[inj*3+inb]->SetBinContent(nEXTRAPBins, LostElecRATIO_HT3[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostElecRATIO_HT3[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      LostElecRATIO_HT23[inj*3+inb]->SetBinContent(nEXTRAPBins, LostElecRATIO_HT23[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostElecRATIO_HT23[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      if (LostElecRATIO_HT12[inj*3+inb]->Integral()>0) LostElecRATIO_HT12[inj*3+inb]->Scale(1/LostElecRATIO_HT12[inj*3+inb]->Integral());
+      if (LostElecRATIO_HT3[inj*3+inb]->Integral()>0) LostElecRATIO_HT3[inj*3+inb]->Scale(1/LostElecRATIO_HT3[inj*3+inb]->Integral());
+      if (LostElecRATIO_HT23[inj*3+inb]->Integral()>0) LostElecRATIO_HT23[inj*3+inb]->Scale(1/LostElecRATIO_HT23[inj*3+inb]->Integral());
+      LostElecRATIO_HT12[inj*3+inb]->Write();
+      LostElecRATIO_HT3[inj*3+inb]->Write();
+      LostElecRATIO_HT23[inj*3+inb]->Write();
+      LostLepRATIO_HT12[inj*3+inb]->SetBinContent(nEXTRAPBins, LostLepRATIO_HT12[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostLepRATIO_HT12[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      LostLepRATIO_HT3[inj*3+inb]->SetBinContent(nEXTRAPBins, LostLepRATIO_HT3[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostLepRATIO_HT3[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      LostLepRATIO_HT23[inj*3+inb]->SetBinContent(nEXTRAPBins, LostLepRATIO_HT23[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostLepRATIO_HT23[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      if (LostLepRATIO_HT12[inj*3+inb]->Integral()>0) LostLepRATIO_HT12[inj*3+inb]->Scale(1/LostLepRATIO_HT12[inj*3+inb]->Integral());
+      if (LostLepRATIO_HT3[inj*3+inb]->Integral()>0) LostLepRATIO_HT3[inj*3+inb]->Scale(1/LostLepRATIO_HT3[inj*3+inb]->Integral());
+      if (LostLepRATIO_HT23[inj*3+inb]->Integral()>0) LostLepRATIO_HT23[inj*3+inb]->Scale(1/LostLepRATIO_HT23[inj*3+inb]->Integral());
+      LostLepRATIO_HT12[inj*3+inb]->Write();
+      LostLepRATIO_HT3[inj*3+inb]->Write();
+      LostLepRATIO_HT23[inj*3+inb]->Write();   
+    }
+  }
+  outPutFile->cd();
   outPutFile->Close();
 }

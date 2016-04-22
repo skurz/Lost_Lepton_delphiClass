@@ -148,7 +148,10 @@ double isoTrackReductionActivity2DOld_ [isotrackreductionActivity2DOld_] = {0,20
 class EffMaker : public TSelector {
  public :
   
-  TTree          *fChain; 
+  TTree          *fChain;
+
+  TString fileName;
+
   
   //purity
   //mu
@@ -472,13 +475,25 @@ class EffMaker : public TSelector {
   TH2Eff *PionIsoTrackReductionPTActivity_;
   TH2Eff *PionIsoTrackReductionHTMHT_NJetsLow_;
   TH2Eff *PionIsoTrackReductionHTMHT_NJetsHigh_;
-  
+
+  // MHT/PTW PDFs
+  // NJ X NB, merged HT bins
+  TH1D* LostMuRATIO_HT12[9]; 
+  TH1D* LostElecRATIO_HT12[9];
+  TH1D* LostLepRATIO_HT12[9];
+  TH1D* LostMuRATIO_HT3[9]; 
+  TH1D* LostElecRATIO_HT3[9];
+  TH1D* LostLepRATIO_HT3[9];
+  TH1D* LostMuRATIO_HT23[9]; 
+  TH1D* LostElecRATIO_HT23[9];
+  TH1D* LostLepRATIO_HT23[9];
   
   // Declaration of leaf types
   // Declaration of leaf types
   UInt_t          EvtNum;
   Double_t        HT;
   Double_t        MHT;
+  Double_t        MHT_Phi;
   Int_t           NJets;
   Int_t           BTags;
   Int_t           isoTracks;
@@ -498,11 +513,15 @@ class EffMaker : public TSelector {
   UShort_t        GenMuNum;
   std::vector<double>  *GenElec_MT2Activity=0;
   std::vector<double>  *GenMu_MT2Activity=0;
+  // std::vector<float>  *GenElecCDTT=0; 
+  // std::vector<float>  *GenMuCDTT=0; 
   std::vector<double>  *GenTau_MT2Activity=0;
   std::vector<double>  *selectedIDElectrons_MT2Activity=0;
   std::vector<double>  *selectedIDIsoElectrons_MT2Activity=0;
   std::vector<double>  *selectedIDMuons_MT2Activity=0;
   std::vector<double>  *selectedIDIsoMuons_MT2Activity=0;
+  //  std::vector<float>  *selectedIDIsoMuonsCDTT=0;
+  std::vector<float>  *selectedIDIsoMuonsPTW=0;
   std::vector<TLorentzVector> *GenMus=0;
   std::vector<float>   *GenMuDeltaRJet=0;
   std::vector<float>   *GenMuRelPTJet=0;
@@ -510,6 +529,8 @@ class EffMaker : public TSelector {
   std::vector<TLorentzVector> *GenEls=0;
   std::vector<float>   *GenElecDeltaRJet=0;
   std::vector<float>   *GenElecRelPTJet=0;
+  //  std::vector<float>  *selectedIDIsoElectronsCDTT=0;
+  std::vector<float>  *selectedIDIsoElectronsPTW=0;
   UShort_t        GenTauNum;
   std::vector<TLorentzVector> *GenTaus=0;
   UShort_t        Expectation;
@@ -547,6 +568,7 @@ class EffMaker : public TSelector {
   TBranch        *b_EvtNum=0;   //!
   TBranch        *b_HT=0;   //!
   TBranch        *b_MHT=0;   //!
+  TBranch        *b_MHT_Phi=0;   //!
   TBranch        *b_NJets=0;   //!
   TBranch        *b_BTags=0;   //!
   TBranch        *b_Leptons=0;   //!
@@ -568,13 +590,19 @@ class EffMaker : public TSelector {
   TBranch        *b_GenMuFromTau=0;   //!
   TBranch        *b_GenMuDeltaRJet=0;   //!
   TBranch        *b_GenMuRelPTJet=0;   //!
+  //  TBranch        *b_GenMuCDTT=0;   //!
   TBranch        *b_GenElec_MT2Activity=0;   //!
+  //  TBranch        *b_GenElecCDTT=0;   //!
   TBranch        *b_GenMu_MT2Activity=0;   //!
   TBranch        *b_GenTau_MT2Activity=0;   //!
   TBranch        *b_selectedIDIsoElectrons_MT2Activity=0;   //!
   TBranch        *b_selectedIDElectrons_MT2Activity=0;   //!
+  //  TBranch        *b_selectedIDIsoElectronsCDTT=0;
+  TBranch        *b_selectedIDIsoElectronsPTW=0;
   TBranch        *b_selectedIDIsoMuons_MT2Activity=0;   //!
   TBranch        *b_selectedIDMuons_MT2Activity=0;   //!
+  //  TBranch        *b_selectedIDIsoMuonsCDTT=0;
+  TBranch        *b_selectedIDIsoMuonsPTW=0;
   TBranch        *b_GenElecNum=0;   //!
   TBranch        *b_GenEls=0;   //!
   TBranch        *b_GenElecDeltaRJet=0;   //!
@@ -650,6 +678,21 @@ void EffMaker::Init(TTree *tree)
   if (!tree) return;
   fChain = tree;
   fChain->SetMakeClass(1);
+
+
+  TString option = GetOption();
+  TObjArray *optionArray = option.Tokenize(",");
+  TString fileNameString = "";
+
+  if(!optionArray->IsEmpty()){
+    fileNameString = ((TObjString *)(optionArray->At(0)))->String();
+  }
+
+  fileNameString = fileNameString.Strip(TString::kBoth, ' ').String();
+
+  if(fileNameString!="*" && fileNameString!="") fileName = fileNameString;
+
+  
   
   fChain->SetBranchStatus("*",0);
 
@@ -659,6 +702,8 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("HT", &HT, &b_HT);
   fChain->SetBranchStatus("MHT", 1);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
+  fChain->SetBranchStatus("MHT_Phi", 1);
+  fChain->SetBranchAddress("MHT_Phi", &MHT_Phi, &b_MHT_Phi);
   fChain->SetBranchStatus("NJets", 1);
   fChain->SetBranchAddress("NJets", &NJets, &b_NJets);
   fChain->SetBranchStatus("BTags", 1);
@@ -689,6 +734,8 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("GenMuDeltaRJet", &GenMuDeltaRJet, &b_GenMuDeltaRJet);
   fChain->SetBranchStatus("GenMuRelPTJet", 1);
   fChain->SetBranchAddress("GenMuRelPTJet", &GenMuRelPTJet, &b_GenMuRelPTJet);
+  //  fChain->SetBranchStatus("GenMuCDTT", 1);
+  //  fChain->SetBranchAddress("GenMuCDTT", &GenMuCDTT, &b_GenMuCDTT);
   fChain->SetBranchStatus("GenElecNum", 1);
   fChain->SetBranchAddress("GenElecNum", &GenElecNum, &b_GenElecNum);
   fChain->SetBranchStatus("GenEls", 1);
@@ -697,6 +744,8 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("GenElecDeltaRJet", &GenElecDeltaRJet, &b_GenElecDeltaRJet);
   fChain->SetBranchStatus("GenElecRelPTJet", 1);
   fChain->SetBranchAddress("GenElecRelPTJet", &GenElecRelPTJet, &b_GenElecRelPTJet);
+  //  fChain->SetBranchStatus("GenElecCDTT", 1);
+  //  fChain->SetBranchAddress("GenElecCDTT", &GenElecCDTT, &b_GenElecCDTT);
   fChain->SetBranchStatus("GenTauNum", 1);
   fChain->SetBranchAddress("GenTauNum", &GenTauNum, &b_GenTauNum);
   fChain->SetBranchStatus("GenTaus", 1);
@@ -733,6 +782,10 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("selectedIDMuonsNum", &selectedIDMuonsNum, &b_selectedIDMuonsNum);
   fChain->SetBranchStatus("selectedIDMuons", 1);
   fChain->SetBranchAddress("selectedIDMuons", &selectedIDMuons, &b_selectedIDMuons);
+  //  fChain->SetBranchStatus("selectedIDIsoMuonsCDTT", 1);
+  //  fChain->SetBranchAddress("selectedIDIsoMuonsCDTT", &selectedIDIsoMuonsCDTT, &b_selectedIDIsoMuonsCDTT);
+  fChain->SetBranchStatus("selectedIDIsoMuonsPTW", 1);
+  fChain->SetBranchAddress("selectedIDIsoMuonsPTW", &selectedIDIsoMuonsPTW, &b_selectedIDIsoMuonsPTW);
   fChain->SetBranchStatus("selectedIDIsoElectronsNum", 1);
   fChain->SetBranchAddress("selectedIDIsoElectronsNum", &selectedIDIsoElectronsNum, &b_selectedIDIsoElectronsNum);
   fChain->SetBranchStatus("selectedIDIsoElectrons", 1);
@@ -743,6 +796,10 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("selectedIDElectronsNum", &selectedIDElectronsNum, &b_selectedIDElectronsNum);
   fChain->SetBranchStatus("selectedIDElectrons", 1);
   fChain->SetBranchAddress("selectedIDElectrons", &selectedIDElectrons, &b_selectedIDElectrons);
+  //  fChain->SetBranchStatus("selectedIDIsoElectronsCDTT", 1);
+  //  fChain->SetBranchAddress("selectedIDIsoElectronsCDTT", &selectedIDIsoElectronsCDTT, &b_selectedIDIsoElectronsCDTT);
+  fChain->SetBranchStatus("selectedIDIsoElectronsPTW", 1);
+  fChain->SetBranchAddress("selectedIDIsoElectronsPTW", &selectedIDIsoElectronsPTW, &b_selectedIDIsoElectronsPTW);
   fChain->SetBranchStatus("isoElectronTracks", 1);
   fChain->SetBranchAddress("isoElectronTracks", &isoElectronTracks, &b_isoElectronTracks);
   fChain->SetBranchStatus("IsolatedElectronTracksVeto", 1);

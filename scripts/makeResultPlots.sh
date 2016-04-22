@@ -1,0 +1,6 @@
+root -b -q ResultPlot.C+\(\"/eos/uscms/store/user/jbradmil/LL2016/Expectation.root\",\"Efficiencies.root\",\"/eos/uscms/store/user/jbradmil/LL2016/Prediction.root\"\)
+root -b -q Plot_searchBin_full_extrap.C+\(\"LLPrediction.root\",\"Closure_Full_Plot_72bins_EXTRAP.pdf\"\)
+root -b -q ResultPlot.C+\(\"/eos/uscms/store/user/jbradmil/LL2016/Expectation_separate/Expectation_TTJets.root\",\"Efficiencies_TTJets.root\",\"/eos/uscms/store/user/jbradmil/LL2016/Prediction_separate/Prediction_TTJets.root\",\"Prediction_data.root\",\"Closure_TTJets.root\",\"LLPrediction_TTJets.root\"\)
+root -b -q Plot_searchBin_full_extrap.C+\(\"LLPrediction_TTJets.root\",\"Closure_Full_Plot_72bins_EXTRAP_TTJets.pdf\"\)
+root -b -q ResultPlot.C+\(\"/eos/uscms/store/user/jbradmil/LL2016/Expectation_separate/Expectation_WJets.root\",\"Efficiencies_WJets.root\",\"/eos/uscms/store/user/jbradmil/LL2016/Prediction_separate/Prediction_WJets.root\",\"Prediction_data.root\",\"Closure_WJets.root\",\"LLPrediction_WJets.root\"\)
+root -b -q Plot_searchBin_full_extrap.C+\(\"LLPrediction_WJets.root\",\"Closure_Full_Plot_72bins_EXTRAP_WJets.pdf\"\)

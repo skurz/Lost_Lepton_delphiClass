@@ -1,0 +1,15 @@
+# output plots
+*.pdf
+*.png
+
+# root files
+*.root
+
+# compiler junk
+*_C.d
+*_C.so
+*_C_ACLiC_dict_rdict.pcm
+
+# log files
+*.log
+nohup.out
