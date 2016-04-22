@@ -18,12 +18,30 @@ static double MTWCalculator(double metPt,double  metPhi,double  lepPt,double  le
   return sqrt(2*lepPt*metPt*(1-cos(deltaPhi)) );
 }
 
-static double PTWCalculator(double metPt,double  metPhi,double  lepPt,double  lepPhi, int scaleMet = 0)
+static double PTWCalculator(double metPt,double  metPhi,double  lepPt,double  lepPhi)
 {
-  if(scaleMet == 1) metPt = metPt * 1.3;
-  if(scaleMet == -1) metPt = metPt * 0.7;
+
   TVector2 Wvec(metPt*cos(metPhi)+lepPt*cos(lepPhi), metPt*sin(metPhi)+lepPt*sin(lepPhi));
   return Wvec.Mod();
+}
+
+static double GetCosDTT(double mht, double mht_phi, double lep_pt, double lep_phi) {
+
+  double px_lab_w = lep_pt * cos( lep_phi ) + mht*cos(mht_phi) ;
+  double py_lab_w = lep_pt * sin( lep_phi ) + mht*sin(mht_phi) ;
+  double pt_lab_w = sqrt( pow( px_lab_w, 2 ) + pow( py_lab_w, 2 ) ) ;
+
+  double dphi_lab_lepton_mht = TVector2::Phi_mpi_pi(lep_phi - mht_phi);
+  double cosdphi_lab_lepton_mht = cos( dphi_lab_lepton_mht ) ;
+
+  double mt_w = sqrt( 2*lep_pt*mht*(1.-cosdphi_lab_lepton_mht) ) ;
+  double et_lab_w = sqrt( pow( pt_lab_w, 2. ) + pow( mt_w, 2. ) ) ;
+
+	 
+  double pt_parallel_lab_lepton = (lep_pt/pt_lab_w)*(lep_pt + mht*cosdphi_lab_lepton_mht ) ;
+
+  return (2*pt_parallel_lab_lepton - pt_lab_w)/et_lab_w ;
+  
 }
 
 static double GetTriggerEffWeight(Double_t MHT){
@@ -39,9 +57,9 @@ static double GetTriggerEffWeight(Double_t MHT){
 }
 
 static double GetSignalTriggerEffWeight(Double_t MHT) {
-    if (MHT<200) return 0;
-    else if (MHT<500) return 0.9819;
-    else return 0.9833;
+  if (MHT<200) return 0;
+  else if (MHT<500) return 0.9819;
+  else return 0.9833;
 }
 
 static double GetSF(TH2 *hist, Double_t xVal, Double_t yVal, bool addSys) {
@@ -49,26 +67,26 @@ static double GetSF(TH2 *hist, Double_t xVal, Double_t yVal, bool addSys) {
 
   // Dont use overflow bins!
   if(xVal < hist->GetXaxis()->GetXmin() )
-  {
-    //std::cout<<"SF: Warning xVal: "<<xVal<<" is smaller than minimum of histo: "<<hist->GetName()<<std::endl;
-    xVal= hist->GetXaxis()->GetXmin()+0.01;
-  }
+    {
+      //std::cout<<"SF: Warning xVal: "<<xVal<<" is smaller than minimum of histo: "<<hist->GetName()<<std::endl;
+      xVal= hist->GetXaxis()->GetXmin()+0.01;
+    }
   else if(xVal > hist->GetXaxis()->GetXmax() )
-  {
-    //std::cout<<"SF: Warning xVal: "<<xVal<<" is bigger than maximum of histo: "<<hist->GetName()<<" which is: "<<hist->GetXaxis()->GetXmax()<<std::endl;
-    xVal= hist->GetXaxis()->GetXmax()-0.01;
-  }
+    {
+      //std::cout<<"SF: Warning xVal: "<<xVal<<" is bigger than maximum of histo: "<<hist->GetName()<<" which is: "<<hist->GetXaxis()->GetXmax()<<std::endl;
+      xVal= hist->GetXaxis()->GetXmax()-0.01;
+    }
   
   if(yVal < hist->GetYaxis()->GetXmin() )
-  {
-    //std::cout<<"SF: Warning yVal: "<<yVal<<" is smaller than minimum of histo: "<<hist->GetName()<<std::endl;
-    yVal= hist->GetYaxis()->GetXmin()+0.01;
-  }
+    {
+      //std::cout<<"SF: Warning yVal: "<<yVal<<" is smaller than minimum of histo: "<<hist->GetName()<<std::endl;
+      yVal= hist->GetYaxis()->GetXmin()+0.01;
+    }
   else if(yVal > hist->GetYaxis()->GetXmax() )
-  {
-    //std::cout<<"SF: Warning yVal: "<<yVal<<" is bigger than maximum of histo: "<<hist->GetName()<<std::endl;
-    yVal= hist->GetYaxis()->GetXmax()-0.01;
-  }
+    {
+      //std::cout<<"SF: Warning yVal: "<<yVal<<" is bigger than maximum of histo: "<<hist->GetName()<<std::endl;
+      yVal= hist->GetYaxis()->GetXmax()-0.01;
+    }
 
   int nxBin = hist->GetXaxis()->FindBin(xVal);
   int nyBin = hist->GetYaxis()->FindBin(yVal);
