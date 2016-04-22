@@ -1143,11 +1143,11 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     
     double PTW(0.), PTL(0.);
     if (selectedIDIsoMuonsNum==1) {
-      PTW=selectedIDIsoMuonsPTW->at(0);
+      PTW=PTWCalculator(MHT, MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
       PTL=selectedIDIsoMuons->at(0).Pt();
     }
     else if (selectedIDIsoElectronsNum==1) {
-      PTW=selectedIDIsoElectronsPTW->at(0);
+      PTW=PTWCalculator(MHT, MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
       PTL=selectedIDIsoElectrons->at(0).Pt();
     }
     totalPred_PTW_LL_MC_->Fill(PTW, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
@@ -1359,7 +1359,9 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   LostLeptonPredictionData->SetBranchStatus("BinQCD",1);
   LostLeptonPredictionData->SetBranchStatus("MTW",1);
   LostLeptonPredictionData->SetBranchStatus("selectedIDIsoMuonsNum",1);
+  LostLeptonPredictionData->SetBranchStatus("selectedIDIsoMuons",1);
   LostLeptonPredictionData->SetBranchStatus("selectedIDIsoElectronsNum",1);
+  LostLeptonPredictionData->SetBranchStatus("selectedIDIsoElectrons",1);
   LostLeptonPredictionData->SetBranchStatus("selectedIDIsoMuonsPTW",1);
   LostLeptonPredictionData->SetBranchStatus("selectedIDIsoElectronsPTW",1);
   LostLeptonPredictionData->SetBranchStatus("totalWeightDiLep",1);
@@ -1446,7 +1448,9 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 	
   LostLeptonPredictionData->SetBranchAddress("MTW",&MTW);
   LostLeptonPredictionData->SetBranchAddress("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum);
+  LostLeptonPredictionData->SetBranchAddress("selectedIDIsoMuons",&selectedIDIsoMuons,&b_selectedIDIsoMuons);
   LostLeptonPredictionData->SetBranchAddress("selectedIDIsoElectronsNum",&selectedIDIsoElectronsNum);
+  LostLeptonPredictionData->SetBranchAddress("selectedIDIsoElectrons",&selectedIDIsoElectrons,&b_selectedIDIsoElectrons);
   LostLeptonPredictionData->SetBranchAddress("selectedIDIsoMuonsPTW",&selectedIDIsoMuonsPTW, &b_selectedIDIsoMuonsPTW);
   LostLeptonPredictionData->SetBranchAddress("selectedIDIsoElectronsPTW",&selectedIDIsoElectronsPTW, &b_selectedIDIsoElectronsPTW);
   LostLeptonPredictionData->SetBranchAddress("totalWeightDiLep",&totalWeightDiLep);
@@ -1556,8 +1560,8 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     totalPred_BTags_LL_->Fill(BTags, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
 
     double PTW(0.);
-    if (selectedIDIsoMuonsNum==1) PTW=selectedIDIsoMuonsPTW->at(0);
-    if (selectedIDIsoElectronsNum==1) PTW=selectedIDIsoElectronsPTW->at(0);
+    if (selectedIDIsoMuonsNum==1) PTW=PTWCalculator(MHT, MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
+    if (selectedIDIsoElectronsNum==1) PTW=PTWCalculator(MHT, MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
 
 
     // extrapolation predictions
