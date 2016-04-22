@@ -2,6 +2,12 @@
 #include <cstdio>
 #include <iostream>   // std::cout
 #include <string>     // std::string, std::to_string
+#include "TCanvas.h"
+#include "TH1.h"
+#include "TExec.h"
+#include "TDirectory.h"
+#include "TLegend.h"
+#include "TFile.h"
 #include <tdrstyle.C>
 #include <CMS_lumi.C>
 
@@ -75,7 +81,7 @@ void CompareControlRegions(string option="", int pull=0){ // string option="QCD"
   float ymax3_top = 200.;
   float ymax4_top = 30.;
 
-  float ymax_bottom = 15.99;
+  float ymax_bottom = 6.99;
   float ymin_bottom = 0.01;
 
   float ymax2_bottom = 2.99;

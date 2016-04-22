@@ -280,11 +280,12 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TH1D* totalExp_BTags_LL_ = new TH1D("totalExp_BTags_LL","totalExp_BTags_LL;N_{b-jet} (p_{T} > 30 GeV)", 7, -0.5, 6.5);
 
   // JACK--debug PTW measurement
-  TH1D* totalExp_PTW_LL_ = new TH1D("totalExp_PTW_LL","totalExp_PTW_LL;p_{T}^{W} [GeV]", 20, 200., 1200.);
-  TH1D* totalExp_PTW_LL_0b_ = new TH1D("totalExp_PTW_LL_0b","totalExp_PTW_LL_0b;p_{T}^{W} [GeV]", 20, 200., 1200.);
-  TH1D* totalExp_PTW_LL_1b_ = new TH1D("totalExp_PTW_LL_1b","totalExp_PTW_LL_1b;p_{T}^{W} [GeV]", 20, 200., 1200.);
-  TH1D* totalExp_PTW_LL_2b_ = new TH1D("totalExp_PTW_LL_2b","totalExp_PTW_LL_2b;p_{T}^{W} [GeV]", 20, 200., 1200.);
-  TH1D* totalExp_PTL_LL_ = new TH1D("totalExp_PTL_LL","totalExp_PTL_LL;p_{T}^{e/#mu} [GeV]", 50, 10., 510.);
+  TH1D* totalExp_PTW_LL_ = new TH1D("totalExp_PTW_LL","totalExp_PTW_LL;p_{T}^{W} [GeV]", 38, 0, 950);
+  TH1D* totalExp_PTW_LL_0b_ = new TH1D("totalExp_PTW_LL_0b","totalExp_PTW_LL_0b;p_{T}^{W} [GeV]", 38, 0, 950);
+  TH1D* totalExp_PTW_LL_1b_ = new TH1D("totalExp_PTW_LL_1b","totalExp_PTW_LL_1b;p_{T}^{W} [GeV]", 38, 0, 950);
+  TH1D* totalExp_PTW_LL_2b_ = new TH1D("totalExp_PTW_LL_2b","totalExp_PTW_LL_2b;p_{T}^{W} [GeV]", 38, 0, 950);
+  TH1D* totalExp_PTL_LL_ = new TH1D("totalExp_PTL_LL","totalExp_PTL_LL;p_{T}^{e/#mu} [GeV]", 51, 0., 510.);
+  TH1D* totalExp_ETAL_LL_ = new TH1D("totalExp_ETAL_LL","totalExp_ETAL_LL;#eta^{e/#mu} [GeV]", 60, -3., 3.);
 
  
   // JACK--comparing classical and extrapolated MHT predictions
@@ -305,12 +306,18 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TH1D* totalPred_MHT_EXTRAP_HT3_LL_MC_[12];
   TH1D* totalPred_MHT_EXTRAP_HT23_LL_MC_[12];
   // these are for calculating the new average weight
-  TH1D* totalPred_PTW_HT12_LL_[12];
-  TH1D* totalPred_PTW_HT3_LL_[12];
-  TH1D* totalPred_PTW_HT23_LL_[12];
-  TH1D* totalPred_PTW_HT12_LL_MC_[12];
-  TH1D* totalPred_PTW_HT3_LL_MC_[12];
-  TH1D* totalPred_PTW_HT23_LL_MC_[12];
+  TH1D* totalCR_MHT_HT12_LL_[12];
+  TH1D* totalCR_MHT_HT3_LL_[12];
+  TH1D* totalCR_MHT_HT23_LL_[12];
+  TH1D* totalCR_MHT_HT12_LL_MC_[12];
+  TH1D* totalCR_MHT_HT3_LL_MC_[12];
+  TH1D* totalCR_MHT_HT23_LL_MC_[12];
+  TH1D* totalCR_PTW_HT12_LL_[12];
+  TH1D* totalCR_PTW_HT3_LL_[12];
+  TH1D* totalCR_PTW_HT23_LL_[12];
+  TH1D* totalCR_PTW_HT12_LL_MC_[12];
+  TH1D* totalCR_PTW_HT3_LL_MC_[12];
+  TH1D* totalCR_PTW_HT23_LL_MC_[12];
   
   TFile* EffFile = new TFile(InputPath_Efficiencies.c_str(), "read");
   // these are the MHT/PTW templates
@@ -349,12 +356,19 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
       totalPred_MHT_EXTRAP_HT3_LL_MC_[inj*4+inb] = new TH1D(Form("totalPred_MHT_EXTRAP_HT3_NJ%d_NB%d_LL_MC", inj+1, inb), Form("totalPred_MHT_EXTRAP_HT3_NJ%d_NB%d_LL_MC", inj+1, inb), 4, mht_bins);
       totalPred_MHT_EXTRAP_HT23_LL_MC_[inj*4+inb] = new TH1D(Form("totalPred_MHT_EXTRAP_HT23_NJ%d_NB%d_LL_MC", inj+1, inb), Form("totalPred_MHT_EXTRAP_HT23_NJ%d_NB%d_LL_MC", inj+1, inb), 4, mht_bins);
      
-      totalPred_PTW_HT12_LL_[inj*4+inb] = new TH1D(Form("totalPred_PTW_HT12_NJ%d_NB%d_LL", inj+1, inb), Form("totalPred_PTW_HT12_NJ%d_NB%d_LL", inj+1, inb), 4, ptw_bins);
-      totalPred_PTW_HT3_LL_[inj*4+inb] = new TH1D(Form("totalPred_PTW_HT3_NJ%d_NB%d_LL", inj+1, inb), Form("totalPred_PTW_HT3_NJ%d_NB%d_LL", inj+1, inb), 4, ptw_bins);
-      totalPred_PTW_HT23_LL_[inj*4+inb] = new TH1D(Form("totalPred_PTW_HT23_NJ%d_NB%d_LL", inj+1, inb), Form("totalPred_PTW_HT23_NJ%d_NB%d_LL", inj+1, inb), 4, ptw_bins);
-      totalPred_PTW_HT12_LL_MC_[inj*4+inb] = new TH1D(Form("totalPred_PTW_HT12_NJ%d_NB%d_LL_MC", inj+1, inb), Form("totalPred_PTW_HT12_NJ%d_NB%d_LL_MC", inj+1, inb), 4, ptw_bins);
-      totalPred_PTW_HT3_LL_MC_[inj*4+inb] = new TH1D(Form("totalPred_PTW_HT3_NJ%d_NB%d_LL_MC", inj+1, inb), Form("totalPred_PTW_HT3_NJ%d_NB%d_LL_MC", inj+1, inb), 4, ptw_bins);
-      totalPred_PTW_HT23_LL_MC_[inj*4+inb] = new TH1D(Form("totalPred_PTW_HT23_NJ%d_NB%d_LL_MC", inj+1, inb), Form("totalPred_PTW_HT23_NJ%d_NB%d_LL_MC", inj+1, inb), 4, ptw_bins);
+      totalCR_MHT_HT12_LL_[inj*4+inb] = new TH1D(Form("totalCR_MHT_HT12_NJ%d_NB%d_LL", inj+1, inb), Form("totalCR_MHT_HT12_NJ%d_NB%d_LL", inj+1, inb), 4, ptw_bins);
+      totalCR_MHT_HT3_LL_[inj*4+inb] = new TH1D(Form("totalCR_MHT_HT3_NJ%d_NB%d_LL", inj+1, inb), Form("totalCR_MHT_HT3_NJ%d_NB%d_LL", inj+1, inb), 4, ptw_bins);
+      totalCR_MHT_HT23_LL_[inj*4+inb] = new TH1D(Form("totalCR_MHT_HT23_NJ%d_NB%d_LL", inj+1, inb), Form("totalCR_MHT_HT23_NJ%d_NB%d_LL", inj+1, inb), 4, ptw_bins);
+      totalCR_MHT_HT12_LL_MC_[inj*4+inb] = new TH1D(Form("totalCR_MHT_HT12_NJ%d_NB%d_LL_MC", inj+1, inb), Form("totalCR_MHT_HT12_NJ%d_NB%d_LL_MC", inj+1, inb), 4, ptw_bins);
+      totalCR_MHT_HT3_LL_MC_[inj*4+inb] = new TH1D(Form("totalCR_MHT_HT3_NJ%d_NB%d_LL_MC", inj+1, inb), Form("totalCR_MHT_HT3_NJ%d_NB%d_LL_MC", inj+1, inb), 4, ptw_bins);
+      totalCR_MHT_HT23_LL_MC_[inj*4+inb] = new TH1D(Form("totalCR_MHT_HT23_NJ%d_NB%d_LL_MC", inj+1, inb), Form("totalCR_MHT_HT23_NJ%d_NB%d_LL_MC", inj+1, inb), 4, ptw_bins);
+
+      totalCR_PTW_HT12_LL_[inj*4+inb] = new TH1D(Form("totalCR_PTW_HT12_NJ%d_NB%d_LL", inj+1, inb), Form("totalCR_PTW_HT12_NJ%d_NB%d_LL", inj+1, inb), 4, ptw_bins);
+      totalCR_PTW_HT3_LL_[inj*4+inb] = new TH1D(Form("totalCR_PTW_HT3_NJ%d_NB%d_LL", inj+1, inb), Form("totalCR_PTW_HT3_NJ%d_NB%d_LL", inj+1, inb), 4, ptw_bins);
+      totalCR_PTW_HT23_LL_[inj*4+inb] = new TH1D(Form("totalCR_PTW_HT23_NJ%d_NB%d_LL", inj+1, inb), Form("totalCR_PTW_HT23_NJ%d_NB%d_LL", inj+1, inb), 4, ptw_bins);
+      totalCR_PTW_HT12_LL_MC_[inj*4+inb] = new TH1D(Form("totalCR_PTW_HT12_NJ%d_NB%d_LL_MC", inj+1, inb), Form("totalCR_PTW_HT12_NJ%d_NB%d_LL_MC", inj+1, inb), 4, ptw_bins);
+      totalCR_PTW_HT3_LL_MC_[inj*4+inb] = new TH1D(Form("totalCR_PTW_HT3_NJ%d_NB%d_LL_MC", inj+1, inb), Form("totalCR_PTW_HT3_NJ%d_NB%d_LL_MC", inj+1, inb), 4, ptw_bins);
+      totalCR_PTW_HT23_LL_MC_[inj*4+inb] = new TH1D(Form("totalCR_PTW_HT23_NJ%d_NB%d_LL_MC", inj+1, inb), Form("totalCR_PTW_HT23_NJ%d_NB%d_LL_MC", inj+1, inb), 4, ptw_bins);
       // THE templates
       if (inb>3) continue;
       LostMuRATIO_HT12[inj*3+inb] = (TH1D*)EffFile->Get(Form("ExtrapPDFs/LostMuRATIO_HT12_NJ%d_NB%d", inj+1, inb)); 
@@ -534,11 +548,12 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TH1D* totalPred_NJets_LL_MC_ = new TH1D("totalPred_NJets_LL_MC","totalPred_NJets_LL_MC", 7, 3.5, 10.5);
   TH1D* totalPred_BTags_LL_MC_ = new TH1D("totalPred_BTags_LL_MC","totalPred_BTags_LL_MC", 7, -0.5, 6.5);
 
-  TH1D* totalPred_PTW_LL_MC_ = new TH1D("totalPred_PTW_LL_MC","totalPred_PTW_LL_MC", 20, 200., 1200.);
-  TH1D* totalPred_PTW_LL_0b_MC_ = new TH1D("totalPred_PTW_LL_0b_MC","totalPred_PTW_LL_0b_MC", 20, 200., 1200.);
-  TH1D* totalPred_PTW_LL_1b_MC_ = new TH1D("totalPred_PTW_LL_1b_MC","totalPred_PTW_LL_1b_MC", 20, 200., 1200.);
-  TH1D* totalPred_PTW_LL_2b_MC_ = new TH1D("totalPred_PTW_LL_2b_MC","totalPred_PTW_LL_2b_MC", 20, 200., 1200.);
-  TH1D* totalPred_PTL_LL_MC_ = new TH1D("totalPred_PTL_LL_MC","totalPred_PTL_LL_MC", 50, 10., 510.);
+  TH1D* totalPred_PTW_LL_MC_ = new TH1D("totalPred_PTW_LL_MC","totalPred_PTW_LL_MC", 38, 0, 950);
+  TH1D* totalPred_PTW_LL_0b_MC_ = new TH1D("totalPred_PTW_LL_0b_MC","totalPred_PTW_LL_0b_MC", 38, 0, 950);
+  TH1D* totalPred_PTW_LL_1b_MC_ = new TH1D("totalPred_PTW_LL_1b_MC","totalPred_PTW_LL_1b_MC", 38, 0, 950);
+  TH1D* totalPred_PTW_LL_2b_MC_ = new TH1D("totalPred_PTW_LL_2b_MC","totalPred_PTW_LL_2b_MC", 38, 0, 950);
+  TH1D* totalPred_PTL_LL_MC_ = new TH1D("totalPred_PTL_LL_MC","totalPred_PTL_LL_MC", 51, 0., 510.);
+  TH1D* totalPred_ETAL_LL_MC_ = new TH1D("totalPred_ETAL_LL_MC","totalPred_ETAL_LL_MC;#eta^{e/#mu} [GeV]", 60, -3., 3.);
 
   
   TH1D* totalPredIsoTrackSysUp_LL_MC_ = new TH1D("totalPredIsoTrackSysUp_LL_MC","totalPredIsoTrackSysUp_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
@@ -870,15 +885,17 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 	}
 	// debug PTW modeling
 	// to get lost-lepton ptw, need the gen lepton...
-	double PXL(0.), PYL(0.), PTL(0.); // always pick lead lepton pt...
+	double PXL(0.), PYL(0.), ETAL(0.); // always pick lead lepton pt...
 	unsigned int GenMuNum=GenMus->size(), GenElecNum=GenEls->size();
-	if (GenMuNum>=1&&GenElecNum==0) {PXL=GenMus->at(0).Px(); PYL=GenMus->at(0).Px();}
-	else if (GenMuNum==0&&GenElecNum>=1) {PXL=GenEls->at(0).Px(); PYL=GenEls->at(0).Px();}
+	if (GenMuNum>=1&&GenElecNum==0) {PXL=GenMus->at(0).Px(); PYL=GenMus->at(0).Py(); ETAL=GenMus->at(0).Eta();}
+	else if (GenMuNum==0&&GenElecNum>=1) {PXL=GenEls->at(0).Px(); PYL=GenEls->at(0).Py(); ETAL=GenEls->at(0).Eta();}
 	else if (GenMuNum>=1&&GenElecNum>=1) {
-	  PXL = (GenMus->at(0).Px()>GenEls->at(0).Px()) ? GenMus->at(0).Px() : GenEls->at(0).Px();
-	  PYL = (GenMus->at(0).Py()>GenEls->at(0).Py()) ? GenMus->at(0).Py() : GenEls->at(0).Py();
+	  PXL = (GenMus->at(0).Pt()>GenEls->at(0).Pt()) ? GenMus->at(0).Px() : GenEls->at(0).Px();
+	  PYL = (GenMus->at(0).Pt()>GenEls->at(0).Pt()) ? GenMus->at(0).Py() : GenEls->at(0).Py();
+	  ETAL = (GenMus->at(0).Pt()>GenEls->at(0).Pt()) ? GenMus->at(0).Eta() : GenEls->at(0).Eta();
 	}
 	totalExp_PTL_LL_->Fill(sqrt(PXL*PXL+PYL*PYL), scaledWeight);
+	totalExp_ETAL_LL_->Fill(ETAL, scaledWeight);
 	
 	double PXW(MHT*cos(MHT_Phi)+PXL), PYW(MHT*sin(MHT_Phi)+PYL);
 	double PTW = sqrt(PXW*PXW+PYW*PYW);
@@ -1141,14 +1158,16 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
 
     
-    double PTW(0.), PTL(0.);
+    double PTW(0.), PTL(0.), ETAL(0.);
     if (selectedIDIsoMuonsNum==1) {
       PTW=PTWCalculator(MHT, MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
       PTL=selectedIDIsoMuons->at(0).Pt();
+      ETAL=selectedIDIsoMuons->at(0).Eta();
     }
     else if (selectedIDIsoElectronsNum==1) {
       PTW=PTWCalculator(MHT, MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
       PTL=selectedIDIsoElectrons->at(0).Pt();
+      ETAL=selectedIDIsoElectrons->at(0).Eta();
     }
     totalPred_PTW_LL_MC_->Fill(PTW, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
     if (BTags==0) totalPred_PTW_LL_0b_MC_->Fill(PTW, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
@@ -1156,6 +1175,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     else if (BTags>=2) totalPred_PTW_LL_2b_MC_->Fill(PTW, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
 
     totalPred_PTL_LL_MC_->Fill(PTL, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+    totalPred_ETAL_LL_MC_->Fill(ETAL, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
 
     // extrapolated predictions
 
@@ -1185,15 +1205,18 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     if (INJ>=0&&INB>=0&&IHT>=0) {
       if (HT>500&&HT<1200) {
 	totalPred_MHT_Normal_HT12_LL_MC_[INJ*4+INB]->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
-	totalPred_PTW_HT12_LL_MC_[INJ*4+INB]->Fill(PTW, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+	totalCR_MHT_HT12_LL_MC_[INJ*4+INB]->Fill(PTW, scaleFactorWeight);
+	totalCR_PTW_HT12_LL_MC_[INJ*4+INB]->Fill(PTW, scaleFactorWeight);
       }
       if (HT>1200) {
 	totalPred_MHT_Normal_HT3_LL_MC_[INJ*4+INB]->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
-	totalPred_PTW_HT3_LL_MC_[INJ*4+INB]->Fill(PTW, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+	totalCR_MHT_HT3_LL_MC_[INJ*4+INB]->Fill(PTW, scaleFactorWeight);
+	totalCR_PTW_HT3_LL_MC_[INJ*4+INB]->Fill(PTW, scaleFactorWeight);
       }
       if (HT>800) {
 	totalPred_MHT_Normal_HT23_LL_MC_[INJ*4+INB]->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
-	totalPred_PTW_HT23_LL_MC_[INJ*4+INB]->Fill(PTW, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+	totalCR_MHT_HT23_LL_MC_[INJ*4+INB]->Fill(PTW, scaleFactorWeight);
+	totalCR_PTW_HT23_LL_MC_[INJ*4+INB]->Fill(PTW, scaleFactorWeight);
       }
       for (int template_bin=0; template_bin<nTemplateBins; template_bin++) { // now loop over bins of MHT/PTW PDFs to do the extrapolation
 	if (HT>500&&HT<1200) {
@@ -1593,20 +1616,23 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     if (INJ>=0&&INB>=0&&IHT>=0) {
       if (HT>500&&HT<1200) {
 	totalPred_MHT_Normal_HT12_LL_[INJ*4+INB]->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
-	totalPred_PTW_HT12_LL_[INJ*4+INB]->Fill(PTW, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
+	totalCR_MHT_HT12_LL_[INJ*4+INB]->Fill(PTW, scaleFactorWeight/scaleMC);
+	totalCR_PTW_HT12_LL_[INJ*4+INB]->Fill(PTW, scaleFactorWeight/scaleMC);
       }
       if (HT>1200) {
 	totalPred_MHT_Normal_HT3_LL_[INJ*4+INB]->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
-	totalPred_PTW_HT3_LL_[INJ*4+INB]->Fill(PTW, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
+	totalCR_MHT_HT3_LL_[INJ*4+INB]->Fill(PTW, scaleFactorWeight/scaleMC);
+	totalCR_PTW_HT3_LL_[INJ*4+INB]->Fill(PTW, scaleFactorWeight/scaleMC);
       }
       if (HT>800) {
 	totalPred_MHT_Normal_HT23_LL_[INJ*4+INB]->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
-	totalPred_PTW_HT23_LL_[INJ*4+INB]->Fill(PTW, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
+	totalCR_MHT_HT23_LL_[INJ*4+INB]->Fill(PTW, scaleFactorWeight/scaleMC);
+	totalCR_PTW_HT23_LL_[INJ*4+INB]->Fill(PTW, scaleFactorWeight/scaleMC);
       }
       for (int template_bin=0; template_bin<nTemplateBins; template_bin++) {
 	if (HT>500&&HT<1200) {
 	  // NOTE: using the combined e/mu weight for now--should look into separating the flavors, commented out below
-	  totalPred_MHT_EXTRAP_HT12_LL_MC_[INJ*4+INB]->Fill( PTW*LostLepRATIO_HT12[INJ*3+INB_EXTRAP]->GetBinCenter(template_bin+1),
+	  totalPred_MHT_EXTRAP_HT12_LL_[INJ*4+INB]->Fill( PTW*LostLepRATIO_HT12[INJ*3+INB_EXTRAP]->GetBinCenter(template_bin+1),
 							     (totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC)*LostLepRATIO_HT12[INJ*3+INB_EXTRAP]->GetBinContent(template_bin+1));
 	  // totalPred_MHT_EXTRAP_HT12_LL_[INJ*4+INB]->Fill( PTW*LostMuRATIO_HT12[INJ*3+INB_EXTRAP]->GetBinCenter(template_bin+1),
 	  // 						  (muTotalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC)*LostMuRATIO_HT12[INJ*3+INB_EXTRAP]->GetBinContent(template_bin+1));
@@ -1614,7 +1640,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 	  // 						  (elecTotalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC)*LostElecRATIO_HT12[INJ*3+INB_EXTRAP]->GetBinContent(template_bin+1));	  
 	}
 	if (HT>1200) {
-	  totalPred_MHT_EXTRAP_HT3_LL_MC_[INJ*4+INB]->Fill( PTW*LostLepRATIO_HT3[INJ*3+INB_EXTRAP]->GetBinCenter(template_bin+1),
+	  totalPred_MHT_EXTRAP_HT3_LL_[INJ*4+INB]->Fill( PTW*LostLepRATIO_HT3[INJ*3+INB_EXTRAP]->GetBinCenter(template_bin+1),
 							     (totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC)*LostLepRATIO_HT3[INJ*3+INB_EXTRAP]->GetBinContent(template_bin+1));
 	  // totalPred_MHT_EXTRAP_HT3_LL_[INJ*4+INB]->Fill( PTW*LostMuRATIO_HT3[INJ*3+INB_EXTRAP]->GetBinCenter(template_bin+1),
 	  // 						 (muTotalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC)*LostMuRATIO_HT3[INJ*3+INB_EXTRAP]->GetBinContent(template_bin+1));
@@ -1622,7 +1648,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 	  //						 (elecTotalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC)*LostElecRATIO_HT3[INJ*3+INB_EXTRAP]->GetBinContent(template_bin+1));	  
 	}
 	if (HT>800) {
-	  totalPred_MHT_EXTRAP_HT23_LL_MC_[INJ*4+INB]->Fill( PTW*LostLepRATIO_HT23[INJ*3+INB_EXTRAP]->GetBinCenter(template_bin+1),
+	  totalPred_MHT_EXTRAP_HT23_LL_[INJ*4+INB]->Fill( PTW*LostLepRATIO_HT23[INJ*3+INB_EXTRAP]->GetBinCenter(template_bin+1),
 							     (totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC)*LostLepRATIO_HT23[INJ*3+INB_EXTRAP]->GetBinContent(template_bin+1));
 	  // totalPred_MHT_EXTRAP_HT23_LL_[INJ*4+INB]->Fill( PTW*LostMuRATIO_HT23[INJ*3+INB_EXTRAP]->GetBinCenter(template_bin+1),
 	  // 						  (muTotalWeightDiLepIsoTrackReduced*scaleFactorWeight/scaleMC)*LostMuRATIO_HT23[INJ*3+INB_EXTRAP]->GetBinContent(template_bin+1));
@@ -1725,7 +1751,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
       totalPred_EXTRAP_LL_->Fill(iSB+5, totalPred_MHT_EXTRAP_HT3_LL_[INJ*4+INB]->Integral(3,4));
       totalPred_EXTRAP_LL_->Fill(iSB+6, totalPred_MHT_EXTRAP_HT23_LL_[INJ*4+INB]->Integral(5,6));
     }
-    
+
     avgWeight_LL_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
 
 
@@ -1953,6 +1979,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   totalExp_PTW_LL_2b_->Write();
 
   totalExp_PTL_LL_->Write();
+  totalExp_ETAL_LL_->Write();
 
 
   totalPred_HT_LL_MC_->Write();
@@ -1966,6 +1993,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   totalPred_PTW_LL_2b_MC_->Write();
 
   totalPred_PTL_LL_MC_->Write();
+  totalPred_ETAL_LL_MC_->Write();
 
 
   totalPred_HT_LL_->Write();
@@ -2254,9 +2282,9 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
       INB=INB/6;
       // [new weight] = [normal weight] X N(min < MHT < max) / N(PTW > min)
       //  Double_t ptw_bins[6] = {200, 400, 500, 600, 750, 10000};
-      double SF12 = (totalPred_PTW_HT12_LL_[INJ*4+INB]->Integral(2,6)>0) ? totalPred_MHT_Normal_HT12_LL_[INJ*4+INB]->Integral(3,4)/totalPred_PTW_HT12_LL_[INJ*4+INB]->Integral(2,6):0;
-      double SF3 = (totalPred_PTW_HT3_LL_[INJ*4+INB]->Integral(2,6)>0) ? totalPred_MHT_Normal_HT3_LL_[INJ*4+INB]->Integral(3,4)/totalPred_PTW_HT3_LL_[INJ*4+INB]->Integral(2,6):0;
-      double SF23 = (totalPred_PTW_HT23_LL_[INJ*4+INB]->Integral(4,6)>0) ?totalPred_MHT_Normal_HT23_LL_[INJ*4+INB]->Integral(5,6)/totalPred_PTW_HT23_LL_[INJ*4+INB]->Integral(4,6):0;
+      double SF12 = (totalCR_PTW_HT12_LL_[INJ*4+INB]->Integral(2,6)>0) ? totalCR_MHT_HT12_LL_[INJ*4+INB]->Integral(3,4)/totalCR_PTW_HT12_LL_[INJ*4+INB]->Integral(2,6):0;
+      double SF3 = (totalCR_PTW_HT3_LL_[INJ*4+INB]->Integral(2,6)>0) ? totalCR_MHT_HT3_LL_[INJ*4+INB]->Integral(3,4)/totalCR_PTW_HT3_LL_[INJ*4+INB]->Integral(2,6):0;
+      double SF23 = (totalCR_PTW_HT23_LL_[INJ*4+INB]->Integral(4,6)>0) ? totalCR_MHT_HT23_LL_[INJ*4+INB]->Integral(5,6)/totalCR_PTW_HT23_LL_[INJ*4+INB]->Integral(4,6):0;
       if (ibin%6==3) {
 	EXTRAP_weight_SF_LL_->SetBinContent(ibin+1, SF12); 
       } else if (ibin%6==4) {
@@ -2288,9 +2316,9 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
       if (INB>=24) INB-=24;
       INB=INB/6;
       //  Double_t ptw_bins[6] = {200, 400, 500, 600, 750, 10000};
-      double SF12 = (totalPred_PTW_HT12_LL_MC_[INJ*4+INB]->Integral(2,6)>0) ? totalPred_MHT_Normal_HT12_LL_MC_[INJ*4+INB]->Integral(3,4)/totalPred_PTW_HT12_LL_MC_[INJ*4+INB]->Integral(2,6):0;
-      double SF3 = (totalPred_PTW_HT3_LL_MC_[INJ*4+INB]->Integral(2,6)>0) ? totalPred_MHT_Normal_HT3_LL_MC_[INJ*4+INB]->Integral(3,4)/totalPred_PTW_HT3_LL_MC_[INJ*4+INB]->Integral(2,6):0;
-      double SF23 = (totalPred_PTW_HT23_LL_MC_[INJ*4+INB]->Integral(4,6)>0) ?totalPred_MHT_Normal_HT23_LL_MC_[INJ*4+INB]->Integral(5,6)/totalPred_PTW_HT23_LL_MC_[INJ*4+INB]->Integral(4,6):0;
+      double SF12 = (totalCR_PTW_HT12_LL_MC_[INJ*4+INB]->Integral(2,6)>0) ? totalCR_MHT_HT12_LL_MC_[INJ*4+INB]->Integral(3,4)/totalCR_PTW_HT12_LL_MC_[INJ*4+INB]->Integral(2,6):0;
+      double SF3 = (totalCR_PTW_HT3_LL_MC_[INJ*4+INB]->Integral(2,6)>0) ? totalCR_MHT_HT3_LL_MC_[INJ*4+INB]->Integral(3,4)/totalCR_PTW_HT3_LL_MC_[INJ*4+INB]->Integral(2,6):0;
+      double SF23 = (totalCR_PTW_HT23_LL_MC_[INJ*4+INB]->Integral(4,6)>0) ? totalCR_MHT_HT23_LL_MC_[INJ*4+INB]->Integral(5,6)/totalCR_PTW_HT23_LL_MC_[INJ*4+INB]->Integral(4,6):0;
       if (ibin%6==3) {
 	EXTRAP_weight_SF_LL_MC_->SetBinContent(ibin+1, SF12); 
       } else if (ibin%6==4) {

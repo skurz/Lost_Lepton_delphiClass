@@ -417,9 +417,9 @@ void Plot_1D_Closure(std::string infileName="LLPrediction.root", std::string plo
   ex1->Draw();
   numerator->DrawCopy("same");
 
-  numerator->Print("all");
-  denominator->Print("all");
-  numerator_fullstaterr->Print("all");
+  // numerator->Print("all");
+  // denominator->Print("all");
+  // numerator_fullstaterr->Print("all");
 
   //
   // Drawing lines
@@ -439,7 +439,7 @@ void Plot_1D_Closure(std::string infileName="LLPrediction.root", std::string plo
 
   CMS_lumi(canvas, iPeriod, iPos, lumi_sqrtS);
 
-  canvas->Print( Form("Closure/%s",plotName.c_str()) );
+  canvas->Print( Form("jack_macros/plots/closure/%s",plotName.c_str()) );
 
 }
 

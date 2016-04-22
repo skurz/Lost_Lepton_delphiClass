@@ -1,6 +1,3 @@
-/* 
-   Script for drawing a branch from reduec trees with a set of cuts.
-*/
 
 #include <iostream>
 #include <vector>
@@ -18,16 +15,16 @@
 #include "TPaveText.h"
 #include "TProfile.h"
 #include "TGraphAsymmErrors.h"
-#include "jack_style.h"
-#include <../tdrstyle.C>
-#include <../CMS_lumi.C>
+#include "jack_macros/jack_style.h"
+#include <tdrstyle.C>
+#include <CMS_lumi.C>
 
 using namespace std;
 
-TString plotdir = "plots/closure/";
+TString plotdir = "jack_macros/plots/data/";
 
 
-void MakePlot(int htmht_box, TH1D* hNormal, TH1D* hCDTT, TGraphAsymmErrors* gNormal, TGraphAsymmErrors* gCDTT,
+void MakePlot(int htmht_box, TH1D* hNormal, TH1D* hEXTRAP, TGraphAsymmErrors* gNormal, TGraphAsymmErrors* gEXTRAP,
 	      TString plot_title="default", bool logy=false
 	      )
 {
@@ -37,8 +34,8 @@ void MakePlot(int htmht_box, TH1D* hNormal, TH1D* hCDTT, TGraphAsymmErrors* gNor
 
   TH1D* hNormalBoxes = new TH1D("hNormalBoxes", "", 12, 0.5, 12.5);
   hNormalBoxes->Sumw2();
-  TH1D* hCDTTBoxes = new TH1D("hCDTTBoxes", "", 12, 0.5, 12.5);
-  hCDTTBoxes->Sumw2();
+  TH1D* hEXTRAPBoxes = new TH1D("hEXTRAPBoxes", "", 12, 0.5, 12.5);
+  hEXTRAPBoxes->Sumw2();
   
   // hNormal->SetFillColor(14);
   // hNormal->SetMarkerSize(0);
@@ -52,11 +49,11 @@ void MakePlot(int htmht_box, TH1D* hNormal, TH1D* hCDTT, TGraphAsymmErrors* gNor
   hNormalBoxes->SetMarkerSize(0);
   hNormalBoxes->SetMarkerColor(0);
 
-  set_style(hCDTT, "lost_lep"); 
-  hCDTT->SetMarkerSize(1.25);
-  hCDTT->SetLineWidth(2);
-  hCDTT->SetMarkerStyle(20);
-  hCDTT->SetLineColor(1);
+  set_style(hEXTRAP, "lost_lep"); 
+  hEXTRAP->SetMarkerSize(1.);
+  hEXTRAP->SetLineWidth(3);
+  hEXTRAP->SetMarkerStyle(20);
+  hEXTRAP->SetLineColor(1);
 
   const int nbins=12;
 
@@ -68,9 +65,9 @@ void MakePlot(int htmht_box, TH1D* hNormal, TH1D* hCDTT, TGraphAsymmErrors* gNor
   Double_t pred_cv[nbins];
   Double_t full_err_up[nbins];
   Double_t full_err_down[nbins];
-  Double_t pred_cv_cdtt[nbins];
-  Double_t full_err_up_cdtt[nbins];
-  Double_t full_err_down_cdtt[nbins];
+  Double_t pred_cv_extrap[nbins];
+  Double_t full_err_up_extrap[nbins];
+  Double_t full_err_down_extrap[nbins];
 
   TString labels[nbins] = {"#splitline{4-6 jets}{0 b-jets}", "#splitline{4-6 jets}{1 b-jet}", "#splitline{4-6 jets}{2 b-jets}", "#splitline{4-6 jets}{3+ b-jets}",
 			   "#splitline{7-8 jets}{0 b-jets}", "#splitline{7-8 jets}{1 b-jet}", "#splitline{7-8 jets}{2 b-jets}", "#splitline{7-8 jets}{3+ b-jets}",
@@ -82,23 +79,23 @@ void MakePlot(int htmht_box, TH1D* hNormal, TH1D* hCDTT, TGraphAsymmErrors* gNor
     hNormalBoxes->SetBinContent(index+1, hNormal->GetBinContent(index*6+htmht_box));
     hNormalBoxes->SetBinError(index+1, 0);
     pred_cv[index]=hNormal->GetBinContent(index*6+htmht_box);
-    hCDTTBoxes->SetBinContent(index+1, hCDTT->GetBinContent(index*6+htmht_box));
-    hCDTTBoxes->SetBinError(index+1, 0);   
-    pred_cv_cdtt[index]=hCDTT->GetBinContent(index*6+htmht_box);
+    hEXTRAPBoxes->SetBinContent(index+1, hEXTRAP->GetBinContent(index*6+htmht_box));
+    hEXTRAPBoxes->SetBinError(index+1, 0);   
+    pred_cv_extrap[index]=hEXTRAP->GetBinContent(index*6+htmht_box);
     full_err_up[index] = gNormal->GetErrorYhigh(index*6+htmht_box-1);
     full_err_down[index] = gNormal->GetErrorYlow(index*6+htmht_box-1);
-    full_err_up_cdtt[index] = gCDTT->GetErrorYhigh(index*6+htmht_box-1);
-    full_err_down_cdtt[index] = gCDTT->GetErrorYlow(index*6+htmht_box-1);
+    full_err_up_extrap[index] = gEXTRAP->GetErrorYhigh(index*6+htmht_box-1);
+    full_err_down_extrap[index] = gEXTRAP->GetErrorYlow(index*6+htmht_box-1);
   }
 
   TGraphAsymmErrors* gBGErr = new TGraphAsymmErrors(nbins, x, pred_cv, xl, xh, full_err_down, full_err_up);
-  TGraphAsymmErrors* gCDTT_boxes = new TGraphAsymmErrors(nbins, x, pred_cv_cdtt, xl, xh, full_err_down_cdtt, full_err_up_cdtt);
+  TGraphAsymmErrors* gEXTRAP_boxes = new TGraphAsymmErrors(nbins, x, pred_cv_extrap, xl, xh, full_err_down_extrap, full_err_up_extrap);
   
-  gCDTT_boxes->SetLineWidth(2);
-  gCDTT_boxes->SetMarkerSize(1.25);
-  gCDTT_boxes->SetMarkerStyle(20);
-  gCDTT_boxes->SetMarkerColor(1);
-  gCDTT_boxes->SetLineColor(1);
+  gEXTRAP_boxes->SetLineWidth(3);
+  gEXTRAP_boxes->SetMarkerSize(1.);
+  gEXTRAP_boxes->SetMarkerStyle(20);
+  gEXTRAP_boxes->SetMarkerColor(1);
+  gEXTRAP_boxes->SetLineColor(1);
     
   gBGErr->SetFillColor(kRed+3);
   gBGErr->SetMarkerSize(0);
@@ -108,8 +105,8 @@ void MakePlot(int htmht_box, TH1D* hNormal, TH1D* hCDTT, TGraphAsymmErrors* gNor
  
 
 //cout << "Compute ratio hist..." << endl;
-  TH1D * ratio = (TH1D *) hCDTTBoxes->Clone("ratio");
-  TH1D * hratiogerr = (TH1D *) hCDTTBoxes->Clone("hratiogerr");
+  TH1D * ratio = (TH1D *) hEXTRAPBoxes->Clone("ratio");
+  TH1D * hratiogerr = (TH1D *) hEXTRAPBoxes->Clone("hratiogerr");
   TLine* ratiounity = new TLine(0.5,0,12.5,0);
 
   TGraphAsymmErrors* ratioderr = new TGraphAsymmErrors(gBGErr->GetN(), gBGErr->GetX(), gBGErr->GetY(), gBGErr->GetEXlow(), gBGErr->GetEXhigh(), gBGErr->GetEYlow(), gBGErr->GetEYhigh());
@@ -118,20 +115,20 @@ void MakePlot(int htmht_box, TH1D* hNormal, TH1D* hCDTT, TGraphAsymmErrors* gNor
     ratiogerr->SetPoint(i, ratio->GetBinCenter(i+1), 0.);
     if (hNormalBoxes->GetBinContent(i+1)>0) {
       ratiogerr->SetPointError(i, ratio->GetBinWidth(i+1)/2., ratio->GetBinWidth(i+1)/2., ratiogerr->GetErrorYlow(i)/hNormalBoxes->GetBinContent(i+1), ratiogerr->GetErrorYhigh(i)/hNormalBoxes->GetBinContent(i+1));
-      if (hCDTTBoxes->GetBinContent(i+1)>0) {
-	ratio->SetBinContent(i+1, (hCDTTBoxes->GetBinContent(i+1)-hNormalBoxes->GetBinContent(i+1))/hNormalBoxes->GetBinContent(i+1));
-	ratioderr->SetPoint(i, ratio->GetBinCenter(i+1), (hCDTTBoxes->GetBinContent(i+1)-hNormalBoxes->GetBinContent(i+1))/hNormalBoxes->GetBinContent(i+1));
-	ratioderr->SetPointError(i, ratio->GetBinWidth(i+1)/1000., ratio->GetBinWidth(i+1)/1000., gCDTT_boxes->GetErrorYlow(i)/hNormalBoxes->GetBinContent(i+1), gCDTT_boxes->GetErrorYhigh(i)/hNormalBoxes->GetBinContent(i+1));
+      if (hEXTRAPBoxes->GetBinContent(i+1)>0) {
+	ratio->SetBinContent(i+1, (hEXTRAPBoxes->GetBinContent(i+1)-hNormalBoxes->GetBinContent(i+1))/hNormalBoxes->GetBinContent(i+1));
+	ratioderr->SetPoint(i, ratio->GetBinCenter(i+1), (hEXTRAPBoxes->GetBinContent(i+1)-hNormalBoxes->GetBinContent(i+1))/hNormalBoxes->GetBinContent(i+1));
+	ratioderr->SetPointError(i, ratio->GetBinWidth(i+1)/1000., ratio->GetBinWidth(i+1)/1000., gEXTRAP_boxes->GetErrorYlow(i)/hNormalBoxes->GetBinContent(i+1), gEXTRAP_boxes->GetErrorYhigh(i)/hNormalBoxes->GetBinContent(i+1));
       }
       else {
 	ratioderr->SetPoint(i, ratio->GetBinCenter(i+1), 0);
-	ratioderr->SetPointError(i, ratio->GetBinWidth(i+1)/1000., ratio->GetBinWidth(i+1)/1000., gCDTT_boxes->GetErrorYlow(i), gCDTT_boxes->GetErrorYhigh(i));
+	ratioderr->SetPointError(i, ratio->GetBinWidth(i+1)/1000., ratio->GetBinWidth(i+1)/1000., gEXTRAP_boxes->GetErrorYlow(i), gEXTRAP_boxes->GetErrorYhigh(i));
       }
     }
     else {
       ratiogerr->SetPointError(i, ratio->GetBinWidth(i+1)/2., ratio->GetBinWidth(i+1)/2., 0., ratiogerr->GetErrorYhigh(i));
       ratioderr->SetPoint(i, ratio->GetBinCenter(i+1), 0.);
-      ratioderr->SetPointError(i, ratio->GetBinWidth(i+1)/1000., ratio->GetBinWidth(i+1)/1000., gCDTT_boxes->GetErrorYlow(i), gCDTT_boxes->GetErrorYhigh(i));
+      ratioderr->SetPointError(i, ratio->GetBinWidth(i+1)/1000., ratio->GetBinWidth(i+1)/1000., gEXTRAP_boxes->GetErrorYlow(i), gEXTRAP_boxes->GetErrorYhigh(i));
      }
     //    printf("Bin %d: pred = %3.2f + %3.2f - %3.2f; ratiogerr: + %3.2f - %3.2f\n", i+1, hNormalBoxes->GetBinContent(i+1), gBGerr->GetErrorYhigh(i), gBGerr->GetErrorYlow(i), ratiogerr->GetErrorYhigh(i), ratiogerr->GetErrorYlow(i));
     ratio->GetXaxis()->SetBinLabel(i+1, labels[i].Data());
@@ -140,9 +137,9 @@ void MakePlot(int htmht_box, TH1D* hNormal, TH1D* hCDTT, TGraphAsymmErrors* gNor
   ratio->LabelsOption("h","X");
   
   set_style(ratio, "data_obs");
-  ratioderr->SetLineWidth(2);
+  ratioderr->SetLineWidth(3);
   ratioderr->SetMarkerStyle(20);
-  ratioderr->SetMarkerSize(1.25);
+  ratioderr->SetMarkerSize(1.);
   ratioderr->SetLineColor(1);
   hratiogerr->SetStats(0);
   ratio->SetTitle("");
@@ -171,15 +168,15 @@ void MakePlot(int htmht_box, TH1D* hNormal, TH1D* hCDTT, TGraphAsymmErrors* gNor
   
 
   // Setup legends
-  TLegend * leg1 = new TLegend(0.37, 0.65, 0.82, 0.85);
+  TLegend * leg1 = new TLegend(0.37, 0.55, 0.82, 0.85);
   set_style(leg1,0.035);
   leg1->AddEntry(hNormalBoxes, "H_{T}^{miss} measured directly in CR (nominal)", "f");
   leg1->AddEntry(gBGErr, "Nominal uncertainty", "f");
-  leg1->AddEntry(hCDTT, "H_{T}^{miss} = #frac{p_{T}^{W}}{2}*(1-cos#Delta#theta_{T})", "lpe");
+  leg1->AddEntry(hEXTRAP, "H_{T}^{miss} = p_{T}^{W}#times#left(#frac{H_{T}^{miss}}{p_{T}^{W}}#right)_{MC}", "lpe");
 
 
   double ymax=hNormalBoxes->GetMaximum();
-  //  if (hCDTT->GetMaximum()>ymax) ymax=hCDTT->GetMaximum();
+  //  if (hEXTRAP->GetMaximum()>ymax) ymax=hEXTRAP->GetMaximum();
 
   if (logy) {
     hNormalBoxes->SetMaximum(ymax*200);
@@ -283,8 +280,8 @@ void MakePlot(int htmht_box, TH1D* hNormal, TH1D* hCDTT, TGraphAsymmErrors* gNor
   
   hNormalBoxes->Draw("f");
   gBGErr->Draw("2 same");
-  gCDTT_boxes->SetMarkerStyle(20);
-  gCDTT_boxes->Draw("p same");
+  gEXTRAP_boxes->SetMarkerStyle(20);
+  gEXTRAP_boxes->Draw("p same");
 
   // Draw legends
   leg1->Draw();
@@ -329,11 +326,11 @@ void MakePlot(int htmht_box, TH1D* hNormal, TH1D* hCDTT, TGraphAsymmErrors* gNor
   canv->cd();
   CMS_lumi(canv, iPeriod, iPos, lumi_sqrtS);
 
-  gPad->Print(plotdir+plot_title+"_cdtt_vs_normal_nj_nb_groups.pdf");
+  gPad->Print(plotdir+plot_title+"_extrap_vs_normal_nj_nb_groups.pdf");
 
 
   delete hNormalBoxes;
-  delete hCDTTBoxes;
+  delete hEXTRAPBoxes;
   delete leg1;
   delete canv;
 
@@ -364,103 +361,103 @@ void CompareExtrapData_perNjNb() {
 
 
   
-  TFile* infile = new TFile("../LLPrediction.root","read");
+  TFile* infile = new TFile("LLPrediction.root","read");
 
   TH1D* hin = (TH1D*)infile->Get("Prediction_data/totalPred_LL");
-  TH1D* hin_cdtt = (TH1D*)infile->Get("Prediction_data/totalPred_CDTT_LL");
+  TH1D* hin_extrap = (TH1D*)infile->Get("Prediction_data/totalPred_EXTRAP_LL");
   TH1D* hsystup = (TH1D*)infile->Get("AdditionalContent/totalPropSysUp_LL");
   TH1D* hsystdown = (TH1D*)infile->Get("AdditionalContent/totalPropSysDown_LL");
   TH1D* hnonclosureup = (TH1D*)infile->Get("Prediction_data/totalPredNonClosureUp_LL");
   TH1D* hnonclosuredown = (TH1D*)infile->Get("Prediction_data/totalPredNonClosureDown_LL");
 
   TProfile* hAvgWeight = (TProfile*)infile->Get("Prediction_MC/avgWeight_LL_MC");
-  TProfile* hAvgWeight_cdtt = (TProfile*)infile->Get("Prediction_MC/avgWeight_CDTT_LL_MC");
-  TH1D* hWeightSF = (TH1D*)infile->Get("AvgWeight_MC/CDTT_weight_SF_LL_MC");
+  TProfile* hAvgWeight_extrap = (TProfile*)infile->Get("Prediction_MC/avgWeight_EXTRAP_LL_MC");
+  TH1D* hWeightSF = (TH1D*)infile->Get("AvgWeight_MC/EXTRAP_weight_SF_LL_MC");
 
   Double_t pred_cv[72];
-  Double_t pred_cv_cdtt[72];
+  Double_t pred_cv_extrap[72];
   Double_t x[72];
   Double_t xl[72];
   Double_t xh[72];
   Double_t stat_up[72];
   Double_t stat_down[72];
-  Double_t stat_up_cdtt[72];
-  Double_t stat_down_cdtt[72];
+  Double_t stat_up_extrap[72];
+  Double_t stat_down_extrap[72];
   Double_t syst_up[72];
   Double_t syst_down[72];
-  Double_t syst_up_cdtt[72];
-  Double_t syst_down_cdtt[72];
+  Double_t syst_up_extrap[72];
+  Double_t syst_down_extrap[72];
   Double_t full_err_up[72];
   Double_t full_err_down[72];
-  Double_t full_err_up_cdtt[72];
-  Double_t full_err_down_cdtt[72];
+  Double_t full_err_up_extrap[72];
+  Double_t full_err_down_extrap[72];
 
   TH1D* hNormal = new TH1D("hNormal","",72, 0.5, 72.5);
-  TH1D* hCDTT = new TH1D("hCDTT","",72, 0.5, 72.5);
+  TH1D* hEXTRAP = new TH1D("hEXTRAP","",72, 0.5, 72.5);
 
   for (unsigned int bin(0); bin<72; bin++) {
     pred_cv[bin] = hin->GetBinContent(bin+1);
-    pred_cv_cdtt[bin] = hin_cdtt->GetBinContent(bin+1);
+    pred_cv_extrap[bin] = hin_extrap->GetBinContent(bin+1);
     hNormal->SetBinContent(bin+1,hin->GetBinContent(bin+1));
-    hCDTT->SetBinContent(bin+1,hin_cdtt->GetBinContent(bin+1));
+    hEXTRAP->SetBinContent(bin+1,hin_extrap->GetBinContent(bin+1));
     hNormal->SetBinError(bin+1,0);
-    hCDTT->SetBinError(bin+1,0);
+    hEXTRAP->SetBinError(bin+1,0);
     x[bin] = bin+1;
     xl[bin]=0.5;
     xh[bin]=0.5;
     stat_up[bin] = pow(hAvgWeight->GetBinContent(bin+1)*1.84102, 2.);
     stat_up[bin] += pow(hin->GetBinError(bin+1), 2.);
     stat_down[bin] = pow(hin->GetBinError(bin+1), 2.);
-    stat_up_cdtt[bin] = pow(hWeightSF->GetBinContent(bin+1)*hAvgWeight->GetBinContent(bin+1)*1.84102, 2.);
-    stat_up_cdtt[bin] += pow(hin_cdtt->GetBinError(bin+1), 2.);
-    stat_down_cdtt[bin] = pow(hin_cdtt->GetBinError(bin+1), 2.);
+    stat_up_extrap[bin] = pow(hWeightSF->GetBinContent(bin+1)*hAvgWeight->GetBinContent(bin+1)*1.84102, 2.);
+    stat_up_extrap[bin] += pow(hin_extrap->GetBinError(bin+1), 2.);
+    stat_down_extrap[bin] = pow(hin_extrap->GetBinError(bin+1), 2.);
     syst_up[bin] = 0.;
     syst_down[bin] = 0.;
-    syst_up_cdtt[bin] = 0.;
-    syst_down_cdtt[bin] = 0.;
+    syst_up_extrap[bin] = 0.;
+    syst_down_extrap[bin] = 0.;
     if (hsystup->GetBinContent(bin+1)>0) {
       syst_up[bin] += pow((hsystup->GetBinContent(bin+1)-1.)*hin->GetBinContent(bin+1), 2.);
-      syst_up_cdtt[bin] += pow((hsystup->GetBinContent(bin+1)-1.)*hin_cdtt->GetBinContent(bin+1), 2.);
+      syst_up_extrap[bin] += pow((hsystup->GetBinContent(bin+1)-1.)*hin_extrap->GetBinContent(bin+1), 2.);
     }
     if (hsystdown->GetBinContent(bin+1)>0) {
       syst_down[bin] += pow((1.-hsystdown->GetBinContent(bin+1))*hin->GetBinContent(bin+1), 2.);
-      syst_down_cdtt[bin] += pow((1.-hsystdown->GetBinContent(bin+1))*hin_cdtt->GetBinContent(bin+1), 2.);
+      syst_down_extrap[bin] += pow((1.-hsystdown->GetBinContent(bin+1))*hin_extrap->GetBinContent(bin+1), 2.);
     }
     syst_up[bin] += pow((hnonclosureup->GetBinContent(bin+1)-1.)*hin->GetBinContent(bin+1), 2.);
     syst_down[bin] += pow((1.-hnonclosuredown->GetBinContent(bin+1))*hin->GetBinContent(bin+1), 2.);
-    syst_up_cdtt[bin] += pow((hnonclosureup->GetBinContent(bin+1)-1.)*hin_cdtt->GetBinContent(bin+1), 2.);
-    syst_down_cdtt[bin] += pow((1.-hnonclosuredown->GetBinContent(bin+1))*hin_cdtt->GetBinContent(bin+1), 2.);
+    syst_up_extrap[bin] += pow((hnonclosureup->GetBinContent(bin+1)-1.)*hin_extrap->GetBinContent(bin+1), 2.);
+    syst_down_extrap[bin] += pow((1.-hnonclosuredown->GetBinContent(bin+1))*hin_extrap->GetBinContent(bin+1), 2.);
     
     stat_up[bin]=sqrt(stat_up[bin]);
     stat_down[bin]=sqrt(stat_down[bin]);
     syst_up[bin]=sqrt(syst_up[bin]);
     syst_down[bin]=sqrt(syst_down[bin]);
-    stat_up_cdtt[bin]=sqrt(stat_up_cdtt[bin]);
-    stat_down_cdtt[bin]=sqrt(stat_down_cdtt[bin]);
-    syst_up_cdtt[bin]=sqrt(syst_up_cdtt[bin]);
-    syst_down_cdtt[bin]=sqrt(syst_down_cdtt[bin]);
+    stat_up_extrap[bin]=sqrt(stat_up_extrap[bin]);
+    stat_down_extrap[bin]=sqrt(stat_down_extrap[bin]);
+    syst_up_extrap[bin]=sqrt(syst_up_extrap[bin]);
+    syst_down_extrap[bin]=sqrt(syst_down_extrap[bin]);
     if (stat_down[bin]==pred_cv[bin]) syst_down[bin]=0;
     if (stat_down[bin]+syst_down[bin]>pred_cv[bin]) syst_down[bin]=pred_cv[bin]-stat_down[bin];
-    if (stat_down_cdtt[bin]==pred_cv_cdtt[bin]) syst_down_cdtt[bin]=0;
-    if (stat_down_cdtt[bin]+syst_down_cdtt[bin]>pred_cv_cdtt[bin]) syst_down_cdtt[bin]=pred_cv_cdtt[bin]-stat_down_cdtt[bin];
+    if (stat_down_extrap[bin]==pred_cv_extrap[bin]) syst_down_extrap[bin]=0;
+    if (stat_down_extrap[bin]+syst_down_extrap[bin]>pred_cv_extrap[bin]) syst_down_extrap[bin]=pred_cv_extrap[bin]-stat_down_extrap[bin];
 
     full_err_up[bin]=sqrt(stat_up[bin]*stat_up[bin]+syst_up[bin]*syst_up[bin]);
     full_err_down[bin]=sqrt(stat_down[bin]*stat_down[bin]+syst_down[bin]*syst_down[bin]);
-    full_err_up_cdtt[bin]=sqrt(stat_up_cdtt[bin]*stat_up_cdtt[bin]+syst_up_cdtt[bin]*syst_up_cdtt[bin]);
-    full_err_down_cdtt[bin]=sqrt(stat_down_cdtt[bin]*stat_down_cdtt[bin]+syst_down_cdtt[bin]*syst_down_cdtt[bin]);
+    full_err_up_extrap[bin]=sqrt(stat_up_extrap[bin]*stat_up_extrap[bin]+syst_up_extrap[bin]*syst_up_extrap[bin]);
+    full_err_down_extrap[bin]=sqrt(stat_down_extrap[bin]*stat_down_extrap[bin]+syst_down_extrap[bin]*syst_down_extrap[bin]);
     
-    printf("Bin %d\n\t(normal): %3.5f + %3.5f + %3.5f - %3.5f - %3.5f\n\t(cdtt): %3.5f + %3.5f + %3.5f - %3.5f - %3.5f\n", bin+1, pred_cv[bin], stat_up[bin], syst_up[bin], stat_down[bin], syst_down[bin], pred_cv_cdtt[bin], stat_up_cdtt[bin], syst_up_cdtt[bin], stat_down_cdtt[bin], syst_down_cdtt[bin]);
+    printf("Bin %d\n\t(normal): %3.5f + %3.5f + %3.5f - %3.5f - %3.5f\n\t(extrap): %3.5f + %3.5f + %3.5f - %3.5f - %3.5f\n", bin+1, pred_cv[bin], stat_up[bin], syst_up[bin], stat_down[bin], syst_down[bin], pred_cv_extrap[bin], stat_up_extrap[bin], syst_up_extrap[bin], stat_down_extrap[bin], syst_down_extrap[bin]);
   }
 
   TGraphAsymmErrors* gNormal = new TGraphAsymmErrors(72, x, pred_cv, xl, xh, full_err_down, full_err_up);
-  TGraphAsymmErrors* gCDTT = new TGraphAsymmErrors(72, x, pred_cv_cdtt, xl, xh, full_err_down_cdtt, full_err_up_cdtt);
+  TGraphAsymmErrors* gEXTRAP = new TGraphAsymmErrors(72, x, pred_cv_extrap, xl, xh, full_err_down_extrap, full_err_up_extrap);
 
-  MakePlot(4, hNormal, hCDTT, gNormal, gCDTT, "box4");
-  MakePlot(4, hNormal, hCDTT, gNormal, gCDTT, "box4_log", true);
-  MakePlot(5, hNormal, hCDTT, gNormal, gCDTT, "box5");
-  MakePlot(5, hNormal, hCDTT, gNormal, gCDTT, "box5_log", true);
-  MakePlot(6, hNormal, hCDTT, gNormal, gCDTT, "box6");
-  MakePlot(6, hNormal, hCDTT, gNormal, gCDTT, "box6_log", true);
+  MakePlot(4, hNormal, hEXTRAP, gNormal, gEXTRAP, "box4");
+  MakePlot(4, hNormal, hEXTRAP, gNormal, gEXTRAP, "box4_log", true);
+  MakePlot(5, hNormal, hEXTRAP, gNormal, gEXTRAP, "box5");
+  MakePlot(5, hNormal, hEXTRAP, gNormal, gEXTRAP, "box5_log", true);
+  MakePlot(6, hNormal, hEXTRAP, gNormal, gEXTRAP, "box6");
+  MakePlot(6, hNormal, hEXTRAP, gNormal, gEXTRAP, "box6_log", true);
 	 
   
   return;
