@@ -16,6 +16,12 @@
 #include <vector>
 #include "LLTools.h"
 #include "THEff.h"
+#include "TROOT.h"
+
+//needed to write vector<TLorentzVector> to tree
+#ifdef __CINT__
+#pragma link C++ class std::vector<TLorentzVector>+;
+#endif
 
 void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder);
 UShort_t getMergedBinQCD(UShort_t BinQCD, Int_t NJets);
@@ -31,7 +37,7 @@ using std::string;
 void ResultPlot(string InputPath_Expectation="Expectation.root",
 		string InputPath_Efficiencies="Efficiencies.root",
 		string InputPath_Prediction="Prediction.root",
-		string InputPath_Prediction_Data="Prediction_data.root", // Use same path as above if pure MC prediction wanted
+		string InputPath_Prediction_Data="Prediction.root", // Use same path as above if pure MC prediction wanted
 		string OutputPath_Closure="Closure.root",
 		string OutputPath_Prediction="LLPrediction.root")
 {
@@ -58,7 +64,6 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
   // Histograms for Readiness Talk
   bool doMergedHistograms = false;
-
 
 
   // Begin of Code

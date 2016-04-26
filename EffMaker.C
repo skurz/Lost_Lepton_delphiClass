@@ -34,6 +34,26 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
 
   // muon
   //1D
+  MuPurityOldBTag_ = new TH1Eff("MuPurityOldBTag1D","MuPurityOldBTag1D",oneDBJets_-1,OneDBJets_);
+  MuPurityOldNJets_ = new TH1Eff("MuPurityOldNJets1D","MuPurityOldNJets1D",oneDNJets_-1,OneDNJets_);
+  MuPurityOldHT_ = new TH1Eff("MuPurityOldHT1D","MuPurityOldHT1D",oneDHT_-1,OneDHT_);
+  MuPurityOldMHT_ = new TH1Eff("MuPurityOldMHT1D","MuPurityOldMHT1D",oneDMHT_-1,OneDMHT_);
+  //2D
+  MuonPurityOldMHTNJet_ = new TH2Eff("MuonPurityOldMHTNJet","MuonPurityOldMHTNJet",mupurityMHT_-1,muPurityMHT_,mupurityNJet_-1,muPurityNJet_);
+  
+  // electron
+  //1D
+  ElecPurityOldBTag_ = new TH1Eff("ElecPurityOldBTag1D","ElecPurityOldBTag1D",oneDBJets_-1,OneDBJets_);
+  ElecPurityOldNJets_ = new TH1Eff("ElecPurityOldNJets1D","ElecPurityOldNJets1D",oneDNJets_-1,OneDNJets_);
+  ElecPurityOldHT_ = new TH1Eff("ElecPurityOldHT1D","ElecPurityOldHT1D",oneDHT_-1,OneDHT_);
+  ElecPurityOldMHT_ = new TH1Eff("ElecPurityOldMHT1D","ElecPurityOldMHT1D",oneDMHT_-1,OneDMHT_);
+  //2D
+  ElecPurityOldMHTNJet_ = new TH2Eff("ElecPurityOldMHTNJet","ElecPurityOldMHTNJet",mupurityMHT_-1,muPurityMHT_,mupurityNJet_-1,muPurityNJet_);
+  
+  // purity x-check
+
+  // muon
+  // 1D
   MuPurityBTag_ = new TH1Eff("MuPurityBTag1D","MuPurityBTag1D",oneDBJets_-1,OneDBJets_);
   MuPurityNJets_ = new TH1Eff("MuPurityNJets1D","MuPurityNJets1D",oneDNJets_-1,OneDNJets_);
   MuPurityHT_ = new TH1Eff("MuPurityHT1D","MuPurityHT1D",oneDHT_-1,OneDHT_);
@@ -49,26 +69,6 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecPurityMHT_ = new TH1Eff("ElecPurityMHT1D","ElecPurityMHT1D",oneDMHT_-1,OneDMHT_);
   //2D
   ElecPurityMHTNJet_ = new TH2Eff("ElecPurityMHTNJet","ElecPurityMHTNJet",mupurityMHT_-1,muPurityMHT_,mupurityNJet_-1,muPurityNJet_);
-  
-  // purity x-check
-
-  // muon
-  // 1D
-  MuPurityCheckBTag_ = new TH1Eff("MuPurityCheckBTag1D","MuPurityCheckBTag1D",oneDBJets_-1,OneDBJets_);
-  MuPurityCheckNJets_ = new TH1Eff("MuPurityCheckNJets1D","MuPurityCheckNJets1D",oneDNJets_-1,OneDNJets_);
-  MuPurityCheckHT_ = new TH1Eff("MuPurityCheckHT1D","MuPurityCheckHT1D",oneDHT_-1,OneDHT_);
-  MuPurityCheckMHT_ = new TH1Eff("MuPurityCheckMHT1D","MuPurityCheckMHT1D",oneDMHT_-1,OneDMHT_);
-  //2D
-  MuonPurityCheckMHTNJet_ = new TH2Eff("MuonPurityCheckMHTNJet","MuonPurityCheckMHTNJet",mupurityMHT_-1,muPurityMHT_,mupurityNJet_-1,muPurityNJet_);
-  
-  // electron
-  //1D
-  ElecPurityCheckBTag_ = new TH1Eff("ElecPurityCheckBTag1D","ElecPurityCheckBTag1D",oneDBJets_-1,OneDBJets_);
-  ElecPurityCheckNJets_ = new TH1Eff("ElecPurityCheckNJets1D","ElecPurityCheckNJets1D",oneDNJets_-1,OneDNJets_);
-  ElecPurityCheckHT_ = new TH1Eff("ElecPurityCheckHT1D","ElecPurityCheckHT1D",oneDHT_-1,OneDHT_);
-  ElecPurityCheckMHT_ = new TH1Eff("ElecPurityCheckMHT1D","ElecPurityCheckMHT1D",oneDMHT_-1,OneDMHT_);
-  //2D
-  ElecPurityCheckMHTNJet_ = new TH2Eff("ElecPurityCheckMHTNJet","ElecPurityCheckMHTNJet",mupurityMHT_-1,muPurityMHT_,mupurityNJet_-1,muPurityNJet_);
   
   
   // acceptance
@@ -233,8 +233,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   
   // acitivity and pt
   // mu 
-  MuPurityPT_ = new TH1Eff("MuPurityPT","MuPurityPT",oneDPT_-1,OneDPT_);
-  MuPurityActivity_ = new TH1Eff("MuPurityActivity","MuPurityActivity",oneDActivity_-1,OneDActivity_);
+  MuPurityOldPT_ = new TH1Eff("MuPurityOldPT","MuPurityOldPT",oneDPT_-1,OneDPT_);
+  MuPurityOldActivity_ = new TH1Eff("MuPurityOldActivity","MuPurityOldActivity",oneDActivity_-1,OneDActivity_);
   MuAccPT_ = new TH1Eff("MuAccPT","MuAccPT",oneDPT_-1,OneDPT_);
   MuAccActivity_ = new TH1Eff("MuAccActivity","MuAccActivity",oneDActivity_-1,OneDActivity_);
   MuRecoPT_ = new TH1Eff("MuRecoPT","MuRecoPT",oneDPT_-1,OneDPT_);
@@ -249,8 +249,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuDiLepMTWActivity_ = new TH1Eff("MuDiLepMTWActivity","MuDiLepMTWActivity",oneDActivity_-1,OneDActivity_);
   
   // elec  
-  ElecPurityPT_ = new TH1Eff("ElecPurityPT","ElecPurityPT",oneDPT_-1,OneDPT_);
-  ElecPurityActivity_ = new TH1Eff("ElecPurityActivity","ElecPurityActivity",oneDActivity_-1,OneDActivity_);
+  ElecPurityOldPT_ = new TH1Eff("ElecPurityOldPT","ElecPurityOldPT",oneDPT_-1,OneDPT_);
+  ElecPurityOldActivity_ = new TH1Eff("ElecPurityOldActivity","ElecPurityOldActivity",oneDActivity_-1,OneDActivity_);
   ElecAccPT_ = new TH1Eff("ElecAccPT","ElecAccPT",oneDPT_-1,OneDPT_);
   ElecAccActivity_ = new TH1Eff("ElecAccActivity","ElecAccActivity",oneDActivity_-1,OneDActivity_);
   ElecRecoPT_ = new TH1Eff("ElecRecoPT","ElecRecoPT",oneDPT_-1,OneDPT_);
@@ -376,7 +376,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
 Bool_t EffMaker::Process(Long64_t entry)
 {
 
-  if (entry%10000==0) cout << "fChain->GetTree()->GetEntry(" << entry << ");" << endl;
+//  if (entry%10000==0) cout << "fChain->GetTree()->GetEntry(" << entry << ");" << endl;
   fChain->GetTree()->GetEntry(entry);
 
   if(Weight<0) return kTRUE;
@@ -387,38 +387,38 @@ Bool_t EffMaker::Process(Long64_t entry)
   // x-check
   if(MuPurity==2){
       //1D
-      MuPurityCheckBTag_->Fill(BTags,Weight,true);
-      MuPurityCheckNJets_->Fill(NJets,Weight,true);
-      MuPurityCheckHT_->Fill(HT,Weight,true);
-      MuPurityCheckMHT_->Fill(MHT,Weight,true);
+      MuPurityBTag_->Fill(BTags,Weight,true);
+      MuPurityNJets_->Fill(NJets,Weight,true);
+      MuPurityHT_->Fill(HT,Weight,true);
+      MuPurityMHT_->Fill(MHT,Weight,true);
       //2D
-      MuonPurityCheckMHTNJet_->Fill(MHT,NJets,Weight,true);
+      MuonPurityMHTNJet_->Fill(MHT,NJets,Weight,true);
   }else if(MuPurity==0){
       //1D
-      MuPurityCheckBTag_->Fill(BTags,Weight,false);
-      MuPurityCheckNJets_->Fill(NJets,Weight,false);
-      MuPurityCheckHT_->Fill(HT,Weight,false);
-      MuPurityCheckMHT_->Fill(MHT,Weight,false);
+      MuPurityBTag_->Fill(BTags,Weight,false);
+      MuPurityNJets_->Fill(NJets,Weight,false);
+      MuPurityHT_->Fill(HT,Weight,false);
+      MuPurityMHT_->Fill(MHT,Weight,false);
       //2D
-      MuonPurityCheckMHTNJet_->Fill(MHT,NJets,Weight,false);
+      MuonPurityMHTNJet_->Fill(MHT,NJets,Weight,false);
   }
 
   if(ElecPurity==2){
       //1D
-      ElecPurityCheckBTag_->Fill(BTags,Weight,true);
-      ElecPurityCheckNJets_->Fill(NJets,Weight,true);
-      ElecPurityCheckHT_->Fill(HT,Weight,true);
-      ElecPurityCheckMHT_->Fill(MHT,Weight,true);
+      ElecPurityBTag_->Fill(BTags,Weight,true);
+      ElecPurityNJets_->Fill(NJets,Weight,true);
+      ElecPurityHT_->Fill(HT,Weight,true);
+      ElecPurityMHT_->Fill(MHT,Weight,true);
       //2D
-      ElecPurityCheckMHTNJet_->Fill(MHT,NJets,Weight,true);
+      ElecPurityMHTNJet_->Fill(MHT,NJets,Weight,true);
   }else if(ElecPurity==0){
       //1D
-      ElecPurityCheckBTag_->Fill(BTags,Weight,false);
-      ElecPurityCheckNJets_->Fill(NJets,Weight,false);
-      ElecPurityCheckHT_->Fill(HT,Weight,false);
-      ElecPurityCheckMHT_->Fill(MHT,Weight,false);
+      ElecPurityBTag_->Fill(BTags,Weight,false);
+      ElecPurityNJets_->Fill(NJets,Weight,false);
+      ElecPurityHT_->Fill(HT,Weight,false);
+      ElecPurityMHT_->Fill(MHT,Weight,false);
       //2D
-      ElecPurityCheckMHTNJet_->Fill(MHT,NJets,Weight,false);
+      ElecPurityMHTNJet_->Fill(MHT,NJets,Weight,false);
   }
 
   if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0){
@@ -426,25 +426,25 @@ Bool_t EffMaker::Process(Long64_t entry)
       if(selectedIDIsoMuonsPromptMatched->at(0)==1){
           // cout << "PromptMatched" << endl;
           //1D
-          MuPurityBTag_->Fill(BTags,Weight,true);
-          MuPurityNJets_->Fill(NJets,Weight,true);
-          MuPurityHT_->Fill(HT,Weight,true);
-          MuPurityMHT_->Fill(MHT,Weight,true);
-          MuPurityPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,true);
-          MuPurityActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),Weight,true);
+          MuPurityOldBTag_->Fill(BTags,Weight,true);
+          MuPurityOldNJets_->Fill(NJets,Weight,true);
+          MuPurityOldHT_->Fill(HT,Weight,true);
+          MuPurityOldMHT_->Fill(MHT,Weight,true);
+          MuPurityOldPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,true);
+          MuPurityOldActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),Weight,true);
           //2D
-          MuonPurityMHTNJet_->Fill(MHT,NJets,Weight,true);
+          MuonPurityOldMHTNJet_->Fill(MHT,NJets,Weight,true);
       }
       if(selectedIDIsoMuonsPromptMatched->at(0)==0){
           //1D
-          MuPurityBTag_->Fill(BTags,Weight,false);
-          MuPurityNJets_->Fill(NJets,Weight,false);
-          MuPurityHT_->Fill(HT,Weight,false);
-          MuPurityMHT_->Fill(MHT,Weight,false);
-          MuPurityPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,false);
-          MuPurityActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),Weight,false);
+          MuPurityOldBTag_->Fill(BTags,Weight,false);
+          MuPurityOldNJets_->Fill(NJets,Weight,false);
+          MuPurityOldHT_->Fill(HT,Weight,false);
+          MuPurityOldMHT_->Fill(MHT,Weight,false);
+          MuPurityOldPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,false);
+          MuPurityOldActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),Weight,false);
           //2D
-          MuonPurityMHTNJet_->Fill(MHT,NJets,Weight,false);
+          MuonPurityOldMHTNJet_->Fill(MHT,NJets,Weight,false);
       }
   }
 
@@ -452,25 +452,25 @@ Bool_t EffMaker::Process(Long64_t entry)
   if(selectedIDIsoMuonsNum==0 && selectedIDIsoElectronsNum==1){
       if(selectedIDIsoElectronsPromptMatched->at(0)==1){
           //1D
-          ElecPurityBTag_->Fill(BTags,Weight,true);
-          ElecPurityNJets_->Fill(NJets,Weight,true);
-          ElecPurityHT_->Fill(HT,Weight,true);
-          ElecPurityMHT_->Fill(MHT,Weight,true);
-          ElecPurityPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,true);
-          ElecPurityActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),Weight,true);
+          ElecPurityOldBTag_->Fill(BTags,Weight,true);
+          ElecPurityOldNJets_->Fill(NJets,Weight,true);
+          ElecPurityOldHT_->Fill(HT,Weight,true);
+          ElecPurityOldMHT_->Fill(MHT,Weight,true);
+          ElecPurityOldPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,true);
+          ElecPurityOldActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),Weight,true);
           //2D
-          ElecPurityMHTNJet_->Fill(MHT,NJets,Weight,true);
+          ElecPurityOldMHTNJet_->Fill(MHT,NJets,Weight,true);
       }
       if(selectedIDIsoElectronsPromptMatched->at(0)==0){
           //1D
-          ElecPurityBTag_->Fill(BTags,Weight,false);
-          ElecPurityNJets_->Fill(NJets,Weight,false);
-          ElecPurityHT_->Fill(HT,Weight,false);
-          ElecPurityMHT_->Fill(MHT,Weight,false);
-          ElecPurityPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,false);
-          ElecPurityActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),Weight,false);
+          ElecPurityOldBTag_->Fill(BTags,Weight,false);
+          ElecPurityOldNJets_->Fill(NJets,Weight,false);
+          ElecPurityOldHT_->Fill(HT,Weight,false);
+          ElecPurityOldMHT_->Fill(MHT,Weight,false);
+          ElecPurityOldPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,false);
+          ElecPurityOldActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),Weight,false);
           //2D
-          ElecPurityMHTNJet_->Fill(MHT,NJets,Weight,false);
+          ElecPurityOldMHTNJet_->Fill(MHT,NJets,Weight,false);
       }
   }
 
@@ -1223,29 +1223,29 @@ void EffMaker::Terminate()
   // purity
   //muon
   //1D
-  MuPurityBTag_->SaveEff("#mu purity; B_{Tags}", dEfficiencies);
+  MuPurityOldBTag_->SaveEff("#mu purity; B_{Tags}", dEfficiencies);
+  MuPurityOldNJets_->SaveEff("#mu purity; N_{Jets}", dEfficiencies);   
+  MuPurityOldHT_->SaveEff("#mu purity; H_{T} [GeV]", dEfficiencies);   
+  MuPurityOldMHT_->SaveEff("#mu purity; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuonPurityOldMHTNJet_->SaveEff("#mu purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  //1D
+  ElecPurityOldBTag_->SaveEff("e purity; B_{Tags}", dEfficiencies);
+  ElecPurityOldNJets_->SaveEff("e purity; N_{Jets}", dEfficiencies);   
+  ElecPurityOldHT_->SaveEff("e purity; H_{T} [GeV]", dEfficiencies);   
+  ElecPurityOldMHT_->SaveEff("e purity; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecPurityOldMHTNJet_->SaveEff("e purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  MuPurityBTag_->SaveEff("#mu purity; B_{Tags}", dEfficiencies);   
   MuPurityNJets_->SaveEff("#mu purity; N_{Jets}", dEfficiencies);   
   MuPurityHT_->SaveEff("#mu purity; H_{T} [GeV]", dEfficiencies);   
   MuPurityMHT_->SaveEff("#mu purity; #slash{H}_{T} [GeV]", dEfficiencies);   
   MuonPurityMHTNJet_->SaveEff("#mu purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  //elec
   //1D
-  ElecPurityBTag_->SaveEff("e purity; B_{Tags}", dEfficiencies);
+  ElecPurityBTag_->SaveEff("e purity; B_{Tags}", dEfficiencies);   
   ElecPurityNJets_->SaveEff("e purity; N_{Jets}", dEfficiencies);   
   ElecPurityHT_->SaveEff("e purity; H_{T} [GeV]", dEfficiencies);   
   ElecPurityMHT_->SaveEff("e purity; #slash{H}_{T} [GeV]", dEfficiencies);   
   ElecPurityMHTNJet_->SaveEff("e purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  MuPurityCheckBTag_->SaveEff("#mu purity; B_{Tags}", dEfficiencies);   
-  MuPurityCheckNJets_->SaveEff("#mu purity; N_{Jets}", dEfficiencies);   
-  MuPurityCheckHT_->SaveEff("#mu purity; H_{T} [GeV]", dEfficiencies);   
-  MuPurityCheckMHT_->SaveEff("#mu purity; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuonPurityCheckMHTNJet_->SaveEff("#mu purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  //elec
-  //1D
-  ElecPurityCheckBTag_->SaveEff("e purity; B_{Tags}", dEfficiencies);   
-  ElecPurityCheckNJets_->SaveEff("e purity; N_{Jets}", dEfficiencies);   
-  ElecPurityCheckHT_->SaveEff("e purity; H_{T} [GeV]", dEfficiencies);   
-  ElecPurityCheckMHT_->SaveEff("e purity; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecPurityCheckMHTNJet_->SaveEff("e purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
 
   // acc
   //muon
@@ -1398,8 +1398,8 @@ void EffMaker::Terminate()
   
   // pt and activity  
   //muon
-  MuPurityPT_->SaveEff("#mu purity; p_{T}(#mu) [GeV]", dEfficiencies);   
-  MuPurityActivity_->SaveEff("#mu purity; Activity", dEfficiencies, true);   
+  MuPurityOldPT_->SaveEff("#mu purity; p_{T}(#mu) [GeV]", dEfficiencies);   
+  MuPurityOldActivity_->SaveEff("#mu purity; Activity", dEfficiencies, true);   
   MuAccPT_->SaveEff("#mu acc; p_{T}(#mu) [GeV]", dEfficiencies);   
   MuAccActivity_->SaveEff("#mu acc; Activity", dEfficiencies, true);   
   MuRecoPT_->SaveEff("#mu reco; p_{T}(#mu) [GeV]", dEfficiencies);   
@@ -1413,8 +1413,8 @@ void EffMaker::Terminate()
   MuRecoPTEta_->SaveEff("#mu reco; p_{T}(#mu) [GeV]; #eta(#mu)", dEfficiencies, true);   
 
   //elec
-  ElecPurityPT_->SaveEff("e purity; p_{T}(e) [GeV]", dEfficiencies);   
-  ElecPurityActivity_->SaveEff("e purity; Activity", dEfficiencies, true);   
+  ElecPurityOldPT_->SaveEff("e purity; p_{T}(e) [GeV]", dEfficiencies);   
+  ElecPurityOldActivity_->SaveEff("e purity; Activity", dEfficiencies, true);   
   ElecAccPT_->SaveEff("e acc; p_{T}(e) [GeV]", dEfficiencies);   
   ElecAccActivity_->SaveEff("e acc; Activity", dEfficiencies, true);   
   ElecRecoPT_->SaveEff("e reco; p_{T}(e) [GeV]", dEfficiencies);   

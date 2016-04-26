@@ -11,6 +11,9 @@ using std::vector;
 
 void MakePrediction_Data()
 {
+	gSystem->Load("libPhysics.so");
+  	gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
+
 	bool useTProof = false;
 
 	TChain *Effchain = new TChain("tree");
