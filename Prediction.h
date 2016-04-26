@@ -764,7 +764,6 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("MHT_Phi", 1);
   fChain->SetBranchStatus("Muons", 1);
   fChain->SetBranchStatus("NJets", 1);
-  fChain->SetBranchStatus("NumPhotons", 1);
   fChain->SetBranchStatus("NVtx", 1);
   fChain->SetBranchStatus("selectedIDElectrons", 1);
   fChain->SetBranchStatus("Electrons", 1);
