@@ -43,6 +43,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   MuAccMHTNJetsB0_ = new TH2Eff("MuAccMHTNJetsB0", EffInputFolder);
   MuAccMHTNJetsB1_Inf_ = new TH2Eff("MuAccMHTNJetsB1_Inf", EffInputFolder);
   MuAccHTMHT_NJetsLow_ = new TH2Eff("MuAccHTMHT_NJetsLow", EffInputFolder);
+  MuAccHTMHT_NJets2_ = new TH2Eff("MuAccHTMHT_NJets2", EffInputFolder);
+  MuAccHTMHT_NJets3_ = new TH2Eff("MuAccHTMHT_NJets3", EffInputFolder);
   MuAccHTMHT_NJets4_ = new TH2Eff("MuAccHTMHT_NJets4", EffInputFolder);
   MuAccHTMHT_NJets5_ = new TH2Eff("MuAccHTMHT_NJets5", EffInputFolder);
   MuAccHTMHT_NJets6_ = new TH2Eff("MuAccHTMHT_NJets6", EffInputFolder);
@@ -72,6 +74,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   ElecAccMHTNJetsB0_ = new TH2Eff("ElecAccMHTNJetsB0", EffInputFolder);
   ElecAccMHTNJetsB1_Inf_ = new TH2Eff("ElecAccMHTNJetsB1_Inf", EffInputFolder);
   ElecAccHTMHT_NJetsLow_ = new TH2Eff("ElecAccHTMHT_NJetsLow", EffInputFolder);
+  ElecAccHTMHT_NJets2_ = new TH2Eff("ElecAccHTMHT_NJets2", EffInputFolder);
+  ElecAccHTMHT_NJets3_ = new TH2Eff("ElecAccHTMHT_NJets3", EffInputFolder);
   ElecAccHTMHT_NJets4_ = new TH2Eff("ElecAccHTMHT_NJets4", EffInputFolder);
   ElecAccHTMHT_NJets5_ = new TH2Eff("ElecAccHTMHT_NJets5", EffInputFolder);
   ElecAccHTMHT_NJets6_ = new TH2Eff("ElecAccHTMHT_NJets6", EffInputFolder);
@@ -101,14 +105,14 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
 
 
   // TProfiles
-  MuMeanWeight_ = new TProfile("MuMeanWeight","MuMeanWeight",72,1.,73.);
+  MuMeanWeight_ = new TProfile("MuMeanWeight","MuMeanWeight",108,1.,109.);
   MuMeanWeight_->Sumw2();
-  ElecMeanWeight_ = new TProfile("ElecMeanWeight","ElecMeanWeight",72,1.,73.);
+  ElecMeanWeight_ = new TProfile("ElecMeanWeight","ElecMeanWeight",108,1.,109.);
   ElecMeanWeight_->Sumw2();
-  CombinedMeanWeight_ = new TProfile("CombinedMeanWeight","CombinedMeanWeight",72,1.,73.);
+  CombinedMeanWeight_ = new TProfile("CombinedMeanWeight","CombinedMeanWeight",108,1.,109.);
   CombinedMeanWeight_->Sumw2();
 
-  for(int b = 0; b <72; b++){
+  for(int b = 0; b <108; b++){
     MuWeightPerBin_[b] = new TH1D(TString("MuWeightPerBin_")+TString(to_string(b+1)),TString("MuWeightPerBin_")+TString(to_string(b+1)),60,0.,3.0);
     MuWeightPerBin_[b]->Sumw2();
     ElecWeightPerBin_[b] = new TH1D(TString("ElecWeightPerBin_")+TString(to_string(b+1)),TString("ElecWeightPerBin_")+TString(to_string(b+1)),60,0.,3.0);
@@ -458,7 +462,9 @@ Bool_t Prediction::Process(Long64_t entry)
       //muAccEffVec_ = MuAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5){
         //muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
-        if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_->GetEff(HT,MHT, useAsymmErrors);
         else muAccEffVec_ = MuAccHTMHT_NJets6_->GetEff(HT,MHT, useAsymmErrors);
       }
@@ -470,8 +476,10 @@ Bool_t Prediction::Process(Long64_t entry)
 
       //elecAccEffVec_ = ElecAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5){
-         elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
-        if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
+        // elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_->GetEff(HT,MHT, useAsymmErrors);
         else elecAccEffVec_ = ElecAccHTMHT_NJets6_->GetEff(HT,MHT, useAsymmErrors);
       }
@@ -743,7 +751,9 @@ Bool_t Prediction::Process(Long64_t entry)
       //elecAccEffVec_ = ElecAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5){
         // elecAccEffVec_ = ElecAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
-        if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_->GetEff(HT,MHT, useAsymmErrors);
         else elecAccEffVec_ = ElecAccHTMHT_NJets6_->GetEff(HT,MHT, useAsymmErrors);
       }
@@ -757,7 +767,9 @@ Bool_t Prediction::Process(Long64_t entry)
       //muAccEffVec_ = MuAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
       if(NJets<6.5){
         //muAccEffVec_ = MuAccHTMHT_NJetsLow_->GetEff(HT,MHT, useAsymmErrors);
-        if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_->GetEff(HT,MHT, useAsymmErrors);
         else muAccEffVec_ = MuAccHTMHT_NJets6_->GetEff(HT,MHT, useAsymmErrors);
       }
@@ -1041,7 +1053,7 @@ void Prediction::Terminate()
   outPutFile->mkdir("WeightPerBin");
   TDirectory *dEfficienciesPerBin = (TDirectory*)outPutFile->Get("WeightPerBin");
   dEfficienciesPerBin->cd();
-  for(int b = 0; b <72; b++){
+  for(int b = 0; b <108; b++){
     MuWeightPerBin_[b]->Write();
     ElecWeightPerBin_[b]->Write();
     CombinedWeightPerBin_[b]->Write();

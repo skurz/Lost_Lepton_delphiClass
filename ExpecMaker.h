@@ -82,7 +82,7 @@ const bool DY_=false;
 // cuts baseline
 const double minHT_=500;
 const double minMHT_=200;
-const double minNJets_=3.4;
+const double minNJets_=1.5;
 const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;
 const double deltaPhi3_=0.3;

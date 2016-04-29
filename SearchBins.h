@@ -42,6 +42,74 @@ protected:
 SearchBins::SearchBins(bool useQCDbinning)
 {
   if(!useQCDbinning){
+  	// HTmin,HTmax,MHTmin,MHTmax,NJetsmin,NJetsmax,BTagsmin,BTagsmax
+	// NJets 2,2 BTags=0
+	// fixed ht Njets btags all MHT bins
+	bins_.push_back( Bin(500,800,200,500,2,2,-1,0) );
+	bins_.push_back( Bin(800,1200,200,500,2,2,-1,0) );
+	bins_.push_back( Bin(1200,99999,200,500,2,2,-1,0) );
+	
+	bins_.push_back( Bin(500,1200,500,750,2,2,-1,0) );
+	bins_.push_back( Bin(1200,99999,500,750,2,2,-1,0) );
+	
+	bins_.push_back( Bin(800,99999,750,9999,2,2,-1,0) );
+	
+	// NJets 2,2 BTags=1
+	// fixed ht Njets btags all MHT bins
+	bins_.push_back( Bin(500,800,200,500,2,2,1,1) );
+	bins_.push_back( Bin(800,1200,200,500,2,2,1,1) );
+	bins_.push_back( Bin(1200,99999,200,500,2,2,1,1) );
+	
+	bins_.push_back( Bin(500,1200,500,750,2,2,1,1) );
+	bins_.push_back( Bin(1200,99999,500,750,2,2,1,1) );
+	
+	bins_.push_back( Bin(800,99999,750,9999,2,2,1,1) );
+
+  	// NJets 2,2 BTags=2
+  	// fixed ht Njets btags all MHT bins
+  	bins_.push_back( Bin(500,800,200,500,2,2,2,9999) );
+  	bins_.push_back( Bin(800,1200,200,500,2,2,2,9999) );
+  	bins_.push_back( Bin(1200,99999,200,500,2,2,2,9999) );
+  
+  	bins_.push_back( Bin(500,1200,500,750,2,2,2,9999) );
+  	bins_.push_back( Bin(1200,99999,500,750,2,2,2,9999) );
+  
+  	bins_.push_back( Bin(800,99999,750,9999,2,2,2,9999) );
+
+  	// HTmin,HTmax,MHTmin,MHTmax,NJetsmin,NJetsmax,BTagsmin,BTagsmax
+	// NJets 3,3 BTags=0
+	// fixed ht Njets btags all MHT bins
+	bins_.push_back( Bin(500,800,200,500,3,3,-1,0) );
+	bins_.push_back( Bin(800,1200,200,500,3,3,-1,0) );
+	bins_.push_back( Bin(1200,99999,200,500,3,3,-1,0) );
+	
+	bins_.push_back( Bin(500,1200,500,750,3,3,-1,0) );
+	bins_.push_back( Bin(1200,99999,500,750,3,3,-1,0) );
+	
+	bins_.push_back( Bin(800,99999,750,9999,3,3,-1,0) );
+	
+	// NJets 3,3 BTags=1
+	// fixed ht Njets btags all MHT bins
+	bins_.push_back( Bin(500,800,200,500,3,3,1,1) );
+	bins_.push_back( Bin(800,1200,200,500,3,3,1,1) );
+	bins_.push_back( Bin(1200,99999,200,500,3,3,1,1) );
+	
+	bins_.push_back( Bin(500,1200,500,750,3,3,1,1) );
+	bins_.push_back( Bin(1200,99999,500,750,3,3,1,1) );
+	
+	bins_.push_back( Bin(800,99999,750,9999,3,3,1,1) );
+
+  	// NJets 3,3 BTags=2
+  	// fixed ht Njets btags all MHT bins
+  	bins_.push_back( Bin(500,800,200,500,3,3,2,9999) );
+  	bins_.push_back( Bin(800,1200,200,500,3,3,2,9999) );
+  	bins_.push_back( Bin(1200,99999,200,500,3,3,2,9999) );
+  
+  	bins_.push_back( Bin(500,1200,500,750,3,3,2,9999) );
+  	bins_.push_back( Bin(1200,99999,500,750,3,3,2,9999) );
+  
+  	bins_.push_back( Bin(800,99999,750,9999,3,3,2,9999) );
+
 	// HTmin,HTmax,MHTmin,MHTmax,NJetsmin,NJetsmax,BTagsmin,BTagsmax
 	// NJets 4,6 BTags=0
 	// fixed ht Njets btags all MHT bins
@@ -172,6 +240,105 @@ SearchBins::SearchBins(bool useQCDbinning)
 	bins_.push_back( Bin(800,99999,750,9999,9,9999,3,9999) );
 
   }else{
+  	// HTmin,HTmax,MHTmin,MHTmax,NJetsmin,NJetsmax,BTagsmin,BTagsmax
+	// NJets 2
+	// fixed ht Njets btags all MHT bins
+	bins_.push_back( Bin(500,800,200,300,2,2,-1,0) );
+	bins_.push_back( Bin(800,1200,200,300,2,2,-1,0) );
+	bins_.push_back( Bin(1200,99999,200,300,2,2,-1,0) );
+
+	bins_.push_back( Bin(500,800,300,500,2,2,-1,0) );
+	bins_.push_back( Bin(800,1200,300,500,2,2,-1,0) );
+	bins_.push_back( Bin(1200,99999,300,500,2,2,-1,0) );
+	
+	bins_.push_back( Bin(500,800,500,750,2,2,-1,0) );
+	bins_.push_back( Bin(800,1200,500,750,2,2,-1,0) );
+	bins_.push_back( Bin(1200,99999,500,750,2,2,-1,0) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,2,2,-1,0) );
+	bins_.push_back( Bin(1200,99999,750,9999,2,2,-1,0) );
+
+
+	bins_.push_back( Bin(500,800,200,300,2,2,1,1) );
+	bins_.push_back( Bin(800,1200,200,300,2,2,1,1) );
+	bins_.push_back( Bin(1200,99999,200,300,2,2,1,1) );
+
+	bins_.push_back( Bin(500,800,300,500,2,2,1,1) );
+	bins_.push_back( Bin(800,1200,300,500,2,2,1,1) );
+	bins_.push_back( Bin(1200,99999,300,500,2,2,1,1) );
+	
+	bins_.push_back( Bin(500,800,500,750,2,2,1,1) );
+	bins_.push_back( Bin(800,1200,500,750,2,2,1,1) );
+	bins_.push_back( Bin(1200,99999,500,750,2,2,1,1) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,2,2,1,1) );
+	bins_.push_back( Bin(1200,99999,750,9999,2,2,1,1) );
+
+
+	bins_.push_back( Bin(500,800,200,300,2,2,2,9999) );
+	bins_.push_back( Bin(800,1200,200,300,2,2,2,9999) );
+	bins_.push_back( Bin(1200,99999,200,300,2,2,2,9999) );
+
+	bins_.push_back( Bin(500,800,300,500,2,2,2,9999) );
+	bins_.push_back( Bin(800,1200,300,500,2,2,2,9999) );
+	bins_.push_back( Bin(1200,99999,300,500,2,2,2,9999) );
+	
+	bins_.push_back( Bin(500,800,500,750,2,2,2,9999) );
+	bins_.push_back( Bin(800,1200,500,750,2,2,2,9999) );
+	bins_.push_back( Bin(1200,99999,500,750,2,2,2,9999) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,2,2,2,9999) );
+	bins_.push_back( Bin(1200,99999,750,9999,2,2,2,9999) );
+
+	// HTmin,HTmax,MHTmin,MHTmax,NJetsmin,NJetsmax,BTagsmin,BTagsmax
+	// NJets 3
+	// fixed ht Njets btags all MHT bins
+	bins_.push_back( Bin(500,800,200,300,3,3,-1,0) );
+	bins_.push_back( Bin(800,1200,200,300,3,3,-1,0) );
+	bins_.push_back( Bin(1200,99999,200,300,3,3,-1,0) );
+
+	bins_.push_back( Bin(500,800,300,500,3,3,-1,0) );
+	bins_.push_back( Bin(800,1200,300,500,3,3,-1,0) );
+	bins_.push_back( Bin(1200,99999,300,500,3,3,-1,0) );
+	
+	bins_.push_back( Bin(500,800,500,750,3,3,-1,0) );
+	bins_.push_back( Bin(800,1200,500,750,3,3,-1,0) );
+	bins_.push_back( Bin(1200,99999,500,750,3,3,-1,0) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,3,3,-1,0) );
+	bins_.push_back( Bin(1200,99999,750,9999,3,3,-1,0) );
+
+
+	bins_.push_back( Bin(500,800,200,300,3,3,1,1) );
+	bins_.push_back( Bin(800,1200,200,300,3,3,1,1) );
+	bins_.push_back( Bin(1200,99999,200,300,3,3,1,1) );
+
+	bins_.push_back( Bin(500,800,300,500,3,3,1,1) );
+	bins_.push_back( Bin(800,1200,300,500,3,3,1,1) );
+	bins_.push_back( Bin(1200,99999,300,500,3,3,1,1) );
+	
+	bins_.push_back( Bin(500,800,500,750,3,3,1,1) );
+	bins_.push_back( Bin(800,1200,500,750,3,3,1,1) );
+	bins_.push_back( Bin(1200,99999,500,750,3,3,1,1) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,3,3,1,1) );
+	bins_.push_back( Bin(1200,99999,750,9999,3,3,1,1) );
+
+
+	bins_.push_back( Bin(500,800,200,300,3,3,2,9999) );
+	bins_.push_back( Bin(800,1200,200,300,3,3,2,9999) );
+	bins_.push_back( Bin(1200,99999,200,300,3,3,2,9999) );
+
+	bins_.push_back( Bin(500,800,300,500,3,3,2,9999) );
+	bins_.push_back( Bin(800,1200,300,500,3,3,2,9999) );
+	bins_.push_back( Bin(1200,99999,300,500,3,3,2,9999) );
+	
+	bins_.push_back( Bin(500,800,500,750,3,3,2,9999) );
+	bins_.push_back( Bin(800,1200,500,750,3,3,2,9999) );
+	bins_.push_back( Bin(1200,99999,500,750,3,3,2,9999) );
+	
+	bins_.push_back( Bin(800,1200,750,9999,3,3,2,9999) );
+	bins_.push_back( Bin(1200,99999,750,9999,3,3,2,9999) );
   	// HTmin,HTmax,MHTmin,MHTmax,NJetsmin,NJetsmax,BTagsmin,BTagsmax
 	// NJets 4
 	// fixed ht Njets btags all MHT bins

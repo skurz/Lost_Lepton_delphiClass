@@ -106,7 +106,7 @@ const double maxDeltaRGenToRecoIsoMuon_=0.3;
 const double maxDiffPtGenToRecoIsoMuon_=0.3;
 const double minHT_=500;
 const double minMHT_=200;
-const double minNJets_=3.5;
+const double minNJets_=1.5;
 const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;
 const double deltaPhi3_=0.3;
@@ -383,9 +383,9 @@ class Prediction : public TSelector {
   TProfile *CombinedMeanWeight_;
 
   // TH1s for distributions of efficiencies per bin
-  TH1 *MuWeightPerBin_[72];
-  TH1 *ElecWeightPerBin_[72];
-  TH1 *CombinedWeightPerBin_[72];
+  TH1 *MuWeightPerBin_[108];
+  TH1 *ElecWeightPerBin_[108];
+  TH1 *CombinedWeightPerBin_[108];
   
   // Effiecineices
   TH2Eff *MuMTWPTActivity_;
@@ -408,6 +408,8 @@ class Prediction : public TSelector {
   TH2Eff *MuAccMHTNJetsB0_;
   TH2Eff *MuAccMHTNJetsB1_Inf_;
   TH2Eff *MuAccHTMHT_NJetsLow_;
+  TH2Eff *MuAccHTMHT_NJets2_;
+  TH2Eff *MuAccHTMHT_NJets3_;
   TH2Eff *MuAccHTMHT_NJets4_;
   TH2Eff *MuAccHTMHT_NJets5_;
   TH2Eff *MuAccHTMHT_NJets6_;
@@ -436,6 +438,8 @@ class Prediction : public TSelector {
   TH1Eff *ElecDiLepEffMTWAppliedNJets_;
 
   TH2Eff *ElecAccHTMHT_NJetsLow_;
+  TH2Eff *ElecAccHTMHT_NJets2_;
+  TH2Eff *ElecAccHTMHT_NJets3_;
   TH2Eff *ElecAccHTMHT_NJets4_;
   TH2Eff *ElecAccHTMHT_NJets5_;
   TH2Eff *ElecAccHTMHT_NJets6_;

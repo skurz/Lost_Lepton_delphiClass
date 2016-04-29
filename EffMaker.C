@@ -86,6 +86,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuAccMHTNJetsB0_ = new TH2Eff("MuAccMHTNJetsB0","MuAccMHTNJetsB0",muaccMHT_-1,muAccMHT_, muaccNJets_-1, muAccNJets_);
   MuAccMHTNJetsB1_Inf_ = new TH2Eff("MuAccMHTNJetsB1_Inf","MuAccMHTNJetsB1_Inf",muaccMHT_-1,muAccMHT_, muaccNJets_-1, muAccNJets_);
   MuAccHTMHT_NJetsLow_ = new TH2Eff("MuAccHTMHT_NJetsLow","MuAccHTMHT_NJetsLow",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
+  MuAccHTMHT_NJets2_ = new TH2Eff("MuAccHTMHT_NJets2","MuAccHTMHT_NJets2",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
+  MuAccHTMHT_NJets3_ = new TH2Eff("MuAccHTMHT_NJets3","MuAccHTMHT_NJets3",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
   MuAccHTMHT_NJets4_ = new TH2Eff("MuAccHTMHT_NJets4","MuAccHTMHT_NJets4",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
   MuAccHTMHT_NJets5_ = new TH2Eff("MuAccHTMHT_NJets5","MuAccHTMHT_NJets5",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
   MuAccHTMHT_NJets6_ = new TH2Eff("MuAccHTMHT_NJets6","MuAccHTMHT_NJets6",muaccHT_-1,muAccHT_, muaccMHT2D_-1,muAccMHT2D_);
@@ -109,6 +111,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecAccMHTNJetsB0_ = new TH2Eff("ElecAccMHTNJetsB0","ElecAccMHTNJetsB0",elecaccMHT_-1,elecAccMHT_, elecaccNJets_-1, elecAccNJets_);
   ElecAccMHTNJetsB1_Inf_ = new TH2Eff("ElecAccMHTNJetsB1_Inf","ElecAccMHTNJetsB1_Inf",elecaccMHT_-1,elecAccMHT_, elecaccNJets_-1, elecAccNJets_);
   ElecAccHTMHT_NJetsLow_ = new TH2Eff("ElecAccHTMHT_NJetsLow","ElecAccHTMHT_NJetsLow",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
+  ElecAccHTMHT_NJets2_ = new TH2Eff("ElecAccHTMHT_NJets2","ElecAccHTMHT_NJets2",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
+  ElecAccHTMHT_NJets3_ = new TH2Eff("ElecAccHTMHT_NJets3","ElecAccHTMHT_NJets3",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
   ElecAccHTMHT_NJets4_ = new TH2Eff("ElecAccHTMHT_NJets4","ElecAccHTMHT_NJets4",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
   ElecAccHTMHT_NJets5_ = new TH2Eff("ElecAccHTMHT_NJets5","ElecAccHTMHT_NJets5",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
   ElecAccHTMHT_NJets6_ = new TH2Eff("ElecAccHTMHT_NJets6","ElecAccHTMHT_NJets6",elecaccHT_-1,elecAccHT_, elecaccMHT2D_-1,elecAccMHT2D_);
@@ -504,6 +508,8 @@ Bool_t EffMaker::Process(Long64_t entry)
           MuAccHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
       }
 
+      if(NJets > 1.5 && NJets < 2.5) MuAccHTMHT_NJets2_->Fill(HT,MHT,Weight,true);
+      if(NJets > 2.5 && NJets < 3.5) MuAccHTMHT_NJets3_->Fill(HT,MHT,Weight,true);
       if(NJets > 3.5 && NJets < 4.5) MuAccHTMHT_NJets4_->Fill(HT,MHT,Weight,true);
       if(NJets > 4.5 && NJets < 5.5) MuAccHTMHT_NJets5_->Fill(HT,MHT,Weight,true);
       if(NJets > 5.5 && NJets < 6.5) MuAccHTMHT_NJets6_->Fill(HT,MHT,Weight,true);
@@ -539,6 +545,8 @@ Bool_t EffMaker::Process(Long64_t entry)
           MuAccHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
       }
 
+      if(NJets > 1.5 && NJets < 2.5) MuAccHTMHT_NJets2_->Fill(HT,MHT,Weight,false);
+      if(NJets > 2.5 && NJets < 3.5) MuAccHTMHT_NJets3_->Fill(HT,MHT,Weight,false);
       if(NJets > 3.5 && NJets < 4.5) MuAccHTMHT_NJets4_->Fill(HT,MHT,Weight,false);
       if(NJets > 4.5 && NJets < 5.5) MuAccHTMHT_NJets5_->Fill(HT,MHT,Weight,false);
       if(NJets > 5.5 && NJets < 6.5) MuAccHTMHT_NJets6_->Fill(HT,MHT,Weight,false);
@@ -575,6 +583,8 @@ Bool_t EffMaker::Process(Long64_t entry)
           ElecAccHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
       }
 
+        if(NJets > 1.5 && NJets < 2.5) ElecAccHTMHT_NJets2_->Fill(HT,MHT,Weight,true);
+        if(NJets > 2.5 && NJets < 3.5) ElecAccHTMHT_NJets3_->Fill(HT,MHT,Weight,true);
         if(NJets > 3.5 && NJets < 4.5) ElecAccHTMHT_NJets4_->Fill(HT,MHT,Weight,true);
         if(NJets > 4.5 && NJets < 5.5) ElecAccHTMHT_NJets5_->Fill(HT,MHT,Weight,true);
         if(NJets > 5.5 && NJets < 6.5) ElecAccHTMHT_NJets6_->Fill(HT,MHT,Weight,true);
@@ -610,6 +620,8 @@ Bool_t EffMaker::Process(Long64_t entry)
           ElecAccHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
       }
 
+      if(NJets > 1.5 && NJets < 2.5) ElecAccHTMHT_NJets2_->Fill(HT,MHT,Weight,false);
+      if(NJets > 2.5 && NJets < 3.5) ElecAccHTMHT_NJets3_->Fill(HT,MHT,Weight,false);
       if(NJets > 3.5 && NJets < 4.5) ElecAccHTMHT_NJets4_->Fill(HT,MHT,Weight,false);
       if(NJets > 4.5 && NJets < 5.5) ElecAccHTMHT_NJets5_->Fill(HT,MHT,Weight,false);
       if(NJets > 5.5 && NJets < 6.5) ElecAccHTMHT_NJets6_->Fill(HT,MHT,Weight,false);
@@ -1262,6 +1274,8 @@ void EffMaker::Terminate()
   MuAccMHTNJetsB0_->SaveEff("#mu acc B_{Tags}=0; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   MuAccMHTNJetsB1_Inf_->SaveEff("#mu acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   MuAccHTMHT_NJetsLow_->SaveEff("#mu acc N_{Jets}=4-6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets2_->SaveEff("#mu acc N_{Jets}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets3_->SaveEff("#mu acc N_{Jets}=3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   MuAccHTMHT_NJets4_->SaveEff("#mu acc N_{Jets}=4;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   MuAccHTMHT_NJets5_->SaveEff("#mu acc N_{Jets}=5;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   MuAccHTMHT_NJets6_->SaveEff("#mu acc N_{Jets}=6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
@@ -1285,6 +1299,8 @@ void EffMaker::Terminate()
   ElecAccMHTNJetsB0_->SaveEff("e acc B_{Tags}=0; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   ElecAccMHTNJetsB1_Inf_->SaveEff("e acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   ElecAccHTMHT_NJetsLow_->SaveEff("e acc N_{Jets}=4-6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets2_->SaveEff("e acc N_{Jets}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets3_->SaveEff("e acc N_{Jets}=3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   ElecAccHTMHT_NJets4_->SaveEff("e acc N_{Jets}=4;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   ElecAccHTMHT_NJets5_->SaveEff("e acc N_{Jets}=5;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   ElecAccHTMHT_NJets6_->SaveEff("e acc N_{Jets}=6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   

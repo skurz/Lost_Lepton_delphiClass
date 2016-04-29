@@ -45,6 +45,9 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   // Present output in QCD binning
   bool doQCDbinning = false;  //<-check------------------------
 
+  // Prepare Code for Extrapolation Method
+  bool doExtrapolation = false; // fixes for additional NJets bins have to bin done
+
   // If you want to compare MC to MC set this to true. E.g. prediction with and without signal contamination
   bool useMCForDataTree = false;
 
@@ -55,8 +58,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   // Leave at 'false' if doing a closure test so stat. uncertainty is the one using full MC statistics
   bool approxStatUncertainty = false;
 
-  // Prepare Code for Extrapolation Method
-  bool doExtrapolation = false; // not fully implemented yet
+
 
   //Merge QCDbins (bTags) = 55 bins // only works if doQCDbinning = true;
   //BUT: Output table does not work! However, histograms are filled properly
@@ -67,12 +69,16 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
 
   // Begin of Code
-  int nSearchBinsTotal = 72;
+    int nSearchBinsTotal = 108;
+  if(doQCDbinning){
+    nSearchBinsTotal = 286;
+  }
+/*  int nSearchBinsTotal = 72;
   if(doQCDbinning){
     nSearchBinsTotal = 220;
     if(mergeQCDbins) nSearchBinsTotal = 55;
   }
-  UShort_t         SearchBin=0;
+*/  UShort_t         SearchBin=0;
 
 
   //Declaration of leaves types for both trees (Expectation/Prediction)
@@ -281,7 +287,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
   TH1D* totalExp_HT_LL_ = new TH1D("totalExp_HT_LL","totalExp_HT_LL;H_{T} [GeV]", 20, 500., 2500.);
   TH1D* totalExp_MHT_LL_ = new TH1D("totalExp_MHT_LL","totalExp_MHT_LL;H_{T}^{miss} [GeV]", 20, 200., 1200.);
-  TH1D* totalExp_NJets_LL_ = new TH1D("totalExp_NJets_LL","totalExp_NJets_LL;N_{jet} (p_{T} > 30 GeV)", 7, 3.5, 10.5);
+  TH1D* totalExp_NJets_LL_ = new TH1D("totalExp_NJets_LL","totalExp_NJets_LL;N_{jet} (p_{T} > 30 GeV)", 9, 1.5, 10.5);
   TH1D* totalExp_BTags_LL_ = new TH1D("totalExp_BTags_LL","totalExp_BTags_LL;N_{b-jet} (p_{T} > 30 GeV)", 7, -0.5, 6.5);
 
   // JACK--debug PTW measurement
@@ -394,7 +400,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
   TH1D* totalPred_HT_LL_ = new TH1D("totalPred_HT_LL","totalPred_HT_LL", 20, 500., 2500.);
   TH1D* totalPred_MHT_LL_ = new TH1D("totalPred_MHT_LL","totalPred_MHT_LL", 20, 200., 1200.);
-  TH1D* totalPred_NJets_LL_ = new TH1D("totalPred_NJets_LL","totalPred_NJets_LL", 7, 3.5, 10.5);
+  TH1D* totalPred_NJets_LL_ = new TH1D("totalPred_NJets_LL","totalPred_NJets_LL", 9, 1.5, 10.5);
   TH1D* totalPred_BTags_LL_ = new TH1D("totalPred_BTags_LL","totalPred_BTags_LL", 7, -0.5, 6.5);
 
   TH1D* totalPredIsoTrackSysUp_LL_ = new TH1D("totalPredIsoTrackSysUp_LL","totalPredIsoTrackSysUp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
@@ -550,7 +556,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
   TH1D* totalPred_HT_LL_MC_ = new TH1D("totalPred_HT_LL_MC","totalPred_HT_LL_MC", 20, 500., 2500.);
   TH1D* totalPred_MHT_LL_MC_ = new TH1D("totalPred_MHT_LL_MC","totalPred_MHT_LL_MC", 20, 200., 1200.);
-  TH1D* totalPred_NJets_LL_MC_ = new TH1D("totalPred_NJets_LL_MC","totalPred_NJets_LL_MC", 7, 3.5, 10.5);
+  TH1D* totalPred_NJets_LL_MC_ = new TH1D("totalPred_NJets_LL_MC","totalPred_NJets_LL_MC", 9, 1.5, 10.5);
   TH1D* totalPred_BTags_LL_MC_ = new TH1D("totalPred_BTags_LL_MC","totalPred_BTags_LL_MC", 7, -0.5, 6.5);
 
   TH1D* totalPred_PTW_LL_MC_ = new TH1D("totalPred_PTW_LL_MC","totalPred_PTW_LL_MC", 38, 0, 950);
@@ -636,7 +642,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
   TProfile* avgWeight_HT_LL_MC_ = new TProfile("avgWeight_HT_LL_MC","avgWeight_HT_LL_MC", 20, 500., 2500.);
   TProfile* avgWeight_MHT_LL_MC_ = new TProfile("avgWeight_MHT_LL_MC","avgWeight_MHT_LL_MC", 20, 200., 1200.);
-  TProfile* avgWeight_NJets_LL_MC_ = new TProfile("avgWeight_NJets_LL_MC","avgWeight_NJets_LL_MC", 7, 3.5, 10.5);
+  TProfile* avgWeight_NJets_LL_MC_ = new TProfile("avgWeight_NJets_LL_MC","avgWeight_NJets_LL_MC", 9, 1.5, 10.5);
   TProfile* avgWeight_BTags_LL_MC_ = new TProfile("avgWeight_BTags_LL_MC","avgWeight_BTags_LL_MC", 7, -0.5, 6.5);
   TProfile* avgWeight_MHT_HT500_800_LL_MC_ = new TProfile("avgWeight_HT500_800_MHT_LL_MC","avgWeight_HT500_800_MHT_LL_MC", 20, 200., 1200.);
   TProfile* avgWeight_MHT_HT800_1200_LL_MC_ = new TProfile("avgWeight_HT800_1200_MHT_LL_MC","avgWeight_HT800_1200_MHT_LL_MC", 20, 200., 1200.);
@@ -720,9 +726,9 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
 
   // Histograms for Readiness Talk
-  TH1D* hPredAllBins = new TH1D("hPredAllBins", ";Bin;Events / Bin", 72, 0.5, 72.5);
-  TH1D* hExpAllBins = new TH1D("hExpAllBins", ";Bin;Events / Bin", 72, 0.5, 72.5);
-  TProfile* hAvgWeightAllBins = new TProfile("hAvgWeightAllBins", ";Bin;avgWeight / Bin", 72, 0.5, 72.5);
+  TH1D* hPredAllBins = new TH1D("hPredAllBins", ";Bin;Events / Bin", nSearchBinsTotal, 0.5, double(nSearchBinsTotal)+0.5);
+  TH1D* hExpAllBins = new TH1D("hExpAllBins", ";Bin;Events / Bin", nSearchBinsTotal, 0.5, double(nSearchBinsTotal)+0.5);
+  TProfile* hAvgWeightAllBins = new TProfile("hAvgWeightAllBins", ";Bin;avgWeight / Bin", nSearchBinsTotal, 0.5, double(nSearchBinsTotal)+0.5);
 
   TH1D* hPredHTMHT0b = new TH1D("hPredHTMHT0b", ";HTMHT Box;Events / Bin", 6, 0.5, 6.5);
   TH1D* hPredHTMHTwb = new TH1D("hPredHTMHTwb", ";HTMHT Box;Events / Bin", 6, 0.5, 6.5);
@@ -834,17 +840,17 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     else SearchBin = Bin;
 
     // total expectation
-    if(doExtrapolation || SearchBin > 900) continue;
+    if(SearchBin > 900) continue;
 
     scaledWeight = Weight * scaleFactorWeight;
 
-    if(Expectation==1 && NJets>3.1)
+    if(Expectation==1)
       {
     	totalExpectation_->Fill(SearchBin, scaledWeight);
     	totalExp+=scaledWeight;
     	totalExpError+= scaledWeight*scaledWeight;
       }
-    if(Expectation==1 && ExpectationReductionIsoTrack==0 && NJets>3.1)
+    if(Expectation==1 && ExpectationReductionIsoTrack==0)
       {
     	totalExpectationIsoTrackReduction_->Fill(SearchBin, scaledWeight);
     	totalExpIsoTrack+=scaledWeight;
@@ -1147,7 +1153,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     }
     else SearchBin = Bin;
 
-    if(doExtrapolation || SearchBin > 900) continue;
+    if(SearchBin > 900) continue;
     if(MTW>100)continue;
     if(selectedIDIsoMuonsNum+selectedIDIsoElectronsNum!=1)continue;
 
@@ -1207,6 +1213,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     else if (HT>1200) IHT=2;
     if (HT<800&&MHT>750) IHT=-1;
 
+if(doExtrapolation){
     if (INJ>=0&&INB>=0&&IHT>=0) {
       if (HT>500&&HT<1200) {
 	totalPred_MHT_Normal_HT12_LL_MC_[INJ*4+INB]->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
@@ -1251,6 +1258,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 	}
       }
     }
+}
     
     totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2);
     totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeight/2);
@@ -1335,6 +1343,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     totalCS_LL_MC_->Fill(SearchBin, scaledWeight);
     nEvtsCS_LL_MC_->Fill(SearchBin);
 
+if(doExtrapolation){
     // fill 72-bin histogram for extrapolation method
     if (SearchBin%6 > 0 && SearchBin%6 < 4) {
       // for low-mht bins, use the regular prediction
@@ -1346,6 +1355,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
       totalPred_EXTRAP_LL_MC_->Fill(iSB+5, totalPred_MHT_EXTRAP_HT3_LL_MC_[INJ*4+INB]->Integral(3,4));
       totalPred_EXTRAP_LL_MC_->Fill(iSB+6, totalPred_MHT_EXTRAP_HT23_LL_MC_[INJ*4+INB]->Integral(5,6));
     }
+}
     
     avgWeight_LL_MC_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
     avgWeight_HT_LL_MC_->Fill(HT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
@@ -1573,7 +1583,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     }
     else SearchBin = Bin;
     
-    if(doExtrapolation || SearchBin > 900) continue;
+    if(SearchBin > 900) continue;
     if(MTW>100)continue;
     if(selectedIDIsoMuonsNum+selectedIDIsoElectronsNum!=1)continue;
 
@@ -1617,7 +1627,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     else if (HT>1200) IHT=2;
     if (HT<800&&MHT>750) IHT=-1;
 
-
+if(doExtrapolation){
     if (INJ>=0&&INB>=0&&IHT>=0) {
       if (HT>500&&HT<1200) {
 	totalPred_MHT_Normal_HT12_LL_[INJ*4+INB]->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
@@ -1662,6 +1672,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 	}
       }
     }
+}
 
     totalPredIsoTrackSysUp_LL_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2);
     totalPredIsoTrackSysDown_LL_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeight/2);
@@ -1746,6 +1757,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     totalCS_LL_->Fill(SearchBin, scaledWeight/scaleMC);
     nEvtsCS_LL_->Fill(SearchBin);
 
+if(doExtrapolation){
     // fill 72-bin histogram for extrapolation method
     if (SearchBin%6 > 0 && SearchBin%6 < 4) {
       totalPred_EXTRAP_LL_->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC); // lowest-MHT, use classical prediction
@@ -1756,6 +1768,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
       totalPred_EXTRAP_LL_->Fill(iSB+5, totalPred_MHT_EXTRAP_HT3_LL_[INJ*4+INB]->Integral(3,4));
       totalPred_EXTRAP_LL_->Fill(iSB+6, totalPred_MHT_EXTRAP_HT23_LL_[INJ*4+INB]->Integral(5,6));
     }
+}
 
     avgWeight_LL_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
 
@@ -2271,9 +2284,10 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   nEvtsCS_LL_->Write();
 
 
- 
   SetBinLabel(avgWeight_LL_);
   avgWeight_LL_->Write();
+
+if(doExtrapolation){ 
   // now calculated the modified average weight for the extrapolation method
   for (int ibin(0); ibin<avgWeight_LL_->GetNbinsX(); ibin++) {
     EXTRAP_weight_SF_LL_->SetBinError(ibin+1, 0); 
@@ -2301,6 +2315,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   }
   SetBinLabel(EXTRAP_weight_SF_LL_);
   EXTRAP_weight_SF_LL_->Write();
+}
 
 
   LLoutPutFile->cd();
@@ -2310,6 +2325,8 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
   SetBinLabel(totalPred_LL_MC_);
   totalPred_LL_MC_->Write();
+
+if(doExtrapolation){
   for (int ibin(0); ibin<avgWeight_LL_MC_->GetNbinsX(); ibin++) {
     EXTRAP_weight_SF_LL_MC_->SetBinError(ibin+1, 0); 
     if (ibin%6 < 3) { // lowest-MHT, use classical prediction
@@ -2335,6 +2352,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   }
   SetBinLabel(totalPred_EXTRAP_LL_MC_);
   totalPred_EXTRAP_LL_MC_->Write();
+}
 
 
   std::vector<TH1D*> allUncUp_LL_MC_;
@@ -2578,9 +2596,9 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   SearchBins *SearchBins_ = new SearchBins(doQCDbinning);
 
   double LLexpErr = 0;
-  double LLexp = totalExp_LL_->IntegralAndError(1, 72, LLexpErr);
+  double LLexp = totalExp_LL_->IntegralAndError(1, nSearchBinsTotal, LLexpErr);
   double LLpreErr = 0;
-  double LLpre = totalPred_LL_->IntegralAndError(1, 72, LLpreErr);
+  double LLpre = totalPred_LL_->IntegralAndError(1, nSearchBinsTotal, LLpreErr);
 
   //printf("Total: & & & & & & & $%3.3f\\pm$%3.3f & $%3.3f\\pm$%3.3f \\\\\n", LLexp, LLexpErr, LLpre, LLpreErr);
 
@@ -2747,7 +2765,7 @@ void SetBinLabel(TH1D* hist){
       }
     }
   
-  hist -> GetXaxis() -> LabelsOption("v");
+  if(hist->GetNbinsX()==72 || hist->GetNbinsX()==20) hist -> GetXaxis() -> LabelsOption("v");
 }
 
 void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir){
