@@ -76,6 +76,9 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("selectedIDElectronsNum",&selectedIDElectronsNum_);
   tExpectation_->Branch("selectedIDElectrons", "std::vector<TLorentzVector>", &selectedIDElectrons, 32000, 0);
   tExpectation_->Branch("selectedIDElectrons_MT2Activity", &selectedIDElectrons_MT2Activity);
+  tExpectation_->Branch("HTJetsMask", &HTJetsMask);
+  tExpectation_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
+  tExpectation_->Branch("bTagProb", &bTagProb);
   
   if(!DY_){
     tExpectation_->Branch("isoElectronTracks",&isoElectronTracks);
@@ -132,21 +135,6 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
 
-  /*
-  bool passTrigger = false;
-  for (std::vector<string>::iterator it = TriggerNames->begin() ; it != TriggerNames->end(); ++it){
-    if(it->find("HLT_PFHT350_PFMET100_NoiseCleaned_v")!=std::string::npos){  // Run2015A,B
-      if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
-    }
-    if(it->find("HLT_PFHT350_PFMET100_JetIdCleaned_v")!=std::string::npos){  // Run2015C.D
-      if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
-    }
-    if(it->find("HLT_PFHT350_PFMET100_v")!=std::string::npos){  // Run2015C.D
-      if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
-    }
-  }
-  if(useTrigger && !passTrigger) return kTRUE;
-  */
   if(useTrigger) if(!TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
 
 
@@ -156,6 +144,29 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     w_pu = puhist->GetBinContent(puhist->GetXaxis()->FindBin(min(TrueNumInteractions,puhist->GetBinLowEdge(puhist->GetNbinsX()+1))));
     Weight *= w_pu;
   }
+
+  if(doBTagCorrFullSim || doBTagCorrFastSim){
+    TString currentTree = TString(fChain->GetCurrentFile()->GetName());
+    if(currentTree != treeName){
+      treeName = currentTree;
+
+      delete btagcorr;
+      btagcorr = new BTagCorrector();
+
+      TObjArray *optionArray = currentTree.Tokenize("/");
+      TString currFileName = ((TObjString *)(optionArray->At(optionArray->GetEntries()-1)))->String();
+
+      TFile *skimFile = TFile::Open(path_toSkims+currFileName, "READ");
+
+      btagcorr->SetEffs(skimFile);
+      btagcorr->SetCalib(path_bTagCalib);
+      btagcorr->SetCalibFastSim(path_bTagCalibFastSim);
+      if(doBTagCorrFastSim) btagcorr->SetFastSim(true);
+      else btagcorr->SetFastSim(false);
+    }
+    bTagProb = btagcorr->GetCorrections(Jets,Jets_hadronFlavor,HTJetsMask);
+  }
+  else bTagProb = {0, 0, 0, 0};
 
   //Account for efficiency of JetID since we cannot apply it on fastSim
   if(!applyJetID) Weight *= 0.99;

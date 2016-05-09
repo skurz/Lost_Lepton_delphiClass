@@ -110,7 +110,7 @@ void Plot_closure(string cutname="nocut", string histname="MHT",string option=""
   char xtitlename[200];
   char ytitlename[200];
   
-  sprintf(tempname,"LLPrediction_Nov23.root");
+  sprintf(tempname,"LLPrediction.root");
   TFile * LLFile = new TFile(tempname,"R");
   printf("Opened %s\n",tempname);
 
@@ -340,7 +340,7 @@ void Plot_closure(string cutname="nocut", string histname="MHT",string option=""
       sprintf(ytitlename,"Events");
       thist->SetMaximum(ymax_top);
       thist->SetMinimum(ymin_top);
-      thist->GetXaxis()->SetRangeUser(3.,NJet_x_max);
+      thist->GetXaxis()->SetRangeUser(2.,NJet_x_max);
       gPad->SetLogy();
     }
     if(histname=="MET"){

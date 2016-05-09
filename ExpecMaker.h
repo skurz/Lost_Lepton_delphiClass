@@ -25,6 +25,7 @@
 #include "TCanvas.h"
 #include "TLegend.h"
 #include "TLorentzVector.h"
+#include "btag/BTagCorrector.h"
 
 TFile *outPutFile = 0;
 
@@ -63,6 +64,9 @@ const bool doIsoTrackStudies = false;
 const bool doPUreweighting = false;
 // False for FastSim (only!)
 const bool applyJetID = true;
+// NOTE: This corrections need the histograms contained in the Skims. Please adjust 'path_toSkims' below. Also, filenames of Skims and nTuples have to be the same at the moment.
+const bool doBTagCorrFullSim = true;
+const bool doBTagCorrFastSim = false;
 
 // scaleMet = 0: keep things the way they are
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
@@ -74,6 +78,11 @@ const int propagateJECtoMET = 0;
 const bool applyFilters_=true;
 // run on DY sample
 const bool DY_=false;
+
+// bTag corrections
+const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v6/SLe/tree_");
+const string path_bTagCalib("btag/CSVv2_mod.csv");
+const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
 
 ////////////////////////
 //////// Don't change anything below
@@ -153,6 +162,11 @@ public :
   TFile* pufile = 0;
   TH1* puhist = 0;
   Double_t w_pu;
+
+  BTagCorrector *btagcorr = 0;
+  std::vector<double> bTagProb;
+
+  TString treeName = " ";
 
 
  // Storing stuff
@@ -260,6 +274,8 @@ public :
   std::vector<double>  *selectedIDIsoMuons_MT2Activity=0;
   std::vector<double>  *PDFweights=0;
   std::vector<double>  *ScaleWeights=0;
+  std::vector<int>     *Jets_hadronFlavor=0;
+  std::vector<bool>    *HTJetsMask=0;
 
 
 
@@ -325,6 +341,8 @@ public :
   TBranch        *b_selectedIDIsoElectrons_MT2Activity=0;   //!
   TBranch        *b_selectedIDIsoMuons_MT2Activity=0;   //!
   TBranch        *b_selectedIDMuons_MT2Activity=0;   //!
+  TBranch        *b_Jets_hadronFlavor=0;   //!
+  TBranch        *b_HTJetsMask=0;   //!
 
 
  ExpecMaker(TTree * /*tree*/ =0) : fChain(0) { }
@@ -477,6 +495,8 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("selectedIDIsoElectrons_MT2Activity", 1);
   fChain->SetBranchStatus("selectedIDIsoMuons_MT2Activity",1);
   fChain->SetBranchStatus("selectedIDMuons_MT2Activity", 1);
+  fChain->SetBranchStatus("Jets_hadronFlavor", 1);
+  fChain->SetBranchStatus("HTJetsMask", 1);
 
   fChain->SetBranchAddress("genHT", &genHT, &b_genHT);
   fChain->SetBranchAddress("RunNum", &RunNum, &b_RunNum);
@@ -538,6 +558,9 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity, &b_selectedIDIsoElectrons_MT2Activity);
   fChain->SetBranchAddress("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity, &b_selectedIDIsoMuons_MT2Activity);
   fChain->SetBranchAddress("selectedIDMuons_MT2Activity", &selectedIDMuons_MT2Activity, &b_selectedIDMuons_MT2Activity);
+  fChain->SetBranchAddress("Jets_hadronFlavor", &Jets_hadronFlavor, &b_Jets_hadronFlavor);
+  fChain->SetBranchAddress("HTJetsMask", &HTJetsMask, &b_HTJetsMask);
+
 }
 
 Bool_t ExpecMaker::Notify()

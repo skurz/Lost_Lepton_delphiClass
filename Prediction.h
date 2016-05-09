@@ -634,7 +634,7 @@ void Prediction::Init(TTree *tree)
   // Do PU reweighting. true for signal scan
   if(runOnSignalMC) doPUreweighting = true;
   // bTag corrections. Use for signal scan
-  if(runOnSignalMC) doBTagCorr = true;
+  if(!runOnData) doBTagCorr = true;
   // ISR corrections. NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond
   //if(runOnSignalMC) doISRcorr = true; //<-check---------------------------------------
 
@@ -776,7 +776,10 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("TriggerNames", 1);
   fChain->SetBranchStatus("TriggerPass", 1);
   fChain->SetBranchStatus("TriggerPrescales", 1);
-  if(!runOnData) fChain->SetBranchStatus("Weight", 1);
+  if(!runOnData){
+    fChain->SetBranchStatus("Weight", 1);
+    fChain->SetBranchStatus("Jets_hadronFlavor", 1);
+  }
   if(HTgen_cut>0.01)  fChain->SetBranchStatus("genHT", 1);
   if(runOnSignalMC){
     fChain->SetBranchStatus("SusyLSPMass", 1);
@@ -784,7 +787,6 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchStatus("TrueNumInteractions", 1);
     fChain->SetBranchStatus("genParticles",1);
     fChain->SetBranchStatus("genParticles_PDGid",1);
-    fChain->SetBranchStatus("Jets_hadronFlavor", 1);
   }
   fChain->SetBranchStatus("selectedIDElectrons_MT2Activity",1);
   fChain->SetBranchStatus("selectedIDIsoElectrons_MT2Activity", 1);
@@ -832,7 +834,10 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("TriggerNames", &TriggerNames, &b_TriggerNames);
   fChain->SetBranchAddress("TriggerPass", &TriggerPass, &b_TriggerPass);
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
-  if(!runOnData) fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
+  if(!runOnData){
+    fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
+    fChain->SetBranchAddress("Jets_hadronFlavor", &Jets_hadronFlavor, &b_Jets_hadronFlavor);
+  }
   if(HTgen_cut>0.01) fChain->SetBranchAddress("genHT", &genHT, &b_genHT);
   if(runOnSignalMC){
     fChain->SetBranchAddress("SusyLSPMass", &SusyLSPMass, &b_SusyLSPMass);
@@ -840,7 +845,6 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchAddress("TrueNumInteractions", &TrueNumInteractions, &b_TrueNumInteractions);
     fChain->SetBranchAddress("genParticles", &genParticles, &b_genParticles);
     fChain->SetBranchAddress("genParticles_PDGid", &genParticles_PDGid, &b_genParticles_PDGid);
-    fChain->SetBranchAddress("Jets_hadronFlavor", &Jets_hadronFlavor, &b_Jets_hadronFlavor);
   }
   fChain->SetBranchAddress("selectedIDElectrons_MT2Activity", &selectedIDElectrons_MT2Activity, &b_selectedIDElectrons_MT2Activity);
   fChain->SetBranchAddress("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity, &b_selectedIDIsoElectrons_MT2Activity);

@@ -45,6 +45,9 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   // Present output in QCD binning
   bool doQCDbinning = false;  //<-check------------------------
 
+  // Weight MC events with bTag probabilities
+  bool doBtagProbabilities = true;
+
   // Prepare Code for Extrapolation Method
   bool doExtrapolation = false; // fixes for additional NJets bins have to bin done
 
@@ -73,6 +76,9 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   if(doQCDbinning){
     nSearchBinsTotal = 286;
   }
+
+  SearchBins *SearchBins_ = new SearchBins(doQCDbinning);
+
 /*  int nSearchBinsTotal = 72;
   if(doQCDbinning){
     nSearchBinsTotal = 220;
@@ -91,6 +97,9 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   Double_t         MHT_Phi;
   Int_t            NJets;
   Int_t            BTags;
+
+  std::vector<UShort_t> Bin_bTags(4, 0.);
+  std::vector<double> *bTagProb=0;
   
   UShort_t        Expectation;
   UShort_t        muAcc;
@@ -795,7 +804,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   LostLeptonExpectation->SetBranchStatus("isoTracks",1);
   LostLeptonExpectation->SetBranchStatus("ExpectationDiLep",1);
   LostLeptonExpectation->SetBranchStatus("GenMus",1);
-
+  LostLeptonExpectation->SetBranchStatus("bTagProb",1);
 
   LostLeptonExpectation->SetBranchAddress("HT",&HT);
   LostLeptonExpectation->SetBranchAddress("MHT",&MHT);
@@ -824,6 +833,8 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 	
   LostLeptonExpectation->SetBranchAddress("isoTracks",&isoTracks);
   LostLeptonExpectation->SetBranchAddress("ExpectationDiLep",&ExpectationDiLep);
+
+  LostLeptonExpectation->SetBranchAddress("bTagProb",&bTagProb);
 	
 
   std::cout<<"Loop on Expectation"<<std::endl;
@@ -842,35 +853,87 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     // total expectation
     if(SearchBin > 900) continue;
 
+    for(int i = 0; i < 4; i++){
+        Bin_bTags.at(i)=SearchBins_->GetBinNumber(HT,MHT,NJets,i);
+    }
+
+    if(doBtagProbabilities){
+
+      //fill event 4 times weighting with the btag probability
+      for(int i = 0; i < 4; i++){
+        if(NJets > 3){
+          scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
+        }else{
+          if(i < 2){
+            scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
+          }else{
+            scaledWeight = Weight * scaleFactorWeight * (bTagProb->at(i)+bTagProb->at(i+1));
+          }
+        }
+
+        if(Expectation==1)
+          {
+        	totalExpectation_->Fill(Bin_bTags.at(i), scaledWeight);
+        	totalExp+=scaledWeight;
+        	totalExpError+= scaledWeight*scaledWeight;
+          }
+        if(Expectation==1 && ExpectationReductionIsoTrack==0)
+          {
+        	totalExpectationIsoTrackReduction_->Fill(Bin_bTags.at(i), scaledWeight);
+        	totalExpIsoTrack+=scaledWeight;
+        	totalExpIsoTrackError+= scaledWeight*scaledWeight;
+        	totalExp_LL_->Fill(Bin_bTags.at(i), scaledWeight);
+
+        	totalExp_HT_LL_->Fill(HT, scaledWeight);
+        	totalExp_MHT_LL_->Fill(MHT, scaledWeight);
+        	totalExp_NJets_LL_->Fill(NJets, scaledWeight);
+        	totalExp_BTags_LL_->Fill(i, scaledWeight);
+
+
+        	nEvtsExp_LL_->Fill(Bin_bTags.at(i));
+
+        	hExpAllBins->Fill(Bin_bTags.at(i), scaledWeight);
+        	if(i==0) hExpHTMHT0b->Fill(getHTMHTBox(HT, MHT), scaledWeight);
+        	else hExpHTMHTwb->Fill(getHTMHTBox(HT, MHT), scaledWeight);
+        	hExpNJetBins->Fill(NJets, scaledWeight);
+        	hExpNbBins->Fill(i, scaledWeight);
+      }
+
+      if(NJets < 4 && i==2) break;
+    }
+  }else{
     scaledWeight = Weight * scaleFactorWeight;
 
-    if(Expectation==1)
-      {
-    	totalExpectation_->Fill(SearchBin, scaledWeight);
-    	totalExp+=scaledWeight;
-    	totalExpError+= scaledWeight*scaledWeight;
-      }
-    if(Expectation==1 && ExpectationReductionIsoTrack==0)
-      {
-    	totalExpectationIsoTrackReduction_->Fill(SearchBin, scaledWeight);
-    	totalExpIsoTrack+=scaledWeight;
-    	totalExpIsoTrackError+= scaledWeight*scaledWeight;
-	totalExp_LL_->Fill(SearchBin, scaledWeight);
+      if(Expectation==1)
+        {
+        totalExpectation_->Fill(SearchBin, scaledWeight);
+        totalExp+=scaledWeight;
+        totalExpError+= scaledWeight*scaledWeight;
+        }
+      if(Expectation==1 && ExpectationReductionIsoTrack==0)
+        {
+        totalExpectationIsoTrackReduction_->Fill(SearchBin, scaledWeight);
+        totalExpIsoTrack+=scaledWeight;
+        totalExpIsoTrackError+= scaledWeight*scaledWeight;
+        totalExp_LL_->Fill(SearchBin, scaledWeight);
 
-	totalExp_HT_LL_->Fill(HT, scaledWeight);
-	totalExp_MHT_LL_->Fill(MHT, scaledWeight);
-	totalExp_NJets_LL_->Fill(NJets, scaledWeight);
-	totalExp_BTags_LL_->Fill(BTags, scaledWeight);
+        totalExp_HT_LL_->Fill(HT, scaledWeight);
+        totalExp_MHT_LL_->Fill(MHT, scaledWeight);
+        totalExp_NJets_LL_->Fill(NJets, scaledWeight);
+        totalExp_BTags_LL_->Fill(BTags, scaledWeight);
 
 
-	nEvtsExp_LL_->Fill(SearchBin);
+        nEvtsExp_LL_->Fill(SearchBin);
 
-	hExpAllBins->Fill(SearchBin, scaledWeight);
-	if(BTags==0) hExpHTMHT0b->Fill(getHTMHTBox(HT, MHT), scaledWeight);
-	else hExpHTMHTwb->Fill(getHTMHTBox(HT, MHT), scaledWeight);
-	hExpNJetBins->Fill(NJets, scaledWeight);
-	hExpNbBins->Fill(BTags, scaledWeight);
+        hExpAllBins->Fill(SearchBin, scaledWeight);
+        if(BTags==0) hExpHTMHT0b->Fill(getHTMHTBox(HT, MHT), scaledWeight);
+        else hExpHTMHTwb->Fill(getHTMHTBox(HT, MHT), scaledWeight);
+        hExpNJetBins->Fill(NJets, scaledWeight);
+        hExpNbBins->Fill(BTags, scaledWeight);  
+        }  
+  }
 
+  if(Expectation==1 && ExpectationReductionIsoTrack==0){
 	// stuff to compare to extrapolated predictions
 	int INJ(-1);
 	if (NJets>=4&&NJets<=6) INJ=0;
@@ -985,6 +1048,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   LostLeptonPrediction->SetBranchStatus("elecAccWeight",1);
   LostLeptonPrediction->SetBranchStatus("elecRecoWeight",1);
   LostLeptonPrediction->SetBranchStatus("elecIsoWeight",1);
+  LostLeptonPrediction->SetBranchStatus("bTagProb",1);
 
   LostLeptonPrediction->SetBranchStatus("isoTrackSysUp", 1);
   LostLeptonPrediction->SetBranchStatus("isoTrackSysDown", 1);
@@ -1055,7 +1119,8 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   LostLeptonPrediction->SetBranchAddress("Weight",&Weight);
   LostLeptonPrediction->SetBranchAddress("Bin",&Bin);
   LostLeptonPrediction->SetBranchAddress("BinQCD",&BinQCD);
-  
+  LostLeptonPrediction->SetBranchAddress("bTagProb",&bTagProb);
+
   LostLeptonPrediction->SetBranchAddress("MTW",&MTW);
   LostLeptonPrediction->SetBranchAddress("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum);
   LostLeptonPrediction->SetBranchAddress("selectedIDIsoMuons",&selectedIDIsoMuons,&b_selectedIDIsoMuons);
@@ -1157,6 +1222,40 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     if(MTW>100)continue;
     if(selectedIDIsoMuonsNum+selectedIDIsoElectronsNum!=1)continue;
 
+
+    for(int i = 0; i < 4; i++){
+        Bin_bTags.at(i)=SearchBins_->GetBinNumber(HT,MHT,NJets,i);
+    }
+
+    if(doBtagProbabilities){
+
+      //fill event 4 times weighting with the btag probability
+      for(int i = 0; i < 4; i++){
+        double scaleFactorWeightBtagProb;
+        if(NJets > 3){
+          scaleFactorWeightBtagProb = scaleFactorWeight * bTagProb->at(i);
+          scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
+        }else{
+          if(i < 2){
+            scaleFactorWeightBtagProb = scaleFactorWeight * bTagProb->at(i);
+            scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
+          }else{
+            scaleFactorWeightBtagProb = scaleFactorWeight * (bTagProb->at(i)+bTagProb->at(i+1));
+            scaledWeight = Weight * scaleFactorWeight * (bTagProb->at(i)+bTagProb->at(i+1));
+          }
+        }
+
+        totalPred_LL_MC_->Fill( Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        //    totalPred_LL_NoTk_MC_->Fill( Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb/2);
+        totalPred_HT_LL_MC_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        totalPred_MHT_LL_MC_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        totalPred_NJets_LL_MC_->Fill(NJets, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        totalPred_BTags_LL_MC_->Fill(i, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+
+      if(NJets < 4 && i==2) break;
+    }
+
+  }else{
     scaledWeight = Weight * scaleFactorWeight;
 
 
@@ -1166,6 +1265,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     totalPred_MHT_LL_MC_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
     totalPred_NJets_LL_MC_->Fill(NJets, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
     totalPred_BTags_LL_MC_->Fill(BTags, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+  }
 
 
     
@@ -2076,6 +2176,10 @@ if(doExtrapolation){
   ClosureTest_BTags->SetTitle("Expectation / Prediction");
   ClosureTest_BTags->Write();
 
+  TH1D *ClosureTest_PTL = (TH1D*) totalExp_PTL_LL_->Clone("ClosureTest_PTL");
+  ClosureTest_PTL->Divide(totalPred_PTL_LL_MC_);
+  ClosureTest_PTL->SetTitle("Expectation / Prediction");
+  ClosureTest_PTL->Write();
   TH1D *ClosureTest_PTW = (TH1D*) totalExp_PTW_LL_->Clone("ClosureTest_PTW");
   ClosureTest_PTW->Divide(totalPred_PTW_LL_MC_);
   ClosureTest_PTW->SetTitle("Expectation / Prediction");
@@ -2590,10 +2694,6 @@ if(doExtrapolation){
   SaveFraction(totalPropSysDown_LL_, totalPred_LL_, dAdd);
 
   LLoutPutFile->Close();
-
-	
-
-  SearchBins *SearchBins_ = new SearchBins(doQCDbinning);
 
   double LLexpErr = 0;
   double LLexp = totalExp_LL_->IntegralAndError(1, nSearchBinsTotal, LLexpErr);

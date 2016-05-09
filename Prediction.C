@@ -199,6 +199,10 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("isoPionTracks",&isoPionTracks);
   tPrediction_->Branch("IsolatedPionTracksVeto", "std::vector<TLorentzVector>", &IsolatedPionTracksVeto, 32000, 0);
   tPrediction_->Branch("HTJetsMask", &HTJetsMask);
+  if(!runOnData){
+    tPrediction_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
+    tPrediction_->Branch("bTagProb", &bTagProb);
+  }
   if(runOnSignalMC){
     tPrediction_->Branch("SusyLSPMass", &SusyLSPMass);
     tPrediction_->Branch("SusyMotherMass", &SusyMotherMass);
@@ -206,8 +210,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
     tPrediction_->Branch("w_pu", &w_pu);
     tPrediction_->Branch("xsec", &xsec);
     tPrediction_->Branch("nEvtsTotal", &nEvtsTotal);
-    tPrediction_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
-    tPrediction_->Branch("bTagProb", &bTagProb);
+
   }
 
   tPrediction_->Branch("isoTrackStatUp", &isoTrackStatUp);
@@ -325,32 +328,13 @@ Bool_t Prediction::Process(Long64_t entry)
     //    selectedIDIsoElectronsCDTT.push_back(GetCosDTT(MHT,MHT_Phi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi()));
   }
 
-  /*
-  bool passTrigger = false;
-  for (std::vector<string>::iterator it = TriggerNames->begin() ; it != TriggerNames->end(); ++it){
-    if(it->find("HLT_PFHT350_PFMET100_NoiseCleaned_v")!=std::string::npos){  // Run2015A,B
-      if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
-    }
-    if(it->find("HLT_PFHT350_PFMET100_JetIdCleaned_v")!=std::string::npos){  // Run2015C.D
-      if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
-    }
-    if(it->find("HLT_PFHT350_PFMET100_v")!=std::string::npos){  // Run2015C.D
-      if(TriggerPass->at(it - TriggerNames->begin())>0.5) passTrigger = true;
-    }
-  }
-  if(useTrigger && !passTrigger) return kTRUE;
-  */
   if(useTrigger) if(!TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
 
 
-  if(runOnSignalMC){
+  if(!runOnData){
     TString currentTree = TString(fChain->GetCurrentFile()->GetName());
     if(currentTree != treeName){
-      treeName = currentTree;   
-         
-      TH1F *nEventProc = (TH1F*)fChain->GetCurrentFile()->Get("nEventProc");
-      TH1F *nEventNeg = (TH1F*)fChain->GetCurrentFile()->Get("nEventNeg");
-      nEvtsTotal = nEventProc->GetBinContent(1) - 2*nEventNeg->GetBinContent(1);
+      treeName = currentTree;
 
       if(doISRcorr){
         // not recommended for Jamboree
@@ -366,21 +350,28 @@ Bool_t Prediction::Process(Long64_t entry)
         btagcorr = new BTagCorrector();
         btagcorr->SetEffs(fChain->GetCurrentFile());
         btagcorr->SetCalib(path_bTagCalib);
-        btagcorr->SetFastSim(true);
         btagcorr->SetCalibFastSim(path_bTagCalibFastSim);
+        if(runOnSignalMC) btagcorr->SetFastSim(true);
+        else btagcorr->SetFastSim(false);
       }
     }
 
-    xsec = 0;
-    for (std::vector<std::pair<double, double>>::iterator it = xsecs.begin() ; it != xsecs.end(); ++it){
-      if(std::abs(SusyMotherMass - it->first) < 0.1){
-        xsec = it->second;
-        break;
-      }
-    }
+    if(runOnSignalMC){
+      TH1F *nEventProc = (TH1F*)fChain->GetCurrentFile()->Get("nEventProc");
+      TH1F *nEventNeg = (TH1F*)fChain->GetCurrentFile()->Get("nEventNeg");
+      nEvtsTotal = nEventProc->GetBinContent(1) - 2*nEventNeg->GetBinContent(1);
 
-    Weight = xsec / nEvtsTotal;
-    if(Weight < 0) Weight *= -1;
+      xsec = 0;
+      for (std::vector<std::pair<double, double>>::iterator it = xsecs.begin() ; it != xsecs.end(); ++it){
+        if(std::abs(SusyMotherMass - it->first) < 0.1){
+          xsec = it->second;
+          break;
+        }
+      }
+
+      Weight = xsec / nEvtsTotal;
+      if(Weight < 0) Weight *= -1;
+    }   
 
     if(doISRcorr){
     // not recommended for Jamboree
