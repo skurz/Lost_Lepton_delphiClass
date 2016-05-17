@@ -15,6 +15,7 @@
 #include <vector>
 #include "LLTools.h"
 #include "THEff.h"
+#include <algorithm>
 
 void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder);
 UShort_t getMergedBinQCD(UShort_t BinQCD, Int_t NJets);
@@ -26,11 +27,9 @@ void SignalContamination()
 {
 
   // General Settings
-  TString InputPath_Prediction("Prediction_Scan_T5qqqqVV.root");
-  TString OutputPath_Prediction("LLContamination_T5qqqqVV.root");
+  TString InputPath_Prediction("Prediction_T2tt_175_0.root");
+  TString OutputPath_Prediction("LLContamination_T2tt_175_0.root");
 
-  // name of SUSY mother particle: T1/T5 "Gluino"; T2 "Stop" (capitalized!)
-  string motherName("Gluino"); //<-check------------------------
 
   // Scale all MC weights by this factor
   Double_t scaleFactorWeight = 2262; // in units of [pb] //<-check------------------------
@@ -72,7 +71,10 @@ void SignalContamination()
   std::vector<UShort_t> Bin_bTags(4, 0.);
   std::vector<double> *bTagProb=0;
 
-  std::vector<TH1D*> histVec;  
+  std::vector<TH1D*> histVec;
+  std::vector<TH1D*> histVec_eCS;
+  std::vector<TH1D*> histVec_muCS;
+  std::vector<TH1D*> histVec_avgWeight;
   std::vector<double> mothMass;  
   std::vector<double> lspMass;  
 
@@ -156,8 +158,17 @@ void SignalContamination()
 
     if(found < 0){
       char buffer [50];
-      sprintf(buffer, "m%s_%.0f_mLSP_%.0f", motherName.c_str(), SusyMotherMass, SusyLSPMass);
+      sprintf(buffer, "mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
       histVec.push_back(new TH1D(buffer, buffer, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
+      char buffer_mu [50];
+      sprintf(buffer_mu, "muCS_mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+      histVec_muCS.push_back(new TH1D(buffer_mu, buffer_mu, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
+      char buffer_e [50];
+      sprintf(buffer_e, "elecCS_mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+      histVec_eCS.push_back(new TH1D(buffer_e, buffer_e, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
+      char buffer_avgWeight [50];
+      sprintf(buffer_avgWeight, "avgWeight_mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+      histVec_avgWeight.push_back(new TH1D(buffer_avgWeight, buffer_avgWeight, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
       found = histVec.size()-1;
       histVec.at(found)->Sumw2();
       lspMass.push_back(SusyLSPMass);
@@ -166,6 +177,10 @@ void SignalContamination()
 
     //fill event 4 times weighting with the btag probability
     for(int i = 0; i < 4; i++){
+      if(selectedIDIsoMuonsNum > 0) histVec_muCS.at(found)->Fill(Bin_bTags.at(i), scaledWeight*bTagProb->at(i));
+      if(selectedIDIsoElectronsNum > 0) histVec_eCS.at(found)->Fill(Bin_bTags.at(i), scaledWeight*bTagProb->at(i));
+      histVec_avgWeight.at(found)->Fill(Bin_bTags.at(i), scaledWeight*bTagProb->at(i));
+      
       histVec.at(found)->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2*bTagProb->at(i));
     }
   }
@@ -183,8 +198,106 @@ void SignalContamination()
     histVec.at(i)->Write();
   }
 
+  LLoutPutFile->cd();
+  LLoutPutFile->mkdir("Electron_CS");
+  TDirectory *dElecMC = (TDirectory*)LLoutPutFile->Get("Electron_CS");
+  dElecMC->cd();
+
+  for(unsigned int i = 0; i < histVec_eCS.size(); i++){
+    SetBinLabel(histVec_eCS.at(i));
+    histVec_eCS.at(i)->Write();
+  }
+
+  LLoutPutFile->cd();
+  LLoutPutFile->mkdir("Muon_CS");
+  TDirectory *dMuMC = (TDirectory*)LLoutPutFile->Get("Muon_CS");
+  dMuMC->cd();
+
+  for(unsigned int i = 0; i < histVec_muCS.size(); i++){
+    SetBinLabel(histVec_muCS.at(i));
+    histVec_muCS.at(i)->Write();
+  }
+
+  LLoutPutFile->cd();
+  LLoutPutFile->mkdir("AvgWeight");
+  TDirectory *dAvgWeight = (TDirectory*)LLoutPutFile->Get("AvgWeight");
+  dAvgWeight->cd();
+
+  for(unsigned int i = 0; i < histVec_muCS.size(); i++){
+    SetBinLabel(histVec_avgWeight.at(i));
+    histVec_avgWeight.at(i)->Divide(histVec.at(i), histVec_avgWeight.at(i));
+    histVec_avgWeight.at(i)->Write();
+  }
+/*
+  for(unsigned int i_hist = 0; i_hist < histVec_muCS.size(); i_hist++){
+	std::cout<<"mMother"<<mothMass.at(i_hist)<<"_mLSP"<<lspMass.at(i_hist)<<": "<<histVec_muCS.at(i_hist)->Integral()<<std::endl;
+  }
+*/
   std::cout<<"Saved Output to "<<OutputPath_Prediction<<std::endl;
-}
+
+  std::cout<<"Signal Contamination Study: "<<OutputPath_Prediction<<std::endl;
+/*
+  TFile *predFile = TFile::Open("LLPrediction_Feb01.root", "READ");
+  TH1F* h_pred = (TH1F*) predFile->Get("Prediction_MC/totalPred_LL_MC")->Clone();
+
+  std::cout.setf(ios::fixed, ios::floatfield);
+  std::cout.precision(4);
+
+  for(unsigned int i_hist = 0; i_hist < histVec.size(); i_hist++){
+//    if((abs(0-lspMass.at(i_hist)) < 0.1 && abs(1600-mothMass.at(i_hist)) < 0.1)
+//      || (abs(300-lspMass.at(i_hist)) < 0.1 && abs(1600-mothMass.at(i_hist)) < 0.1)
+//      || (abs(600-lspMass.at(i_hist)) < 0.1 && abs(1500-mothMass.at(i_hist)) < 0.1)
+//      || (abs(750-lspMass.at(i_hist)) < 0.1 && abs(1000-mothMass.at(i_hist)) < 0.1)){
+//
+    if((abs(0-lspMass.at(i_hist)) < 0.1 && abs(1500-mothMass.at(i_hist)) < 0.1)
+      || (abs(300-lspMass.at(i_hist)) < 0.1 && abs(1500-mothMass.at(i_hist)) < 0.1)
+      || (abs(600-lspMass.at(i_hist)) < 0.1 && abs(1400-mothMass.at(i_hist)) < 0.1)
+      || (abs(800-lspMass.at(i_hist)) < 0.1 && abs(1000-mothMass.at(i_hist)) < 0.1)){
+
+      std::cout << histVec.at(i_hist)->GetName() << ": " << std::endl;
+      double max = 0., maxBg = 0., maxSig =0.;
+      double bgSum = 0., sigSum =0.;
+      int max_bin = 0;
+      std::vector<double> relVals;
+
+      for(int i_bin = 1; i_bin <= h_pred->GetNbinsX(); i_bin++){
+        //std::cout << "     Bin " << i_bin << "(" << histVec.at(i_hist)->GetXaxis()->GetBinLabel(i_bin) << "): Increase: " << histVec.at(i_hist)->GetBinContent(i_bin) / (h_pred->GetBinContent(i_bin)+histVec.at(i_hist)->GetBinContent(i_bin)) << " (tt+W+t: " << h_pred->GetBinContent(i_bin) << "evts; Signal: "<< histVec.at(i_hist)->GetBinContent(i_bin) << "evts)" << std::endl;
+
+        bgSum += h_pred->GetBinContent(i_bin);
+        sigSum += histVec.at(i_hist)->GetBinContent(i_bin);
+
+        relVals.push_back(histVec.at(i_hist)->GetBinContent(i_bin)/(h_pred->GetBinContent(i_bin)+histVec.at(i_hist)->GetBinContent(i_bin)));
+
+        if(h_pred->GetBinContent(i_bin) < 0.00001){
+          std::cout<<"No events in prediction: bin "<<i_bin<<std::endl;
+          continue;
+        }
+
+        double signalCont = histVec.at(i_hist)->GetBinContent(i_bin) / (h_pred->GetBinContent(i_bin)+histVec.at(i_hist)->GetBinContent(i_bin));
+        if(max < signalCont){
+          maxBg = h_pred->GetBinContent(i_bin);
+          maxSig = histVec.at(i_hist)->GetBinContent(i_bin);
+          max = signalCont;
+          max_bin = i_bin;
+        }
+      }
+
+      auto biggest = std::max_element(std::begin(relVals), std::end(relVals));
+      double bgHighSum = 0., sigHighSum =0.;
+      for(int i = 0; i<5; i++){
+        //std::cout << *biggest << std::endl;
+        bgHighSum += h_pred->GetBinContent(std::distance(std::begin(relVals), biggest)+1);
+        sigHighSum += histVec.at(i_hist)->GetBinContent(std::distance(std::begin(relVals), biggest)+1);
+        *biggest = 0.;
+        biggest = std::max_element(std::begin(relVals), std::end(relVals));
+      }
+      
+      std::cout << "Avg. Signal Contamination baseline sig/(sig+bg): " << sigSum << "/(" << sigSum << "+" << bgSum << ")="<< sigSum/(bgSum+sigSum) << std::endl;
+      std::cout << "Avg. Signal Contamination from 5 highest bins sig/(sig+bg): " << sigHighSum << "/(" << sigHighSum << "+" << bgHighSum << ")="<< sigHighSum/(sigHighSum+bgHighSum) << "\n" << std::endl;
+      //std::cout << "Maximal increase from Signal Contamination in bin " << max_bin << "(" << histVec.at(i_hist)->GetXaxis()->GetBinLabel(max_bin) << "): " << max << std::endl;
+    }
+  }
+*/}
 
 
 void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // prediction durch expectation

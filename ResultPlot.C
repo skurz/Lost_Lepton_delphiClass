@@ -62,7 +62,6 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   bool approxStatUncertainty = false;
 
 
-
   //Merge QCDbins (bTags) = 55 bins // only works if doQCDbinning = true;
   //BUT: Output table does not work! However, histograms are filled properly
   bool mergeQCDbins = false; 
@@ -84,7 +83,11 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     nSearchBinsTotal = 220;
     if(mergeQCDbins) nSearchBinsTotal = 55;
   }
-*/  UShort_t         SearchBin=0;
+*/ 
+
+  TH1::SetDefaultSumw2();
+
+  UShort_t         SearchBin=0;
 
 
   //Declaration of leaves types for both trees (Expectation/Prediction)
@@ -485,79 +488,6 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TProfile* avgWeight_LL_ = new TProfile("avgWeight_LL","avgWeight_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* EXTRAP_weight_SF_LL_ = new TH1D("EXTRAP_weight_SF_LL","EXTRAP_weight_SF_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  totalPred_LL_->Sumw2();
-  totalPred_EXTRAP_LL_->Sumw2();
-  totalPredIsoTrackSysUp_LL_->Sumw2();
-  totalPredIsoTrackSysDown_LL_->Sumw2();
-  totalPredMuIsoTrackSysUp_LL_->Sumw2();
-  totalPredMuIsoTrackSysDown_LL_->Sumw2();
-  totalPredElecIsoTrackSysUp_LL_->Sumw2();
-  totalPredElecIsoTrackSysDown_LL_->Sumw2();
-  totalPredPionIsoTrackSysUp_LL_->Sumw2();
-  totalPredPionIsoTrackSysDown_LL_->Sumw2();
-  totalPredMTWSysUp_LL_->Sumw2();
-  totalPredMTWSysDown_LL_->Sumw2();
-  totalPredPuritySysUp_LL_->Sumw2();
-  totalPredPuritySysDown_LL_->Sumw2();
-  totalPredSingleLepPuritySysUp_LL_->Sumw2();
-  totalPredSingleLepPuritySysDown_LL_->Sumw2();
-  totalPredDiLepFoundSysUp_LL_->Sumw2();
-  totalPredDiLepFoundSysDown_LL_->Sumw2();
-  totalPredMuIsoSysUp_LL_->Sumw2();
-  totalPredMuIsoSysDown_LL_->Sumw2();
-  totalPredMuRecoSysUp_LL_->Sumw2();
-  totalPredMuRecoSysDown_LL_->Sumw2();
-  totalPredMuAccSysUp_LL_->Sumw2();
-  totalPredMuAccSysDown_LL_->Sumw2();
-  totalPredMuAccQsquareSysUp_LL_->Sumw2();
-  totalPredMuAccQsquareSysDown_LL_->Sumw2();
-  totalPredElecIsoSysUp_LL_->Sumw2();
-  totalPredElecIsoSysDown_LL_->Sumw2();
-  totalPredElecRecoSysUp_LL_->Sumw2();
-  totalPredElecRecoSysDown_LL_->Sumw2();
-  totalPredElecAccSysUp_LL_->Sumw2();
-  totalPredElecAccSysDown_LL_->Sumw2();
-  totalPredElecAccQsquareSysUp_LL_->Sumw2();
-  totalPredElecAccQsquareSysDown_LL_->Sumw2();
-  totalPredNonClosureUp_LL_->Sumw2();
-  totalPredNonClosureDown_LL_->Sumw2();
-
-  totalPredIsoTrackStatUp_LL_->Sumw2();
-  totalPredIsoTrackStatDown_LL_->Sumw2();
-  totalPredMuIsoTrackStatUp_LL_->Sumw2();
-  totalPredMuIsoTrackStatDown_LL_->Sumw2();
-  totalPredElecIsoTrackStatUp_LL_->Sumw2();
-  totalPredElecIsoTrackStatDown_LL_->Sumw2();
-  totalPredPionIsoTrackStatUp_LL_->Sumw2();
-  totalPredPionIsoTrackStatDown_LL_->Sumw2();
-  totalPredMTWStatUp_LL_->Sumw2();
-  totalPredMTWStatDown_LL_->Sumw2();
-  totalPredPurityStatUp_LL_->Sumw2();
-  totalPredPurityStatDown_LL_->Sumw2();
-  totalPredSingleLepPurityStatUp_LL_->Sumw2();
-  totalPredSingleLepPurityStatDown_LL_->Sumw2();
-  totalPredDiLepFoundStatUp_LL_->Sumw2();
-  totalPredDiLepFoundStatDown_LL_->Sumw2();
-  totalPredMuIsoStatUp_LL_->Sumw2();
-  totalPredMuIsoStatDown_LL_->Sumw2();
-  totalPredMuRecoStatUp_LL_->Sumw2();
-  totalPredMuRecoStatDown_LL_->Sumw2();
-  totalPredMuAccStatUp_LL_->Sumw2();
-  totalPredMuAccStatDown_LL_->Sumw2();
-  totalPredElecIsoStatUp_LL_->Sumw2();
-  totalPredElecIsoStatDown_LL_->Sumw2();
-  totalPredElecRecoStatUp_LL_->Sumw2();
-  totalPredElecRecoStatDown_LL_->Sumw2();
-  totalPredElecAccStatUp_LL_->Sumw2();
-  totalPredElecAccStatDown_LL_->Sumw2();
-
-  totalPropSysUp_LL_->Sumw2();
-  totalPropSysDown_LL_->Sumw2();
-
-  totalCS_LL_->Sumw2();
-
-  avgWeight_LL_->Sumw2();
-
 
   // Define histrograms to do totalPrediction per SearchBin (MC)
   TH1D* totalPred_LL_MC_ = new TH1D("totalPred_LL_MC","totalPred_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
@@ -656,83 +586,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TProfile* avgWeight_MHT_HT500_800_LL_MC_ = new TProfile("avgWeight_HT500_800_MHT_LL_MC","avgWeight_HT500_800_MHT_LL_MC", 20, 200., 1200.);
   TProfile* avgWeight_MHT_HT800_1200_LL_MC_ = new TProfile("avgWeight_HT800_1200_MHT_LL_MC","avgWeight_HT800_1200_MHT_LL_MC", 20, 200., 1200.);
   TProfile* avgWeight_MHT_HT1200_Inf_LL_MC_ = new TProfile("avgWeight_HT1200_Inf_MHT_LL_MC","avgWeight_HT1200_Inf_MHT_LL_MC", 20, 200., 1200.);
-  
-
-
-  totalPred_LL_MC_->Sumw2();
-  totalPred_EXTRAP_LL_MC_->Sumw2();
-  
-  totalPredIsoTrackSysUp_LL_MC_->Sumw2();
-  totalPredIsoTrackSysDown_LL_MC_->Sumw2();
-  totalPredMuIsoTrackSysUp_LL_MC_->Sumw2();
-  totalPredMuIsoTrackSysDown_LL_MC_->Sumw2();
-  totalPredElecIsoTrackSysUp_LL_MC_->Sumw2();
-  totalPredElecIsoTrackSysDown_LL_MC_->Sumw2();
-  totalPredPionIsoTrackSysUp_LL_MC_->Sumw2();
-  totalPredPionIsoTrackSysDown_LL_MC_->Sumw2();
-  totalPredMTWSysUp_LL_MC_->Sumw2();
-  totalPredMTWSysDown_LL_MC_->Sumw2();
-  totalPredPuritySysUp_LL_MC_->Sumw2();
-  totalPredPuritySysDown_LL_MC_->Sumw2();
-  totalPredSingleLepPuritySysUp_LL_MC_->Sumw2();
-  totalPredSingleLepPuritySysDown_LL_MC_->Sumw2();
-  totalPredDiLepFoundSysUp_LL_MC_->Sumw2();
-  totalPredDiLepFoundSysDown_LL_MC_->Sumw2();
-  totalPredMuIsoSysUp_LL_MC_->Sumw2();
-  totalPredMuIsoSysDown_LL_MC_->Sumw2();
-  totalPredMuRecoSysUp_LL_MC_->Sumw2();
-  totalPredMuRecoSysDown_LL_MC_->Sumw2();
-  totalPredMuAccSysUp_LL_MC_->Sumw2();
-  totalPredMuAccSysDown_LL_MC_->Sumw2();
-  totalPredMuAccQsquareSysUp_LL_MC_->Sumw2();
-  totalPredMuAccQsquareSysDown_LL_MC_->Sumw2();
-  totalPredElecIsoSysUp_LL_MC_->Sumw2();
-  totalPredElecIsoSysDown_LL_MC_->Sumw2();
-  totalPredElecRecoSysUp_LL_MC_->Sumw2();
-  totalPredElecRecoSysDown_LL_MC_->Sumw2();
-  totalPredElecAccSysUp_LL_MC_->Sumw2();
-  totalPredElecAccSysDown_LL_MC_->Sumw2();
-  totalPredElecAccQsquareSysUp_LL_MC_->Sumw2();
-  totalPredElecAccQsquareSysDown_LL_MC_->Sumw2();
-  totalPredNonClosureUp_LL_MC_->Sumw2();
-  totalPredNonClosureDown_LL_MC_->Sumw2();
-
-  totalPredIsoTrackStatUp_LL_MC_->Sumw2();
-  totalPredIsoTrackStatDown_LL_MC_->Sumw2();
-  totalPredMuIsoTrackStatUp_LL_MC_->Sumw2();
-  totalPredMuIsoTrackStatDown_LL_MC_->Sumw2();
-  totalPredElecIsoTrackStatUp_LL_MC_->Sumw2();
-  totalPredElecIsoTrackStatDown_LL_MC_->Sumw2();
-  totalPredPionIsoTrackStatUp_LL_MC_->Sumw2();
-  totalPredPionIsoTrackStatDown_LL_MC_->Sumw2();
-  totalPredMTWStatUp_LL_MC_->Sumw2();
-  totalPredMTWStatDown_LL_MC_->Sumw2();
-  totalPredPurityStatUp_LL_MC_->Sumw2();
-  totalPredPurityStatDown_LL_MC_->Sumw2();
-  totalPredSingleLepPurityStatUp_LL_MC_->Sumw2();
-  totalPredSingleLepPurityStatDown_LL_MC_->Sumw2();
-  totalPredDiLepFoundStatUp_LL_MC_->Sumw2();
-  totalPredDiLepFoundStatDown_LL_MC_->Sumw2();
-  totalPredMuIsoStatUp_LL_MC_->Sumw2();
-  totalPredMuIsoStatDown_LL_MC_->Sumw2();
-  totalPredMuRecoStatUp_LL_MC_->Sumw2();
-  totalPredMuRecoStatDown_LL_MC_->Sumw2();
-  totalPredMuAccStatUp_LL_MC_->Sumw2();
-  totalPredMuAccStatDown_LL_MC_->Sumw2();
-  totalPredElecIsoStatUp_LL_MC_->Sumw2();
-  totalPredElecIsoStatDown_LL_MC_->Sumw2();
-  totalPredElecRecoStatUp_LL_MC_->Sumw2();
-  totalPredElecRecoStatDown_LL_MC_->Sumw2();
-  totalPredElecAccStatUp_LL_MC_->Sumw2();
-  totalPredElecAccStatDown_LL_MC_->Sumw2();
-
-  totalPropSysUp_LL_MC_->Sumw2();
-  totalPropSysDown_LL_MC_->Sumw2();
-
-  totalCS_LL_MC_->Sumw2();
-
-  avgWeight_LL_MC_->Sumw2();
-
+ 
 
   // Histograms for Readiness Talk
   TH1D* hPredAllBins = new TH1D("hPredAllBins", ";Bin;Events / Bin", nSearchBinsTotal, 0.5, double(nSearchBinsTotal)+0.5);
@@ -755,24 +609,6 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TH1D* hExpNbBins = new TH1D("hExpNbBins", ";N_{b-jets} (p_{T} > 30 GeV);Events / Bin", 4, -0.5, 3.5);
   TProfile* hAvgWeightNbBins = new TProfile("hAvgWeightNbBins", ";N_{b-jets} (p_{T} > 30 GeV);avgWeight / Bin", 4, -0.5, 3.5);
 
-  hPredAllBins->Sumw2();
-  hExpAllBins->Sumw2();
-  hAvgWeightAllBins->Sumw2();
-  hPredHTMHT0b->Sumw2();
-  hPredHTMHTwb->Sumw2();
-  hExpHTMHT0b->Sumw2();
-  hExpHTMHTwb->Sumw2();
-  hAvgWeightHTMHT0b->Sumw2();
-  hAvgWeightHTMHTwb->Sumw2();
-  hPredNJetBins->Sumw2();
-  hExpNJetBins->Sumw2();
-  hAvgWeightNJetBins->Sumw2();
-  hPredNbBins->Sumw2();
-  hExpNbBins->Sumw2();
-  hAvgWeightNbBins->Sumw2();
-
-
-	
   //Expectation Tree
   gROOT->Reset();
   TFile *fExp = (TFile*)gROOT->GetListOfFiles()->FindObject(InputPath_Expectation.c_str());
@@ -1440,8 +1276,39 @@ if(doExtrapolation){
     //totalPropSysUp_LL_MC_->Fill(SearchBin, totalPropSysUp*scaleFactorWeight/2);
     //totalPropSysDown_LL_MC_->Fill(SearchBin, totalPropSysDown*scaleFactorWeight/2);
 
-    totalCS_LL_MC_->Fill(SearchBin, scaledWeight);
-    nEvtsCS_LL_MC_->Fill(SearchBin);
+    for(int i = 0; i < 4; i++){
+        Bin_bTags.at(i)=SearchBins_->GetBinNumber(HT,MHT,NJets,i);
+    }
+
+    if(doBtagProbabilities){
+
+      //fill event 4 times weighting with the btag probability
+      for(int i = 0; i < 4; i++){
+        if(NJets > 3){
+          scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
+        }else{
+          if(i < 2){
+            scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
+          }else{
+            scaledWeight = Weight * scaleFactorWeight * (bTagProb->at(i)+bTagProb->at(i+1));
+          }
+        }
+
+        totalCS_LL_MC_->Fill(Bin_bTags.at(i), scaledWeight);
+        nEvtsCS_LL_MC_->Fill(Bin_bTags.at(i));
+
+        if(NJets < 4 && i==2) break;
+      }
+    }else{
+      scaledWeight = Weight * scaleFactorWeight;
+
+      totalCS_LL_MC_->Fill(SearchBin, scaledWeight);
+      nEvtsCS_LL_MC_->Fill(SearchBin);
+    }
+
+    
+
+    
 
 if(doExtrapolation){
     // fill 72-bin histogram for extrapolation method
@@ -2615,6 +2482,11 @@ if(doExtrapolation){
   avgWeight_MHT_HT500_800_LL_MC_->Write();
   avgWeight_MHT_HT800_1200_LL_MC_->Write();
   avgWeight_MHT_HT1200_Inf_LL_MC_->Write();
+
+  TH1D* PredOverCS_LL_MC = (TH1D*) totalPred_LL_MC_->Clone("PredOverCS_LL_MC");
+  PredOverCS_LL_MC->Divide(totalCS_LL_MC_);
+  PredOverCS_LL_MC->SetTitle("Prediction / CS (=0L/1L)");
+  PredOverCS_LL_MC->Write();
 
 
   if(doMergedHistograms){

@@ -68,6 +68,7 @@ public:
 		TotalTH1D_->SetTitle(title_);
 	}
 	void Fill(Double_t x, Double_t Weight, bool passOrFail);
+	void FillFrac(Double_t x, Double_t Weight, bool passOrFail);
 	void SaveEff(TDirectory* MainDirectory){ SaveEff(title_, MainDirectory); }
 	void SaveEff(const char* title, TDirectory* MainDirectory, bool xlog=false, bool ylog=false);
 	void OpenEff(const char* name, TDirectory* MainDirectory);
@@ -88,6 +89,15 @@ void TH1Eff::Fill(Double_t x, Double_t Weight, bool passOrFail)
 	if(passOrFail){
 		PassTH1D_->Fill(x, Weight);
 		TotalTH1D_->Fill(x, Weight);
+	}else{
+		TotalTH1D_->Fill(x, Weight);
+	}
+}
+
+void TH1Eff::FillFrac(Double_t x, Double_t Weight, bool passOrFail)
+{
+	if(passOrFail){
+		PassTH1D_->Fill(x, Weight);
 	}else{
 		TotalTH1D_->Fill(x, Weight);
 	}

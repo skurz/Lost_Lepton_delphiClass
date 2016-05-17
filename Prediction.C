@@ -89,6 +89,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   ExpectationReductionIsoTrackNJetsEff_ = new TH1Eff("ExpectationReductionIsoTrackNJetsEff", EffInputFolder);
   ExpectationReductionIsoTrackBTagsNJetsEff_= new TH2Eff("IsoTrackReductionBTagNJets", EffInputFolder);
   ExpectationReductionIsoTrackHTNJetsEff_ = new TH2Eff("IsoTrackReductionHTNJets", EffInputFolder);
+  ExpectationReductionIsoTrackHTMHT_NJetsVeryLowEff_ = new TH2Eff("IsoTrackReductionHTMHT_NJetsVeryLow", EffInputFolder);
   ExpectationReductionIsoTrackHTMHT_NJetsLowEff_ = new TH2Eff("IsoTrackReductionHTMHT_NJetsLow", EffInputFolder);
   ExpectationReductionIsoTrackHTMHT_NJetsHighEff_ = new TH2Eff("IsoTrackReductionHTMHT_NJetsHigh", EffInputFolder);
   ExpectationReductionIsoTrackMHTNJetsEff_ = new TH2Eff("IsoTrackReductionMHTNJets", EffInputFolder);
@@ -96,6 +97,9 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   ExpectationReductionElecIsoTrackBTagsNJetsEff_= new TH2Eff("ElecIsoTrackReductionBTagNJets", EffInputFolder);
   ExpectationReductionPionIsoTrackBTagsNJetsEff_= new TH2Eff("PionIsoTrackReductionBTagNJets", EffInputFolder);
 
+  ExpectationReductionMuIsoTrackHTMHT_NJetsVeryLowEff_ = new TH2Eff("MuIsoTrackReductionHTMHT_NJetsVeryLow", EffInputFolder);
+  ExpectationReductionElecIsoTrackHTMHT_NJetsVeryLowEff_ = new TH2Eff("ElecIsoTrackReductionHTMHT_NJetsVeryLow", EffInputFolder);
+  ExpectationReductionPionIsoTrackHTMHT_NJetsVeryLowEff_ = new TH2Eff("PionIsoTrackReductionHTMHT_NJetsVeryLow", EffInputFolder);
   ExpectationReductionMuIsoTrackHTMHT_NJetsLowEff_ = new TH2Eff("MuIsoTrackReductionHTMHT_NJetsLow", EffInputFolder);
   ExpectationReductionElecIsoTrackHTMHT_NJetsLowEff_ = new TH2Eff("ElecIsoTrackReductionHTMHT_NJetsLow", EffInputFolder);
   ExpectationReductionPionIsoTrackHTMHT_NJetsLowEff_ = new TH2Eff("PionIsoTrackReductionHTMHT_NJetsLow", EffInputFolder);
@@ -412,17 +416,21 @@ Bool_t Prediction::Process(Long64_t entry)
   //expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackHTNJetsEff_->GetEff(HT, NJets, useAsymmErrors);
   //expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackMHTNJetsEff_->GetEff(MHT, NJets, useAsymmErrors);
   //expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
-  if(NJets < 6.5) expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackHTMHT_NJetsLowEff_->GetEff(HT, MHT, useAsymmErrors);
+  if(NJets < 3.5) expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackHTMHT_NJetsVeryLowEff_->GetEff(HT, MHT, useAsymmErrors);
+  else if(NJets < 6.5) expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackHTMHT_NJetsLowEff_->GetEff(HT, MHT, useAsymmErrors);
   else expectationReductionIsoTrackEffVec_= ExpectationReductionIsoTrackHTMHT_NJetsHighEff_->GetEff(HT, MHT, useAsymmErrors);
 
   //expectationReductionMuIsoTrackEffVec_ = ExpectationReductionMuIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
   //expectationReductionElecIsoTrackEffVec_ = ExpectationReductionElecIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
   //expectationReductionPionIsoTrackEffVec_ = ExpectationReductionPionIsoTrackBTagsNJetsEff_->GetEff(BTags,NJets, useAsymmErrors);
-  if(NJets < 6.5) expectationReductionMuIsoTrackEffVec_ = ExpectationReductionMuIsoTrackHTMHT_NJetsLowEff_->GetEff(HT, MHT, useAsymmErrors);
+  if(NJets < 3.5) expectationReductionMuIsoTrackEffVec_ = ExpectationReductionMuIsoTrackHTMHT_NJetsVeryLowEff_->GetEff(HT, MHT, useAsymmErrors);
+  else if(NJets < 6.5) expectationReductionMuIsoTrackEffVec_ = ExpectationReductionMuIsoTrackHTMHT_NJetsLowEff_->GetEff(HT, MHT, useAsymmErrors);
   else expectationReductionMuIsoTrackEffVec_ = ExpectationReductionMuIsoTrackHTMHT_NJetsHighEff_->GetEff(HT, MHT, useAsymmErrors);
-  if(NJets < 6.5) expectationReductionElecIsoTrackEffVec_ = ExpectationReductionElecIsoTrackHTMHT_NJetsLowEff_->GetEff(HT, MHT, useAsymmErrors);
+  if(NJets < 3.5) expectationReductionElecIsoTrackEffVec_ = ExpectationReductionElecIsoTrackHTMHT_NJetsVeryLowEff_->GetEff(HT, MHT, useAsymmErrors);
+  else if(NJets < 6.5) expectationReductionElecIsoTrackEffVec_ = ExpectationReductionElecIsoTrackHTMHT_NJetsLowEff_->GetEff(HT, MHT, useAsymmErrors);
   else expectationReductionElecIsoTrackEffVec_ = ExpectationReductionElecIsoTrackHTMHT_NJetsHighEff_->GetEff(HT, MHT, useAsymmErrors);
-  if(NJets < 6.5) expectationReductionPionIsoTrackEffVec_ = ExpectationReductionPionIsoTrackHTMHT_NJetsLowEff_->GetEff(HT, MHT, useAsymmErrors);
+  if(NJets < 3.5) expectationReductionPionIsoTrackEffVec_ = ExpectationReductionPionIsoTrackHTMHT_NJetsVeryLowEff_->GetEff(HT, MHT, useAsymmErrors);
+  else if(NJets < 6.5) expectationReductionPionIsoTrackEffVec_ = ExpectationReductionPionIsoTrackHTMHT_NJetsLowEff_->GetEff(HT, MHT, useAsymmErrors);
   else expectationReductionPionIsoTrackEffVec_ = ExpectationReductionPionIsoTrackHTMHT_NJetsHighEff_->GetEff(HT, MHT, useAsymmErrors);
 
   //for compatibility

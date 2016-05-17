@@ -456,12 +456,14 @@ class Prediction : public TSelector {
   TH2Eff *ExpectationReductionIsoTrackBTagsNJetsEff_;
   TH2Eff *ExpectationReductionIsoTrackHTNJetsEff_;
   TH2Eff *ExpectationReductionIsoTrackMHTNJetsEff_;
+  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJetsVeryLowEff_;
   TH2Eff *ExpectationReductionIsoTrackHTMHT_NJetsLowEff_;
   TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets4Eff_;
   TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets5Eff_;
   TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets6Eff_;
   TH2Eff *ExpectationReductionIsoTrackHTMHT_NJetsHighEff_;
   TH2Eff *ExpectationReductionMuIsoTrackBTagsNJetsEff_, *ExpectationReductionElecIsoTrackBTagsNJetsEff_, *ExpectationReductionPionIsoTrackBTagsNJetsEff_;
+  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJetsVeryLowEff_, *ExpectationReductionElecIsoTrackHTMHT_NJetsVeryLowEff_, *ExpectationReductionPionIsoTrackHTMHT_NJetsVeryLowEff_;
   TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJetsLowEff_, *ExpectationReductionElecIsoTrackHTMHT_NJetsLowEff_, *ExpectationReductionPionIsoTrackHTMHT_NJetsLowEff_;
   TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJetsHighEff_, *ExpectationReductionElecIsoTrackHTMHT_NJetsHighEff_, *ExpectationReductionPionIsoTrackHTMHT_NJetsHighEff_;
 

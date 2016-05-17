@@ -213,6 +213,11 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuDiLepContributionNJets_ = new TH1Eff("MuDiLepContributionNJets1D","MuDiLepContributionNJets1D",oneDNJets_-1,OneDNJets_);
   MuDiLepContributionHT_ = new TH1Eff("MuDiLepContributionHT1D","MuDiLepContributionHT1D",oneDHT_-1,OneDHT_);
   MuDiLepContributionMHT_ = new TH1Eff("MuDiLepContributionMHT1D","MuDiLepContributionMHT1D",oneDMHT_-1,OneDMHT_);
+
+  MuDiLepFractionBTag_ = new TH1Eff("MuDiLepFractionBTag1D","MuDiLepFractionBTag1D",oneDBJets_-1,OneDBJets_);
+  MuDiLepFractionNJets_ = new TH1Eff("MuDiLepFractionNJets1D","MuDiLepFractionNJets1D",oneDNJets_-1,OneDNJets_);
+  MuDiLepFractionHT_ = new TH1Eff("MuDiLepFractionHT1D","MuDiLepFractionHT1D",oneDHT_-1,OneDHT_);
+  MuDiLepFractionMHT_ = new TH1Eff("MuDiLepFractionMHT1D","MuDiLepFractionMHT1D",oneDMHT_-1,OneDMHT_);
   
   //electron
   //1D
@@ -220,6 +225,11 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecDiLepContributionNJets_ = new TH1Eff("ElecDiLepContributionNJets1D","ElecDiLepContributionNJets1D",oneDNJets_-1,OneDNJets_);
   ElecDiLepContributionHT_ = new TH1Eff("ElecDiLepContributionHT1D","ElecDiLepContributionHT1D",oneDHT_-1,OneDHT_);
   ElecDiLepContributionMHT_ = new TH1Eff("ElecDiLepContributionMHT1D","ElecDiLepContributionMHT1D",oneDMHT_-1,OneDMHT_);
+
+  ElecDiLepFractionBTag_ = new TH1Eff("ElecDiLepFractionBTag1D","ElecDiLepFractionBTag1D",oneDBJets_-1,OneDBJets_);
+  ElecDiLepFractionNJets_ = new TH1Eff("ElecDiLepFractionNJets1D","ElecDiLepFractionNJets1D",oneDNJets_-1,OneDNJets_);
+  ElecDiLepFractionHT_ = new TH1Eff("ElecDiLepFractionHT1D","ElecDiLepFractionHT1D",oneDHT_-1,OneDHT_);
+  ElecDiLepFractionMHT_ = new TH1Eff("ElecDiLepFractionMHT1D","ElecDiLepFractionMHT1D",oneDMHT_-1,OneDMHT_);
   
   //muon
   //1D
@@ -227,6 +237,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuDiLepContributionMTWNJets_ = new TH1Eff("MuDiLepContributionMTWNJets1D","MuDiLepContributionMTWNJets1D",oneDNJets_-1,OneDNJets_);
   MuDiLepContributionMTWHT_ = new TH1Eff("MuDiLepContributionMTWHT1D","MuDiLepContributionMTWHT1D",oneDHT_-1,OneDHT_);
   MuDiLepContributionMTWMHT_ = new TH1Eff("MuDiLepContributionMTWMHT1D","MuDiLepContributionMTWMHT1D",oneDMHT_-1,OneDMHT_);
+
   
   //electron
   //1D
@@ -289,7 +300,10 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ExpectationReductionIsoTrackActivityEff_ = new TH1Eff("ExpectationReductionIsoTrackActivityEff","ExpectationReductionIsoTrackActivityEff",isotrackreductionActivity_-1,isoTrackReductionActivity_);
   //2D
   IsoTrackReductionHTNJets_ = new TH2Eff("IsoTrackReductionHTNJets","IsoTrackReductionHTNJets",isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionNJets_-1, isoTrackReductionNJets_);
+  IsoTrackReductionHTMHT_NJetsVeryLow_ = new TH2Eff("IsoTrackReductionHTMHT_NJetsVeryLow","IsoTrackReductionHTMHT_NJetsVeryLow", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
   IsoTrackReductionHTMHT_NJetsLow_ = new TH2Eff("IsoTrackReductionHTMHT_NJetsLow","IsoTrackReductionHTMHT_NJetsLow", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
+  IsoTrackReductionHTMHT_NJets2_ = new TH2Eff("IsoTrackReductionHTMHT_NJets2","IsoTrackReductionHTMHT_NJets2", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
+  IsoTrackReductionHTMHT_NJets3_ = new TH2Eff("IsoTrackReductionHTMHT_NJets3","IsoTrackReductionHTMHT_NJets3", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
   IsoTrackReductionHTMHT_NJets4_ = new TH2Eff("IsoTrackReductionHTMHT_NJets4","IsoTrackReductionHTMHT_NJets4", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
   IsoTrackReductionHTMHT_NJets5_ = new TH2Eff("IsoTrackReductionHTMHT_NJets5","IsoTrackReductionHTMHT_NJets5", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
   IsoTrackReductionHTMHT_NJets6_ = new TH2Eff("IsoTrackReductionHTMHT_NJets6","IsoTrackReductionHTMHT_NJets6", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
@@ -311,6 +325,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuIsoTrackReductionMHTNJets_ = new TH2Eff("MuIsoTrackReductionMHTNJets","MuIsoTrackReductionMHTNJets",isotrackreductionMHT_-1,isoTrackReductionMHT_, isotrackreductionNJets_-1, isoTrackReductionNJets_);
   MuIsoTrackReductionBTagNJets_ = new TH2Eff("MuIsoTrackReductionBTagNJets","MuIsoTrackReductionBTagNJets",isotrackreductionBTags2D_-1,isoTrackReductionBTags2D_, isotrackreductionNJets2D_-1, isoTrackReductionNJets2D_);
   MuIsoTrackReductionPTActivity_ = new TH2Eff("MuIsoTrackReductionPTActivity","MuIsoTrackReductionPTActivity", isotrackreductionActivity2D_-1, isoTrackReductionActivity2D_,isotrackreductionPT2D_-1,isoTrackReductionPT2D_);
+  MuIsoTrackReductionHTMHT_NJetsVeryLow_ = new TH2Eff("MuIsoTrackReductionHTMHT_NJetsVeryLow","MuIsoTrackReductionHTMHT_NJetsVeryLow", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
   MuIsoTrackReductionHTMHT_NJetsLow_ = new TH2Eff("MuIsoTrackReductionHTMHT_NJetsLow","MuIsoTrackReductionHTMHT_NJetsLow", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
   MuIsoTrackReductionHTMHT_NJetsHigh_ = new TH2Eff("MuIsoTrackReductionHTMHT_NJetsHigh","MuIsoTrackReductionHTMHT_NJetsHigh", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
 
@@ -327,6 +342,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecIsoTrackReductionMHTNJets_ = new TH2Eff("ElecIsoTrackReductionMHTNJets","ElecIsoTrackReductionMHTNJets",isotrackreductionMHT_-1,isoTrackReductionMHT_, isotrackreductionNJets_-1, isoTrackReductionNJets_);
   ElecIsoTrackReductionBTagNJets_ = new TH2Eff("ElecIsoTrackReductionBTagNJets","ElecIsoTrackReductionBTagNJets",isotrackreductionBTags2D_-1,isoTrackReductionBTags2D_, isotrackreductionNJets2D_-1, isoTrackReductionNJets2D_);
   ElecIsoTrackReductionPTActivity_ = new TH2Eff("ElecIsoTrackReductionPTActivity","ElecIsoTrackReductionPTActivity", isotrackreductionActivity2D_-1, isoTrackReductionActivity2D_,isotrackreductionPT2D_-1,isoTrackReductionPT2D_);
+  ElecIsoTrackReductionHTMHT_NJetsVeryLow_ = new TH2Eff("ElecIsoTrackReductionHTMHT_NJetsVeryLow","ElecIsoTrackReductionHTMHT_NJetsVeryLow", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
   ElecIsoTrackReductionHTMHT_NJetsLow_ = new TH2Eff("ElecIsoTrackReductionHTMHT_NJetsLow","ElecIsoTrackReductionHTMHT_NJetsLow", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
   ElecIsoTrackReductionHTMHT_NJetsHigh_ = new TH2Eff("ElecIsoTrackReductionHTMHT_NJetsHigh","ElecIsoTrackReductionHTMHT_NJetsHigh", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
 
@@ -343,6 +359,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   PionIsoTrackReductionMHTNJets_ = new TH2Eff("PionIsoTrackReductionMHTNJets","PionIsoTrackReductionMHTNJets",isotrackreductionMHT_-1,isoTrackReductionMHT_, isotrackreductionNJets_-1, isoTrackReductionNJets_);
   PionIsoTrackReductionBTagNJets_ = new TH2Eff("PionIsoTrackReductionBTagNJets","PionIsoTrackReductionBTagNJets",isotrackreductionBTags2D_-1,isoTrackReductionBTags2D_, isotrackreductionNJets2D_-1, isoTrackReductionNJets2D_);
   PionIsoTrackReductionPTActivity_ = new TH2Eff("PionIsoTrackReductionPTActivity","PionIsoTrackReductionPTActivity", isotrackreductionActivity2D_-1, isoTrackReductionActivity2D_,isotrackreductionPT2D_-1,isoTrackReductionPT2D_);
+  PionIsoTrackReductionHTMHT_NJetsVeryLow_ = new TH2Eff("PionIsoTrackReductionHTMHT_NJetsVeryLow","PionIsoTrackReductionHTMHT_NJetsVeryLow", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
   PionIsoTrackReductionHTMHT_NJetsLow_ = new TH2Eff("PionIsoTrackReductionHTMHT_NJetsLow","PionIsoTrackReductionHTMHT_NJetsLow", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
   PionIsoTrackReductionHTMHT_NJetsHigh_ = new TH2Eff("PionIsoTrackReductionHTMHT_NJetsHigh","PionIsoTrackReductionHTMHT_NJetsHigh", isotrackreductionHT_-1,isoTrackReductionHT_, isotrackreductionMHT_-1,isoTrackReductionMHT_);
 
@@ -501,7 +518,7 @@ Bool_t EffMaker::Process(Long64_t entry)
           MuAccMHTNJetsB1_Inf_->Fill(MHT,NJets,Weight,true);
           MuAccHTMHTB1_Inf_->Fill(HT,MHT,Weight,true);
       }
-
+      
       if(NJets<6.5){
           MuAccHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
       }else{
@@ -824,21 +841,22 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuDiLepContributionHT_->Fill(HT,Weight,true);
       MuDiLepContributionMHT_->Fill(MHT,Weight,true);
 
-      if(MTW <mtwCut_){
+      //if(MTW <mtwCut_){
           // 1D
-          MuDiLepMTWBTag_->Fill(BTags,Weight,true);
-          MuDiLepMTWNJets_->Fill(NJets,Weight,true);
-          MuDiLepMTWHT_->Fill(HT,Weight,true);
-          MuDiLepMTWMHT_->Fill(MHT,Weight,true);
-      }
+          MuDiLepFractionBTag_->Fill(BTags,Weight,true);
+          MuDiLepFractionNJets_->Fill(NJets,Weight,true);
+          MuDiLepFractionHT_->Fill(HT,Weight,true);
+          MuDiLepFractionMHT_->Fill(MHT,Weight,true);
+      //}
 
-      if(MTW <mtwCut_){
+
+      //if(MTW <mtwCut_){
           // 1D
           MuDiLepContributionMTWBTag_->Fill(BTags,Weight,true);
           MuDiLepContributionMTWNJets_->Fill(NJets,Weight,true);
           MuDiLepContributionMTWHT_->Fill(HT,Weight,true);
           MuDiLepContributionMTWMHT_->Fill(MHT,Weight,true);
-      }
+      //}
     
   }
 
@@ -855,19 +873,33 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuDiLepHT_->Fill(HT,Weight,false);
       MuDiLepMHT_->Fill(MHT,Weight,false);
     
-      // 1D
-      MuDiLepMTWBTag_->Fill(BTags,Weight,false);
-      MuDiLepMTWNJets_->Fill(NJets,Weight,false);
-      MuDiLepMTWHT_->Fill(HT,Weight,false);
-      MuDiLepMTWMHT_->Fill(MHT,Weight,false);
+      //if(MTW <mtwCut_){
+          // 1D
+          MuDiLepMTWBTag_->Fill(BTags,Weight,true);
+          MuDiLepMTWNJets_->Fill(NJets,Weight,true);
+          MuDiLepMTWHT_->Fill(HT,Weight,true);
+          MuDiLepMTWMHT_->Fill(MHT,Weight,true);
+      //}
 
-      if(MTW <mtwCut_){
+      //if(MTW <mtwCut_){
           // 1D
           MuDiLepContributionMTWBTag_->Fill(BTags,Weight,false);
           MuDiLepContributionMTWNJets_->Fill(NJets,Weight,false);
           MuDiLepContributionMTWHT_->Fill(HT,Weight,false);
           MuDiLepContributionMTWMHT_->Fill(MHT,Weight,false);
-      }
+      //}
+  }
+
+  if(ExpectationDiLep==1){
+          MuDiLepFractionBTag_->Fill(BTags,Weight,false);
+          MuDiLepFractionNJets_->Fill(NJets,Weight,false);
+          MuDiLepFractionHT_->Fill(HT,Weight,false);
+          MuDiLepFractionMHT_->Fill(MHT,Weight,false);
+
+          MuDiLepMTWBTag_->Fill(BTags,Weight,false);
+          MuDiLepMTWNJets_->Fill(NJets,Weight,false);
+          MuDiLepMTWHT_->Fill(HT,Weight,false);
+          MuDiLepMTWMHT_->Fill(MHT,Weight,false);
   }
   
   if(ElecDiLepControlSample==2){
@@ -883,21 +915,21 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecDiLepContributionHT_->Fill(HT,Weight,true);
       ElecDiLepContributionMHT_->Fill(MHT,Weight,true);
 
-      if(MTW <mtwCut_){
+      //if(MTW <mtwCut_){
           // 1D
-          ElecDiLepMTWBTag_->Fill(BTags,Weight,true);
-          ElecDiLepMTWNJets_->Fill(NJets,Weight,true);
-          ElecDiLepMTWHT_->Fill(HT,Weight,true);
-          ElecDiLepMTWMHT_->Fill(MHT,Weight,true);
-      }
+          ElecDiLepFractionBTag_->Fill(BTags,Weight,true);
+          ElecDiLepFractionNJets_->Fill(NJets,Weight,true);
+          ElecDiLepFractionHT_->Fill(HT,Weight,true);
+          ElecDiLepFractionMHT_->Fill(MHT,Weight,true);
+      //}
       
-      if(MTW <mtwCut_){
+      //if(MTW <mtwCut_){
           // 1D
           ElecDiLepContributionMTWBTag_->Fill(BTags,Weight,true);
           ElecDiLepContributionMTWNJets_->Fill(NJets,Weight,true);
           ElecDiLepContributionMTWHT_->Fill(HT,Weight,true);
           ElecDiLepContributionMTWMHT_->Fill(MHT,Weight,true);
-      }
+      //}
     
   }
 
@@ -915,20 +947,34 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecDiLepHT_->Fill(HT,Weight,false);
       ElecDiLepMHT_->Fill(MHT,Weight,false);
     
-      // 1D
-      ElecDiLepMTWBTag_->Fill(BTags,Weight,false);
-      ElecDiLepMTWNJets_->Fill(NJets,Weight,false);
-      ElecDiLepMTWHT_->Fill(HT,Weight,false);
-      ElecDiLepMTWMHT_->Fill(MHT,Weight,false);
+      //if(MTW <mtwCut_){
+          // 1D
+          ElecDiLepMTWBTag_->Fill(BTags,Weight,true);
+          ElecDiLepMTWNJets_->Fill(NJets,Weight,true);
+          ElecDiLepMTWHT_->Fill(HT,Weight,true);
+          ElecDiLepMTWMHT_->Fill(MHT,Weight,true);
+      //}
 
-      if(MTW <mtwCut_){
+      //if(MTW <mtwCut_){
           // 1D
           ElecDiLepContributionMTWBTag_->Fill(BTags,Weight,false);
           ElecDiLepContributionMTWNJets_->Fill(NJets,Weight,false);
           ElecDiLepContributionMTWHT_->Fill(HT,Weight,false);
           ElecDiLepContributionMTWMHT_->Fill(MHT,Weight,false);
-      }
-  }  
+      //}
+  } 
+
+    if(ExpectationDiLep==1){
+          ElecDiLepFractionBTag_->Fill(BTags,Weight,false);
+          ElecDiLepFractionNJets_->Fill(NJets,Weight,false);
+          ElecDiLepFractionHT_->Fill(HT,Weight,false);
+          ElecDiLepFractionMHT_->Fill(MHT,Weight,false);
+
+          ElecDiLepMTWBTag_->Fill(BTags,Weight,false);
+          ElecDiLepMTWNJets_->Fill(NJets,Weight,false);
+          ElecDiLepMTWHT_->Fill(HT,Weight,false);
+          ElecDiLepMTWMHT_->Fill(MHT,Weight,false);
+  }
     
   // ExpectationReductionIsoTrack
   if(Expectation==1 && ExpectationReductionIsoTrack==0){
@@ -955,9 +1001,12 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       IsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
       IsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
-      IsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
-      if(NJets < 6.5) IsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+      IsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);      
+      if(NJets < 3.5) IsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,false);
+      else if(NJets < 6.5) IsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
       else IsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
+      if(NJets > 1.5 && NJets < 2.5) IsoTrackReductionHTMHT_NJets2_->Fill(HT,MHT,Weight,false);
+      if(NJets > 2.5 && NJets < 3.5) IsoTrackReductionHTMHT_NJets3_->Fill(HT,MHT,Weight,false);
       if(NJets > 3.5 && NJets < 4.5) IsoTrackReductionHTMHT_NJets4_->Fill(HT,MHT,Weight,false);
       if(NJets > 4.5 && NJets < 5.5) IsoTrackReductionHTMHT_NJets5_->Fill(HT,MHT,Weight,false);
       if(NJets > 5.5 && NJets < 6.5) IsoTrackReductionHTMHT_NJets6_->Fill(HT,MHT,Weight,false);
@@ -993,8 +1042,11 @@ Bool_t EffMaker::Process(Long64_t entry)
     IsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
     IsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
     IsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
-    if(NJets < 6.5) IsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+    if(NJets < 3.5) IsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,true);
+    else if(NJets < 6.5) IsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
     else IsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
+    if(NJets > 1.5 && NJets < 2.5) IsoTrackReductionHTMHT_NJets2_->Fill(HT,MHT,Weight,true);
+    if(NJets > 2.5 && NJets < 3.5) IsoTrackReductionHTMHT_NJets3_->Fill(HT,MHT,Weight,true);
     if(NJets > 3.5 && NJets < 4.5) IsoTrackReductionHTMHT_NJets4_->Fill(HT,MHT,Weight,true);
     if(NJets > 4.5 && NJets < 5.5) IsoTrackReductionHTMHT_NJets5_->Fill(HT,MHT,Weight,true);
     if(NJets > 5.5 && NJets < 6.5) IsoTrackReductionHTMHT_NJets6_->Fill(HT,MHT,Weight,true);
@@ -1045,7 +1097,8 @@ Bool_t EffMaker::Process(Long64_t entry)
             MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
             MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
             //  MuIsoTrackReductionPTActivity_->Fill(IsolatedMuonTracksVetoActivity->at(0),IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
-            if(NJets < 6.5) MuIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+            if(NJets < 3.5) MuIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,true);
+            else if(NJets < 6.5) MuIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
             else MuIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
             // cout << "DONE" << endl;
         }else{
@@ -1062,7 +1115,8 @@ Bool_t EffMaker::Process(Long64_t entry)
             MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
             MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
             //  MuIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
-            if(NJets < 6.5) MuIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+            if(NJets < 3.5) MuIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,false);
+            else if(NJets < 6.5) MuIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
             else MuIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
             // cout << "DONE" << endl;
         }
@@ -1083,7 +1137,8 @@ Bool_t EffMaker::Process(Long64_t entry)
             ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
             ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
             //  ElecIsoTrackReductionPTActivity_->Fill(IsolatedElectronTracksVetoActivity->at(0),IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
-            if(NJets < 6.5) ElecIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+            if(NJets < 3.5) ElecIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,true);
+            else if(NJets < 6.5) ElecIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
             else ElecIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
             // cout << "DONE" << endl;    
         }else{
@@ -1099,7 +1154,8 @@ Bool_t EffMaker::Process(Long64_t entry)
             ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
             ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
             //  ElecIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
-            if(NJets < 6.5) ElecIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+            if(NJets < 3.5) ElecIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,false);
+            else if(NJets < 6.5) ElecIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
             else ElecIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
             // cout << "DONE" << endl;    
         }
@@ -1119,7 +1175,8 @@ Bool_t EffMaker::Process(Long64_t entry)
             PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
             PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
             //  PionIsoTrackReductionPTActivity_->Fill(IsolatedPionTracksVetoActivity->at(0),IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
-            if(NJets < 6.5) PionIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+            if(NJets < 3.5) PionIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,true);
+            else if(NJets < 6.5) PionIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
             else PionIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
             // cout << "DONE" << endl;    
         }else{
@@ -1135,7 +1192,8 @@ Bool_t EffMaker::Process(Long64_t entry)
             PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
             PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
             //  PionIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
-            if(NJets < 6.5) PionIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+            if(NJets < 3.5) PionIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,false);
+            else if(NJets < 6.5) PionIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
             else PionIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
             // cout << "DONE" << endl;    
         }
@@ -1272,8 +1330,8 @@ void EffMaker::Terminate()
   MuAccMHTNJets_->SaveEff("#mu acc; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   MuAccBTagNJets_->SaveEff("#mu acc; B_{Tags}; N_{Jets}", dEfficiencies);   
   MuAccMHTNJetsB0_->SaveEff("#mu acc B_{Tags}=0; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  MuAccMHTNJetsB1_Inf_->SaveEff("#mu acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  MuAccHTMHT_NJetsLow_->SaveEff("#mu acc N_{Jets}=4-6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccMHTNJetsB1_Inf_->SaveEff("#mu acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);    
+  MuAccHTMHT_NJetsLow_->SaveEff("#mu acc N_{Jets}=2-6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   MuAccHTMHT_NJets2_->SaveEff("#mu acc N_{Jets}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   MuAccHTMHT_NJets3_->SaveEff("#mu acc N_{Jets}=3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   MuAccHTMHT_NJets4_->SaveEff("#mu acc N_{Jets}=4;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
@@ -1298,7 +1356,7 @@ void EffMaker::Terminate()
   ElecAccBTagNJets_->SaveEff("e acc; B_{Tags}; N_{Jets}", dEfficiencies);   
   ElecAccMHTNJetsB0_->SaveEff("e acc B_{Tags}=0; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   ElecAccMHTNJetsB1_Inf_->SaveEff("e acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  ElecAccHTMHT_NJetsLow_->SaveEff("e acc N_{Jets}=4-6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJetsLow_->SaveEff("e acc N_{Jets}=2-6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   ElecAccHTMHT_NJets2_->SaveEff("e acc N_{Jets}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   ElecAccHTMHT_NJets3_->SaveEff("e acc N_{Jets}=3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   ElecAccHTMHT_NJets4_->SaveEff("e acc N_{Jets}=4;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
@@ -1378,7 +1436,11 @@ void EffMaker::Terminate()
   MuDiLepContributionBTag_->SaveEff("#mu di lep contri; B_{Tags}", dEfficiencies);   
   MuDiLepContributionNJets_->SaveEff("#mu di lep contri; N_{Jets}", dEfficiencies);   
   MuDiLepContributionHT_->SaveEff("#mu di lep contri; H_{T} [GeV]", dEfficiencies);   
-  MuDiLepContributionMHT_->SaveEff("#mu di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuDiLepContributionMHT_->SaveEff("#mu di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuDiLepFractionBTag_->SaveEff("#mu di lep contri; B_{Tags}", dEfficiencies);   
+  MuDiLepFractionNJets_->SaveEff("#mu di lep contri; N_{Jets}", dEfficiencies);   
+  MuDiLepFractionHT_->SaveEff("#mu di lep contri; H_{T} [GeV]", dEfficiencies);   
+  MuDiLepFractionMHT_->SaveEff("#mu di lep contri; #slash{H}_{T} [GeV]", dEfficiencies); 
   MuDiLepContributionMTWBTag_->SaveEff("#mu di lep contri; B_{Tags}", dEfficiencies);   
   MuDiLepContributionMTWNJets_->SaveEff("#mu di lep contri; N_{Jets}", dEfficiencies);   
   MuDiLepContributionMTWHT_->SaveEff("#mu di lep contri; H_{T} [GeV]", dEfficiencies);   
@@ -1406,7 +1468,11 @@ void EffMaker::Terminate()
   ElecDiLepContributionBTag_->SaveEff("e di lep contri; B_{Tags}", dEfficiencies);   
   ElecDiLepContributionNJets_->SaveEff("e di lep contri; N_{Jets}", dEfficiencies);   
   ElecDiLepContributionHT_->SaveEff("e di lep contri; H_{T} [GeV]", dEfficiencies);   
-  ElecDiLepContributionMHT_->SaveEff("e di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecDiLepContributionMHT_->SaveEff("e di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecDiLepFractionBTag_->SaveEff("e di lep contri; B_{Tags}", dEfficiencies);   
+  ElecDiLepFractionNJets_->SaveEff("e di lep contri; N_{Jets}", dEfficiencies);   
+  ElecDiLepFractionHT_->SaveEff("e di lep contri; H_{T} [GeV]", dEfficiencies);   
+  ElecDiLepFractionMHT_->SaveEff("e di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);  
   ElecDiLepContributionMTWBTag_->SaveEff("e di lep contri; B_{Tags}", dEfficiencies);   
   ElecDiLepContributionMTWNJets_->SaveEff("e di lep contri; N_{Jets}", dEfficiencies);   
   ElecDiLepContributionMTWHT_->SaveEff("e di lep contri; H_{T} [GeV]", dEfficiencies);   
@@ -1454,7 +1520,10 @@ void EffMaker::Terminate()
   ExpectationReductionIsoTrackActivityEff_->SaveEff("iso track expec. reduction; Activity", dEfficiencies, true);   
   //2D
   IsoTrackReductionHTNJets_->SaveEff("iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);
+  IsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("iso track expec. reduction N_{Jets}=2-3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   IsoTrackReductionHTMHT_NJetsLow_->SaveEff("iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets2_->SaveEff("iso track expec. reduction N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets3_->SaveEff("iso track expec. reduction N_{Jets}=3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   IsoTrackReductionHTMHT_NJets4_->SaveEff("iso track expec. reduction N_{Jets}=4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   IsoTrackReductionHTMHT_NJets5_->SaveEff("iso track expec. reduction N_{Jets}=5; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   IsoTrackReductionHTMHT_NJets6_->SaveEff("iso track expec. reduction N_{Jets}=6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
@@ -1476,6 +1545,7 @@ void EffMaker::Terminate()
   MuIsoTrackReductionMHTNJets_->SaveEff("#mu iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   MuIsoTrackReductionBTagNJets_->SaveEff("#mu iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
   MuIsoTrackReductionPTActivity_->SaveEff("#mu iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true); 
+  MuIsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("#mu iso track expec. reduction N_{Jets}=2-3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   MuIsoTrackReductionHTMHT_NJetsLow_->SaveEff("#mu iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   MuIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("#mu iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
 
@@ -1492,6 +1562,7 @@ void EffMaker::Terminate()
   ElecIsoTrackReductionMHTNJets_->SaveEff("e iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   ElecIsoTrackReductionBTagNJets_->SaveEff("e iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
   ElecIsoTrackReductionPTActivity_->SaveEff("e iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true); 
+  ElecIsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("e iso track expec. reduction N_{Jets}=2-3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   ElecIsoTrackReductionHTMHT_NJetsLow_->SaveEff("e iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   ElecIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("e iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
   
@@ -1508,6 +1579,7 @@ void EffMaker::Terminate()
   PionIsoTrackReductionMHTNJets_->SaveEff("#pi iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   PionIsoTrackReductionBTagNJets_->SaveEff("#pi iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
   PionIsoTrackReductionPTActivity_->SaveEff("#pi iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true);
+  PionIsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("#pi iso track expec. reduction N_{Jets}=2-3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   PionIsoTrackReductionHTMHT_NJetsLow_->SaveEff("#pi iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   PionIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("#pi iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
 

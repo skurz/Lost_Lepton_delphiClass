@@ -385,6 +385,11 @@ class EffMaker : public TSelector {
   TH1Eff *MuDiLepContributionNJets_;
   TH1Eff *MuDiLepContributionHT_;
   TH1Eff *MuDiLepContributionMHT_;
+
+  TH1Eff *MuDiLepFractionBTag_;
+  TH1Eff *MuDiLepFractionNJets_;
+  TH1Eff *MuDiLepFractionHT_;
+  TH1Eff *MuDiLepFractionMHT_;
   
   // elec
   //1D
@@ -392,6 +397,11 @@ class EffMaker : public TSelector {
   TH1Eff *ElecDiLepContributionNJets_;
   TH1Eff *ElecDiLepContributionHT_;
   TH1Eff *ElecDiLepContributionMHT_;
+
+  TH1Eff *ElecDiLepFractionBTag_;
+  TH1Eff *ElecDiLepFractionNJets_;
+  TH1Eff *ElecDiLepFractionHT_;
+  TH1Eff *ElecDiLepFractionMHT_;
   
   // di lep mtw cut applied
   // mu 
@@ -420,7 +430,10 @@ class EffMaker : public TSelector {
   // 2D
   TH2Eff *IsoTrackReductionHTNJets_; 
   TH2Eff *IsoTrackReductionMHTNJets_;
+  TH2Eff *IsoTrackReductionHTMHT_NJetsVeryLow_;
   TH2Eff *IsoTrackReductionHTMHT_NJetsLow_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets2_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets3_;
   TH2Eff *IsoTrackReductionHTMHT_NJets4_;
   TH2Eff *IsoTrackReductionHTMHT_NJets5_;
   TH2Eff *IsoTrackReductionHTMHT_NJets6_;
@@ -441,6 +454,7 @@ class EffMaker : public TSelector {
   TH2Eff *MuIsoTrackReductionMHTNJets_;
   TH2Eff *MuIsoTrackReductionBTagNJets_;
   TH2Eff *MuIsoTrackReductionPTActivity_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJetsVeryLow_;
   TH2Eff *MuIsoTrackReductionHTMHT_NJetsLow_;
   TH2Eff *MuIsoTrackReductionHTMHT_NJetsHigh_;
   
@@ -456,6 +470,7 @@ class EffMaker : public TSelector {
   TH2Eff *ElecIsoTrackReductionMHTNJets_;
   TH2Eff *ElecIsoTrackReductionBTagNJets_;
   TH2Eff *ElecIsoTrackReductionPTActivity_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsVeryLow_;
   TH2Eff *ElecIsoTrackReductionHTMHT_NJetsLow_;
   TH2Eff *ElecIsoTrackReductionHTMHT_NJetsHigh_;
   
@@ -471,6 +486,7 @@ class EffMaker : public TSelector {
   TH2Eff *PionIsoTrackReductionMHTNJets_;
   TH2Eff *PionIsoTrackReductionBTagNJets_;
   TH2Eff *PionIsoTrackReductionPTActivity_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJetsVeryLow_;
   TH2Eff *PionIsoTrackReductionHTMHT_NJetsLow_;
   TH2Eff *PionIsoTrackReductionHTMHT_NJetsHigh_;
 
