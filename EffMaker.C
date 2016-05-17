@@ -841,22 +841,22 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuDiLepContributionHT_->Fill(HT,Weight,true);
       MuDiLepContributionMHT_->Fill(MHT,Weight,true);
 
-      //if(MTW <mtwCut_){
+      if(MTW <mtwCut_){
           // 1D
           MuDiLepFractionBTag_->Fill(BTags,Weight,true);
           MuDiLepFractionNJets_->Fill(NJets,Weight,true);
           MuDiLepFractionHT_->Fill(HT,Weight,true);
           MuDiLepFractionMHT_->Fill(MHT,Weight,true);
-      //}
+      }
 
 
-      //if(MTW <mtwCut_){
+      if(MTW <mtwCut_){
           // 1D
           MuDiLepContributionMTWBTag_->Fill(BTags,Weight,true);
           MuDiLepContributionMTWNJets_->Fill(NJets,Weight,true);
           MuDiLepContributionMTWHT_->Fill(HT,Weight,true);
           MuDiLepContributionMTWMHT_->Fill(MHT,Weight,true);
-      //}
+      }
     
   }
 
@@ -873,21 +873,21 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuDiLepHT_->Fill(HT,Weight,false);
       MuDiLepMHT_->Fill(MHT,Weight,false);
     
-      //if(MTW <mtwCut_){
+      if(MTW <mtwCut_){
           // 1D
           MuDiLepMTWBTag_->Fill(BTags,Weight,true);
           MuDiLepMTWNJets_->Fill(NJets,Weight,true);
           MuDiLepMTWHT_->Fill(HT,Weight,true);
           MuDiLepMTWMHT_->Fill(MHT,Weight,true);
-      //}
+      }
 
-      //if(MTW <mtwCut_){
+      if(MTW <mtwCut_){
           // 1D
           MuDiLepContributionMTWBTag_->Fill(BTags,Weight,false);
           MuDiLepContributionMTWNJets_->Fill(NJets,Weight,false);
           MuDiLepContributionMTWHT_->Fill(HT,Weight,false);
           MuDiLepContributionMTWMHT_->Fill(MHT,Weight,false);
-      //}
+      }
   }
 
   if(ExpectationDiLep==1){
