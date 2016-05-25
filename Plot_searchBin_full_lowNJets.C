@@ -47,6 +47,8 @@ void Plot_searchBin_full_lowNJets(string option="", int pull=0){ // string optio
   // Non-closure systematic not included yet!
   bool showSystematics = false;
 
+  bool doClosurewoIsoTrackVeto = false;
+
   ///////////////////////////////////////////////////////////////////////////////////////////
   ////Some cosmetic work for official documents.
   //
@@ -192,16 +194,27 @@ void Plot_searchBin_full_lowNJets(string option="", int pull=0){ // string optio
     dPre = (TDirectory*)LLFile->Get("Prediction_MC");
   }  
 
-  if(doDataVsMC){
-    EstHistTemp=(TH1D*) dPre->Get("totalPred_LL")->Clone();
-    EstHistDTemp=(TH1D*) dPre->Get("totalPred_LL")->Clone();
+  if(doDataVsMC){    
+      EstHistTemp=(TH1D*) dPre->Get("totalPred_LL")->Clone();
+      EstHistDTemp=(TH1D*) dPre->Get("totalPred_LL")->Clone();
   }else{
-    EstHistTemp=(TH1D*) dPre->Get("totalPred_LL_MC")->Clone();
-    EstHistDTemp=(TH1D*) dPre->Get("totalPred_LL_MC")->Clone();
+    if(doClosurewoIsoTrackVeto){
+      EstHistTemp=(TH1D*) dPre->Get("totalPredwoIso_LL_MC")->Clone();
+      EstHistDTemp=(TH1D*) dPre->Get("totalPredwoIso_LL_MC")->Clone();
+    }else{
+      EstHistTemp=(TH1D*) dPre->Get("totalPred_LL_MC")->Clone();
+      EstHistDTemp=(TH1D*) dPre->Get("totalPred_LL_MC")->Clone();
+    }
   }
 
-  GenHistTemp=(TH1D*) dExp->Get("totalExp_LL")->Clone();
-  GenHistDTemp=(TH1D*) dExp->Get("totalExp_LL")->Clone();
+
+  if(doClosurewoIsoTrackVeto){
+      GenHistTemp=(TH1D*) dExp->Get("totalExpwoIso_LL")->Clone();
+      GenHistDTemp=(TH1D*) dExp->Get("totalExpwoIso_LL")->Clone();;
+  }else{
+      GenHistTemp=(TH1D*) dExp->Get("totalExp_LL")->Clone();
+      GenHistDTemp=(TH1D*) dExp->Get("totalExp_LL")->Clone();
+  }
 
   if(showSystematics){
     TDirectory *dSys = (TDirectory*)LLFile->Get("AdditionalContent");
@@ -765,9 +778,15 @@ void Plot_searchBin_full_lowNJets(string option="", int pull=0){ // string optio
     sprintf(tempname,"DataMC_Full_Plot.pdf");
     if (pull==1)    sprintf(tempname,"DataMCPull_Full_Plot.pdf");
   }else{
-    if(option.find("QCD")!=string::npos) sprintf(tempname,"Closure_QCD_HDP_Full_Plot.pdf");
-      else sprintf(tempname,"Closure_Full_Plot.pdf");
-    if (pull==1)    sprintf(tempname,"ClosurePull_Full_Plot.pdf");
+    if(doClosurewoIsoTrackVeto){
+      if(option.find("QCD")!=string::npos) sprintf(tempname,"Closure_QCD_HDP_woIsoTrack_Full_Plot.pdf");
+        else sprintf(tempname,"Closure_woIsoTrack_Full_Plot.pdf");
+      if (pull==1)    sprintf(tempname,"ClosurePull_woIsoTrack_Full_Plot.pdf");
+    }else{
+      if(option.find("QCD")!=string::npos) sprintf(tempname,"Closure_QCD_HDP_Full_Plot.pdf");
+        else sprintf(tempname,"Closure_Full_Plot.pdf");
+      if (pull==1)    sprintf(tempname,"ClosurePull_Full_Plot.pdf");
+    }
   }
 
   canvas->Print(tempname);

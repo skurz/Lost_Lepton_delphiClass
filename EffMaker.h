@@ -65,15 +65,15 @@ double OneDEta_[oneDEta_]={0., 0.5, 1., 1.442, 1.566, 2., 2.52};
 //2D
 const int mupurityMHT_ = 4;
 double muPurityMHT_[mupurityMHT_] ={200,500,750,10000};
-const int mupurityNJet_ = 6;
-double muPurityNJet_[mupurityNJet_] ={2,3,4,7,9,21};
+const int mupurityNJet_ = 5;
+double muPurityNJet_[mupurityNJet_] ={2,4,7,9,21};
 
 // elec
 //2D
 const int elecpurityMHT_ = 4;
 double elecPurityMHT_[elecpurityMHT_] ={200,500,750,10000};
-const int elecpurityNJet_ = 6;
-double elecPurityNJet_[elecpurityNJet_] ={2,3,4,7,9,21};
+const int elecpurityNJet_ = 5;
+double elecPurityNJet_[elecpurityNJet_] ={2,4,7,9,21};
 
 // mu acceptance
 // 2D
@@ -87,6 +87,8 @@ const int muaccBTags_ = 5;
 double muAccBTags_[muaccBTags_] = {0,1,2,3,10};
 const int muaccNJets_ = 8;
 double muAccNJets_ [muaccNJets_] = {2,3,4,5,6,7,9,21};
+const int muaccDTT_ = 11;
+double muAccDTT_ [muaccDTT_] = {0.0,0.6,0.8,0.9,0.92,0.94,0.96,0.97,0.98,0.99,1.0};
 
 // elec acceptance
 // 2D
@@ -100,6 +102,8 @@ const int elecaccBTags_ = 5;
 double elecAccBTags_[elecaccBTags_] = {0,1,2,3,10};
 const int elecaccNJets_ = 8;
 double elecAccNJets_ [elecaccNJets_] = {2,3,4,5,6,7,9,21};
+const int elecaccDTT_ = 11;
+double elecAccDTT_ [muaccDTT_] = {0.0,0.6,0.8,0.9,0.92,0.94,0.96,0.97,0.98,0.99,1.0};
 
 // mtw
 // 2D
@@ -201,6 +205,7 @@ class EffMaker : public TSelector {
   TH1Eff *MuAccHT_;
   TH1Eff *MuAccMHT_;
   TH1Eff *MuAccPT_;
+  TH1Eff *MuAccDTT_;
   TH1Eff *MuAccActivity_;
   // 2D
   TH2Eff *MuAccHTNJets_;
@@ -220,6 +225,13 @@ class EffMaker : public TSelector {
   TH2Eff *MuAccHTMHT_NJetsHigh_;
   TH2Eff *MuAccHTMHTB0_;
   TH2Eff *MuAccHTMHTB1_Inf_;
+  TH2Eff *MuAccHTDTT_NJets2_;
+  TH2Eff *MuAccHTDTT_NJets3_;
+  TH2Eff *MuAccHTDTT_NJets4_;
+  TH2Eff *MuAccHTDTT_NJets5_;
+  TH2Eff *MuAccHTDTT_NJets6_;
+  TH2Eff *MuAccHTDTT_NJets78_;
+  TH2Eff *MuAccHTDTT_NJets9Inf_;
   
   // elec
   //1D
@@ -228,6 +240,7 @@ class EffMaker : public TSelector {
   TH1Eff *ElecAccHT_;
   TH1Eff *ElecAccMHT_;
   TH1Eff *ElecAccPT_;
+  TH1Eff *ElecAccDTT_;
   TH1Eff *ElecAccActivity_;
   // 2D
   TH2Eff *ElecAccHTNJets_;
@@ -247,6 +260,13 @@ class EffMaker : public TSelector {
   TH2Eff *ElecAccHTMHT_NJetsHigh_;
   TH2Eff *ElecAccHTMHTB0_;
   TH2Eff *ElecAccHTMHTB1_Inf_;
+  TH2Eff *ElecAccHTDTT_NJets2_;
+  TH2Eff *ElecAccHTDTT_NJets3_;
+  TH2Eff *ElecAccHTDTT_NJets4_;
+  TH2Eff *ElecAccHTDTT_NJets5_;
+  TH2Eff *ElecAccHTDTT_NJets6_;
+  TH2Eff *ElecAccHTDTT_NJets78_;
+  TH2Eff *ElecAccHTDTT_NJets9Inf_;
   
 
   // Reco 
@@ -324,6 +344,8 @@ class EffMaker : public TSelector {
   // 2D
   TH2Eff *MuMTWPTActivity_;
   TH2Eff *MuMTWHTNJets_;
+  TH2Eff *MuMTWMHTNJets_;
+  TH2Eff *MuMTWHTMHT_;
 
   
   // elec
@@ -337,6 +359,8 @@ class EffMaker : public TSelector {
   // 2D
   TH2Eff *ElecMTWPTActivity_;
   TH2Eff *ElecMTWHTNJets_;
+  TH2Eff *ElecMTWMHTNJets_;
+  TH2Eff *ElecMTWHTMHT_;
 
   
   
@@ -410,6 +434,7 @@ class EffMaker : public TSelector {
   TH1Eff *MuDiLepContributionMTWNJets_;
   TH1Eff *MuDiLepContributionMTWHT_;
   TH1Eff *MuDiLepContributionMTWMHT_;
+  TH2Eff *MuDiLepContributionMTWMHTNJets_;
   
   // elec
   //1D
@@ -417,6 +442,7 @@ class EffMaker : public TSelector {
   TH1Eff *ElecDiLepContributionMTWNJets_;
   TH1Eff *ElecDiLepContributionMTWHT_;
   TH1Eff *ElecDiLepContributionMTWMHT_;
+  TH2Eff *ElecDiLepContributionMTWMHTNJets_;
   
 
   // single isolated track from mu or electron
@@ -575,6 +601,7 @@ class EffMaker : public TSelector {
   UShort_t        ExpectationDiLep;
   UShort_t        MuDiLepControlSample;
   UShort_t        ElecDiLepControlSample;
+  Double_t        cosDTT;
 
   // List of branches
   TBranch        *b_EvtNum=0;   //!
@@ -649,6 +676,7 @@ class EffMaker : public TSelector {
   TBranch        *b_ExpectationDiLep=0;   //!
   TBranch        *b_MuDiLepControlSample=0;   //!
   TBranch        *b_ElecDiLepControlSample=0;   //!
+  TBranch        *b_cosDTT=0;   //!
   
 
  EffMaker(TTree * /*tree*/ =0) : fChain(0) { }
@@ -838,6 +866,8 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity, &b_selectedIDIsoMuons_MT2Activity);
   fChain->SetBranchStatus("selectedIDMuons_MT2Activity", 1);
   fChain->SetBranchAddress("selectedIDMuons_MT2Activity", &selectedIDMuons_MT2Activity, &b_selectedIDMuons_MT2Activity);
+  fChain->SetBranchStatus("cosDTT", 1);
+  fChain->SetBranchAddress("cosDTT", &cosDTT, &b_cosDTT);
 }
 
 Bool_t EffMaker::Notify()

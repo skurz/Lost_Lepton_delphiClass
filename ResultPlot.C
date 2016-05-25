@@ -294,6 +294,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
   // Define histrograms to do totalPrediction per SearchBin
   TH1D* totalExp_LL_ = new TH1D("totalExp_LL","totalExp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1D* totalExpwoIso_LL_ = new TH1D("totalExpwoIso_LL","totalExpwoIso_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   //  TH1D* totalExp_LL_NoTk_ = new TH1D("totalExp_LL_NoTk","totalExp_LL_NoTk", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* nEvtsExp_LL_ = new TH1D("nEvtsExp_LL","nEvtsExp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
@@ -491,6 +492,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
   // Define histrograms to do totalPrediction per SearchBin (MC)
   TH1D* totalPred_LL_MC_ = new TH1D("totalPred_LL_MC","totalPred_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1D* totalPredwoIso_LL_MC_ = new TH1D("totalPredwoIso_LL_MC","totalPredwoIso_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPred_EXTRAP_LL_MC_ = new TH1D("totalPred_EXTRAP_LL_MC","totalPred_EXTRAP_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
   TH1D* totalPred_HT_LL_MC_ = new TH1D("totalPred_HT_LL_MC","totalPred_HT_LL_MC", 20, 500., 2500.);
@@ -712,6 +714,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
         	totalExpectation_->Fill(Bin_bTags.at(i), scaledWeight);
         	totalExp+=scaledWeight;
         	totalExpError+= scaledWeight*scaledWeight;
+          totalExpwoIso_LL_->Fill(Bin_bTags.at(i), scaledWeight);
           }
         if(Expectation==1 && ExpectationReductionIsoTrack==0)
           {
@@ -745,6 +748,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
         totalExpectation_->Fill(SearchBin, scaledWeight);
         totalExp+=scaledWeight;
         totalExpError+= scaledWeight*scaledWeight;
+        totalExpwoIso_LL_->Fill(SearchBin, scaledWeight);
         }
       if(Expectation==1 && ExpectationReductionIsoTrack==0)
         {
@@ -1082,6 +1086,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
         }
 
         totalPred_LL_MC_->Fill( Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        totalPredwoIso_LL_MC_->Fill( Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb/2);
         //    totalPred_LL_NoTk_MC_->Fill( Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb/2);
         totalPred_HT_LL_MC_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         totalPred_MHT_LL_MC_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
@@ -1096,6 +1101,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
 
     totalPred_LL_MC_->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+    totalPredwoIso_LL_MC_->Fill(SearchBin, totalWeightDiLep*scaleFactorWeight/2);
     //    totalPred_LL_NoTk_MC_->Fill(SearchBin, totalWeightDiLep*scaleFactorWeight/2);
     totalPred_HT_LL_MC_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
     totalPred_MHT_LL_MC_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
@@ -2017,6 +2023,12 @@ if(doExtrapolation){
   SetBinLabel(ClosureTest);
   ClosureTest->Write();
 
+  TH1D *ClosureTest_woIso = (TH1D*) totalExpwoIso_LL_->Clone("ClosureTest_woIso");
+  ClosureTest_woIso->Divide(totalPredwoIso_LL_MC_);
+  ClosureTest_woIso->SetTitle("Expectation / Prediction");
+  SetBinLabel(ClosureTest_woIso);
+  ClosureTest_woIso->Write();
+
   // TH1D *ClosureTest_NoTk = (TH1D*) totalExp_LL_NoTk_->Clone("ClosureTest_NoTk");
   // ClosureTest_NoTk->Divide(totalPred_LL_NoTk_MC_);
   // ClosureTest_NoTk->SetTitle("Expectation / Prediction");
@@ -2107,6 +2119,8 @@ if(doExtrapolation){
 
   SetBinLabel(totalExp_LL_);
   totalExp_LL_->Write();
+  SetBinLabel(totalExpwoIso_LL_);
+  totalExpwoIso_LL_->Write();
   // SetBinLabel(totalExp_LL_NoTk_);
   // totalExp_LL_NoTk_->Write();
   SetBinLabel(nEvtsExp_LL_);
@@ -2296,6 +2310,9 @@ if(doExtrapolation){
 
   SetBinLabel(totalPred_LL_MC_);
   totalPred_LL_MC_->Write();
+
+  SetBinLabel(totalPredwoIso_LL_MC_);
+  totalPredwoIso_LL_MC_->Write();
 
 if(doExtrapolation){
   for (int ibin(0); ibin<avgWeight_LL_MC_->GetNbinsX(); ibin++) {

@@ -248,6 +248,8 @@ public :
   std::vector<double>   *METPtDown=0;
   Double_t        MHT;
   Double_t        MHT_Phi;
+  Double_t        GenMHT;
+  Double_t        GenMHT_Phi;
   std::vector<TLorentzVector> *Muons=0;
   Int_t           NJets;
   Int_t           NVtx;
@@ -276,6 +278,8 @@ public :
   std::vector<double>  *ScaleWeights=0;
   std::vector<int>     *Jets_hadronFlavor=0;
   std::vector<bool>    *HTJetsMask=0;
+  Double_t        cosDTT=0;
+  Double_t        genCosDTT=0;
 
 
 
@@ -314,6 +318,8 @@ public :
   TBranch        *b_METPtDown=0;   //!
   TBranch        *b_MHT=0;   //!
   TBranch        *b_MHT_Phi=0;   //!
+  TBranch        *b_GenMHT=0;   //!
+  TBranch        *b_GenMHT_Phi=0;   //!
   TBranch        *b_Muons=0;   //!
   TBranch        *b_NJets=0;   //!
   TBranch        *b_NumPhotons=0;   //!
@@ -467,6 +473,8 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("METPtDown", 1);
   fChain->SetBranchStatus("MHT", 1);
   fChain->SetBranchStatus("MHT_Phi", 1);
+  fChain->SetBranchStatus("GenMHT", 1);
+  fChain->SetBranchStatus("GenMHT_Phi", 1);
   fChain->SetBranchStatus("Muons", 1);
   fChain->SetBranchStatus("NJets", 1);
   fChain->SetBranchStatus("NVtx", 1);
@@ -532,6 +540,8 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("METPtDown", &METPtDown, &b_METPtDown);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
   fChain->SetBranchAddress("MHT_Phi", &MHT_Phi, &b_MHT_Phi);
+  fChain->SetBranchAddress("GenMHT", &GenMHT, &b_GenMHT);
+  fChain->SetBranchAddress("GenMHT_Phi", &GenMHT_Phi, &b_GenMHT_Phi);
   fChain->SetBranchAddress("Muons", &Muons, &b_Muons);
   fChain->SetBranchAddress("NJets", &NJets, &b_NJets);
   fChain->SetBranchAddress("NVtx", &NVtx, &b_NVtx);

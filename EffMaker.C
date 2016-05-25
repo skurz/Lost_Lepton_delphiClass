@@ -68,7 +68,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecPurityHT_ = new TH1Eff("ElecPurityHT1D","ElecPurityHT1D",oneDHT_-1,OneDHT_);
   ElecPurityMHT_ = new TH1Eff("ElecPurityMHT1D","ElecPurityMHT1D",oneDMHT_-1,OneDMHT_);
   //2D
-  ElecPurityMHTNJet_ = new TH2Eff("ElecPurityMHTNJet","ElecPurityMHTNJet",mupurityMHT_-1,muPurityMHT_,mupurityNJet_-1,muPurityNJet_);
+  ElecPurityMHTNJet_ = new TH2Eff("ElecPurityMHTNJet","ElecPurityMHTNJet",elecpurityMHT_-1,elecPurityMHT_,elecpurityNJet_-1,elecPurityNJet_);
   
   
   // acceptance
@@ -78,6 +78,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuAccNJets_ = new TH1Eff("MuAccNJets1D","MuAccNJets1D",oneDNJets_-1,OneDNJets_);
   MuAccHT_ = new TH1Eff("MuAccHT1D","MuAccHT1D",oneDHT_-1,OneDHT_);
   MuAccMHT_ = new TH1Eff("MuAccMHT1D","MuAccMHT1D",oneDMHT_-1,OneDMHT_);
+  MuAccDTT_ = new TH1Eff("MuAccDTT1D","MuAccDTT1D",muaccDTT_-1,muAccDTT_);
   //2D
   MuAccHTNJets_ = new TH2Eff("MuAccHTNJets","MuAccHTNJets",muaccHT_-1,muAccHT_, muaccNJets_-1, muAccNJets_);
   MuAccMHTNJets_ = new TH2Eff("MuAccMHTNJets","MuAccMHTNJets",muaccMHT_-1,muAccMHT_, muaccNJets_-1, muAccNJets_);
@@ -103,6 +104,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecAccNJets_ = new TH1Eff("ElecAccNJets1D","ElecAccNJets1D",oneDNJets_-1,OneDNJets_);
   ElecAccHT_ = new TH1Eff("ElecAccHT1D","ElecAccHT1D",oneDHT_-1,OneDHT_);
   ElecAccMHT_ = new TH1Eff("ElecAccMHT1D","ElecAccMHT1D",oneDMHT_-1,OneDMHT_);
+  ElecAccDTT_ = new TH1Eff("ElecAccDTT1D","ElecAccDTT1D",elecaccDTT_-1,elecAccDTT_);
   //2D
   ElecAccHTNJets_ = new TH2Eff("ElecAccHTNJets","ElecAccHTNJets",elecaccHT_-1,elecAccHT_, elecaccNJets_-1, elecAccNJets_);
   ElecAccMHTNJets_ = new TH2Eff("ElecAccMHTNJets","ElecAccMHTNJets",elecaccMHT_-1,elecAccMHT_, elecaccNJets_-1, elecAccNJets_);
@@ -164,6 +166,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuMTWMHT_ = new TH1Eff("MuMTWMHT1D","MuMTWMHT1D",oneDMHT_-1,OneDMHT_);
 
   MuMTWHTNJets_ = new TH2Eff("MuMTWHTNJets","MuMTWHTNJets",muaccHT_-1,muAccHT_, muaccNJets_-1, muAccNJets_);
+  MuMTWMHTNJets_ = new TH2Eff("MuMTWMHTNJets","MuMTWMHTNJets",muaccMHT_-1,muAccMHT_, mupurityNJet_-1, muPurityNJet_);
+  MuMTWHTMHT_ = new TH2Eff("MuMTWHTMHT","MuMTWHTMHT",muaccHT_-1,muAccHT_,muaccMHT_-1,muAccMHT_);
   
   //electron
   //1D
@@ -173,6 +177,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecMTWMHT_ = new TH1Eff("ElecMTWMHT1D","ElecMTWMHT1D",oneDMHT_-1,OneDMHT_);
 
   ElecMTWHTNJets_ = new TH2Eff("ElecMTWHTNJets","ElecMTWHTNJets",elecaccHT_-1,elecAccHT_, elecaccNJets_-1, elecAccNJets_);
+  ElecMTWMHTNJets_ = new TH2Eff("ElecMTWMHTNJets","ElecMTWMHTNJets",elecaccMHT_-1,elecAccMHT_, elecpurityNJet_-1, elecPurityNJet_);
+  ElecMTWHTMHT_ = new TH2Eff("ElecMTWHTMHT","ElecMTWHTMHT",elecaccHT_-1,elecAccHT_,elecaccMHT_-1,elecAccMHT_);
 
  
   // di lep  
@@ -237,6 +243,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuDiLepContributionMTWNJets_ = new TH1Eff("MuDiLepContributionMTWNJets1D","MuDiLepContributionMTWNJets1D",oneDNJets_-1,OneDNJets_);
   MuDiLepContributionMTWHT_ = new TH1Eff("MuDiLepContributionMTWHT1D","MuDiLepContributionMTWHT1D",oneDHT_-1,OneDHT_);
   MuDiLepContributionMTWMHT_ = new TH1Eff("MuDiLepContributionMTWMHT1D","MuDiLepContributionMTWMHT1D",oneDMHT_-1,OneDMHT_);
+  MuDiLepContributionMTWMHTNJets_ = new TH2Eff("MuDiLepContributionMTWMHT1DNJets","MuDiLepContributionMTWMHT1DNJets",mupurityMHT_-1,muPurityMHT_,mupurityNJet_-1,muPurityNJet_);
 
   
   //electron
@@ -245,6 +252,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecDiLepContributionMTWNJets_ = new TH1Eff("ElecDiLepContributionMTWNJets1D","ElecDiLepContributionMTWNJets1D",oneDNJets_-1,OneDNJets_);
   ElecDiLepContributionMTWHT_ = new TH1Eff("ElecDiLepContributionMTWHT1D","ElecDiLepContributionMTWHT1D",oneDHT_-1,OneDHT_);
   ElecDiLepContributionMTWMHT_ = new TH1Eff("ElecDiLepContributionMTWMHT1D","ElecDiLepContributionMTWMHT1D",oneDMHT_-1,OneDMHT_);
+  ElecDiLepContributionMTWMHTNJets_ = new TH2Eff("ElecDiLepContributionMTWMHT1DNJets","ElecDiLepContributionMTWMHT1DNJets",elecpurityMHT_-1,elecPurityMHT_,elecpurityNJet_-1,elecPurityNJet_);
+
   
   // acitivity and pt
   // mu 
@@ -503,6 +512,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuAccNJets_->Fill(NJets,Weight,true);
       MuAccHT_->Fill(HT,Weight,true);
       MuAccMHT_->Fill(MHT,Weight,true);
+      MuAccDTT_->Fill(cosDTT,Weight,true);
       MuAccPT_->Fill(GenMus->at(0).Pt(),Weight,true);
       MuAccActivity_->Fill(GenMu_MT2Activity->at(0),Weight,true);
       //2D
@@ -540,6 +550,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuAccNJets_->Fill(NJets,Weight,false);
       MuAccHT_->Fill(HT,Weight,false);
       MuAccMHT_->Fill(MHT,Weight,false);
+      MuAccDTT_->Fill(cosDTT,Weight,false);
       MuAccPT_->Fill(GenMus->at(0).Pt(),Weight,false);
       MuAccActivity_->Fill(GenMu_MT2Activity->at(0),Weight,false);
       //2D
@@ -578,6 +589,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecAccNJets_->Fill(NJets,Weight,true);
       ElecAccHT_->Fill(HT,Weight,true);
       ElecAccMHT_->Fill(MHT,Weight,true);
+      ElecAccDTT_->Fill(cosDTT,Weight,true);
       ElecAccPT_->Fill(GenEls->at(0).Pt(),Weight,true);
       ElecAccActivity_->Fill(GenElec_MT2Activity->at(0),Weight,true);
       //2D
@@ -615,6 +627,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecAccNJets_->Fill(NJets,Weight,false);
       ElecAccHT_->Fill(HT,Weight,false);
       ElecAccMHT_->Fill(MHT,Weight,false);
+      ElecAccDTT_->Fill(cosDTT,Weight,false);
       ElecAccPT_->Fill(GenEls->at(0).Pt(),Weight,false);
       ElecAccActivity_->Fill(GenElec_MT2Activity->at(0),Weight,false);
       //2D
@@ -690,4 +703,968 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecRecoPT_->Fill(GenEls->at(0).Pt(),Weight,true);
       ElecRecoActivity_->Fill(GenElec_MT2Activity->at(0),Weight,true);
       ElecRecoRelPTJet_->Fill(GenElecRelPTJet->at(0),Weight,true);
-      ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at
+      ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),Weight,true);
+      //2D
+      ElecRecoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),Weight,true);
+      ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,true);
+      ElecRecoPTEta_->Fill(GenEls->at(0).Pt(),std::abs(GenEls->at(0).Eta()),Weight,true);
+  }
+
+  if(elecReco==0){
+      //1D
+      ElecRecoBTag_->Fill(BTags,Weight,false);
+      ElecRecoNJets_->Fill(NJets,Weight,false);
+      ElecRecoHT_->Fill(HT,Weight,false);
+      ElecRecoMHT_->Fill(MHT,Weight,false);
+      ElecRecoPT_->Fill(GenEls->at(0).Pt(),Weight,false);
+      ElecRecoActivity_->Fill(GenElec_MT2Activity->at(0),Weight,false);
+      ElecRecoRelPTJet_->Fill(GenElecRelPTJet->at(0),Weight,false);
+      ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),Weight,false);
+      //2D
+      ElecRecoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),Weight,false);
+      ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,false);
+      ElecRecoPTEta_->Fill(GenEls->at(0).Pt(),std::abs(GenEls->at(0).Eta()),Weight,false);
+  }
+  
+  // isolation
+  // single muon control sample
+  if(muIso==2){
+      //1D
+      MuIsoBTag_->Fill(BTags,Weight,true);
+      MuIsoNJets_->Fill(NJets,Weight,true);
+      MuIsoHT_->Fill(HT,Weight,true);
+      MuIsoMHT_->Fill(MHT,Weight,true);
+      MuIsoPT_->Fill(GenMus->at(0).Pt(),Weight,true);
+      MuIsoActivity_->Fill(GenMu_MT2Activity->at(0),Weight,true);
+      MuIsoRelPTJet_->Fill(GenMuRelPTJet->at(0),Weight,true);
+      MuIsoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),Weight,true);
+      //2D
+      MuIsoActivityPT_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),Weight,true);
+      MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),Weight,true);
+  }
+
+  if(muIso==0){
+      //1D
+      MuIsoBTag_->Fill(BTags,Weight,false);
+      MuIsoNJets_->Fill(NJets,Weight,false);
+      MuIsoHT_->Fill(HT,Weight,false);
+      MuIsoMHT_->Fill(MHT,Weight,false);
+      MuIsoPT_->Fill(GenMus->at(0).Pt(),Weight,false);
+      MuIsoActivity_->Fill(GenMu_MT2Activity->at(0),Weight,false);
+      MuIsoRelPTJet_->Fill(GenMuRelPTJet->at(0),Weight,false);
+      MuIsoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),Weight,false);
+      //2D
+      MuIsoActivityPT_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),Weight,false);
+      MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),Weight,false);
+  }
+  
+  // single elecon control sample
+  if(elecIso==2){
+      //1D
+      ElecIsoBTag_->Fill(BTags,Weight,true);
+      ElecIsoNJets_->Fill(NJets,Weight,true);
+      ElecIsoHT_->Fill(HT,Weight,true);
+      ElecIsoMHT_->Fill(MHT,Weight,true);
+      ElecIsoPT_->Fill(GenEls->at(0).Pt(),Weight,true);
+      ElecIsoActivity_->Fill(GenElec_MT2Activity->at(0),Weight,true);
+      ElecIsoRelPTJet_->Fill(GenElecRelPTJet->at(0),Weight,true);
+      ElecIsoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),Weight,true);
+      //2D
+      ElecIsoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),Weight,true);
+      ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,true);
+  }
+
+  if(elecIso==0){
+      //1D
+      ElecIsoBTag_->Fill(BTags,Weight,false);
+      ElecIsoNJets_->Fill(NJets,Weight,false);
+      ElecIsoHT_->Fill(HT,Weight,false);
+      ElecIsoMHT_->Fill(MHT,Weight,false);
+      ElecIsoPT_->Fill(GenEls->at(0).Pt(),Weight,false);
+      ElecIsoActivity_->Fill(GenElec_MT2Activity->at(0),Weight,false);
+      ElecIsoRelPTJet_->Fill(GenElecRelPTJet->at(0),Weight,false);
+      ElecIsoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),Weight,false);
+      //2D
+      ElecIsoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),Weight,false);
+      ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),Weight,false);
+  }
+
+  // mtw
+  // single muon control sample
+  if(muIso==2 && MTW < mtwCut_){
+      // 1D
+      MuMTWBTag_->Fill(BTags,Weight,true);
+      MuMTWNJets_->Fill(NJets,Weight,true);
+      MuMTWHT_->Fill(HT,Weight,true);
+      MuMTWMHT_->Fill(MHT,Weight,true);
+      MuMTWPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,true);
+      MuMTWActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),Weight,true);
+      MuMTWPTActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),selectedIDIsoMuons->at(0).Pt(),Weight,true);
+      MuMTWHTNJets_->Fill(HT, NJets, Weight, true);
+      MuMTWMHTNJets_->Fill(MHT, NJets, Weight, true);
+      MuMTWHTMHT_->Fill(HT, MHT, Weight, true);
+  }
+
+  if(muIso==2 && MTW > mtwCut_){
+      // 1D
+      MuMTWBTag_->Fill(BTags,Weight,false);
+      MuMTWNJets_->Fill(NJets,Weight,false);
+      MuMTWHT_->Fill(HT,Weight,false);
+      MuMTWMHT_->Fill(MHT,Weight,false);
+      MuMTWPT_->Fill(selectedIDIsoMuons->at(0).Pt(),Weight,false);
+      MuMTWActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),Weight,false);
+      MuMTWPTActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),selectedIDIsoMuons->at(0).Pt(),Weight,false);
+      MuMTWHTNJets_->Fill(HT, NJets, Weight, false);
+      MuMTWMHTNJets_->Fill(MHT, NJets, Weight, false);
+      MuMTWHTMHT_->Fill(HT, MHT, Weight, false);
+  }
+  
+  // single elec control sample
+  if(elecIso==2 && MTW < mtwCut_){
+      // 1D
+      ElecMTWBTag_->Fill(BTags,Weight,true);
+      ElecMTWNJets_->Fill(NJets,Weight,true);
+      ElecMTWHT_->Fill(HT,Weight,true);
+      ElecMTWMHT_->Fill(MHT,Weight,true);
+      ElecMTWPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,true);
+      ElecMTWActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),Weight,true);
+      ElecMTWPTActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),selectedIDIsoElectrons->at(0).Pt(),Weight,true);
+      ElecMTWHTNJets_->Fill(HT, NJets, Weight, true);
+      ElecMTWMHTNJets_->Fill(MHT, NJets, Weight, true);
+      ElecMTWHTMHT_->Fill(HT, MHT, Weight, true);
+  }
+
+  if(elecIso==2 && MTW > mtwCut_){
+      // 1D
+      ElecMTWBTag_->Fill(BTags,Weight,false);
+      ElecMTWNJets_->Fill(NJets,Weight,false);
+      ElecMTWHT_->Fill(HT,Weight,false);
+      ElecMTWMHT_->Fill(MHT,Weight,false);
+      ElecMTWPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),Weight,false);
+      ElecMTWActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),Weight,false);
+      ElecMTWPTActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),selectedIDIsoElectrons->at(0).Pt(),Weight,false);
+      ElecMTWHTNJets_->Fill(HT, NJets, Weight, false);
+      ElecMTWMHTNJets_->Fill(MHT, NJets, Weight, false);
+      ElecMTWHTMHT_->Fill(HT, MHT, Weight, false);
+  }
+
+  // di lep contribution
+  if(MuDiLepControlSample==2){
+      // 1D
+      MuDiLepBTag_->Fill(BTags,Weight,true);
+      MuDiLepNJets_->Fill(NJets,Weight,true);
+      MuDiLepHT_->Fill(HT,Weight,true);
+      MuDiLepMHT_->Fill(MHT,Weight,true);
+
+      // 1D
+      MuDiLepContributionBTag_->Fill(BTags,Weight,true);
+      MuDiLepContributionNJets_->Fill(NJets,Weight,true);
+      MuDiLepContributionHT_->Fill(HT,Weight,true);
+      MuDiLepContributionMHT_->Fill(MHT,Weight,true);
+
+      if(MTW <mtwCut_){
+          // 1D
+          MuDiLepFractionBTag_->Fill(BTags,Weight,true);
+          MuDiLepFractionNJets_->Fill(NJets,Weight,true);
+          MuDiLepFractionHT_->Fill(HT,Weight,true);
+          MuDiLepFractionMHT_->Fill(MHT,Weight,true);
+      }
+
+
+      if(MTW <mtwCut_){
+          // 1D
+          MuDiLepContributionMTWBTag_->Fill(BTags,Weight,true);
+          MuDiLepContributionMTWNJets_->Fill(NJets,Weight,true);
+          MuDiLepContributionMTWHT_->Fill(HT,Weight,true);
+          MuDiLepContributionMTWMHT_->Fill(MHT,Weight,true);
+          MuDiLepContributionMTWMHTNJets_->Fill(MHT,NJets,Weight,true);
+      }
+    
+  }
+
+  if(MuDiLepControlSample==0){
+      // 1D
+      MuDiLepContributionBTag_->Fill(BTags,Weight,false);
+      MuDiLepContributionNJets_->Fill(NJets,Weight,false);
+      MuDiLepContributionHT_->Fill(HT,Weight,false);
+      MuDiLepContributionMHT_->Fill(MHT,Weight,false);
+
+      // 1D
+      MuDiLepBTag_->Fill(BTags,Weight,false);
+      MuDiLepNJets_->Fill(NJets,Weight,false);
+      MuDiLepHT_->Fill(HT,Weight,false);
+      MuDiLepMHT_->Fill(MHT,Weight,false);
+    
+      if(MTW <mtwCut_){
+          // 1D
+          MuDiLepMTWBTag_->Fill(BTags,Weight,true);
+          MuDiLepMTWNJets_->Fill(NJets,Weight,true);
+          MuDiLepMTWHT_->Fill(HT,Weight,true);
+          MuDiLepMTWMHT_->Fill(MHT,Weight,true);
+      }
+
+      if(MTW <mtwCut_){
+          // 1D
+          MuDiLepContributionMTWBTag_->Fill(BTags,Weight,false);
+          MuDiLepContributionMTWNJets_->Fill(NJets,Weight,false);
+          MuDiLepContributionMTWHT_->Fill(HT,Weight,false);
+          MuDiLepContributionMTWMHT_->Fill(MHT,Weight,false);
+          MuDiLepContributionMTWMHTNJets_->Fill(MHT,NJets,Weight,false);
+      }
+  }
+
+  if(ExpectationDiLep==1){
+          MuDiLepFractionBTag_->Fill(BTags,Weight,false);
+          MuDiLepFractionNJets_->Fill(NJets,Weight,false);
+          MuDiLepFractionHT_->Fill(HT,Weight,false);
+          MuDiLepFractionMHT_->Fill(MHT,Weight,false);
+
+          MuDiLepMTWBTag_->Fill(BTags,Weight,false);
+          MuDiLepMTWNJets_->Fill(NJets,Weight,false);
+          MuDiLepMTWHT_->Fill(HT,Weight,false);
+          MuDiLepMTWMHT_->Fill(MHT,Weight,false);
+  }
+  
+  if(ElecDiLepControlSample==2){
+      // 1D
+      ElecDiLepBTag_->Fill(BTags,Weight,true);
+      ElecDiLepNJets_->Fill(NJets,Weight,true);
+      ElecDiLepHT_->Fill(HT,Weight,true);
+      ElecDiLepMHT_->Fill(MHT,Weight,true);
+
+      // 1D
+      ElecDiLepContributionBTag_->Fill(BTags,Weight,true);
+      ElecDiLepContributionNJets_->Fill(NJets,Weight,true);
+      ElecDiLepContributionHT_->Fill(HT,Weight,true);
+      ElecDiLepContributionMHT_->Fill(MHT,Weight,true);
+
+      if(MTW <mtwCut_){
+          // 1D
+          ElecDiLepFractionBTag_->Fill(BTags,Weight,true);
+          ElecDiLepFractionNJets_->Fill(NJets,Weight,true);
+          ElecDiLepFractionHT_->Fill(HT,Weight,true);
+          ElecDiLepFractionMHT_->Fill(MHT,Weight,true);
+      }
+      
+      if(MTW <mtwCut_){
+          // 1D
+          ElecDiLepContributionMTWBTag_->Fill(BTags,Weight,true);
+          ElecDiLepContributionMTWNJets_->Fill(NJets,Weight,true);
+          ElecDiLepContributionMTWHT_->Fill(HT,Weight,true);
+          ElecDiLepContributionMTWMHT_->Fill(MHT,Weight,true);
+          ElecDiLepContributionMTWMHTNJets_->Fill(MHT,NJets,Weight,true);
+      }
+    
+  }
+
+  if(ElecDiLepControlSample==0) {
+    
+      // 1D
+      ElecDiLepContributionBTag_->Fill(BTags,Weight,false);
+      ElecDiLepContributionNJets_->Fill(NJets,Weight,false);
+      ElecDiLepContributionHT_->Fill(HT,Weight,false);
+      ElecDiLepContributionMHT_->Fill(MHT,Weight,false);
+
+      // 1D
+      ElecDiLepBTag_->Fill(BTags,Weight,false);
+      ElecDiLepNJets_->Fill(NJets,Weight,false);
+      ElecDiLepHT_->Fill(HT,Weight,false);
+      ElecDiLepMHT_->Fill(MHT,Weight,false);
+    
+      if(MTW <mtwCut_){
+          // 1D
+          ElecDiLepMTWBTag_->Fill(BTags,Weight,true);
+          ElecDiLepMTWNJets_->Fill(NJets,Weight,true);
+          ElecDiLepMTWHT_->Fill(HT,Weight,true);
+          ElecDiLepMTWMHT_->Fill(MHT,Weight,true);
+      }
+
+      if(MTW <mtwCut_){
+          // 1D
+          ElecDiLepContributionMTWBTag_->Fill(BTags,Weight,false);
+          ElecDiLepContributionMTWNJets_->Fill(NJets,Weight,false);
+          ElecDiLepContributionMTWHT_->Fill(HT,Weight,false);
+          ElecDiLepContributionMTWMHT_->Fill(MHT,Weight,false);
+          ElecDiLepContributionMTWMHTNJets_->Fill(MHT,NJets,Weight,false);
+      }
+  } 
+
+    if(ExpectationDiLep==1){
+          ElecDiLepFractionBTag_->Fill(BTags,Weight,false);
+          ElecDiLepFractionNJets_->Fill(NJets,Weight,false);
+          ElecDiLepFractionHT_->Fill(HT,Weight,false);
+          ElecDiLepFractionMHT_->Fill(MHT,Weight,false);
+
+          ElecDiLepMTWBTag_->Fill(BTags,Weight,false);
+          ElecDiLepMTWNJets_->Fill(NJets,Weight,false);
+          ElecDiLepMTWHT_->Fill(HT,Weight,false);
+          ElecDiLepMTWMHT_->Fill(MHT,Weight,false);
+  }
+    
+  // ExpectationReductionIsoTrack
+  if(Expectation==1 && ExpectationReductionIsoTrack==0){
+      //  cout << "Event not rejected by iso track veto" << endl;
+      ExpectationReductionIsoTrackBTagEff_->Fill(BTags,Weight,false);
+      ExpectationReductionIsoTrackNJetsEff_->Fill(NJets,Weight,false);
+      ExpectationReductionIsoTrackHTEff_->Fill(HT,Weight,false);
+      ExpectationReductionIsoTrackMHTEff_->Fill(MHT,Weight,false);
+
+      if(GenMuNum>0){
+          //  cout << "Muon event" << endl;
+          ExpectationReductionIsoTrackPTEff_->Fill(GenMus->at(0).Pt(),Weight,false);
+          ExpectationReductionIsoTrackActivityEff_->Fill(GenMu_MT2Activity->at(0),Weight,false);
+      }else if(GenElecNum>0){
+          // cout << "Electron event" << endl;
+          ExpectationReductionIsoTrackPTEff_->Fill(GenEls->at(0).Pt(),Weight,false);
+          ExpectationReductionIsoTrackActivityEff_->Fill(GenElec_MT2Activity->at(0),Weight,false);
+      }else if(GenTauNum>0){
+          // cout << "Tau event" << endl;
+          ExpectationReductionIsoTrackPTEff_->Fill(GenTaus->at(0).Pt(),Weight,false);
+          ExpectationReductionIsoTrackActivityEff_->Fill(GenTau_MT2Activity->at(0),Weight,false);
+      }else std::cout<<"No gen lepton found to fail..."<<std::endl;
+
+      //2D
+      IsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
+      IsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
+      IsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);      
+      if(NJets < 3.5) IsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,false);
+      else if(NJets < 6.5) IsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+      else IsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
+      if(NJets > 1.5 && NJets < 2.5) IsoTrackReductionHTMHT_NJets2_->Fill(HT,MHT,Weight,false);
+      if(NJets > 2.5 && NJets < 3.5) IsoTrackReductionHTMHT_NJets3_->Fill(HT,MHT,Weight,false);
+      if(NJets > 3.5 && NJets < 4.5) IsoTrackReductionHTMHT_NJets4_->Fill(HT,MHT,Weight,false);
+      if(NJets > 4.5 && NJets < 5.5) IsoTrackReductionHTMHT_NJets5_->Fill(HT,MHT,Weight,false);
+      if(NJets > 5.5 && NJets < 6.5) IsoTrackReductionHTMHT_NJets6_->Fill(HT,MHT,Weight,false);
+
+      if(GenMuNum>0){
+          IsoTrackReductionPTActivity_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),Weight,false);
+      }else if(GenElecNum>0){
+          IsoTrackReductionPTActivity_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),Weight,false);
+      }else if(GenTauNum>0){
+          IsoTrackReductionPTActivity_->Fill(GenTau_MT2Activity->at(0),GenTaus->at(0).Pt(),Weight,false);
+      }
+  }
+  
+  if(Expectation==1 && ExpectationReductionIsoTrack==1){
+      // cout << "Event rejected by iso track veto" << endl;
+      ExpectationReductionIsoTrackBTagEff_->Fill(BTags,Weight,true);
+      ExpectationReductionIsoTrackNJetsEff_->Fill(NJets,Weight,true);
+      ExpectationReductionIsoTrackHTEff_->Fill(HT,Weight,true);
+      ExpectationReductionIsoTrackMHTEff_->Fill(MHT,Weight,true);
+
+      if(isoMuonTracks>0 && GenMuNum>0){
+          ExpectationReductionIsoTrackPTEff_->Fill(GenMus->at(0).Pt(),Weight,true);
+          ExpectationReductionIsoTrackActivityEff_->Fill(GenMu_MT2Activity->at(0),Weight,true);
+      }else if(isoElectronTracks>0 && GenElecNum>0){
+          ExpectationReductionIsoTrackPTEff_->Fill(GenEls->at(0).Pt(),Weight,true);
+          ExpectationReductionIsoTrackActivityEff_->Fill(GenElec_MT2Activity->at(0),Weight,true);
+      }else if(isoPionTracks>0 && GenTauNum>0){
+          ExpectationReductionIsoTrackPTEff_->Fill(GenTaus->at(0).Pt(),Weight,true);
+          ExpectationReductionIsoTrackActivityEff_->Fill(GenTau_MT2Activity->at(0),Weight,true);
+    }
+
+    //2D
+    IsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
+    IsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
+    IsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
+    if(NJets < 3.5) IsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,true);
+    else if(NJets < 6.5) IsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+    else IsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
+    if(NJets > 1.5 && NJets < 2.5) IsoTrackReductionHTMHT_NJets2_->Fill(HT,MHT,Weight,true);
+    if(NJets > 2.5 && NJets < 3.5) IsoTrackReductionHTMHT_NJets3_->Fill(HT,MHT,Weight,true);
+    if(NJets > 3.5 && NJets < 4.5) IsoTrackReductionHTMHT_NJets4_->Fill(HT,MHT,Weight,true);
+    if(NJets > 4.5 && NJets < 5.5) IsoTrackReductionHTMHT_NJets5_->Fill(HT,MHT,Weight,true);
+    if(NJets > 5.5 && NJets < 6.5) IsoTrackReductionHTMHT_NJets6_->Fill(HT,MHT,Weight,true);
+
+    if(isoMuonTracks>0 && GenMuNum>0){
+        IsoTrackReductionPTActivity_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),Weight,true);
+    }else if(isoElectronTracks>0 && GenElecNum>0){
+        IsoTrackReductionPTActivity_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),Weight,true);
+    }else if(isoPionTracks>0 && GenTauNum>0){
+        IsoTrackReductionPTActivity_->Fill(GenTau_MT2Activity->at(0),GenTaus->at(0).Pt(),Weight,true);
+    }
+  }
+
+    // In order to avoid double-counting events, only select track with highest pt
+    if(Expectation==1){
+        int isoTrack_highestPt = 0;
+
+        if(isoMuonTracks>0){
+            isoTrack_highestPt = 1;
+            if(isoElectronTracks>0 && isoPionTracks>0){
+                if(IsolatedElectronTracksVeto->at(0).Pt() > TMath::Max(IsolatedMuonTracksVeto->at(0).Pt(), IsolatedPionTracksVeto->at(0).Pt())) isoTrack_highestPt = 2;
+                if(IsolatedPionTracksVeto->at(0).Pt() > TMath::Max(IsolatedMuonTracksVeto->at(0).Pt(), IsolatedElectronTracksVeto->at(0).Pt())) isoTrack_highestPt = 3;
+            }else if(isoElectronTracks>0){
+                if(IsolatedElectronTracksVeto->at(0).Pt() > IsolatedMuonTracksVeto->at(0).Pt()) isoTrack_highestPt = 2;
+            }else if(isoPionTracks>0){
+                if(IsolatedPionTracksVeto->at(0).Pt() > IsolatedMuonTracksVeto->at(0).Pt()) isoTrack_highestPt = 3;
+            }
+        }else if(isoElectronTracks>0){
+            isoTrack_highestPt = 2;
+            if(isoPionTracks>0) if(IsolatedPionTracksVeto->at(0).Pt() > IsolatedElectronTracksVeto->at(0).Pt()) isoTrack_highestPt = 3;
+        }else if(isoPionTracks>0){
+            isoTrack_highestPt = 3;
+        }
+
+
+        // muon iso tracks
+        if(isoMuonTracks>0 && isoTrack_highestPt==1){
+            // cout << "Muon tracks found...";
+            ExpectationReductionMuIsoTrackBTagEff_->Fill(BTags,Weight,true);
+            ExpectationReductionMuIsoTrackNJetsEff_->Fill(NJets,Weight,true);
+            ExpectationReductionMuIsoTrackHTEff_->Fill(HT,Weight,true);
+            ExpectationReductionMuIsoTrackMHTEff_->Fill(MHT,Weight,true);
+            ExpectationReductionMuIsoTrackPTEff_->Fill(IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
+            //  ExpectationReductionMuIsoTrackActivityEff_->Fill(IsolatedMuonTracksVetoActivity->at(0),Weight,true);
+          
+            //2D
+            MuIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
+            MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
+            MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
+            //  MuIsoTrackReductionPTActivity_->Fill(IsolatedMuonTracksVetoActivity->at(0),IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
+            if(NJets < 3.5) MuIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,true);
+            else if(NJets < 6.5) MuIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+            else MuIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
+            // cout << "DONE" << endl;
+        }else{
+            // cout << "Muon tracks not found...";
+            ExpectationReductionMuIsoTrackBTagEff_->Fill(BTags,Weight,false);
+            ExpectationReductionMuIsoTrackNJetsEff_->Fill(NJets,Weight,false);
+            ExpectationReductionMuIsoTrackHTEff_->Fill(HT,Weight,false);
+            ExpectationReductionMuIsoTrackMHTEff_->Fill(MHT,Weight,false);
+            // JACK -- placeholders
+            ExpectationReductionMuIsoTrackPTEff_->Fill(0,Weight,false);
+            //  ExpectationReductionMuIsoTrackActivityEff_->Fill(0,Weight,false);
+            //2D
+            MuIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
+            MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
+            MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
+            //  MuIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
+            if(NJets < 3.5) MuIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,false);
+            else if(NJets < 6.5) MuIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+            else MuIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
+            // cout << "DONE" << endl;
+        }
+      
+      
+        // elec iso tracks
+        if(isoElectronTracks>0 && isoTrack_highestPt==2){
+            // cout << "Electron tracks found...";
+            ExpectationReductionElecIsoTrackBTagEff_->Fill(BTags,Weight,true);
+            ExpectationReductionElecIsoTrackNJetsEff_->Fill(NJets,Weight,true);
+            ExpectationReductionElecIsoTrackHTEff_->Fill(HT,Weight,true);
+            ExpectationReductionElecIsoTrackMHTEff_->Fill(MHT,Weight,true);
+            ExpectationReductionElecIsoTrackPTEff_->Fill(IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
+            //  ExpectationReductionElecIsoTrackActivityEff_->Fill(IsolatedElectronTracksVetoActivity->at(0),Weight,true);
+          
+            //2D
+            ElecIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
+            ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
+            ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
+            //  ElecIsoTrackReductionPTActivity_->Fill(IsolatedElectronTracksVetoActivity->at(0),IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
+            if(NJets < 3.5) ElecIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,true);
+            else if(NJets < 6.5) ElecIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+            else ElecIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
+            // cout << "DONE" << endl;    
+        }else{
+            // cout << "Electron tracks not found...";
+            ExpectationReductionElecIsoTrackBTagEff_->Fill(BTags,Weight,false);
+            ExpectationReductionElecIsoTrackNJetsEff_->Fill(NJets,Weight,false);
+            ExpectationReductionElecIsoTrackHTEff_->Fill(HT,Weight,false);
+            ExpectationReductionElecIsoTrackMHTEff_->Fill(MHT,Weight,false);
+            ExpectationReductionElecIsoTrackPTEff_->Fill(0,Weight,false);
+            //  ExpectationReductionElecIsoTrackActivityEff_->Fill(0,Weight,false);
+            //2D
+            ElecIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
+            ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
+            ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
+            //  ElecIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
+            if(NJets < 3.5) ElecIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,false);
+            else if(NJets < 6.5) ElecIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+            else ElecIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
+            // cout << "DONE" << endl;    
+        }
+
+        // pion iso tracks
+        if(isoPionTracks>0 && isoTrack_highestPt==3){
+            // cout << "Pion tracks found...";
+            ExpectationReductionPionIsoTrackBTagEff_->Fill(BTags,Weight,true);
+            ExpectationReductionPionIsoTrackNJetsEff_->Fill(NJets,Weight,true);
+            ExpectationReductionPionIsoTrackHTEff_->Fill(HT,Weight,true);
+            ExpectationReductionPionIsoTrackMHTEff_->Fill(MHT,Weight,true);
+            ExpectationReductionPionIsoTrackPTEff_->Fill(IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
+            //  ExpectationReductionPionIsoTrackActivityEff_->Fill(IsolatedPionTracksVetoActivity->at(0),Weight,true);
+          
+            //2D
+            PionIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
+            PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
+            PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
+            //  PionIsoTrackReductionPTActivity_->Fill(IsolatedPionTracksVetoActivity->at(0),IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
+            if(NJets < 3.5) PionIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,true);
+            else if(NJets < 6.5) PionIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
+            else PionIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
+            // cout << "DONE" << endl;    
+        }else{
+            // cout << "Pion tracks not found...";
+            ExpectationReductionPionIsoTrackBTagEff_->Fill(BTags,Weight,false);
+            ExpectationReductionPionIsoTrackNJetsEff_->Fill(NJets,Weight,false);
+            ExpectationReductionPionIsoTrackHTEff_->Fill(HT,Weight,false);
+            ExpectationReductionPionIsoTrackMHTEff_->Fill(MHT,Weight,false);
+            ExpectationReductionPionIsoTrackPTEff_->Fill(0,Weight,false);
+            //  ExpectationReductionPionIsoTrackActivityEff_->Fill(0,Weight,false);
+            //2D
+            PionIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,false);
+            PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,false);
+            PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,false);
+            //  PionIsoTrackReductionPTActivity_->Fill(0,0,Weight,false);
+            if(NJets < 3.5) PionIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,false);
+            else if(NJets < 6.5) PionIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,false);
+            else PionIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,false);
+            // cout << "DONE" << endl;    
+        }
+
+	// MHT/PTW histograms
+	int INJ(-1);
+	if (NJets>=4&&NJets<=6) INJ=0;
+	else if (NJets>=7&&NJets<=8) INJ=1;
+	else if (NJets>=9) INJ=2;
+	int INB(BTags);
+	if (INB>2) INB=2;
+	int IHT(-1);
+	if (HT>500&&HT<800) IHT=0;
+	else if (HT>800&&HT<1200) IHT=1;
+	else if (HT>1200) IHT=2;
+	if (HT<800&&MHT>750) IHT=-1;
+
+	//	printf("INJ/INB/IHT = %d/%d/%d\n", INJ, INB, IHT);
+	if (INJ>=0&&INB>=0&&IHT>=0) {
+	  if (Expectation==1) {
+	    if (GenMuNum==1&&GenElecNum==0) {	         
+	      if (ExpectationReductionIsoTrack==0) {
+		double PTW = sqrt( (GenMus->at(0).Px()+MHT*cos(MHT_Phi))*(GenMus->at(0).Px()+MHT*cos(MHT_Phi)) +  (GenMus->at(0).Py()+MHT*sin(MHT_Phi))*(GenMus->at(0).Py()+MHT*sin(MHT_Phi)) );
+		if (HT>500&&HT<1200) LostMuRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>1200) LostMuRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>800) LostMuRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>500&&HT<1200) LostLepRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>1200) LostLepRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, Weight);
+	      }
+	    }
+	    else if (GenMuNum==0&&GenElecNum==1) {
+	      if (ExpectationReductionIsoTrack==0) {	      
+		double PTW = sqrt( (GenEls->at(0).Px()+MHT*cos(MHT_Phi))*(GenEls->at(0).Px()+MHT*cos(MHT_Phi)) +  (GenEls->at(0).Py()+MHT*sin(MHT_Phi))*(GenEls->at(0).Py()+MHT*sin(MHT_Phi)) );
+		if (HT>500&&HT<1200) LostElecRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>1200) LostElecRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>800) LostElecRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>500&&HT<1200) LostLepRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>1200) LostLepRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, Weight);
+		if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, Weight);
+	      }
+	    } // 1-electron events
+	    // what do we want to do with di/multi-lepton events?
+	    // commented out below: take sum of all leptons and MHT
+	    // else if (GenMuNum+GenElecNum>1) { 
+	    //   std::vector<TLorentzVector> GenLeps;
+	    //   for (unsigned int imu(0); imu<GenMuNum; imu++) {
+	    // 	GenLeps.push_back(GenMus->at(imu));
+	    //   }
+	    //   for (unsigned int iel(0); iel<GenElecNum; iel++) {
+	    // 	GenLeps.push_back(GenEls->at(iel));
+	    //   }
+	    //   double PXW(MHT*cos(MHT_Phi)), PYW(MHT*sin(MHT_Phi));
+	    //   for (unsigned int ilep(0); ilep<GenLeps.size(); ilep++) {
+	    // 	PXW+=GenLeps[ilep].Px();
+	    // 	PYW+=GenLeps[ilep].Py();
+	    //   }
+	    //   double PTW = sqrt(PXW*PXW+PYW*PYW);
+	    //   if (HT>500&&HT<1200) LostLepRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, Weight);
+	    //   if (HT>1200) LostLepRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, Weight);
+	    //   if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, Weight);
+	    // } // di/multi-lepton events
+	  }
+	}
+	
+    }
+  
+  return kTRUE;
+}
+
+void EffMaker::SlaveTerminate()
+{
+  // The SlaveTerminate() function is called after all entries or objects
+  // have been processed. When running with PROOF SlaveTerminate() is called
+  // on each slave server.
+  
+}
+
+void EffMaker::Terminate()
+{
+
+  
+  TFile *outPutFile = new TFile(fileName,"RECREATE"); 
+  outPutFile->cd();
+  outPutFile->mkdir("Efficiencies");
+  TDirectory *dEfficiencies = (TDirectory*)outPutFile->Get("Efficiencies");
+  dEfficiencies->cd();
+  gStyle->SetPaintTextFormat("5.2f");
+  gStyle->SetStatW(0.1);
+  gStyle->SetStatH(0.1);
+  gStyle->SetStatY(202);
+  gStyle->SetTitleYOffset(1.3);
+
+  gStyle->SetPalette(56);
+  gStyle->SetMarkerSize(1.3);
+  
+  // purity
+  //muon
+  //1D
+  MuPurityOldBTag_->SaveEff("#mu purity; B_{Tags}", dEfficiencies);
+  MuPurityOldNJets_->SaveEff("#mu purity; N_{Jets}", dEfficiencies);   
+  MuPurityOldHT_->SaveEff("#mu purity; H_{T} [GeV]", dEfficiencies);   
+  MuPurityOldMHT_->SaveEff("#mu purity; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuonPurityOldMHTNJet_->SaveEff("#mu purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  //1D
+  ElecPurityOldBTag_->SaveEff("e purity; B_{Tags}", dEfficiencies);
+  ElecPurityOldNJets_->SaveEff("e purity; N_{Jets}", dEfficiencies);   
+  ElecPurityOldHT_->SaveEff("e purity; H_{T} [GeV]", dEfficiencies);   
+  ElecPurityOldMHT_->SaveEff("e purity; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecPurityOldMHTNJet_->SaveEff("e purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  MuPurityBTag_->SaveEff("#mu purity; B_{Tags}", dEfficiencies);   
+  MuPurityNJets_->SaveEff("#mu purity; N_{Jets}", dEfficiencies);   
+  MuPurityHT_->SaveEff("#mu purity; H_{T} [GeV]", dEfficiencies);   
+  MuPurityMHT_->SaveEff("#mu purity; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuonPurityMHTNJet_->SaveEff("#mu purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  //elec
+  //1D
+  ElecPurityBTag_->SaveEff("e purity; B_{Tags}", dEfficiencies);   
+  ElecPurityNJets_->SaveEff("e purity; N_{Jets}", dEfficiencies);   
+  ElecPurityHT_->SaveEff("e purity; H_{T} [GeV]", dEfficiencies);   
+  ElecPurityMHT_->SaveEff("e purity; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecPurityMHTNJet_->SaveEff("e purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+
+  // acc
+  //muon
+  //1D
+  MuAccBTag_->SaveEff("#mu acc; B_{Tags}", dEfficiencies);   
+  MuAccNJets_->SaveEff("#mu acc; N_{Jets}", dEfficiencies);   
+  MuAccHT_->SaveEff("#mu acc; H_{T} [GeV]", dEfficiencies);   
+  MuAccMHT_->SaveEff("#mu acc; #slash{H}_{T} [GeV]", dEfficiencies); 
+  MuAccDTT_->SaveEff("#mu acc; 0.5*(1-cosDTT)", dEfficiencies);  
+  // 2D 
+  MuAccHTNJets_->SaveEff("#mu acc; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  MuAccHTMHT_->SaveEff("#mu acc; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccMHTNJets_->SaveEff("#mu acc; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  MuAccBTagNJets_->SaveEff("#mu acc; B_{Tags}; N_{Jets}", dEfficiencies);   
+  MuAccMHTNJetsB0_->SaveEff("#mu acc B_{Tags}=0; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  MuAccMHTNJetsB1_Inf_->SaveEff("#mu acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);    
+  MuAccHTMHT_NJetsLow_->SaveEff("#mu acc N_{Jets}=2-6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets2_->SaveEff("#mu acc N_{Jets}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets3_->SaveEff("#mu acc N_{Jets}=3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets4_->SaveEff("#mu acc N_{Jets}=4;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets5_->SaveEff("#mu acc N_{Jets}=5;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets6_->SaveEff("#mu acc N_{Jets}=6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets78_->SaveEff("#mu acc N_{Jets}=7-8;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJets9Inf_->SaveEff("#mu acc N_{Jets}=9+;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHT_NJetsHigh_->SaveEff("#mu acc N_{Jets}#geq7;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHTB0_->SaveEff("#mu acc B_{Tags}=0;H_{T} [GeV] ; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuAccHTMHTB1_Inf_->SaveEff("#mu acc B_{Tags}#geq1; H_{T} [GeV]; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+
+  //elec
+  //1D
+  ElecAccBTag_->SaveEff("e acc; B_{Tags}", dEfficiencies);   
+  ElecAccNJets_->SaveEff("e acc; N_{Jets}", dEfficiencies);   
+  ElecAccHT_->SaveEff("e acc; H_{T} [GeV]", dEfficiencies);   
+  ElecAccMHT_->SaveEff("e acc; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecAccDTT_->SaveEff("e acc; 0.5*(1-cosDTT)", dEfficiencies);
+  // 2D 
+  ElecAccHTNJets_->SaveEff("e acc; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  ElecAccHTMHT_->SaveEff("e acc; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccMHTNJets_->SaveEff("e acc; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  ElecAccBTagNJets_->SaveEff("e acc; B_{Tags}; N_{Jets}", dEfficiencies);   
+  ElecAccMHTNJetsB0_->SaveEff("e acc B_{Tags}=0; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  ElecAccMHTNJetsB1_Inf_->SaveEff("e acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  ElecAccHTMHT_NJetsLow_->SaveEff("e acc N_{Jets}=2-6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets2_->SaveEff("e acc N_{Jets}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets3_->SaveEff("e acc N_{Jets}=3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets4_->SaveEff("e acc N_{Jets}=4;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets5_->SaveEff("e acc N_{Jets}=5;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets6_->SaveEff("e acc N_{Jets}=6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets78_->SaveEff("e acc N_{Jets}=7-8;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJets9Inf_->SaveEff("e acc N_{Jets}=9+;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHT_NJetsHigh_->SaveEff("e acc N_{Jets}#geq7;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHTB0_->SaveEff("e acc B_{Tags}=0;H_{T} [GeV] ; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecAccHTMHTB1_Inf_->SaveEff("e acc B_{Tags}#geq1; H_{T} [GeV]; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+
+  // reco
+  //muon
+  //1D
+  MuRecoBTag_->SaveEff("#mu reco; B_{Tags}", dEfficiencies);   
+  MuRecoNJets_->SaveEff("#mu reco; N_{Jets}", dEfficiencies);   
+  MuRecoHT_->SaveEff("#mu reco; H_{T} [GeV]", dEfficiencies);   
+  MuRecoMHT_->SaveEff("#mu reco; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuRecoRelPTJet_->SaveEff("#mu reco; p_{T}(#mu)/Jet p_{T}", dEfficiencies);   
+  MuRecoDeltaRJet_->SaveEff("#mu reco; #DeltaR", dEfficiencies);   
+  MuRecoRelPTDeltaRJet_->SaveEff("#mu reco; p_{T}(#mu)/Jet p_{T}; #DeltaR", dEfficiencies);   
+
+  //elec
+  //1D
+  ElecRecoBTag_->SaveEff("e reco; B_{Tags}", dEfficiencies);   
+  ElecRecoNJets_->SaveEff("e reco; N_{Jets}", dEfficiencies);   
+  ElecRecoHT_->SaveEff("e reco; H_{T} [GeV]", dEfficiencies);   
+  ElecRecoMHT_->SaveEff("e reco; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecRecoRelPTJet_->SaveEff("e reco; p_{T}(e)/Jet p_{T}", dEfficiencies);   
+  ElecRecoDeltaRJet_->SaveEff("e reco; #DeltaR", dEfficiencies);   
+  ElecRecoRelPTDeltaRJet_->SaveEff("e reco; p_{T}(e)/Jet p_{T}; #DeltaR", dEfficiencies);   
+
+  // iso
+  //muon
+  //1D
+  MuIsoBTag_->SaveEff("#mu iso; B_{Tags}", dEfficiencies);   
+  MuIsoNJets_->SaveEff("#mu iso; N_{Jets}", dEfficiencies);   
+  MuIsoHT_->SaveEff("#mu iso; H_{T} [GeV]", dEfficiencies);   
+  MuIsoMHT_->SaveEff("#mu iso; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuIsoRelPTJet_->SaveEff("#mu iso; p_{T}(#mu)/Jet p_{T}", dEfficiencies);   
+  MuIsoDeltaRJet_->SaveEff("#mu iso; #DeltaR", dEfficiencies);   
+  MuIsoRelPTDeltaRJet_->SaveEff("#mu iso; p_{T}(#mu)/Jet p_{T}; #DeltaR", dEfficiencies);   
+
+  //elec
+  //1D
+  ElecIsoBTag_->SaveEff("e iso; B_{Tags}", dEfficiencies);   
+  ElecIsoNJets_->SaveEff("e iso; N_{Jets}", dEfficiencies);   
+  ElecIsoHT_->SaveEff("e iso; H_{T} [GeV]", dEfficiencies);   
+  ElecIsoMHT_->SaveEff("e iso; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecIsoRelPTJet_->SaveEff("e iso; p_{T}(e)/Jet p_{T}", dEfficiencies);   
+  ElecIsoDeltaRJet_->SaveEff("e iso; #DeltaR", dEfficiencies);   
+  ElecIsoRelPTDeltaRJet_->SaveEff("e iso; p_{T}(e)/Jet p_{T}; #DeltaR", dEfficiencies);   
+
+  // m_{T}^{W}
+  //muon
+  //1D
+  MuMTWBTag_->SaveEff("#mu m_{T}^{W}; B_{Tags}", dEfficiencies);   
+  MuMTWNJets_->SaveEff("#mu m_{T}^{W}; N_{Jets}", dEfficiencies);   
+  MuMTWHT_->SaveEff("#mu m_{T}^{W}; H_{T} [GeV]", dEfficiencies);   
+  MuMTWMHT_->SaveEff("#mu m_{T}^{W}; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuMTWPTActivity_->SaveEff("#mu m_{T}^{W};  Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);
+  MuMTWHTNJets_->SaveEff("#mu m_{T}(w); H_{T} [GeV]; N_{Jets}", dEfficiencies);
+  MuMTWMHTNJets_->SaveEff("#mu m_{T}(w); #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
+  MuMTWHTMHT_->SaveEff("#mu m_{T}(w); H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+
+
+  //muon
+  //1D
+  MuDiLepBTag_->SaveEff("#mu di lep; B_{Tags}", dEfficiencies);   
+  MuDiLepNJets_->SaveEff("#mu di lep; N_{Jets}", dEfficiencies);   
+  MuDiLepHT_->SaveEff("#mu di lep; H_{T} [GeV]", dEfficiencies);   
+  MuDiLepMHT_->SaveEff("#mu di lep; #slash{H}_{T} [GeV]", dEfficiencies);   
+  MuDiLepMTWBTag_->SaveEff("#mu di lep; B_{Tags}", dEfficiencies);   
+  MuDiLepMTWNJets_->SaveEff("#mu di lep; N_{Jets}", dEfficiencies);   
+  MuDiLepMTWHT_->SaveEff("#mu di lep; H_{T} [GeV]", dEfficiencies);   
+  MuDiLepMTWMHT_->SaveEff("#mu di lep; #slash{H}_{T} [GeV]", dEfficiencies);   
+  //muon
+  //1D
+  MuDiLepContributionBTag_->SaveEff("#mu di lep contri; B_{Tags}", dEfficiencies);   
+  MuDiLepContributionNJets_->SaveEff("#mu di lep contri; N_{Jets}", dEfficiencies);   
+  MuDiLepContributionHT_->SaveEff("#mu di lep contri; H_{T} [GeV]", dEfficiencies);   
+  MuDiLepContributionMHT_->SaveEff("#mu di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuDiLepFractionBTag_->SaveEff("#mu di lep contri; B_{Tags}", dEfficiencies);   
+  MuDiLepFractionNJets_->SaveEff("#mu di lep contri; N_{Jets}", dEfficiencies);   
+  MuDiLepFractionHT_->SaveEff("#mu di lep contri; H_{T} [GeV]", dEfficiencies);   
+  MuDiLepFractionMHT_->SaveEff("#mu di lep contri; #slash{H}_{T} [GeV]", dEfficiencies); 
+  MuDiLepContributionMTWBTag_->SaveEff("#mu di lep contri; B_{Tags}", dEfficiencies);   
+  MuDiLepContributionMTWNJets_->SaveEff("#mu di lep contri; N_{Jets}", dEfficiencies);   
+  MuDiLepContributionMTWHT_->SaveEff("#mu di lep contri; H_{T} [GeV]", dEfficiencies);   
+  MuDiLepContributionMTWMHT_->SaveEff("#mu di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuDiLepContributionMTWMHTNJets_->SaveEff("#mu di lep contri; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
+
+  //elec
+  //1D
+  ElecMTWBTag_->SaveEff("e m_{T}^{W}; B_{Tags}", dEfficiencies);   
+  ElecMTWNJets_->SaveEff("e m_{T}^{W}; N_{Jets}", dEfficiencies);   
+  ElecMTWHT_->SaveEff("e m_{T}^{W}; H_{T} [GeV]", dEfficiencies);   
+  ElecMTWMHT_->SaveEff("e m_{T}^{W}; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecDiLepBTag_->SaveEff("e di lep; B_{Tags}", dEfficiencies);   
+  ElecDiLepNJets_->SaveEff("e di lep; N_{Jets}", dEfficiencies);   
+  ElecDiLepHT_->SaveEff("e di lep; H_{T} [GeV]", dEfficiencies);   
+  ElecDiLepMHT_->SaveEff("e di lep; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecDiLepMTWBTag_->SaveEff("e di lep; B_{Tags}", dEfficiencies);   
+  ElecDiLepMTWNJets_->SaveEff("e di lep; N_{Jets}", dEfficiencies);   
+  ElecDiLepMTWHT_->SaveEff("e di lep; H_{T} [GeV]", dEfficiencies);   
+  ElecDiLepMTWMHT_->SaveEff("e di lep; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ElecMTWPTActivity_->SaveEff("e m_{T}^{W}; Activity; p_{T}(e) [GeV]", dEfficiencies, true);
+  ElecMTWHTNJets_->SaveEff("e m_{T}(w); H_{T} [GeV]; N_{Jets}", dEfficiencies);
+  ElecMTWMHTNJets_->SaveEff("e m_{T}(w); #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
+  ElecMTWHTMHT_->SaveEff("e m_{T}(w); H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+
+
+  //elec
+  //1D
+  ElecDiLepContributionBTag_->SaveEff("e di lep contri; B_{Tags}", dEfficiencies);   
+  ElecDiLepContributionNJets_->SaveEff("e di lep contri; N_{Jets}", dEfficiencies);   
+  ElecDiLepContributionHT_->SaveEff("e di lep contri; H_{T} [GeV]", dEfficiencies);   
+  ElecDiLepContributionMHT_->SaveEff("e di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecDiLepFractionBTag_->SaveEff("e di lep contri; B_{Tags}", dEfficiencies);   
+  ElecDiLepFractionNJets_->SaveEff("e di lep contri; N_{Jets}", dEfficiencies);   
+  ElecDiLepFractionHT_->SaveEff("e di lep contri; H_{T} [GeV]", dEfficiencies);   
+  ElecDiLepFractionMHT_->SaveEff("e di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);  
+  ElecDiLepContributionMTWBTag_->SaveEff("e di lep contri; B_{Tags}", dEfficiencies);   
+  ElecDiLepContributionMTWNJets_->SaveEff("e di lep contri; N_{Jets}", dEfficiencies);   
+  ElecDiLepContributionMTWHT_->SaveEff("e di lep contri; H_{T} [GeV]", dEfficiencies);   
+  ElecDiLepContributionMTWMHT_->SaveEff("e di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecDiLepContributionMTWMHTNJets_->SaveEff("e di lep contri; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
+
+  
+  // pt and activity  
+  //muon
+  MuPurityOldPT_->SaveEff("#mu purity; p_{T}(#mu) [GeV]", dEfficiencies);   
+  MuPurityOldActivity_->SaveEff("#mu purity; Activity", dEfficiencies, true);   
+  MuAccPT_->SaveEff("#mu acc; p_{T}(#mu) [GeV]", dEfficiencies);   
+  MuAccActivity_->SaveEff("#mu acc; Activity", dEfficiencies, true);   
+  MuRecoPT_->SaveEff("#mu reco; p_{T}(#mu) [GeV]", dEfficiencies);   
+  MuRecoActivity_->SaveEff("#mu reco; Activity", dEfficiencies, true);   
+  MuRecoActivityPT_->SaveEff("#mu reco; Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);   
+  MuIsoPT_->SaveEff("#mu iso; p_{T}(#mu) [GeV]", dEfficiencies);   
+  MuIsoActivity_->SaveEff("#mu iso; Activity", dEfficiencies, true);   
+  MuMTWPT_->SaveEff("#mu m_{T}^{W}; p_{T}(#mu) [GeV]", dEfficiencies);   
+  MuMTWActivity_->SaveEff("#mu m_{T}^{W}; Activity", dEfficiencies, true);   
+  MuIsoActivityPT_->SaveEff("#mu Iso; Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);   
+  MuRecoPTEta_->SaveEff("#mu reco; p_{T}(#mu) [GeV]; #eta(#mu)", dEfficiencies, true);   
+
+  //elec
+  ElecPurityOldPT_->SaveEff("e purity; p_{T}(e) [GeV]", dEfficiencies);   
+  ElecPurityOldActivity_->SaveEff("e purity; Activity", dEfficiencies, true);   
+  ElecAccPT_->SaveEff("e acc; p_{T}(e) [GeV]", dEfficiencies);   
+  ElecAccActivity_->SaveEff("e acc; Activity", dEfficiencies, true);   
+  ElecRecoPT_->SaveEff("e reco; p_{T}(e) [GeV]", dEfficiencies);   
+  ElecRecoActivity_->SaveEff("e reco; Activity", dEfficiencies, true);   
+  ElecRecoActivityPT_->SaveEff("e reco; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
+  ElecIsoPT_->SaveEff("e iso; p_{T}(e) [GeV]", dEfficiencies);   
+  ElecIsoActivity_->SaveEff("e iso; Activity", dEfficiencies, true);   
+  ElecMTWPT_->SaveEff("e m_{T}^{W}; p_{T}(e) [GeV]", dEfficiencies);   
+  ElecMTWActivity_->SaveEff("e m_{T}^{W}; Activity", dEfficiencies, true);   
+  ElecIsoActivityPT_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
+  ElecRecoPTEta_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
+
+
+  //Isotracks
+  //1D
+  ExpectationReductionIsoTrackBTagEff_->SaveEff("iso track expec. reduction; B_{Tags}", dEfficiencies);   
+  ExpectationReductionIsoTrackNJetsEff_->SaveEff("iso track expec. reduction; N_{Jets}", dEfficiencies);   
+  ExpectationReductionIsoTrackHTEff_->SaveEff("iso track expec. reduction; H_{T}", dEfficiencies);   
+  ExpectationReductionIsoTrackMHTEff_->SaveEff("iso track expec. reduction; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ExpectationReductionIsoTrackPTEff_->SaveEff("iso track expec. reduction; p_{T} [GeV]", dEfficiencies);   
+  ExpectationReductionIsoTrackActivityEff_->SaveEff("iso track expec. reduction; Activity", dEfficiencies, true);   
+  //2D
+  IsoTrackReductionHTNJets_->SaveEff("iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);
+  IsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("iso track expec. reduction N_{Jets}=2-3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJetsLow_->SaveEff("iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets2_->SaveEff("iso track expec. reduction N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets3_->SaveEff("iso track expec. reduction N_{Jets}=3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets4_->SaveEff("iso track expec. reduction N_{Jets}=4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets5_->SaveEff("iso track expec. reduction N_{Jets}=5; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets6_->SaveEff("iso track expec. reduction N_{Jets}=6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJetsHigh_->SaveEff("iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  IsoTrackReductionMHTNJets_->SaveEff("iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  IsoTrackReductionBTagNJets_->SaveEff("iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
+  IsoTrackReductionPTActivity_->SaveEff("iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true);   
+
+  // mu iso tracks
+  //1D
+  ExpectationReductionMuIsoTrackBTagEff_->SaveEff("#mu iso track expec. reduction; B_{Tags}", dEfficiencies);   
+  ExpectationReductionMuIsoTrackNJetsEff_->SaveEff("#mu iso track expec. reduction; N_{Jets}", dEfficiencies);   
+  ExpectationReductionMuIsoTrackHTEff_->SaveEff("#mu iso track expec. reduction; H_{T}", dEfficiencies);   
+  ExpectationReductionMuIsoTrackMHTEff_->SaveEff("#mu iso track expec. reduction; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ExpectationReductionMuIsoTrackPTEff_->SaveEff("#mu iso track expec. reduction; p_{T} [GeV]", dEfficiencies);   
+  ExpectationReductionMuIsoTrackActivityEff_->SaveEff("#mu iso track expec. reduction; Activity", dEfficiencies, true);   
+  //2D
+  MuIsoTrackReductionHTNJets_->SaveEff("#mu iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  MuIsoTrackReductionMHTNJets_->SaveEff("#mu iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  MuIsoTrackReductionBTagNJets_->SaveEff("#mu iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
+  MuIsoTrackReductionPTActivity_->SaveEff("#mu iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true); 
+  MuIsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("#mu iso track expec. reduction N_{Jets}=2-3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJetsLow_->SaveEff("#mu iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("#mu iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
+
+  // elec iso tracks
+  //1D
+  ExpectationReductionElecIsoTrackBTagEff_->SaveEff("e iso track expec. reduction; B_{Tags}", dEfficiencies);   
+  ExpectationReductionElecIsoTrackNJetsEff_->SaveEff("e iso track expec. reduction; N_{Jets}", dEfficiencies);   
+  ExpectationReductionElecIsoTrackHTEff_->SaveEff("e iso track expec. reduction; H_{T}", dEfficiencies);   
+  ExpectationReductionElecIsoTrackMHTEff_->SaveEff("e iso track expec. reduction; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ExpectationReductionElecIsoTrackPTEff_->SaveEff("e iso track expec. reduction; p_{T} [GeV]", dEfficiencies);   
+  ExpectationReductionElecIsoTrackActivityEff_->SaveEff("e iso track expec. reduction; Activity", dEfficiencies, true);   
+  //2D
+  ElecIsoTrackReductionHTNJets_->SaveEff("e iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  ElecIsoTrackReductionMHTNJets_->SaveEff("e iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  ElecIsoTrackReductionBTagNJets_->SaveEff("e iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
+  ElecIsoTrackReductionPTActivity_->SaveEff("e iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true); 
+  ElecIsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("e iso track expec. reduction N_{Jets}=2-3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJetsLow_->SaveEff("e iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("e iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
+  
+  // pion iso tracks
+  //1D
+  ExpectationReductionPionIsoTrackBTagEff_->SaveEff("#pi iso track expec. reduction; B_{Tags}", dEfficiencies);   
+  ExpectationReductionPionIsoTrackNJetsEff_->SaveEff("#pi iso track expec. reduction; N_{Jets}", dEfficiencies);   
+  ExpectationReductionPionIsoTrackHTEff_->SaveEff("#pi iso track expec. reduction; H_{T}", dEfficiencies);   
+  ExpectationReductionPionIsoTrackMHTEff_->SaveEff("#pi iso track expec. reduction; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ExpectationReductionPionIsoTrackPTEff_->SaveEff("#pi iso track expec. reduction; p_{T} [GeV]", dEfficiencies);   
+  ExpectationReductionPionIsoTrackActivityEff_->SaveEff("#pi iso track expec. reduction; Activity", dEfficiencies, true);   
+  //2D
+  PionIsoTrackReductionHTNJets_->SaveEff("#pi iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  PionIsoTrackReductionMHTNJets_->SaveEff("#pi iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  PionIsoTrackReductionBTagNJets_->SaveEff("#pi iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
+  PionIsoTrackReductionPTActivity_->SaveEff("#pi iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true);
+  PionIsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("#pi iso track expec. reduction N_{Jets}=2-3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJetsLow_->SaveEff("#pi iso track expec. reduction N_{Jets}=4-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("#pi iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
+
+  outPutFile->cd();
+  outPutFile->mkdir("ExtrapPDFs");
+  TDirectory *dExtrapPDFs = (TDirectory*)outPutFile->Get("ExtrapPDFs");
+  dExtrapPDFs->cd();
+  for (unsigned int inj(0); inj<3; inj++) {
+    for (unsigned int inb(0); inb<3; inb++) {
+      // fix overflow bins
+      // lump remiaining tail into 1.2 < MHT/PTW < 1.3 -- does this make sense?
+      Double_t erro(0.);
+      LostMuRATIO_HT12[inj*3+inb]->SetBinContent(nEXTRAPBins, LostMuRATIO_HT12[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostMuRATIO_HT12[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      LostMuRATIO_HT3[inj*3+inb]->SetBinContent(nEXTRAPBins, LostMuRATIO_HT3[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostMuRATIO_HT3[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      LostMuRATIO_HT23[inj*3+inb]->SetBinContent(nEXTRAPBins, LostMuRATIO_HT23[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostMuRATIO_HT23[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      if (LostMuRATIO_HT12[inj*3+inb]->Integral()>0) LostMuRATIO_HT12[inj*3+inb]->Scale(1/LostMuRATIO_HT12[inj*3+inb]->Integral());
+      if (LostMuRATIO_HT3[inj*3+inb]->Integral()>0) LostMuRATIO_HT3[inj*3+inb]->Scale(1/LostMuRATIO_HT3[inj*3+inb]->Integral());
+      if (LostMuRATIO_HT23[inj*3+inb]->Integral()>0) LostMuRATIO_HT23[inj*3+inb]->Scale(1/LostMuRATIO_HT23[inj*3+inb]->Integral());
+      LostMuRATIO_HT12[inj*3+inb]->Write();
+      LostMuRATIO_HT3[inj*3+inb]->Write();
+      LostMuRATIO_HT23[inj*3+inb]->Write();
+      LostElecRATIO_HT12[inj*3+inb]->SetBinContent(nEXTRAPBins, LostElecRATIO_HT12[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostElecRATIO_HT12[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      LostElecRATIO_HT3[inj*3+inb]->SetBinContent(nEXTRAPBins, LostElecRATIO_HT3[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostElecRATIO_HT3[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      LostElecRATIO_HT23[inj*3+inb]->SetBinContent(nEXTRAPBins, LostElecRATIO_HT23[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostElecRATIO_HT23[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      if (LostElecRATIO_HT12[inj*3+inb]->Integral()>0) LostElecRATIO_HT12[inj*3+inb]->Scale(1/LostElecRATIO_HT12[inj*3+inb]->Integral());
+      if (LostElecRATIO_HT3[inj*3+inb]->Integral()>0) LostElecRATIO_HT3[inj*3+inb]->Scale(1/LostElecRATIO_HT3[inj*3+inb]->Integral());
+      if (LostElecRATIO_HT23[inj*3+inb]->Integral()>0) LostElecRATIO_HT23[inj*3+inb]->Scale(1/LostElecRATIO_HT23[inj*3+inb]->Integral());
+      LostElecRATIO_HT12[inj*3+inb]->Write();
+      LostElecRATIO_HT3[inj*3+inb]->Write();
+      LostElecRATIO_HT23[inj*3+inb]->Write();
+      LostLepRATIO_HT12[inj*3+inb]->SetBinContent(nEXTRAPBins, LostLepRATIO_HT12[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostLepRATIO_HT12[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      LostLepRATIO_HT3[inj*3+inb]->SetBinContent(nEXTRAPBins, LostLepRATIO_HT3[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostLepRATIO_HT3[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      LostLepRATIO_HT23[inj*3+inb]->SetBinContent(nEXTRAPBins, LostLepRATIO_HT23[inj*3+inb]->IntegralAndError(nEXTRAPBins,nEXTRAPBins+1,erro));
+      LostLepRATIO_HT23[inj*3+inb]->SetBinError(nEXTRAPBins, erro);
+      if (LostLepRATIO_HT12[inj*3+inb]->Integral()>0) LostLepRATIO_HT12[inj*3+inb]->Scale(1/LostLepRATIO_HT12[inj*3+inb]->Integral());
+      if (LostLepRATIO_HT3[inj*3+inb]->Integral()>0) LostLepRATIO_HT3[inj*3+inb]->Scale(1/LostLepRATIO_HT3[inj*3+inb]->Integral());
+      if (LostLepRATIO_HT23[inj*3+inb]->Integral()>0) LostLepRATIO_HT23[inj*3+inb]->Scale(1/LostLepRATIO_HT23[inj*3+inb]->Integral());
+      LostLepRATIO_HT12[inj*3+inb]->Write();
+      LostLepRATIO_HT3[inj*3+inb]->Write();
+      LostLepRATIO_HT23[inj*3+inb]->Write();   
+    }
+  }
+  outPutFile->cd();
+  outPutFile->Close();
+}

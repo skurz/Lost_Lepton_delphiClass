@@ -79,6 +79,8 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("HTJetsMask", &HTJetsMask);
   tExpectation_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
   tExpectation_->Branch("bTagProb", &bTagProb);
+  tExpectation_->Branch("cosDTT", &cosDTT);
+  tExpectation_->Branch("genCosDTT", &genCosDTT);
   
   if(!DY_){
     tExpectation_->Branch("isoElectronTracks",&isoElectronTracks);
@@ -193,6 +195,8 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 	
   // Muons
   if( (GenMuNum_==1 && GenElecNum_==0) || (DY_ && GenMuNum_==2) ){ 
+    genCosDTT = 0.5 * (1. - GetCosDTT(GenMHT, GenMHT_Phi, GenMus->at(0).Pt(), GenMus->at(0).Phi()));
+    cosDTT = 0.5 * (1. - GetCosDTT(MHT, MHT_Phi, GenMus->at(0).Pt(), GenMus->at(0).Phi()));
     if ( GenMus->at(0).Pt() < minMuPt_ || std::abs(GenMus->at(0).Eta()) > maxMuEta_){
       muAcc=0;
       Expectation=1;
@@ -232,6 +236,8 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 
   // Electrons
   if( (GenMuNum_==0 && GenElecNum_==1) || (DY_ && GenElecNum_==2) ){
+    genCosDTT = 0.5 * (1. - GetCosDTT(GenMHT, GenMHT_Phi, GenEls->at(0).Pt(), GenEls->at(0).Phi()));
+    cosDTT = 0.5 * (1. - GetCosDTT(MHT, MHT_Phi, GenEls->at(0).Pt(), GenEls->at(0).Phi()));
     if( GenEls->at(0).Pt() < minElecPt_ || std::abs(GenEls->at(0).Eta()) > maxElecEta_){
     elecAcc=0;
     Expectation=1;
@@ -517,6 +523,8 @@ void ExpecMaker::resetValues()
   elecAcc =1;
 
   mtw=-1.;
+  genCosDTT=-1;
+  cosDTT=-1;
 
   ExpectationDiLep_=0;
   MuDiLepControlSample_=1;
