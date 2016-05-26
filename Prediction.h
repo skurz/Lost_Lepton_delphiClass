@@ -105,7 +105,7 @@ const bool useGenInfoToMatchCSMuonToGen_=0; // changed 20 Nov from 1 to 0
 const double maxDeltaRGenToRecoIsoMuon_=0.3;
 const double maxDiffPtGenToRecoIsoMuon_=0.3;
 const double minHT_=500;
-const double minMHT_=200;
+const double minMHT_=250;
 const double minNJets_=1.5;
 const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;
@@ -253,7 +253,7 @@ class Prediction : public TSelector {
   SearchBins *SearchBins_;
   SearchBins *SearchBinsQCD_;
 
-  Int_t           isoTracks;
+  Int_t           isoTracksNum;
   UShort_t JetsNum_;
   UShort_t selectedIDMuonsNum_, selectedIDIsoMuonsNum_;
   UShort_t selectedIDElectronsNum_, selectedIDIsoElectronsNum_;
@@ -473,7 +473,7 @@ class Prediction : public TSelector {
   UInt_t          LumiBlockNum;
   ULong64_t       EvtNum;
   Int_t           BTags;
-  Bool_t          CSCTightHaloFilter;
+  Int_t          CSCTightHaloFilter;
   Double_t        DeltaPhi1;
   Double_t        DeltaPhi2;
   Double_t        DeltaPhi3;
@@ -484,23 +484,20 @@ class Prediction : public TSelector {
   std::vector<TLorentzVector> *Electrons=0;
   std::vector<TLorentzVector> *GenEls=0;
   std::vector<TLorentzVector> *GenMus=0;
-  Bool_t          HBHENoiseFilter;
-  Bool_t          HBHEIsoNoiseFilter;
+  Int_t          HBHENoiseFilter;
+  Int_t          HBHEIsoNoiseFilter;
   Double_t        HT;
-  std::vector<TLorentzVector> *IsolatedElectronTracksVeto=0;
-  std::vector<TLorentzVector> *IsolatedMuonTracksVeto=0;
-  std::vector<TLorentzVector> *IsolatedPionTracksVeto=0;
-  Int_t           isoElectronTracks;
-  Int_t           isoMuonTracks;
-  Int_t           isoPionTracks;
+  Int_t           isoElectronTracksNum;
+  Int_t           isoMuonTracksNum;
+  Int_t           isoPionTracksNum;
   Bool_t          JetID;
   std::vector<TLorentzVector> *Jets=0;
   std::vector<int>     *Jets_hadronFlavor=0;
   std::vector<bool>    *HTJetsMask=0;
   Double_t        METPhi;
-  Double_t        METPt;
+  Double_t        MET;
   Double_t        MHT;
-  Double_t        MHT_Phi;
+  Double_t        MHTPhi;
   std::vector<TLorentzVector> *Muons=0;
   Int_t           NJets;
   Int_t           NVtx;
@@ -513,7 +510,7 @@ class Prediction : public TSelector {
   std::vector<int>     *TriggerPrescales=0;
   Double_t        Weight;
   Double_t        puWeight;
-  Double_t        genHT;
+  Double_t        madHT;
   Double_t        SusyLSPMass;
   Double_t        SusyMotherMass;
   Double_t        TrueNumInteractions;
@@ -542,20 +539,17 @@ class Prediction : public TSelector {
   TBranch        *b_HBHENoiseFilter=0;   //!
   TBranch        *b_HBHEIsoNoiseFilter=0;   //!
   TBranch        *b_HT=0;   //!
-  TBranch        *b_IsolatedElectronTracksVeto=0;   //!
-  TBranch        *b_IsolatedMuonTracksVeto=0;   //!
-  TBranch        *b_IsolatedPionTracksVeto=0;   //!
-  TBranch        *b_isoElectronTracks=0;   //!
-  TBranch        *b_isoMuonTracks=0;   //!
-  TBranch        *b_isoPionTracks=0;   //!
+  TBranch        *b_isoElectronTracksNum=0;   //!
+  TBranch        *b_isoMuonTracksNum=0;   //!
+  TBranch        *b_isoPionTracksNum=0;   //!
   TBranch        *b_JetID=0;   //!
   TBranch        *b_Jets=0;   //!
   TBranch        *b_Jets_hadronFlavor=0;   //!
   TBranch        *b_HTJetsMask=0;   //!
   TBranch        *b_METPhi=0;   //!
-  TBranch        *b_METPt=0;   //!
+  TBranch        *b_MET=0;   //!
   TBranch        *b_MHT=0;   //!
-  TBranch        *b_MHT_Phi=0;   //!
+  TBranch        *b_MHTPhi=0;   //!
   TBranch        *b_Muons=0;   //!
   TBranch        *b_NJets=0;   //!
   TBranch        *b_NVtx=0;   //!
@@ -568,7 +562,7 @@ class Prediction : public TSelector {
   TBranch        *b_TriggerPrescales=0;   //!
   TBranch        *b_Weight=0;   //!
   TBranch        *b_puWeight=0;   //!
-  TBranch        *b_genHT=0;
+  TBranch        *b_madHT=0;
   TBranch        *b_SusyLSPMass=0;
   TBranch        *b_SusyMotherMass=0;
   TBranch        *b_TrueNumInteractions=0;
@@ -642,7 +636,7 @@ void Prediction::Init(TTree *tree)
 
   // useFilterData = true; unless you want to run without MET filters
   // useFilterData = false; For FastSim Samples, e.g. Signal Scans! Met filters not simulated
-  if(runOnStandardModelMC || runOnData) useFilterData = true;
+  if(runOnStandardModelMC || runOnData) useFilterData = false;
 
   // CSCTightHaloFilterUpdate from list
   // True if running on data
@@ -694,7 +688,7 @@ void Prediction::Init(TTree *tree)
   if(fileNameString!="*" && fileNameString!="") fileName = fileNameString;
   if(HTcutString!="" && HTcutString.IsFloat()) HTgen_cut = HTcutString.Atof();
 
-  std::cout << "genHT cut: " << HTgen_cut << std::endl;
+  std::cout << "madHT cut: " << HTgen_cut << std::endl;
 
   std::cout << "Saving file to: " << fileName << std::endl;
 
@@ -754,20 +748,16 @@ void Prediction::Init(TTree *tree)
   }
   fChain->SetBranchStatus("Electrons", 1);
   fChain->SetBranchStatus("HT", 1);
-  fChain->SetBranchStatus("IsolatedElectronTracksVeto", 1);
-  fChain->SetBranchStatus("IsolatedMuonTracksVeto", 1);
-  fChain->SetBranchStatus("IsolatedPionTracksVeto", 1);
   fChain->SetBranchStatus("isoElectronTracks", 1);
   fChain->SetBranchStatus("isoMuonTracks", 1);
   fChain->SetBranchStatus("isoPionTracks", 1);
   fChain->SetBranchStatus("JetID", 1);
   fChain->SetBranchStatus("Jets", 1);
   fChain->SetBranchStatus("HTJetsMask", 1);
-  fChain->SetBranchStatus("Leptons", 1);
   fChain->SetBranchStatus("METPhi", 1);
-  fChain->SetBranchStatus("METPt", 1);
+  fChain->SetBranchStatus("MET", 1);
   fChain->SetBranchStatus("MHT", 1);
-  fChain->SetBranchStatus("MHT_Phi", 1);
+  fChain->SetBranchStatus("MHTPhi", 1);
   fChain->SetBranchStatus("Muons", 1);
   fChain->SetBranchStatus("NJets", 1);
   fChain->SetBranchStatus("NVtx", 1);
@@ -782,7 +772,7 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchStatus("Weight", 1);
     fChain->SetBranchStatus("Jets_hadronFlavor", 1);
   }
-  if(HTgen_cut>0.01)  fChain->SetBranchStatus("genHT", 1);
+  if(HTgen_cut>0.01)  fChain->SetBranchStatus("madHT", 1);
   if(runOnSignalMC){
     fChain->SetBranchStatus("SusyLSPMass", 1);
     fChain->SetBranchStatus("SusyMotherMass", 1);
@@ -813,19 +803,16 @@ void Prediction::Init(TTree *tree)
   }
   fChain->SetBranchAddress("Electrons", &Electrons, &b_Electrons);
   fChain->SetBranchAddress("HT", &HT, &b_HT);
-  fChain->SetBranchAddress("IsolatedElectronTracksVeto", &IsolatedElectronTracksVeto, &b_IsolatedElectronTracksVeto);
-  fChain->SetBranchAddress("IsolatedMuonTracksVeto", &IsolatedMuonTracksVeto, &b_IsolatedMuonTracksVeto);
-  fChain->SetBranchAddress("IsolatedPionTracksVeto", &IsolatedPionTracksVeto, &b_IsolatedPionTracksVeto);
-  fChain->SetBranchAddress("isoElectronTracks", &isoElectronTracks, &b_isoElectronTracks);
-  fChain->SetBranchAddress("isoMuonTracks", &isoMuonTracks, &b_isoMuonTracks);
-  fChain->SetBranchAddress("isoPionTracks", &isoPionTracks, &b_isoPionTracks);
+  fChain->SetBranchAddress("isoElectronTracks", &isoElectronTracksNum, &b_isoElectronTracksNum);
+  fChain->SetBranchAddress("isoMuonTracks", &isoMuonTracksNum, &b_isoMuonTracksNum);
+  fChain->SetBranchAddress("isoPionTracks", &isoPionTracksNum, &b_isoPionTracksNum);
   fChain->SetBranchAddress("JetID", &JetID, &b_JetID);
   fChain->SetBranchAddress("Jets", &Jets, &b_Jets);
   fChain->SetBranchAddress("HTJetsMask", &HTJetsMask, &b_HTJetsMask);
   fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
-  fChain->SetBranchAddress("METPt", &METPt, &b_METPt);
+  fChain->SetBranchAddress("MET", &MET, &b_MET);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
-  fChain->SetBranchAddress("MHT_Phi", &MHT_Phi, &b_MHT_Phi);
+  fChain->SetBranchAddress("MHTPhi", &MHTPhi, &b_MHTPhi);
   fChain->SetBranchAddress("Muons", &Muons, &b_Muons);
   fChain->SetBranchAddress("NJets", &NJets, &b_NJets);
   fChain->SetBranchAddress("NVtx", &NVtx, &b_NVtx);
@@ -840,7 +827,7 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
     fChain->SetBranchAddress("Jets_hadronFlavor", &Jets_hadronFlavor, &b_Jets_hadronFlavor);
   }
-  if(HTgen_cut>0.01) fChain->SetBranchAddress("genHT", &genHT, &b_genHT);
+  if(HTgen_cut>0.01) fChain->SetBranchAddress("madHT", &madHT, &b_madHT);
   if(runOnSignalMC){
     fChain->SetBranchAddress("SusyLSPMass", &SusyLSPMass, &b_SusyLSPMass);
     fChain->SetBranchAddress("SusyMotherMass", &SusyMotherMass, &b_SusyMotherMass);

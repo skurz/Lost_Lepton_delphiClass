@@ -533,10 +533,10 @@ class EffMaker : public TSelector {
   UInt_t          EvtNum;
   Double_t        HT;
   Double_t        MHT;
-  Double_t        MHT_Phi;
+  Double_t        MHTPhi;
   Int_t           NJets;
   Int_t           BTags;
-  Int_t           isoTracks;
+  Int_t           isoTracksNum;
   UShort_t        Bin;
   UShort_t        BinQCD;
   Int_t           NVtx;
@@ -592,12 +592,12 @@ class EffMaker : public TSelector {
   std::vector<unsigned short> *selectedIDIsoElectronsPromptMatched=0;
   UShort_t        selectedIDElectronsNum;
   std::vector<TLorentzVector> *selectedIDElectrons=0;
-  Int_t           isoElectronTracks;
-  std::vector<TLorentzVector> *IsolatedElectronTracksVeto=0;
-  Int_t           isoMuonTracks;
-  std::vector<TLorentzVector> *IsolatedMuonTracksVeto=0;
-  Int_t           isoPionTracks;
-  std::vector<TLorentzVector> *IsolatedPionTracksVeto=0;
+  Int_t           isoElectronTracksNum;
+  std::vector<TLorentzVector> *isoElectronTracks=0;
+  Int_t           isoMuonTracksNum;
+  std::vector<TLorentzVector> *isoMuonTracks=0;
+  Int_t           isoPionTracksNum;
+  std::vector<TLorentzVector> *isoPionTracks=0;
   UShort_t        ExpectationDiLep;
   UShort_t        MuDiLepControlSample;
   UShort_t        ElecDiLepControlSample;
@@ -607,11 +607,11 @@ class EffMaker : public TSelector {
   TBranch        *b_EvtNum=0;   //!
   TBranch        *b_HT=0;   //!
   TBranch        *b_MHT=0;   //!
-  TBranch        *b_MHT_Phi=0;   //!
+  TBranch        *b_MHTPhi=0;   //!
   TBranch        *b_NJets=0;   //!
   TBranch        *b_BTags=0;   //!
   TBranch        *b_Leptons=0;   //!
-  TBranch        *b_isoTracks=0;   //!
+  TBranch        *b_isoTracksNum=0;   //!
   TBranch        *b_Bin=0;   //!
   TBranch        *b_BinQCD=0;   //!
   TBranch        *b_NVtx=0;   //!
@@ -667,12 +667,12 @@ class EffMaker : public TSelector {
   TBranch        *b_selectedIDIsoElectronsPromptMatched=0;   //!
   TBranch        *b_selectedIDElectronsNum=0;   //!
   TBranch        *b_selectedIDElectrons=0;   //!
+  TBranch        *b_isoElectronTracksNum=0;   //!
   TBranch        *b_isoElectronTracks=0;   //!
-  TBranch        *b_IsolatedElectronTracksVeto=0;   //!
+  TBranch        *b_isoMuonTracksNum=0;   //!
   TBranch        *b_isoMuonTracks=0;   //!
-  TBranch        *b_IsolatedMuonTracksVeto=0;   //!
+  TBranch        *b_isoPionTracksNum=0;   //!
   TBranch        *b_isoPionTracks=0;   //!
-  TBranch        *b_IsolatedPionTracksVeto=0;   //!
   TBranch        *b_ExpectationDiLep=0;   //!
   TBranch        *b_MuDiLepControlSample=0;   //!
   TBranch        *b_ElecDiLepControlSample=0;   //!
@@ -740,14 +740,14 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("HT", &HT, &b_HT);
   fChain->SetBranchStatus("MHT", 1);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
-  fChain->SetBranchStatus("MHT_Phi", 1);
-  fChain->SetBranchAddress("MHT_Phi", &MHT_Phi, &b_MHT_Phi);
+  fChain->SetBranchStatus("MHTPhi", 1);
+  fChain->SetBranchAddress("MHTPhi", &MHTPhi, &b_MHTPhi);
   fChain->SetBranchStatus("NJets", 1);
   fChain->SetBranchAddress("NJets", &NJets, &b_NJets);
   fChain->SetBranchStatus("BTags", 1);
   fChain->SetBranchAddress("BTags", &BTags, &b_BTags);
-  fChain->SetBranchStatus("isoTracks", 1);
-  fChain->SetBranchAddress("isoTracks", &isoTracks, &b_isoTracks);
+  fChain->SetBranchStatus("isoTracksNum", 1);
+  fChain->SetBranchAddress("isoTracksNum", &isoTracksNum, &b_isoTracksNum);
   fChain->SetBranchStatus("Bin", 1);
   fChain->SetBranchAddress("Bin", &Bin, &b_Bin);
   fChain->SetBranchStatus("BinQCD", 1);
@@ -834,18 +834,18 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("selectedIDElectrons", &selectedIDElectrons, &b_selectedIDElectrons);
   //  fChain->SetBranchStatus("selectedIDIsoElectronsCDTT", 1);
   //  fChain->SetBranchAddress("selectedIDIsoElectronsCDTT", &selectedIDIsoElectronsCDTT, &b_selectedIDIsoElectronsCDTT);
+  fChain->SetBranchStatus("isoElectronTracksNum", 1);
+  fChain->SetBranchAddress("isoElectronTracksNum", &isoElectronTracksNum, &b_isoElectronTracksNum);
   fChain->SetBranchStatus("isoElectronTracks", 1);
   fChain->SetBranchAddress("isoElectronTracks", &isoElectronTracks, &b_isoElectronTracks);
-  fChain->SetBranchStatus("IsolatedElectronTracksVeto", 1);
-  fChain->SetBranchAddress("IsolatedElectronTracksVeto", &IsolatedElectronTracksVeto, &b_IsolatedElectronTracksVeto);
+  fChain->SetBranchStatus("isoMuonTracksNum", 1);
+  fChain->SetBranchAddress("isoMuonTracksNum", &isoMuonTracksNum, &b_isoMuonTracksNum);
   fChain->SetBranchStatus("isoMuonTracks", 1);
   fChain->SetBranchAddress("isoMuonTracks", &isoMuonTracks, &b_isoMuonTracks);
-  fChain->SetBranchStatus("IsolatedMuonTracksVeto", 1);
-  fChain->SetBranchAddress("IsolatedMuonTracksVeto", &IsolatedMuonTracksVeto, &b_IsolatedMuonTracksVeto);
+  fChain->SetBranchStatus("isoPionTracksNum", 1);
+  fChain->SetBranchAddress("isoPionTracksNum", &isoPionTracksNum, &b_isoPionTracksNum);
   fChain->SetBranchStatus("isoPionTracks", 1);
   fChain->SetBranchAddress("isoPionTracks", &isoPionTracks, &b_isoPionTracks);
-  fChain->SetBranchStatus("IsolatedPionTracksVeto", 1);
-  fChain->SetBranchAddress("IsolatedPionTracksVeto", &IsolatedPionTracksVeto, &b_IsolatedPionTracksVeto);
   fChain->SetBranchStatus("ExpectationDiLep", 1);
   fChain->SetBranchAddress("ExpectationDiLep", &ExpectationDiLep, &b_ExpectationDiLep);
   fChain->SetBranchStatus("MuDiLepControlSample", 1);

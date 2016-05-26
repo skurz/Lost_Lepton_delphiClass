@@ -26,14 +26,14 @@ void MakeExpectation()
   
   TChain *Effchain = new TChain("PreSelection");
 
-  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v6_baseline/*.root");
+  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTJets_SingleLeptFromTbar.root");
 
 
   if(useTProof){
     Effchain->SetProof();
   }
 
-  Effchain->Process("ExpecMaker.C++g", "Expectation_v6.root"); //specify output path/file here // folder already has to exist for the time beeing...
+  Effchain->Process("ExpecMaker.C++g", "Expectation.root"); //specify output path/file here // folder already has to exist for the time beeing...
   // No HT cut: Effchain->Process("ExpecMaker.C++g", "outputFile.root");
   // HT cut: Effchain->Process("ExpecMaker.C++g", "outputFile.root, genHTcut");
   // for Jacks Syntax (outputname based on input) use: Effchain->Process("ExpecMaker.C++g", "*, genHTcut");

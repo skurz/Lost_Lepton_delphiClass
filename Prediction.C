@@ -135,13 +135,13 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("Bin",&Bin_);
   tPrediction_->Branch("BinQCD",&BinQCD_);
   tPrediction_->Branch("PTWBins", &ptw_bins);
- tPrediction_->Branch("isoTracks",&isoTracks);
+  tPrediction_->Branch("isoTracksNum",&isoTracksNum);
   tPrediction_->Branch("DeltaPhi1",&DeltaPhi1);
   tPrediction_->Branch("DeltaPhi2",&DeltaPhi2);
   tPrediction_->Branch("DeltaPhi3",&DeltaPhi3);
   tPrediction_->Branch("DeltaPhi4",&DeltaPhi4);
   tPrediction_->Branch("Weight", &Weight);
-  tPrediction_->Branch("MET",&METPt);
+  tPrediction_->Branch("MET",&MET);
   tPrediction_->Branch("METPhi",&METPhi);
   tPrediction_->Branch("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum_);
   tPrediction_->Branch("selectedIDIsoMuons", "std::vector<TLorentzVector>", &selectedIDIsoMuons, 32000, 0);
@@ -196,12 +196,6 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("muDiLepEffMTWAppliedEff",&muDiLepEffMTWAppliedEff_);
   tPrediction_->Branch("elecDiLepEffMTWAppliedEff",&elecDiLepEffMTWAppliedEff_);
   tPrediction_->Branch("totalWeightDiLep",&totalWeightDiLep_);
-  tPrediction_->Branch("isoMuonTracks",&isoMuonTracks);
-  tPrediction_->Branch("IsolatedMuonTracksVeto", "std::vector<TLorentzVector>", &IsolatedMuonTracksVeto, 32000, 0);
-  tPrediction_->Branch("isoElectronTracks",&isoElectronTracks);
-  tPrediction_->Branch("IsolatedElectronTracksVeto", "std::vector<TLorentzVector>", &IsolatedElectronTracksVeto, 32000, 0);
-  tPrediction_->Branch("isoPionTracks",&isoPionTracks);
-  tPrediction_->Branch("IsolatedPionTracksVeto", "std::vector<TLorentzVector>", &IsolatedPionTracksVeto, 32000, 0);
   tPrediction_->Branch("HTJetsMask", &HTJetsMask);
   if(!runOnData){
     tPrediction_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
@@ -304,32 +298,30 @@ Bool_t Prediction::Process(Long64_t entry)
   resetValues();
   fChain->GetTree()->GetEntry(entry);
 
-  if(HTgen_cut > 0.01) if(genHT > HTgen_cut) return kTRUE;
+  if(HTgen_cut > 0.01) if(madHT > HTgen_cut) return kTRUE;
   
   if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_  ) return kTRUE;
   if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_) return kTRUE;
   if(useDeltaPhiCut == -1) if(!(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_)) return kTRUE;
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
 
-  isoTracks= isoElectronTracks + isoMuonTracks + isoPionTracks;
+  isoTracksNum= isoElectronTracksNum + isoMuonTracksNum + isoPionTracksNum;
 
   selectedIDMuonsNum_ = selectedIDMuons->size();
   selectedIDIsoMuonsNum_ = selectedIDIsoMuons->size();
   selectedIDElectronsNum_ = selectedIDElectrons->size();
   selectedIDIsoElectronsNum_ = selectedIDIsoElectrons->size();
 
-  JetsNum_ = Jets->size();
-
   if((selectedIDIsoMuonsNum_+selectedIDIsoElectronsNum_) !=1) return kTRUE;
 
   // fill PTW values for extrapolation
   for (UShort_t ii=0; ii < selectedIDIsoMuonsNum_; ii++){
-    selectedIDIsoMuonsPTW.push_back(PTWCalculator(MHT,MHT_Phi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi()));
-    //    selectedIDIsoMuonsCDTT.push_back(GetCosDTT(MHT,MHT_Phi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi()));
+    selectedIDIsoMuonsPTW.push_back(PTWCalculator(MHT,MHTPhi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi()));
+    //    selectedIDIsoMuonsCDTT.push_back(GetCosDTT(MHT,MHTPhi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi()));
   }
   for (UShort_t ii=0; ii < selectedIDIsoElectronsNum_; ii++){
-    selectedIDIsoElectronsPTW.push_back(PTWCalculator(MHT,MHT_Phi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi()));
-    //    selectedIDIsoElectronsCDTT.push_back(GetCosDTT(MHT,MHT_Phi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi()));
+    selectedIDIsoElectronsPTW.push_back(PTWCalculator(MHT,MHTPhi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi()));
+    //    selectedIDIsoElectronsCDTT.push_back(GetCosDTT(MHT,MHTPhi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi()));
   }
 
   if(useTrigger) if(!TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
@@ -443,7 +435,7 @@ Bool_t Prediction::Process(Long64_t entry)
   if(selectedIDIsoMuonsNum_==1 && selectedIDIsoElectronsNum_==0)
     {
       // cout << "Single muon event...";
-      mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
+      mtw =  MTWCalculator(MET,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
 
     //  std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi());
     //  selectedIDIsoMuonsDeltaRJet.push_back(DeltaR_relPT.first);
@@ -730,7 +722,7 @@ Bool_t Prediction::Process(Long64_t entry)
     {
       // cout << "Single electron event...";
       // cout << "get MTW...";
-      mtw =  MTWCalculator(METPt,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
+      mtw =  MTWCalculator(MET,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
 
     //  std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi());
     //  selectedIDIsoElectronsDeltaRJet.push_back(DeltaR_relPT.first);
@@ -1115,11 +1107,11 @@ bool Prediction::FiltersPass()
       bool CSCTightHaloFilterUpdate = evtListFilter->CheckEvent(RunNum,LumiBlockNum,EvtNum);
       if(!CSCTightHaloFilterUpdate) result=false;
     } 
-    //if(!CSCTightHaloFilter) result=false;
+    //if(CSCTightHaloFilter!=1) result=false;
     if(eeBadScFilter!=1) result=false;
-    if(!eeBadSc4Filter) result=false;
-    if(!HBHENoiseFilter) result=false;
-    if(!HBHEIsoNoiseFilter) result=false;
+    //if(!eeBadSc4Filter) result=false;
+    if(HBHENoiseFilter!=1) result=false;
+    if(HBHEIsoNoiseFilter!=1) result=false;
   }
   if(NVtx<=0) result=false;
   // Do not apply on fastSim samples!
@@ -1133,7 +1125,7 @@ std::pair <double,double> Prediction::minDeltaRLepJet(double lepPt, double lepEt
   double relPt = 9999;
   double deltaRmin = 9999;
 
-  for (unsigned int i=0; i < JetsNum_ ; i++)
+  for (int i=0; i < NJets ; i++)
     {
       if(deltaR(lepEta,lepPhi,Jets->at(i).Eta(),Jets->at(i).Phi()) > deltaRmin) continue;
 

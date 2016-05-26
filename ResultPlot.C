@@ -97,7 +97,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   Double_t         scaledWeight;
   Double_t         HT;
   Double_t         MHT;
-  Double_t         MHT_Phi;
+  Double_t         MHTPhi;
   Int_t            NJets;
   Int_t            BTags;
 
@@ -111,7 +111,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   UShort_t        elecAcc;
   UShort_t        elecReco;
   UShort_t        elecIso;
-  Int_t           isoTracks;
+  Int_t           isoTracksNum;
   UShort_t        ExpectationDiLep;
   UShort_t        ExpectationReductionIsoTrack;
 
@@ -625,7 +625,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   LostLeptonExpectation->SetBranchStatus("*",0);
   LostLeptonExpectation->SetBranchStatus("HT",1);
   LostLeptonExpectation->SetBranchStatus("MHT",1);
-  LostLeptonExpectation->SetBranchStatus("MHT_Phi",1);
+  LostLeptonExpectation->SetBranchStatus("MHTPhi",1);
   LostLeptonExpectation->SetBranchStatus("NJets",1);
   LostLeptonExpectation->SetBranchStatus("BTags",1);
   LostLeptonExpectation->SetBranchStatus("Weight",1);
@@ -639,14 +639,14 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   LostLeptonExpectation->SetBranchStatus("elecAcc",1);
   LostLeptonExpectation->SetBranchStatus("elecReco",1);
   LostLeptonExpectation->SetBranchStatus("elecIso",1);
-  LostLeptonExpectation->SetBranchStatus("isoTracks",1);
+  LostLeptonExpectation->SetBranchStatus("isoTracksNum",1);
   LostLeptonExpectation->SetBranchStatus("ExpectationDiLep",1);
   LostLeptonExpectation->SetBranchStatus("GenMus",1);
   LostLeptonExpectation->SetBranchStatus("bTagProb",1);
 
   LostLeptonExpectation->SetBranchAddress("HT",&HT);
   LostLeptonExpectation->SetBranchAddress("MHT",&MHT);
-  LostLeptonExpectation->SetBranchAddress("MHT_Phi",&MHT_Phi);
+  LostLeptonExpectation->SetBranchAddress("MHTPhi",&MHTPhi);
   LostLeptonExpectation->SetBranchAddress("NJets",&NJets);
   LostLeptonExpectation->SetBranchAddress("BTags",&BTags);
   LostLeptonExpectation->SetBranchAddress("Weight",&Weight);
@@ -669,7 +669,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   LostLeptonExpectation->SetBranchAddress("elecReco",&elecReco);
   LostLeptonExpectation->SetBranchAddress("elecIso",&elecIso);
 	
-  LostLeptonExpectation->SetBranchAddress("isoTracks",&isoTracks);
+  LostLeptonExpectation->SetBranchAddress("isoTracksNum",&isoTracksNum);
   LostLeptonExpectation->SetBranchAddress("ExpectationDiLep",&ExpectationDiLep);
 
   LostLeptonExpectation->SetBranchAddress("bTagProb",&bTagProb);
@@ -811,7 +811,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 	totalExp_PTL_LL_->Fill(sqrt(PXL*PXL+PYL*PYL), scaledWeight);
 	totalExp_ETAL_LL_->Fill(ETAL, scaledWeight);
 	
-	double PXW(MHT*cos(MHT_Phi)+PXL), PYW(MHT*sin(MHT_Phi)+PYL);
+	double PXW(MHT*cos(MHTPhi)+PXL), PYW(MHT*sin(MHTPhi)+PYL);
 	double PTW = sqrt(PXW*PXW+PYW*PYW);
 	totalExp_PTW_LL_->Fill(PTW, scaledWeight);
 	if (BTags==0) totalExp_PTW_LL_0b_->Fill(PTW, scaledWeight);
@@ -1113,12 +1113,12 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     
     double PTW(0.), PTL(0.), ETAL(0.);
     if (selectedIDIsoMuonsNum==1) {
-      PTW=PTWCalculator(MHT, MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
+      PTW=PTWCalculator(MHT, MHTPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
       PTL=selectedIDIsoMuons->at(0).Pt();
       ETAL=selectedIDIsoMuons->at(0).Eta();
     }
     else if (selectedIDIsoElectronsNum==1) {
-      PTW=PTWCalculator(MHT, MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
+      PTW=PTWCalculator(MHT, MHTPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
       PTL=selectedIDIsoElectrons->at(0).Pt();
       ETAL=selectedIDIsoElectrons->at(0).Eta();
     }
@@ -1571,8 +1571,8 @@ if(doExtrapolation){
     totalPred_BTags_LL_->Fill(BTags, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2/scaleMC);
 
     double PTW(0.);
-    if (selectedIDIsoMuonsNum==1) PTW=PTWCalculator(MHT, MHT_Phi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
-    if (selectedIDIsoElectronsNum==1) PTW=PTWCalculator(MHT, MHT_Phi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
+    if (selectedIDIsoMuonsNum==1) PTW=PTWCalculator(MHT, MHTPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi());
+    if (selectedIDIsoElectronsNum==1) PTW=PTWCalculator(MHT, MHTPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi());
 
 
     // extrapolation predictions

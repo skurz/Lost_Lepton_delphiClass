@@ -20,9 +20,10 @@ void MakePrediction()
   gSystem->Load("libPhysics.so");
   gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
   
-  TChain *Effchain = new TChain("TreeMaker2/PreSelection");
+  TChain *Effchain = new TChain("tree");
   //Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb_0309/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
-  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v5/TTJets_SingleLeptFromT.root");
+  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_TTJets_SingleLeptFromTbar.root");
+  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLm/tree_TTJets_SingleLeptFromTbar.root");
   
     
 //  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_spring15_3fb_0309/WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/*.root");
@@ -42,7 +43,7 @@ void MakePrediction()
     Effchain->SetProof();     	
   }
 
-  Effchain->Process("Prediction.C++g", "Prediction_test.root"); //specify output path/file here
+  Effchain->Process("Prediction.C++g", "Prediction.root"); //specify output path/file here
   // No HT cut: Effchain->Process("Prediction.C++g", "outputFile.root");
   // HT cut: Effchain->Process("Prediction.C++g", "outputFile.root, genHTcut");
   // for Jacks Syntax (outputname based on input) use: Effchain->Process("Prediction.C++g", "*, genHTcut");

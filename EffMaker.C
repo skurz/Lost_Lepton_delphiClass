@@ -409,7 +409,7 @@ Bool_t EffMaker::Process(Long64_t entry)
 //  if (entry%10000==0) cout << "fChain->GetTree()->GetEntry(" << entry << ");" << endl;
   fChain->GetTree()->GetEntry(entry);
 
-  if(Weight<0) return kTRUE;
+  if(Weight<0) Weight*=-1;
   if(Bin > 900) return kTRUE;
   
   // purity
@@ -1052,13 +1052,13 @@ Bool_t EffMaker::Process(Long64_t entry)
       ExpectationReductionIsoTrackHTEff_->Fill(HT,Weight,true);
       ExpectationReductionIsoTrackMHTEff_->Fill(MHT,Weight,true);
 
-      if(isoMuonTracks>0 && GenMuNum>0){
+      if(isoMuonTracksNum>0 && GenMuNum>0){
           ExpectationReductionIsoTrackPTEff_->Fill(GenMus->at(0).Pt(),Weight,true);
           ExpectationReductionIsoTrackActivityEff_->Fill(GenMu_MT2Activity->at(0),Weight,true);
-      }else if(isoElectronTracks>0 && GenElecNum>0){
+      }else if(isoElectronTracksNum>0 && GenElecNum>0){
           ExpectationReductionIsoTrackPTEff_->Fill(GenEls->at(0).Pt(),Weight,true);
           ExpectationReductionIsoTrackActivityEff_->Fill(GenElec_MT2Activity->at(0),Weight,true);
-      }else if(isoPionTracks>0 && GenTauNum>0){
+      }else if(isoPionTracksNum>0 && GenTauNum>0){
           ExpectationReductionIsoTrackPTEff_->Fill(GenTaus->at(0).Pt(),Weight,true);
           ExpectationReductionIsoTrackActivityEff_->Fill(GenTau_MT2Activity->at(0),Weight,true);
     }
@@ -1076,11 +1076,11 @@ Bool_t EffMaker::Process(Long64_t entry)
     if(NJets > 4.5 && NJets < 5.5) IsoTrackReductionHTMHT_NJets5_->Fill(HT,MHT,Weight,true);
     if(NJets > 5.5 && NJets < 6.5) IsoTrackReductionHTMHT_NJets6_->Fill(HT,MHT,Weight,true);
 
-    if(isoMuonTracks>0 && GenMuNum>0){
+    if(isoMuonTracksNum>0 && GenMuNum>0){
         IsoTrackReductionPTActivity_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),Weight,true);
-    }else if(isoElectronTracks>0 && GenElecNum>0){
+    }else if(isoElectronTracksNum>0 && GenElecNum>0){
         IsoTrackReductionPTActivity_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),Weight,true);
-    }else if(isoPionTracks>0 && GenTauNum>0){
+    }else if(isoPionTracksNum>0 && GenTauNum>0){
         IsoTrackReductionPTActivity_->Fill(GenTau_MT2Activity->at(0),GenTaus->at(0).Pt(),Weight,true);
     }
   }
@@ -1089,39 +1089,39 @@ Bool_t EffMaker::Process(Long64_t entry)
     if(Expectation==1){
         int isoTrack_highestPt = 0;
 
-        if(isoMuonTracks>0){
+        if(isoMuonTracksNum>0){
             isoTrack_highestPt = 1;
-            if(isoElectronTracks>0 && isoPionTracks>0){
-                if(IsolatedElectronTracksVeto->at(0).Pt() > TMath::Max(IsolatedMuonTracksVeto->at(0).Pt(), IsolatedPionTracksVeto->at(0).Pt())) isoTrack_highestPt = 2;
-                if(IsolatedPionTracksVeto->at(0).Pt() > TMath::Max(IsolatedMuonTracksVeto->at(0).Pt(), IsolatedElectronTracksVeto->at(0).Pt())) isoTrack_highestPt = 3;
-            }else if(isoElectronTracks>0){
-                if(IsolatedElectronTracksVeto->at(0).Pt() > IsolatedMuonTracksVeto->at(0).Pt()) isoTrack_highestPt = 2;
-            }else if(isoPionTracks>0){
-                if(IsolatedPionTracksVeto->at(0).Pt() > IsolatedMuonTracksVeto->at(0).Pt()) isoTrack_highestPt = 3;
+            if(isoElectronTracksNum>0 && isoPionTracksNum>0){
+                if(isoElectronTracks->at(0).Pt() > TMath::Max(isoMuonTracks->at(0).Pt(), isoPionTracks->at(0).Pt())) isoTrack_highestPt = 2;
+                if(isoPionTracks->at(0).Pt() > TMath::Max(isoMuonTracks->at(0).Pt(), isoElectronTracks->at(0).Pt())) isoTrack_highestPt = 3;
+            }else if(isoElectronTracksNum>0){
+                if(isoElectronTracks->at(0).Pt() > isoMuonTracks->at(0).Pt()) isoTrack_highestPt = 2;
+            }else if(isoPionTracksNum>0){
+                if(isoPionTracks->at(0).Pt() > isoMuonTracks->at(0).Pt()) isoTrack_highestPt = 3;
             }
-        }else if(isoElectronTracks>0){
+        }else if(isoElectronTracksNum>0){
             isoTrack_highestPt = 2;
-            if(isoPionTracks>0) if(IsolatedPionTracksVeto->at(0).Pt() > IsolatedElectronTracksVeto->at(0).Pt()) isoTrack_highestPt = 3;
-        }else if(isoPionTracks>0){
+            if(isoPionTracksNum>0) if(isoPionTracks->at(0).Pt() > isoElectronTracks->at(0).Pt()) isoTrack_highestPt = 3;
+        }else if(isoPionTracksNum>0){
             isoTrack_highestPt = 3;
         }
 
 
         // muon iso tracks
-        if(isoMuonTracks>0 && isoTrack_highestPt==1){
+        if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
             // cout << "Muon tracks found...";
             ExpectationReductionMuIsoTrackBTagEff_->Fill(BTags,Weight,true);
             ExpectationReductionMuIsoTrackNJetsEff_->Fill(NJets,Weight,true);
             ExpectationReductionMuIsoTrackHTEff_->Fill(HT,Weight,true);
             ExpectationReductionMuIsoTrackMHTEff_->Fill(MHT,Weight,true);
-            ExpectationReductionMuIsoTrackPTEff_->Fill(IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
-            //  ExpectationReductionMuIsoTrackActivityEff_->Fill(IsolatedMuonTracksVetoActivity->at(0),Weight,true);
+            ExpectationReductionMuIsoTrackPTEff_->Fill(isoMuonTracks->at(0).Pt(),Weight,true);
+            //  ExpectationReductionMuIsoTrackActivityEff_->Fill(isoMuonTracksNumActivity->at(0),Weight,true);
           
             //2D
             MuIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
             MuIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
             MuIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
-            //  MuIsoTrackReductionPTActivity_->Fill(IsolatedMuonTracksVetoActivity->at(0),IsolatedMuonTracksVeto->at(0).Pt(),Weight,true);
+            //  MuIsoTrackReductionPTActivity_->Fill(isoMuonTracksNumActivity->at(0),isoMuonTracks->at(0).Pt(),Weight,true);
             if(NJets < 3.5) MuIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,true);
             else if(NJets < 6.5) MuIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
             else MuIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
@@ -1148,20 +1148,20 @@ Bool_t EffMaker::Process(Long64_t entry)
       
       
         // elec iso tracks
-        if(isoElectronTracks>0 && isoTrack_highestPt==2){
+        if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
             // cout << "Electron tracks found...";
             ExpectationReductionElecIsoTrackBTagEff_->Fill(BTags,Weight,true);
             ExpectationReductionElecIsoTrackNJetsEff_->Fill(NJets,Weight,true);
             ExpectationReductionElecIsoTrackHTEff_->Fill(HT,Weight,true);
             ExpectationReductionElecIsoTrackMHTEff_->Fill(MHT,Weight,true);
-            ExpectationReductionElecIsoTrackPTEff_->Fill(IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
-            //  ExpectationReductionElecIsoTrackActivityEff_->Fill(IsolatedElectronTracksVetoActivity->at(0),Weight,true);
+            ExpectationReductionElecIsoTrackPTEff_->Fill(isoElectronTracks->at(0).Pt(),Weight,true);
+            //  ExpectationReductionElecIsoTrackActivityEff_->Fill(isoElectronTracksNumActivity->at(0),Weight,true);
           
             //2D
             ElecIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
             ElecIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
             ElecIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
-            //  ElecIsoTrackReductionPTActivity_->Fill(IsolatedElectronTracksVetoActivity->at(0),IsolatedElectronTracksVeto->at(0).Pt(),Weight,true);
+            //  ElecIsoTrackReductionPTActivity_->Fill(isoElectronTracksNumActivity->at(0),isoElectronTracks->at(0).Pt(),Weight,true);
             if(NJets < 3.5) ElecIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,true);
             else if(NJets < 6.5) ElecIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
             else ElecIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
@@ -1186,20 +1186,20 @@ Bool_t EffMaker::Process(Long64_t entry)
         }
 
         // pion iso tracks
-        if(isoPionTracks>0 && isoTrack_highestPt==3){
+        if(isoPionTracksNum>0 && isoTrack_highestPt==3){
             // cout << "Pion tracks found...";
             ExpectationReductionPionIsoTrackBTagEff_->Fill(BTags,Weight,true);
             ExpectationReductionPionIsoTrackNJetsEff_->Fill(NJets,Weight,true);
             ExpectationReductionPionIsoTrackHTEff_->Fill(HT,Weight,true);
             ExpectationReductionPionIsoTrackMHTEff_->Fill(MHT,Weight,true);
-            ExpectationReductionPionIsoTrackPTEff_->Fill(IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
-            //  ExpectationReductionPionIsoTrackActivityEff_->Fill(IsolatedPionTracksVetoActivity->at(0),Weight,true);
+            ExpectationReductionPionIsoTrackPTEff_->Fill(isoPionTracks->at(0).Pt(),Weight,true);
+            //  ExpectationReductionPionIsoTrackActivityEff_->Fill(isoPionTracksNumActivity->at(0),Weight,true);
           
             //2D
             PionIsoTrackReductionHTNJets_->Fill(HT,NJets,Weight,true);
             PionIsoTrackReductionMHTNJets_->Fill(MHT,NJets,Weight,true);
             PionIsoTrackReductionBTagNJets_->Fill(BTags,NJets,Weight,true);
-            //  PionIsoTrackReductionPTActivity_->Fill(IsolatedPionTracksVetoActivity->at(0),IsolatedPionTracksVeto->at(0).Pt(),Weight,true);
+            //  PionIsoTrackReductionPTActivity_->Fill(isoPionTracksNumActivity->at(0),isoPionTracks->at(0).Pt(),Weight,true);
             if(NJets < 3.5) PionIsoTrackReductionHTMHT_NJetsVeryLow_->Fill(HT,MHT,Weight,true);
             else if(NJets < 6.5) PionIsoTrackReductionHTMHT_NJetsLow_->Fill(HT,MHT,Weight,true);
             else PionIsoTrackReductionHTMHT_NJetsHigh_->Fill(HT,MHT,Weight,true);
@@ -1241,7 +1241,7 @@ Bool_t EffMaker::Process(Long64_t entry)
 	  if (Expectation==1) {
 	    if (GenMuNum==1&&GenElecNum==0) {	         
 	      if (ExpectationReductionIsoTrack==0) {
-		double PTW = sqrt( (GenMus->at(0).Px()+MHT*cos(MHT_Phi))*(GenMus->at(0).Px()+MHT*cos(MHT_Phi)) +  (GenMus->at(0).Py()+MHT*sin(MHT_Phi))*(GenMus->at(0).Py()+MHT*sin(MHT_Phi)) );
+		double PTW = sqrt( (GenMus->at(0).Px()+MHT*cos(MHTPhi))*(GenMus->at(0).Px()+MHT*cos(MHTPhi)) +  (GenMus->at(0).Py()+MHT*sin(MHTPhi))*(GenMus->at(0).Py()+MHT*sin(MHTPhi)) );
 		if (HT>500&&HT<1200) LostMuRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, Weight);
 		if (HT>1200) LostMuRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, Weight);
 		if (HT>800) LostMuRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, Weight);
@@ -1252,7 +1252,7 @@ Bool_t EffMaker::Process(Long64_t entry)
 	    }
 	    else if (GenMuNum==0&&GenElecNum==1) {
 	      if (ExpectationReductionIsoTrack==0) {	      
-		double PTW = sqrt( (GenEls->at(0).Px()+MHT*cos(MHT_Phi))*(GenEls->at(0).Px()+MHT*cos(MHT_Phi)) +  (GenEls->at(0).Py()+MHT*sin(MHT_Phi))*(GenEls->at(0).Py()+MHT*sin(MHT_Phi)) );
+		double PTW = sqrt( (GenEls->at(0).Px()+MHT*cos(MHTPhi))*(GenEls->at(0).Px()+MHT*cos(MHTPhi)) +  (GenEls->at(0).Py()+MHT*sin(MHTPhi))*(GenEls->at(0).Py()+MHT*sin(MHTPhi)) );
 		if (HT>500&&HT<1200) LostElecRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, Weight);
 		if (HT>1200) LostElecRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, Weight);
 		if (HT>800) LostElecRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, Weight);
@@ -1271,7 +1271,7 @@ Bool_t EffMaker::Process(Long64_t entry)
 	    //   for (unsigned int iel(0); iel<GenElecNum; iel++) {
 	    // 	GenLeps.push_back(GenEls->at(iel));
 	    //   }
-	    //   double PXW(MHT*cos(MHT_Phi)), PYW(MHT*sin(MHT_Phi));
+	    //   double PXW(MHT*cos(MHTPhi)), PYW(MHT*sin(MHTPhi));
 	    //   for (unsigned int ilep(0); ilep<GenLeps.size(); ilep++) {
 	    // 	PXW+=GenLeps[ilep].Px();
 	    // 	PYW+=GenLeps[ilep].Py();
