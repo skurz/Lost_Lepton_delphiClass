@@ -79,8 +79,8 @@ double TwoDActivity_[twoDActivity_]={0, 0.02, 0.05, 0.2, 1., 100.};
 const int twoDEta_=7;
 double TwoDEta_[twoDEta_]={0., 0.5, 1., 1.442, 1.566, 2., 2.52};
 
-const int threeDHT_=5;
-double ThreeDHT_[threeDHT_] = {250,350,500,1000,10000};
+const int threeDHT_=6;
+double ThreeDHT_[threeDHT_] = {250,350,500,750,1000,10000};
 const int threeDMHT_=4;
 double ThreeDMHT_[threeDMHT_] = {250,350,500,10000};
 
