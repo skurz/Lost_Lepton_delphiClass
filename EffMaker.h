@@ -39,10 +39,10 @@ const double mtwCut_ = 100;
 // binning of efficiencies
 // gloabel 1D binning
 
-const int oneDHT_=14;
-double OneDHT_[oneDHT_] = {350,500,550,600,650,700,750,800,900,1000,1200,1500,2000,10000};
+const int oneDHT_=16;
+double OneDHT_[oneDHT_] = {250,300,350,500,550,600,650,700,750,800,900,1000,1200,1500,2000,10000};
 const int oneDMHT_=16;
-double OneDMHT_[oneDMHT_] = {0,50,100,150,200,250,300,350,450,500,600,700,900,1200,1700,10000};
+double OneDMHT_[oneDMHT_] = {0,50,100,150,200,250,300,350,450,500,600,750,900,1200,1700,10000};
 const int oneDNJets_=8;
 double OneDNJets_[oneDNJets_] = {2,3,4,5,6,7,9,21};
 const int oneDBJets_=5;
@@ -51,96 +51,38 @@ const int oneDDeltaR_=8;
 double OneDDeltaR_[oneDDeltaR_]={0, 0.2 ,0.3, 0.5 ,0.7 ,1.0 , 1.8, 5.0};
 const int oneDPTRel_=7;
 double OneDPTRel_[oneDPTRel_]={0, 0.2 ,0.4 ,0.6 ,0.8 ,1.0 , 10.0};
-
-// used to compare with tag and probe eff.
-const int oneDPT_=8;
-double OneDPT_[oneDPT_]={10,15,20,30,40,50,100,2500};
+const int oneDPT_=11;
+double OneDPT_[oneDPT_]={10,15,20,30,40,50,60,70,90,100,10000};
 const int oneDActivity_=6;
 double OneDActivity_[oneDActivity_]={0, 0.02, 0.05, 0.2, 1., 100.};
 const int oneDEta_=7;
 double OneDEta_[oneDEta_]={0., 0.5, 1., 1.442, 1.566, 2., 2.52};
+const int oneDDTT_ = 11;
+double OneDDTT_ [oneDDTT_] = {0.0,0.6,0.8,0.9,0.92,0.94,0.96,0.97,0.98,0.99,1.0};
 
-// purity
-//mu
-//2D
-const int mupurityMHT_ = 4;
-double muPurityMHT_[mupurityMHT_] ={200,500,750,10000};
-const int mupurityNJet_ = 5;
-double muPurityNJet_[mupurityNJet_] ={2,4,7,9,21};
+const int twoDHT_=7;
+double TwoDHT_[twoDHT_] = {250,350,500,750,1000,1500,10000};
+const int twoDMHT_=5;
+double TwoDMHT_[twoDMHT_] = {250,350,500,750,10000};
+const int twoDNJets_=8;
+double TwoDNJets_[twoDNJets_] = {2,3,4,5,6,7,9,21};
+const int twoDBJets_=5;
+double TwoDBJets_[twoDBJets_] = {0,1,2,3,10};
+const int twoDDeltaR_=8;
+double TwoDDeltaR_[twoDDeltaR_]={0, 0.2 ,0.3, 0.5 ,0.7 ,1.0 , 1.8, 5.0};
+const int twoDPTRel_=7;
+double TwoDPTRel_[twoDPTRel_]={0, 0.2 ,0.4 ,0.6 ,0.8 ,1.0 , 10.0};
+const int twoDPT_=9;
+double TwoDPT_[twoDPT_]={10,30,40,50,60,70,90,110,10000};
+const int twoDActivity_=6;
+double TwoDActivity_[twoDActivity_]={0, 0.02, 0.05, 0.2, 1., 100.};
+const int twoDEta_=7;
+double TwoDEta_[twoDEta_]={0., 0.5, 1., 1.442, 1.566, 2., 2.52};
 
-// elec
-//2D
-const int elecpurityMHT_ = 4;
-double elecPurityMHT_[elecpurityMHT_] ={200,500,750,10000};
-const int elecpurityNJet_ = 5;
-double elecPurityNJet_[elecpurityNJet_] ={2,4,7,9,21};
-
-// mu acceptance
-// 2D
-const int muaccHT_ = 4;
-double muAccHT_ [muaccHT_] = {500,800,1200,10000};
-const int muaccMHT_ = 4;
-double muAccMHT_ [muaccMHT_] = {200,500,750,10000};
-const int muaccMHT2D_ = 3;
-double muAccMHT2D_ [muaccMHT2D_] = {200,500,10000};
-const int muaccBTags_ = 5;
-double muAccBTags_[muaccBTags_] = {0,1,2,3,10};
-const int muaccNJets_ = 8;
-double muAccNJets_ [muaccNJets_] = {2,3,4,5,6,7,9,21};
-const int muaccDTT_ = 11;
-double muAccDTT_ [muaccDTT_] = {0.0,0.6,0.8,0.9,0.92,0.94,0.96,0.97,0.98,0.99,1.0};
-
-// elec acceptance
-// 2D
-const int elecaccHT_ = 4;
-double elecAccHT_ [elecaccHT_] = {500,800,1200,10000};
-const int elecaccMHT_ = 4;
-double elecAccMHT_ [elecaccMHT_] = {200,500,750,10000};
-const int elecaccMHT2D_ = 3;
-double elecAccMHT2D_ [elecaccMHT2D_] = {200,500,10000};
-const int elecaccBTags_ = 5;
-double elecAccBTags_[elecaccBTags_] = {0,1,2,3,10};
-const int elecaccNJets_ = 8;
-double elecAccNJets_ [elecaccNJets_] = {2,3,4,5,6,7,9,21};
-const int elecaccDTT_ = 11;
-double elecAccDTT_ [muaccDTT_] = {0.0,0.6,0.8,0.9,0.92,0.94,0.96,0.97,0.98,0.99,1.0};
-
-// mtw
-// 2D
-const int muMTWPT2D_=9;
-double MuMTWPT2D_[muMTWPT2D_]={10,30,40,50,60,70,90,110,10000};
-const int muMTWActivity2D_=5;
-double MuMTWActivity2D_[muMTWActivity2D_]={0, 0.02, 0.05, 0.2, 1.};
-
-const int elecMTWPT2D_=9;
-double ElecMTWPT2D_[elecMTWPT2D_]={10,30,40,50,60,70,90,110,10000};
-const int elecMTWActivity2D_=5;
-double ElecMTWActivity2D_[elecMTWActivity2D_]={0, 0.02, 0.05, 0.2, 1.};
-
-// isotrack reduction
-// 1D
-const int isotrackreductionHT_ = 3;
-double isoTrackReductionHT_ [isotrackreductionHT_] = {500,1200,10000};
-const int isotrackreductionMHT_ = 3;
-double isoTrackReductionMHT_ [isotrackreductionMHT_] = {200,500,10000};
-const int isotrackreductionBTags_ = 5;
-double isoTrackReductionBTags_[isotrackreductionBTags_] = {0,1,2,3,10};
-const int isotrackreductionNJets_ = 8;
-double isoTrackReductionNJets_ [isotrackreductionNJets_] = {2,3,4,5,6,7,9,20};
-const int isotrackreductionPT_ = 8;
-double isoTrackReductionPT_ [isotrackreductionPT_] = {5,10,20,25,30,40,50,200};
-const int isotrackreductionActivity_ = 5;
-double isoTrackReductionActivity_ [isotrackreductionActivity_] = {0, 0.02, 0.05, 0.2, 1.};
-// 2D
-const int isotrackreductionBTags2D_ = 3;
-double isoTrackReductionBTags2D_[isotrackreductionBTags2D_] = {0,1,10};
-const int isotrackreductionNJets2D_ = 8;
-double isoTrackReductionNJets2D_ [isotrackreductionNJets2D_] = {2,3,4,5,6,7,9,21};
-const int isotrackreductionPT2D_ = 8;
-double isoTrackReductionPT2D_[isotrackreductionPT2D_] = {5,10,20,25,30,40,50,200};
-const int isotrackreductionActivity2D_ = 5;
-double isoTrackReductionActivity2D_ [isotrackreductionActivity2D_] = {0, 0.02, 0.05, 0.2, 1.};
-
+const int threeDHT_=5;
+double ThreeDHT_[threeDHT_] = {250,350,500,1000,10000};
+const int threeDMHT_=4;
+double ThreeDMHT_[threeDMHT_] = {250,350,500,10000};
 
 
 class EffMaker : public TSelector {

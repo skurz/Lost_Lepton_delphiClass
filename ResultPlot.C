@@ -71,7 +71,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
 
   // Begin of Code
-    int nSearchBinsTotal = 108;
+    int nSearchBinsTotal = 190;
   if(doQCDbinning){
     nSearchBinsTotal = 286;
   }

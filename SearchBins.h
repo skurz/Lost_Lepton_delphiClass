@@ -44,6 +44,7 @@ protected:
   std::vector<std::pair<int, int>> BTags_bins_NJets3Inf;
   std::vector<std::pair<int, int>> BTags_bins_NJets2;
 
+  int nSkipped = 0;
 };
 
 
@@ -195,7 +196,8 @@ unsigned int SearchBins::GetBinNumber(double HT, double MHT, int NJets, int BTag
   }
   if(match==-1)
   {
-    std::cout<<"Error event fits in no bin! HT: "<<HT<<", MHT: "<<MHT<<", NJets: "<<NJets<<", BTags: "<<BTags<<std::endl;
+    //std::cout<<"Error event fits in no bin! HT: "<<HT<<", MHT: "<<MHT<<", NJets: "<<NJets<<", BTags: "<<BTags<<std::endl;
+  	nSkipped++;
   }
   if(match>0)
   {
@@ -212,4 +214,5 @@ void SearchBins::PrintUsed()
   	total+=usedBin_[i];;
   }
   std::cout<<"Total: "<<total<<std::endl;
+  std::cout<<"Skipped events (passed baseline but no search bin): "<<nSkipped<<"/"<<total<<std::endl;
 }

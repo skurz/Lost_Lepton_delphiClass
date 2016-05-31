@@ -185,6 +185,8 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   //    std::cout << "Event falls in bin " << Bin_ << std::endl;
   isoTracksNum = isoMuonTracksNum + isoPionTracksNum + isoElectronTracksNum;
 
+  if(Bin_ > 900) return kTRUE;
+
   GenMuNum_ = GenMus->size();
   GenElecNum_ = GenEls->size();
   GenTauNum_ = GenTaus->size();
@@ -391,7 +393,10 @@ Bool_t ExpecMaker::Process(Long64_t entry)
       isoElectronTracks_trkiso.push_back(TAPElectronTracks_trkiso->at(i));
     }
   }
-  if(isoElectronTracks.size() != (unsigned) isoElectronTracksNum) std::cout << "WARNING! Number of isoElectronTracks is not correct!" << std::endl;
+  if(isoElectronTracks.size() != (unsigned) isoElectronTracksNum){
+    std::cout << "WARNING! Number of isoElectronTracks is not correct! Skipping event." << std::endl;
+    return kTRUE;
+  }
 
   for(unsigned i=0; i< TAPMuonTracks->size(); i++){
     if(TAPMuonTracks_trkiso->at(i) < 0.2 && TAPMuonTracks_mT->at(i) < 100){
@@ -402,7 +407,10 @@ Bool_t ExpecMaker::Process(Long64_t entry)
       isoMuonTracks_trkiso.push_back(TAPMuonTracks_trkiso->at(i));
     }      
   }
-  if(isoMuonTracks.size() != (unsigned) isoMuonTracksNum) std::cout << "WARNING! Number of isoMuonTracks is not correct!" << std::endl;
+  if(isoMuonTracks.size() != (unsigned) isoMuonTracksNum){
+    std::cout << "WARNING! Number of isoMuonTracks is not correct! Skipping event." << std::endl;
+    return kTRUE;
+  }
 
   for(unsigned i=0; i< TAPPionTracks->size(); i++){
     if(TAPPionTracks_trkiso->at(i) < 0.1 && TAPPionTracks_mT->at(i) < 100){
@@ -413,7 +421,10 @@ Bool_t ExpecMaker::Process(Long64_t entry)
       isoPionTracks_trkiso.push_back(TAPPionTracks_trkiso->at(i));
     }      
   }
-  if(isoPionTracks.size() != (unsigned) isoPionTracksNum) std::cout << "WARNING! Number of isoPionTracks is not correct!" << std::endl;
+  if(isoPionTracks.size() != (unsigned) isoPionTracksNum){
+    std::cout << "WARNING! Number of isoPionTracks is not correct! Skipping event." << std::endl;
+    return kTRUE;
+  }
 
   if(!doIsoTrackStudies){
     tExpectation_->Fill();
