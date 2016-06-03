@@ -291,6 +291,103 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TH1D* totalPredictionMuCSElecIso_ = new TH1D("TotalLostLeptonPredictionMuCSElecIso", "TotalLostLeptonPredictionMuCSElecIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPredictionElecCSElecIso_ = new TH1D("TotalLostLeptonPredictionElecCSElecIso", "TotalLostLeptonPredictionElecCSElecIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
+  TH1D* totalExpectationMuAccNJets_ = new TH1D("TotalLostLeptonExpecationMuAccNJets", "TotalLostLeptonExpecationMuAccNJets", 9, 1.5, 10.5);
+  TH1D* totalPredictionMuCSMuAccNJets_ = new TH1D("TotalLostLeptonPredictionMuCSMuAccNJets", "TotalLostLeptonPredictionMuCSMuAccNJets", 9, 1.5, 10.5);
+  TH1D* totalPredictionElecCSMuAccNJets_ = new TH1D("TotalLostLeptonPredictionElecCSMuAccNJets", "TotalLostLeptonPredictionElecCSMuAccNJets", 9, 1.5, 10.5);
+  
+  TH1D* totalExpectationMuRecoNJets_ = new TH1D("TotalLostLeptonExpecationMuRecoNJets", "TotalLostLeptonExpecationMuRecoNJets", 9, 1.5, 10.5);
+  TH1D* totalPredictionMuCSMuRecoNJets_ = new TH1D("TotalLostLeptonPredictionMuCSMuRecoNJets", "TotalLostLeptonPredictionMuCSMuRecoNJets", 9, 1.5, 10.5);
+  TH1D* totalPredictionElecCSMuRecoNJets_ = new TH1D("TotalLostLeptonPredictionElecCSMuRecoNJets", "TotalLostLeptonPredictionElecCSMuRecoNJets", 9, 1.5, 10.5);
+  
+  TH1D* totalExpectationMuIsoNJets_ = new TH1D("TotalLostLeptonExpecationMuIsoNJets", "TotalLostLeptonExpecationMuIsoNJets", 9, 1.5, 10.5);
+  TH1D* totalPredictionMuCSMuIsoNJets_ = new TH1D("TotalLostLeptonPredictionMuCSMuIsoNJets", "TotalLostLeptonPredictionMuCSMuIsoNJets", 9, 1.5, 10.5);
+  TH1D* totalPredictionElecCSMuIsoNJets_ = new TH1D("TotalLostLeptonPredictionElecCSMuIsoNJets", "TotalLostLeptonPredictionElecCSMuIsoNJets", 9, 1.5, 10.5);  
+  
+  TH1D* totalExpectationElecAccNJets_ = new TH1D("TotalLostLeptonExpecationElecAccNJets", "TotalLostLeptonExpecationElecAccNJets", 9, 1.5, 10.5);
+  TH1D* totalPredictionMuCSElecAccNJets_ = new TH1D("TotalLostLeptonPredictionMuCSElecAccNJets", "TotalLostLeptonPredictionMuCSElecAccNJets", 9, 1.5, 10.5);
+  TH1D* totalPredictionElecCSElecAccNJets_ = new TH1D("TotalLostLeptonPredictionElecCSElecAccNJets", "TotalLostLeptonPredictionElecCSElecAccNJets", 9, 1.5, 10.5);
+  
+  TH1D* totalExpectationElecRecoNJets_ = new TH1D("TotalLostLeptonExpecationElecRecoNJets", "TotalLostLeptonExpecationElecRecoNJets", 9, 1.5, 10.5);
+  TH1D* totalPredictionMuCSElecRecoNJets_ = new TH1D("TotalLostLeptonPredictionMuCSElecRecoNJets", "TotalLostLeptonPredictionMuCSElecRecoNJets", 9, 1.5, 10.5);
+  TH1D* totalPredictionElecCSElecRecoNJets_ = new TH1D("TotalLostLeptonPredictionElecCSElecRecoNJets", "TotalLostLeptonPredictionElecCSElecRecoNJets", 9, 1.5, 10.5);
+  
+  TH1D* totalExpectationElecIsoNJets_ = new TH1D("TotalLostLeptonExpecationElecIsoNJets", "TotalLostLeptonExpecationElecIsoNJets", 9, 1.5, 10.5);
+  TH1D* totalPredictionMuCSElecIsoNJets_ = new TH1D("TotalLostLeptonPredictionMuCSElecIsoNJets", "TotalLostLeptonPredictionMuCSElecIsoNJets", 9, 1.5, 10.5);
+  TH1D* totalPredictionElecCSElecIsoNJets_ = new TH1D("TotalLostLeptonPredictionElecCSElecIsoNJets", "TotalLostLeptonPredictionElecCSElecIsoNJets", 9, 1.5, 10.5);
+
+  TH1D* totalExpectationMuAccHT_ = new TH1D("TotalLostLeptonExpecationMuAccHT", "TotalLostLeptonExpecationMuAccHT", 18, 250., 2500.);
+  TH1D* totalPredictionMuCSMuAccHT_ = new TH1D("TotalLostLeptonPredictionMuCSMuAccHT", "TotalLostLeptonPredictionMuCSMuAccHT", 18, 250., 2500.);
+  TH1D* totalPredictionElecCSMuAccHT_ = new TH1D("TotalLostLeptonPredictionElecCSMuAccHT", "TotalLostLeptonPredictionElecCSMuAccHT", 18, 250., 2500.);
+  
+  TH1D* totalExpectationMuRecoHT_ = new TH1D("TotalLostLeptonExpecationMuRecoHT", "TotalLostLeptonExpecationMuRecoHT", 18, 250., 2500.);
+  TH1D* totalPredictionMuCSMuRecoHT_ = new TH1D("TotalLostLeptonPredictionMuCSMuRecoHT", "TotalLostLeptonPredictionMuCSMuRecoHT", 18, 250., 2500.);
+  TH1D* totalPredictionElecCSMuRecoHT_ = new TH1D("TotalLostLeptonPredictionElecCSMuRecoHT", "TotalLostLeptonPredictionElecCSMuRecoHT", 18, 250., 2500.);
+  
+  TH1D* totalExpectationMuIsoHT_ = new TH1D("TotalLostLeptonExpecationMuIsoHT", "TotalLostLeptonExpecationMuIsoHT", 18, 250., 2500.);
+  TH1D* totalPredictionMuCSMuIsoHT_ = new TH1D("TotalLostLeptonPredictionMuCSMuIsoHT", "TotalLostLeptonPredictionMuCSMuIsoHT", 18, 250., 2500.);
+  TH1D* totalPredictionElecCSMuIsoHT_ = new TH1D("TotalLostLeptonPredictionElecCSMuIsoHT", "TotalLostLeptonPredictionElecCSMuIsoHT", 18, 250., 2500.);  
+  
+  TH1D* totalExpectationElecAccHT_ = new TH1D("TotalLostLeptonExpecationElecAccHT", "TotalLostLeptonExpecationElecAccHT", 18, 250., 2500.);
+  TH1D* totalPredictionMuCSElecAccHT_ = new TH1D("TotalLostLeptonPredictionMuCSElecAccHT", "TotalLostLeptonPredictionMuCSElecAccHT", 18, 250., 2500.);
+  TH1D* totalPredictionElecCSElecAccHT_ = new TH1D("TotalLostLeptonPredictionElecCSElecAccHT", "TotalLostLeptonPredictionElecCSElecAccHT", 18, 250., 2500.);
+  
+  TH1D* totalExpectationElecRecoHT_ = new TH1D("TotalLostLeptonExpecationElecRecoHT", "TotalLostLeptonExpecationElecRecoHT", 18, 250., 2500.);
+  TH1D* totalPredictionMuCSElecRecoHT_ = new TH1D("TotalLostLeptonPredictionMuCSElecRecoHT", "TotalLostLeptonPredictionMuCSElecRecoHT", 18, 250., 2500.);
+  TH1D* totalPredictionElecCSElecRecoHT_ = new TH1D("TotalLostLeptonPredictionElecCSElecRecoHT", "TotalLostLeptonPredictionElecCSElecRecoHT", 18, 250., 2500.);
+  
+  TH1D* totalExpectationElecIsoHT_ = new TH1D("TotalLostLeptonExpecationElecIsoHT", "TotalLostLeptonExpecationElecIsoHT", 18, 250., 2500.);
+  TH1D* totalPredictionMuCSElecIsoHT_ = new TH1D("TotalLostLeptonPredictionMuCSElecIsoHT", "TotalLostLeptonPredictionMuCSElecIsoHT", 18, 250., 2500.);
+  TH1D* totalPredictionElecCSElecIsoHT_ = new TH1D("TotalLostLeptonPredictionElecCSElecIsoHT", "TotalLostLeptonPredictionElecCSElecIsoHT", 18, 250., 2500.);
+
+  TH1D* totalExpectationMuAccMHT_ = new TH1D("TotalLostLeptonExpecationMuAccMHT", "TotalLostLeptonExpecationMuAccMHT", 12, 250., 850.);
+  TH1D* totalPredictionMuCSMuAccMHT_ = new TH1D("TotalLostLeptonPredictionMuCSMuAccMHT", "TotalLostLeptonPredictionMuCSMuAccMHT", 12, 250., 850.);
+  TH1D* totalPredictionElecCSMuAccMHT_ = new TH1D("TotalLostLeptonPredictionElecCSMuAccMHT", "TotalLostLeptonPredictionElecCSMuAccMHT", 12, 250., 850.);
+  
+  TH1D* totalExpectationMuRecoMHT_ = new TH1D("TotalLostLeptonExpecationMuRecoMHT", "TotalLostLeptonExpecationMuRecoMHT", 12, 250., 850.);
+  TH1D* totalPredictionMuCSMuRecoMHT_ = new TH1D("TotalLostLeptonPredictionMuCSMuRecoMHT", "TotalLostLeptonPredictionMuCSMuRecoMHT", 12, 250., 850.);
+  TH1D* totalPredictionElecCSMuRecoMHT_ = new TH1D("TotalLostLeptonPredictionElecCSMuRecoMHT", "TotalLostLeptonPredictionElecCSMuRecoMHT", 12, 250., 850.);
+  
+  TH1D* totalExpectationMuIsoMHT_ = new TH1D("TotalLostLeptonExpecationMuIsoMHT", "TotalLostLeptonExpecationMuIsoMHT", 12, 250., 850.);
+  TH1D* totalPredictionMuCSMuIsoMHT_ = new TH1D("TotalLostLeptonPredictionMuCSMuIsoMHT", "TotalLostLeptonPredictionMuCSMuIsoMHT", 12, 250., 850.);
+  TH1D* totalPredictionElecCSMuIsoMHT_ = new TH1D("TotalLostLeptonPredictionElecCSMuIsoMHT", "TotalLostLeptonPredictionElecCSMuIsoMHT", 12, 250., 850.);  
+  
+  TH1D* totalExpectationElecAccMHT_ = new TH1D("TotalLostLeptonExpecationElecAccMHT", "TotalLostLeptonExpecationElecAccMHT", 12, 250., 850.);
+  TH1D* totalPredictionMuCSElecAccMHT_ = new TH1D("TotalLostLeptonPredictionMuCSElecAccMHT", "TotalLostLeptonPredictionMuCSElecAccMHT", 12, 250., 850.);
+  TH1D* totalPredictionElecCSElecAccMHT_ = new TH1D("TotalLostLeptonPredictionElecCSElecAccMHT", "TotalLostLeptonPredictionElecCSElecAccMHT", 12, 250., 850.);
+  
+  TH1D* totalExpectationElecRecoMHT_ = new TH1D("TotalLostLeptonExpecationElecRecoMHT", "TotalLostLeptonExpecationElecRecoMHT", 12, 250., 850.);
+  TH1D* totalPredictionMuCSElecRecoMHT_ = new TH1D("TotalLostLeptonPredictionMuCSElecRecoMHT", "TotalLostLeptonPredictionMuCSElecRecoMHT", 12, 250., 850.);
+  TH1D* totalPredictionElecCSElecRecoMHT_ = new TH1D("TotalLostLeptonPredictionElecCSElecRecoMHT", "TotalLostLeptonPredictionElecCSElecRecoMHT", 12, 250., 850.);
+  
+  TH1D* totalExpectationElecIsoMHT_ = new TH1D("TotalLostLeptonExpecationElecIsoMHT", "TotalLostLeptonExpecationElecIsoMHT", 12, 250., 850.);
+  TH1D* totalPredictionMuCSElecIsoMHT_ = new TH1D("TotalLostLeptonPredictionMuCSElecIsoMHT", "TotalLostLeptonPredictionMuCSElecIsoMHT", 12, 250., 850.);
+  TH1D* totalPredictionElecCSElecIsoMHT_ = new TH1D("TotalLostLeptonPredictionElecCSElecIsoMHT", "TotalLostLeptonPredictionElecCSElecIsoMHT", 12, 250., 850.);
+
+  TH1D* totalExpectationMuAccBTag_ = new TH1D("TotalLostLeptonExpecationMuAccBTag", "TotalLostLeptonExpecationMuAccBTag", 7, -0.5, 6.5);
+  TH1D* totalPredictionMuCSMuAccBTag_ = new TH1D("TotalLostLeptonPredictionMuCSMuAccBTag", "TotalLostLeptonPredictionMuCSMuAccBTag", 7, -0.5, 6.5);
+  TH1D* totalPredictionElecCSMuAccBTag_ = new TH1D("TotalLostLeptonPredictionElecCSMuAccBTag", "TotalLostLeptonPredictionElecCSMuAccBTag", 7, -0.5, 6.5);
+  
+  TH1D* totalExpectationMuRecoBTag_ = new TH1D("TotalLostLeptonExpecationMuRecoBTag", "TotalLostLeptonExpecationMuRecoBTag", 7, -0.5, 6.5);
+  TH1D* totalPredictionMuCSMuRecoBTag_ = new TH1D("TotalLostLeptonPredictionMuCSMuRecoBTag", "TotalLostLeptonPredictionMuCSMuRecoBTag", 7, -0.5, 6.5);
+  TH1D* totalPredictionElecCSMuRecoBTag_ = new TH1D("TotalLostLeptonPredictionElecCSMuRecoBTag", "TotalLostLeptonPredictionElecCSMuRecoBTag", 7, -0.5, 6.5);
+  
+  TH1D* totalExpectationMuIsoBTag_ = new TH1D("TotalLostLeptonExpecationMuIsoBTag", "TotalLostLeptonExpecationMuIsoBTag", 7, -0.5, 6.5);
+  TH1D* totalPredictionMuCSMuIsoBTag_ = new TH1D("TotalLostLeptonPredictionMuCSMuIsoBTag", "TotalLostLeptonPredictionMuCSMuIsoBTag", 7, -0.5, 6.5);
+  TH1D* totalPredictionElecCSMuIsoBTag_ = new TH1D("TotalLostLeptonPredictionElecCSMuIsoBTag", "TotalLostLeptonPredictionElecCSMuIsoBTag", 7, -0.5, 6.5);  
+  
+  TH1D* totalExpectationElecAccBTag_ = new TH1D("TotalLostLeptonExpecationElecAccBTag", "TotalLostLeptonExpecationElecAccBTag", 7, -0.5, 6.5);
+  TH1D* totalPredictionMuCSElecAccBTag_ = new TH1D("TotalLostLeptonPredictionMuCSElecAccBTag", "TotalLostLeptonPredictionMuCSElecAccBTag", 7, -0.5, 6.5);
+  TH1D* totalPredictionElecCSElecAccBTag_ = new TH1D("TotalLostLeptonPredictionElecCSElecAccBTag", "TotalLostLeptonPredictionElecCSElecAccBTag", 7, -0.5, 6.5);
+  
+  TH1D* totalExpectationElecRecoBTag_ = new TH1D("TotalLostLeptonExpecationElecRecoBTag", "TotalLostLeptonExpecationElecRecoBTag", 7, -0.5, 6.5);
+  TH1D* totalPredictionMuCSElecRecoBTag_ = new TH1D("TotalLostLeptonPredictionMuCSElecRecoBTag", "TotalLostLeptonPredictionMuCSElecRecoBTag", 7, -0.5, 6.5);
+  TH1D* totalPredictionElecCSElecRecoBTag_ = new TH1D("TotalLostLeptonPredictionElecCSElecRecoBTag", "TotalLostLeptonPredictionElecCSElecRecoBTag", 7, -0.5, 6.5);
+  
+  TH1D* totalExpectationElecIsoBTag_ = new TH1D("TotalLostLeptonExpecationElecIsoBTag", "TotalLostLeptonExpecationElecIsoBTag", 7, -0.5, 6.5);
+  TH1D* totalPredictionMuCSElecIsoBTag_ = new TH1D("TotalLostLeptonPredictionMuCSElecIsoBTag", "TotalLostLeptonPredictionMuCSElecIsoBTag", 7, -0.5, 6.5);
+  TH1D* totalPredictionElecCSElecIsoBTag_ = new TH1D("TotalLostLeptonPredictionElecCSElecIsoBTag", "TotalLostLeptonPredictionElecCSElecIsoBTag", 7, -0.5, 6.5);
+
+
 
   // Define histrograms to do totalPrediction per SearchBin
   TH1D* totalExp_LL_ = new TH1D("totalExp_LL","totalExp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
@@ -298,8 +395,8 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   //  TH1D* totalExp_LL_NoTk_ = new TH1D("totalExp_LL_NoTk","totalExp_LL_NoTk", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* nEvtsExp_LL_ = new TH1D("nEvtsExp_LL","nEvtsExp_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TH1D* totalExp_HT_LL_ = new TH1D("totalExp_HT_LL","totalExp_HT_LL;H_{T} [GeV]", 20, 500., 2500.);
-  TH1D* totalExp_MHT_LL_ = new TH1D("totalExp_MHT_LL","totalExp_MHT_LL;H_{T}^{miss} [GeV]", 20, 200., 1200.);
+  TH1D* totalExp_HT_LL_ = new TH1D("totalExp_HT_LL","totalExp_HT_LL;H_{T} [GeV]", 18, 250., 2500.);
+  TH1D* totalExp_MHT_LL_ = new TH1D("totalExp_MHT_LL","totalExp_MHT_LL;H_{T}^{miss} [GeV]", 12, 250., 850.);
   TH1D* totalExp_NJets_LL_ = new TH1D("totalExp_NJets_LL","totalExp_NJets_LL;N_{jet} (p_{T} > 30 GeV)", 9, 1.5, 10.5);
   TH1D* totalExp_BTags_LL_ = new TH1D("totalExp_BTags_LL","totalExp_BTags_LL;N_{b-jet} (p_{T} > 30 GeV)", 7, -0.5, 6.5);
 
@@ -411,8 +508,8 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TH1D* totalPred_LL_ = new TH1D("totalPred_LL","totalPred_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPred_EXTRAP_LL_ = new TH1D("totalPred_EXTRAP_LL","totalPred_EXTRAP_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TH1D* totalPred_HT_LL_ = new TH1D("totalPred_HT_LL","totalPred_HT_LL", 20, 500., 2500.);
-  TH1D* totalPred_MHT_LL_ = new TH1D("totalPred_MHT_LL","totalPred_MHT_LL", 20, 200., 1200.);
+  TH1D* totalPred_HT_LL_ = new TH1D("totalPred_HT_LL","totalPred_HT_LL", 18, 25., 2500.);
+  TH1D* totalPred_MHT_LL_ = new TH1D("totalPred_MHT_LL","totalPred_MHT_LL", 12, 250., 1200.);
   TH1D* totalPred_NJets_LL_ = new TH1D("totalPred_NJets_LL","totalPred_NJets_LL", 9, 1.5, 10.5);
   TH1D* totalPred_BTags_LL_ = new TH1D("totalPred_BTags_LL","totalPred_BTags_LL", 7, -0.5, 6.5);
 
@@ -495,8 +592,8 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TH1D* totalPredwoIso_LL_MC_ = new TH1D("totalPredwoIso_LL_MC","totalPredwoIso_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPred_EXTRAP_LL_MC_ = new TH1D("totalPred_EXTRAP_LL_MC","totalPred_EXTRAP_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TH1D* totalPred_HT_LL_MC_ = new TH1D("totalPred_HT_LL_MC","totalPred_HT_LL_MC", 20, 500., 2500.);
-  TH1D* totalPred_MHT_LL_MC_ = new TH1D("totalPred_MHT_LL_MC","totalPred_MHT_LL_MC", 20, 200., 1200.);
+  TH1D* totalPred_HT_LL_MC_ = new TH1D("totalPred_HT_LL_MC","totalPred_HT_LL_MC", 18, 25., 2500.);
+  TH1D* totalPred_MHT_LL_MC_ = new TH1D("totalPred_MHT_LL_MC","totalPred_MHT_LL_MC", 12, 250., 850.);
   TH1D* totalPred_NJets_LL_MC_ = new TH1D("totalPred_NJets_LL_MC","totalPred_NJets_LL_MC", 9, 1.5, 10.5);
   TH1D* totalPred_BTags_LL_MC_ = new TH1D("totalPred_BTags_LL_MC","totalPred_BTags_LL_MC", 7, -0.5, 6.5);
 
@@ -581,13 +678,13 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TProfile* avgWeight_LL_MC_ = new TProfile("avgWeight_LL_MC","avgWeight_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* EXTRAP_weight_SF_LL_MC_ = new TH1D("EXTRAP_weight_SF_LL_MC","EXTRAP_weight_SF_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TProfile* avgWeight_HT_LL_MC_ = new TProfile("avgWeight_HT_LL_MC","avgWeight_HT_LL_MC", 20, 500., 2500.);
-  TProfile* avgWeight_MHT_LL_MC_ = new TProfile("avgWeight_MHT_LL_MC","avgWeight_MHT_LL_MC", 20, 200., 1200.);
+  TProfile* avgWeight_HT_LL_MC_ = new TProfile("avgWeight_HT_LL_MC","avgWeight_HT_LL_MC", 18, 250., 2500.);
+  TProfile* avgWeight_MHT_LL_MC_ = new TProfile("avgWeight_MHT_LL_MC","avgWeight_MHT_LL_MC", 12, 250., 850.);
   TProfile* avgWeight_NJets_LL_MC_ = new TProfile("avgWeight_NJets_LL_MC","avgWeight_NJets_LL_MC", 9, 1.5, 10.5);
   TProfile* avgWeight_BTags_LL_MC_ = new TProfile("avgWeight_BTags_LL_MC","avgWeight_BTags_LL_MC", 7, -0.5, 6.5);
-  TProfile* avgWeight_MHT_HT500_800_LL_MC_ = new TProfile("avgWeight_HT500_800_MHT_LL_MC","avgWeight_HT500_800_MHT_LL_MC", 20, 200., 1200.);
-  TProfile* avgWeight_MHT_HT800_1200_LL_MC_ = new TProfile("avgWeight_HT800_1200_MHT_LL_MC","avgWeight_HT800_1200_MHT_LL_MC", 20, 200., 1200.);
-  TProfile* avgWeight_MHT_HT1200_Inf_LL_MC_ = new TProfile("avgWeight_HT1200_Inf_MHT_LL_MC","avgWeight_HT1200_Inf_MHT_LL_MC", 20, 200., 1200.);
+  TProfile* avgWeight_MHT_HT500_800_LL_MC_ = new TProfile("avgWeight_HT500_800_MHT_LL_MC","avgWeight_HT500_800_MHT_LL_MC", 12, 250., 850.);
+  TProfile* avgWeight_MHT_HT800_1200_LL_MC_ = new TProfile("avgWeight_HT800_1200_MHT_LL_MC","avgWeight_HT800_1200_MHT_LL_MC", 12, 250., 850.);
+  TProfile* avgWeight_MHT_HT1200_Inf_LL_MC_ = new TProfile("avgWeight_HT1200_Inf_MHT_LL_MC","avgWeight_HT1200_Inf_MHT_LL_MC", 12, 250., 850.);
  
 
   // Histograms for Readiness Talk
@@ -699,7 +796,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
       //fill event 4 times weighting with the btag probability
       for(int i = 0; i < 4; i++){
-        if(NJets > 3){
+        if(NJets > 2){
           scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
         }else{
           if(i < 2){
@@ -715,6 +812,63 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
         	totalExp+=scaledWeight;
         	totalExpError+= scaledWeight*scaledWeight;
           totalExpwoIso_LL_->Fill(Bin_bTags.at(i), scaledWeight);
+
+        if(muAcc==0)
+          {
+          totalExpectationMuAcc_->Fill(Bin_bTags.at(i), scaledWeight);
+          totalExpectationMuAccNJets_->Fill(NJets, scaledWeight);
+          totalExpectationMuAccBTag_->Fill(i, scaledWeight);
+          totalExpectationMuAccHT_->Fill(HT, scaledWeight);
+          totalExpectationMuAccMHT_->Fill(MHT, scaledWeight);
+          totalExpMuAcc+=scaledWeight;
+          }
+        if(muReco==0)
+          {
+          totalExpectationMuReco_->Fill(Bin_bTags.at(i), scaledWeight);
+          totalExpectationMuRecoNJets_->Fill(NJets, scaledWeight);
+          totalExpectationMuRecoBTag_->Fill(i, scaledWeight);
+          totalExpectationMuRecoHT_->Fill(HT, scaledWeight);
+          totalExpectationMuRecoMHT_->Fill(MHT, scaledWeight);
+          totalExpMuReco+=scaledWeight;
+          }
+        if(muIso==0)
+          {
+          totalExpectationMuIso_->Fill(Bin_bTags.at(i), scaledWeight);
+          totalExpectationMuIsoNJets_->Fill(NJets, scaledWeight);
+          totalExpectationMuIsoBTag_->Fill(i, scaledWeight);
+          totalExpectationMuIsoHT_->Fill(HT, scaledWeight);
+          totalExpectationMuIsoMHT_->Fill(MHT, scaledWeight);
+          totalExpMuIso+=scaledWeight;
+          }
+              
+        if(elecAcc==0)
+          {
+          totalExpectationElecAcc_->Fill(Bin_bTags.at(i), scaledWeight);
+          totalExpectationElecAccNJets_->Fill(NJets, scaledWeight);
+          totalExpectationElecAccBTag_->Fill(i, scaledWeight);
+          totalExpectationElecAccHT_->Fill(HT, scaledWeight);
+          totalExpectationElecAccMHT_->Fill(MHT, scaledWeight);
+          totalExpElecAcc+=scaledWeight;
+
+          }
+        if(elecReco==0)
+          {
+          totalExpectationElecReco_->Fill(Bin_bTags.at(i), scaledWeight);
+          totalExpectationElecRecoNJets_->Fill(NJets, scaledWeight);
+          totalExpectationElecRecoBTag_->Fill(i, scaledWeight);
+          totalExpectationElecRecoHT_->Fill(HT, scaledWeight);
+          totalExpectationElecRecoMHT_->Fill(MHT, scaledWeight);
+          totalExpElecReco+=scaledWeight;
+          }
+        if(elecIso==0)
+          {
+          totalExpectationElecIso_->Fill(Bin_bTags.at(i), scaledWeight);
+          totalExpectationElecIsoNJets_->Fill(NJets, scaledWeight);
+          totalExpectationElecIsoBTag_->Fill(i, scaledWeight);
+          totalExpectationElecIsoHT_->Fill(HT, scaledWeight);
+          totalExpectationElecIsoMHT_->Fill(MHT, scaledWeight);
+          totalExpElecIso+=scaledWeight;
+          }
           }
         if(Expectation==1 && ExpectationReductionIsoTrack==0)
           {
@@ -749,6 +903,62 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
         totalExp+=scaledWeight;
         totalExpError+= scaledWeight*scaledWeight;
         totalExpwoIso_LL_->Fill(SearchBin, scaledWeight);
+
+        if(muAcc==0)
+          {
+          totalExpectationMuAcc_->Fill(SearchBin, scaledWeight);
+          totalExpectationMuAccNJets_->Fill(NJets, scaledWeight);
+          totalExpectationMuAccBTag_->Fill(BTags, scaledWeight);
+          totalExpectationMuAccHT_->Fill(HT, scaledWeight);
+          totalExpectationMuAccMHT_->Fill(MHT, scaledWeight);
+          totalExpMuAcc+=scaledWeight;
+          }
+        if(muReco==0)
+          {
+          totalExpectationMuReco_->Fill(SearchBin, scaledWeight);
+          totalExpectationMuRecoNJets_->Fill(NJets, scaledWeight);
+          totalExpectationMuRecoBTag_->Fill(BTags, scaledWeight);
+          totalExpectationMuRecoHT_->Fill(HT, scaledWeight);
+          totalExpectationMuRecoMHT_->Fill(MHT, scaledWeight);
+          totalExpMuReco+=scaledWeight;
+          }
+        if(muIso==0)
+          {
+          totalExpectationMuIso_->Fill(SearchBin, scaledWeight);
+          totalExpectationMuIsoNJets_->Fill(NJets, scaledWeight);
+          totalExpectationMuIsoBTag_->Fill(BTags, scaledWeight);
+          totalExpectationMuIsoHT_->Fill(HT, scaledWeight);
+          totalExpectationMuIsoMHT_->Fill(MHT, scaledWeight);
+          totalExpMuIso+=scaledWeight;
+          }
+              
+        if(elecAcc==0)
+          {
+          totalExpectationElecAcc_->Fill(SearchBin, scaledWeight);
+          totalExpectationElecAccNJets_->Fill(NJets, scaledWeight);
+          totalExpectationElecAccBTag_->Fill(BTags, scaledWeight);
+          totalExpectationElecAccHT_->Fill(HT, scaledWeight);
+          totalExpectationElecAccMHT_->Fill(MHT, scaledWeight);
+          totalExpElecAcc+=scaledWeight;
+          }
+        if(elecReco==0)
+          {
+          totalExpectationElecReco_->Fill(SearchBin, scaledWeight);
+          totalExpectationElecRecoNJets_->Fill(NJets, scaledWeight);
+          totalExpectationElecRecoBTag_->Fill(BTags, scaledWeight);
+          totalExpectationElecRecoHT_->Fill(HT, scaledWeight);
+          totalExpectationElecRecoMHT_->Fill(MHT, scaledWeight);
+          totalExpElecReco+=scaledWeight;
+          }
+        if(elecIso==0)
+          {
+          totalExpectationElecIso_->Fill(SearchBin, scaledWeight);
+          totalExpectationElecIsoNJets_->Fill(NJets, scaledWeight);
+          totalExpectationElecIsoBTag_->Fill(BTags, scaledWeight);
+          totalExpectationElecIsoHT_->Fill(HT, scaledWeight);
+          totalExpectationElecIsoMHT_->Fill(MHT, scaledWeight);
+          totalExpElecIso+=scaledWeight;
+          }
         }
       if(Expectation==1 && ExpectationReductionIsoTrack==0)
         {
@@ -817,38 +1027,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 	if (BTags==0) totalExp_PTW_LL_0b_->Fill(PTW, scaledWeight);
 	else if (BTags==1) totalExp_PTW_LL_1b_->Fill(PTW, scaledWeight);
 	else if (BTags>=2) totalExp_PTW_LL_2b_->Fill(PTW, scaledWeight);
-      }
-    if(muAcc==0)
-      {
-    	totalExpectationMuAcc_->Fill(SearchBin, scaledWeight);
-    	totalExpMuAcc+=scaledWeight;
-      }
-    if(muReco==0)
-      {
-    	totalExpectationMuReco_->Fill(SearchBin, scaledWeight);
-    	totalExpMuReco+=scaledWeight;
-      }
-    if(muIso==0)
-      {
-    	totalExpectationMuIso_->Fill(SearchBin, scaledWeight);
-    	totalExpMuIso+=scaledWeight;
-      }
-					
-    if(elecAcc==0)
-      {
-    	totalExpectationElecAcc_->Fill(SearchBin, scaledWeight);
-    	totalExpElecAcc+=scaledWeight;
-      }
-    if(elecReco==0)
-      {
-    	totalExpectationElecReco_->Fill(SearchBin, scaledWeight);
-    	totalExpElecReco+=scaledWeight;
-      }
-    if(elecIso==0)
-      {
-    	totalExpectationElecIso_->Fill(SearchBin, scaledWeight);
-    	totalExpElecIso+=scaledWeight;
-      }
+    }
  
   }
 	
@@ -1072,7 +1251,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
       //fill event 4 times weighting with the btag probability
       for(int i = 0; i < 4; i++){
         double scaleFactorWeightBtagProb;
-        if(NJets > 3){
+        if(NJets > 2){
           scaleFactorWeightBtagProb = scaleFactorWeight * bTagProb->at(i);
           scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
         }else{
@@ -1093,6 +1272,97 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
         totalPred_NJets_LL_MC_->Fill(NJets, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         totalPred_BTags_LL_MC_->Fill(i, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
 
+          if(selectedIDIsoMuonsNum == 1){
+            totalPredictionMuCSMuAcc_->Fill(Bin_bTags.at(i), muAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuReco_->Fill(Bin_bTags.at(i), muRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuIso_->Fill(Bin_bTags.at(i), muIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuAccNJets_->Fill(NJets, muAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuRecoNJets_->Fill(NJets, muRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuIsoNJets_->Fill(NJets, muIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuAccBTag_->Fill(i, muAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuRecoBTag_->Fill(i, muRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuIsoBTag_->Fill(i, muIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuAccHT_->Fill(HT, muAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuRecoHT_->Fill(HT, muRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuIsoHT_->Fill(HT, muIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuAccMHT_->Fill(MHT, muAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuRecoMHT_->Fill(MHT, muRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuIsoMHT_->Fill(MHT, muIsoWeight*scaleFactorWeightBtagProb);
+            totalPreMuAcc+=muAccWeight*scaleFactorWeightBtagProb/2;
+            totalPreMuReco+=muRecoWeight*scaleFactorWeightBtagProb/2;
+            totalPreMuIso+=muIsoWeight*scaleFactorWeightBtagProb/2;
+            totalPreMuMuAcc+=muAccWeight*scaleFactorWeightBtagProb;
+            totalPreMuMuReco+=muRecoWeight*scaleFactorWeightBtagProb;
+            totalPreMuMuIso+=muIsoWeight*scaleFactorWeightBtagProb;
+                
+            totalPredictionMuCSElecAcc_->Fill(Bin_bTags.at(i), elecAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecReco_->Fill(Bin_bTags.at(i), elecRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecIso_->Fill(Bin_bTags.at(i), elecIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecAccNJets_->Fill(NJets, elecAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecRecoNJets_->Fill(NJets, elecRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecIsoNJets_->Fill(NJets, elecIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecAccBTag_->Fill(i, elecAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecRecoBTag_->Fill(i, elecRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecIsoBTag_->Fill(i, elecIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecAccHT_->Fill(HT, elecAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecRecoHT_->Fill(HT, elecRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecIsoHT_->Fill(HT, elecIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecAccMHT_->Fill(MHT, elecAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecRecoMHT_->Fill(MHT, elecRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecIsoMHT_->Fill(MHT, elecIsoWeight*scaleFactorWeightBtagProb);
+            totalPreElecAcc+=elecAccWeight*scaleFactorWeightBtagProb/2;
+            totalPreElecReco+=elecRecoWeight*scaleFactorWeightBtagProb/2;
+            totalPreElecIso+=elecIsoWeight*scaleFactorWeightBtagProb/2;
+            totalPreMuElecAcc+=elecAccWeight*scaleFactorWeightBtagProb;
+            totalPreMuElecReco+=elecRecoWeight*scaleFactorWeightBtagProb;
+            totalPreMuElecIso+=elecIsoWeight*scaleFactorWeightBtagProb;
+
+          }if(selectedIDIsoElectronsNum == 1){
+            totalPredictionElecCSElecAcc_->Fill(Bin_bTags.at(i), elecAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecReco_->Fill(Bin_bTags.at(i), elecRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecIso_->Fill(Bin_bTags.at(i), elecIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecAccNJets_->Fill(NJets, elecAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecRecoNJets_->Fill(NJets, elecRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecIsoNJets_->Fill(NJets, elecIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecAccBTag_->Fill(i, elecAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecRecoBTag_->Fill(i, elecRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecIsoBTag_->Fill(i, elecIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecAccHT_->Fill(HT, elecAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecRecoHT_->Fill(HT, elecRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecIsoHT_->Fill(HT, elecIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecAccMHT_->Fill(MHT, elecAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecRecoMHT_->Fill(MHT, elecRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecIsoMHT_->Fill(MHT, elecIsoWeight*scaleFactorWeightBtagProb);
+            totalPreElecAcc+=elecAccWeight*scaleFactorWeightBtagProb/2;
+            totalPreElecReco+=elecRecoWeight*scaleFactorWeightBtagProb/2;
+            totalPreElecIso+=elecIsoWeight*scaleFactorWeightBtagProb/2;
+            totalPreElecElecAcc+=elecAccWeight*scaleFactorWeightBtagProb;
+            totalPreElecElecReco+=elecRecoWeight*scaleFactorWeightBtagProb;
+            totalPreElecElecIso+=elecIsoWeight*scaleFactorWeightBtagProb;
+                    
+            totalPredictionElecCSMuAcc_->Fill(Bin_bTags.at(i), muAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuReco_->Fill(Bin_bTags.at(i), muRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuIso_->Fill(Bin_bTags.at(i), muIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuAccNJets_->Fill(NJets, muAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuRecoNJets_->Fill(NJets, muRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuIsoNJets_->Fill(NJets, muIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuAccBTag_->Fill(i, muAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuRecoBTag_->Fill(i, muRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuIsoBTag_->Fill(i, muIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuAccHT_->Fill(HT, muAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuRecoHT_->Fill(HT, muRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuIsoHT_->Fill(HT, muIsoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuAccMHT_->Fill(MHT, muAccWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuRecoMHT_->Fill(MHT, muRecoWeight*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuIsoMHT_->Fill(MHT, muIsoWeight*scaleFactorWeightBtagProb);
+            totalPreMuAcc+=muAccWeight*scaleFactorWeightBtagProb/2;
+            totalPreMuReco+=muRecoWeight*scaleFactorWeightBtagProb/2;
+            totalPreMuIso+=muIsoWeight*scaleFactorWeightBtagProb/2;
+            totalPreElecMuAcc+=muAccWeight*scaleFactorWeightBtagProb;
+            totalPreElecMuReco+=muRecoWeight*scaleFactorWeightBtagProb;
+            totalPreElecMuIso+=muIsoWeight*scaleFactorWeightBtagProb;
+          }
+
       if(NJets < 4 && i==2) break;
     }
 
@@ -1107,6 +1377,97 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
     totalPred_MHT_LL_MC_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
     totalPred_NJets_LL_MC_->Fill(NJets, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
     totalPred_BTags_LL_MC_->Fill(BTags, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+
+    if(selectedIDIsoMuonsNum == 1){
+      totalPredictionMuCSMuAcc_->Fill(SearchBin, muAccWeight*scaleFactorWeight);
+      totalPredictionMuCSMuReco_->Fill(SearchBin, muRecoWeight*scaleFactorWeight);
+      totalPredictionMuCSMuIso_->Fill(SearchBin, muIsoWeight*scaleFactorWeight);
+      totalPredictionMuCSMuAccNJets_->Fill(NJets, muAccWeight*scaleFactorWeight);
+      totalPredictionMuCSMuRecoNJets_->Fill(NJets, muRecoWeight*scaleFactorWeight);
+      totalPredictionMuCSMuIsoNJets_->Fill(NJets, muIsoWeight*scaleFactorWeight);
+      totalPredictionMuCSMuAccBTag_->Fill(BTags, muAccWeight*scaleFactorWeight);
+      totalPredictionMuCSMuRecoBTag_->Fill(BTags, muRecoWeight*scaleFactorWeight);
+      totalPredictionMuCSMuIsoBTag_->Fill(BTags, muIsoWeight*scaleFactorWeight);
+      totalPredictionMuCSMuAccHT_->Fill(HT, muAccWeight*scaleFactorWeight);
+      totalPredictionMuCSMuRecoHT_->Fill(HT, muRecoWeight*scaleFactorWeight);
+      totalPredictionMuCSMuIsoHT_->Fill(HT, muIsoWeight*scaleFactorWeight);
+      totalPredictionMuCSMuAccMHT_->Fill(MHT, muAccWeight*scaleFactorWeight);
+      totalPredictionMuCSMuRecoMHT_->Fill(MHT, muRecoWeight*scaleFactorWeight);
+      totalPredictionMuCSMuIsoMHT_->Fill(MHT, muIsoWeight*scaleFactorWeight);
+      totalPreMuAcc+=muAccWeight*scaleFactorWeight/2;
+      totalPreMuReco+=muRecoWeight*scaleFactorWeight/2;
+      totalPreMuIso+=muIsoWeight*scaleFactorWeight/2;
+      totalPreMuMuAcc+=muAccWeight*scaleFactorWeight;
+      totalPreMuMuReco+=muRecoWeight*scaleFactorWeight;
+      totalPreMuMuIso+=muIsoWeight*scaleFactorWeight;
+          
+      totalPredictionMuCSElecAcc_->Fill(SearchBin, elecAccWeight*scaleFactorWeight);
+      totalPredictionMuCSElecReco_->Fill(SearchBin, elecRecoWeight*scaleFactorWeight);
+      totalPredictionMuCSElecIso_->Fill(SearchBin, elecIsoWeight*scaleFactorWeight);
+      totalPredictionMuCSElecAccNJets_->Fill(NJets, elecAccWeight*scaleFactorWeight);
+      totalPredictionMuCSElecRecoNJets_->Fill(NJets, elecRecoWeight*scaleFactorWeight);
+      totalPredictionMuCSElecIsoNJets_->Fill(NJets, elecIsoWeight*scaleFactorWeight);
+      totalPredictionMuCSElecAccBTag_->Fill(BTags, elecAccWeight*scaleFactorWeight);
+      totalPredictionMuCSElecRecoBTag_->Fill(BTags, elecRecoWeight*scaleFactorWeight);
+      totalPredictionMuCSElecIsoBTag_->Fill(BTags, elecIsoWeight*scaleFactorWeight);
+      totalPredictionMuCSElecAccHT_->Fill(HT, elecAccWeight*scaleFactorWeight);
+      totalPredictionMuCSElecRecoHT_->Fill(HT, elecRecoWeight*scaleFactorWeight);
+      totalPredictionMuCSElecIsoHT_->Fill(HT, elecIsoWeight*scaleFactorWeight);
+      totalPredictionMuCSElecAccMHT_->Fill(MHT, elecAccWeight*scaleFactorWeight);
+      totalPredictionMuCSElecRecoMHT_->Fill(MHT, elecRecoWeight*scaleFactorWeight);
+      totalPredictionMuCSElecIsoMHT_->Fill(MHT, elecIsoWeight*scaleFactorWeight);
+      totalPreElecAcc+=elecAccWeight*scaleFactorWeight/2;
+      totalPreElecReco+=elecRecoWeight*scaleFactorWeight/2;
+      totalPreElecIso+=elecIsoWeight*scaleFactorWeight/2;
+      totalPreMuElecAcc+=elecAccWeight*scaleFactorWeight;
+      totalPreMuElecReco+=elecRecoWeight*scaleFactorWeight;
+      totalPreMuElecIso+=elecIsoWeight*scaleFactorWeight;
+
+    }if(selectedIDIsoElectronsNum == 1){
+      totalPredictionElecCSElecAcc_->Fill(SearchBin, elecAccWeight*scaleFactorWeight);
+      totalPredictionElecCSElecReco_->Fill(SearchBin, elecRecoWeight*scaleFactorWeight);
+      totalPredictionElecCSElecIso_->Fill(SearchBin, elecIsoWeight*scaleFactorWeight);
+      totalPredictionElecCSElecAccNJets_->Fill(NJets, elecAccWeight*scaleFactorWeight);
+      totalPredictionElecCSElecRecoNJets_->Fill(NJets, elecRecoWeight*scaleFactorWeight);
+      totalPredictionElecCSElecIsoNJets_->Fill(NJets, elecIsoWeight*scaleFactorWeight);
+      totalPredictionElecCSElecAccBTag_->Fill(BTags, elecAccWeight*scaleFactorWeight);
+      totalPredictionElecCSElecRecoBTag_->Fill(BTags, elecRecoWeight*scaleFactorWeight);
+      totalPredictionElecCSElecIsoBTag_->Fill(BTags, elecIsoWeight*scaleFactorWeight);
+      totalPredictionElecCSElecAccHT_->Fill(HT, elecAccWeight*scaleFactorWeight);
+      totalPredictionElecCSElecRecoHT_->Fill(HT, elecRecoWeight*scaleFactorWeight);
+      totalPredictionElecCSElecIsoHT_->Fill(HT, elecIsoWeight*scaleFactorWeight);
+      totalPredictionElecCSElecAccMHT_->Fill(MHT, elecAccWeight*scaleFactorWeight);
+      totalPredictionElecCSElecRecoMHT_->Fill(MHT, elecRecoWeight*scaleFactorWeight);
+      totalPredictionElecCSElecIsoMHT_->Fill(MHT, elecIsoWeight*scaleFactorWeight);
+      totalPreElecAcc+=elecAccWeight*scaleFactorWeight/2;
+      totalPreElecReco+=elecRecoWeight*scaleFactorWeight/2;
+      totalPreElecIso+=elecIsoWeight*scaleFactorWeight/2;
+      totalPreElecElecAcc+=elecAccWeight*scaleFactorWeight;
+      totalPreElecElecReco+=elecRecoWeight*scaleFactorWeight;
+      totalPreElecElecIso+=elecIsoWeight*scaleFactorWeight;
+              
+      totalPredictionElecCSMuAcc_->Fill(SearchBin, muAccWeight*scaleFactorWeight);
+      totalPredictionElecCSMuReco_->Fill(SearchBin, muRecoWeight*scaleFactorWeight);
+      totalPredictionElecCSMuIso_->Fill(SearchBin, muIsoWeight*scaleFactorWeight);
+      totalPredictionElecCSMuAccNJets_->Fill(NJets, muAccWeight*scaleFactorWeight);
+      totalPredictionElecCSMuRecoNJets_->Fill(NJets, muRecoWeight*scaleFactorWeight);
+      totalPredictionElecCSMuIsoNJets_->Fill(NJets, muIsoWeight*scaleFactorWeight);
+      totalPredictionElecCSMuAccBTag_->Fill(BTags, muAccWeight*scaleFactorWeight);
+      totalPredictionElecCSMuRecoBTag_->Fill(BTags, muRecoWeight*scaleFactorWeight);
+      totalPredictionElecCSMuIsoBTag_->Fill(BTags, muIsoWeight*scaleFactorWeight);
+      totalPredictionElecCSMuAccHT_->Fill(HT, muAccWeight*scaleFactorWeight);
+      totalPredictionElecCSMuRecoHT_->Fill(HT, muRecoWeight*scaleFactorWeight);
+      totalPredictionElecCSMuIsoHT_->Fill(HT, muIsoWeight*scaleFactorWeight);
+      totalPredictionElecCSMuAccMHT_->Fill(MHT, muAccWeight*scaleFactorWeight);
+      totalPredictionElecCSMuRecoMHT_->Fill(MHT, muRecoWeight*scaleFactorWeight);
+      totalPredictionElecCSMuIsoMHT_->Fill(MHT, muIsoWeight*scaleFactorWeight);
+      totalPreMuAcc+=muAccWeight*scaleFactorWeight/2;
+      totalPreMuReco+=muRecoWeight*scaleFactorWeight/2;
+      totalPreMuIso+=muIsoWeight*scaleFactorWeight/2;
+      totalPreElecMuAcc+=muAccWeight*scaleFactorWeight;
+      totalPreElecMuReco+=muRecoWeight*scaleFactorWeight;
+      totalPreElecMuIso+=muIsoWeight*scaleFactorWeight;
+    }
   }
 
 
@@ -1290,7 +1651,7 @@ if(doExtrapolation){
 
       //fill event 4 times weighting with the btag probability
       for(int i = 0; i < 4; i++){
-        if(NJets > 3){
+        if(NJets > 2){
           scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
         }else{
           if(i < 2){
@@ -1770,26 +2131,6 @@ if(doExtrapolation){
       totalPreIsoTrackMu+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/scaleMC;
       totalPreIsoTrackMuError+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight*totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/scaleMC/scaleMC;
 
-      // separted closure
-      totalPredictionMuCSMuAcc_->Fill(SearchBin, muAccWeight*scaleFactorWeight/scaleMC);
-      totalPredictionMuCSMuReco_->Fill(SearchBin, muRecoWeight*scaleFactorWeight/scaleMC);
-      totalPredictionMuCSMuIso_->Fill(SearchBin, muIsoWeight*scaleFactorWeight/scaleMC);
-      totalPreMuAcc+=muAccWeight*scaleFactorWeight/2/scaleMC;
-      totalPreMuReco+=muRecoWeight*scaleFactorWeight/2/scaleMC;
-      totalPreMuIso+=muIsoWeight*scaleFactorWeight/2/scaleMC;
-      totalPreMuMuAcc+=muAccWeight*scaleFactorWeight/scaleMC;
-      totalPreMuMuReco+=muRecoWeight*scaleFactorWeight/scaleMC;
-      totalPreMuMuIso+=muIsoWeight*scaleFactorWeight/scaleMC;
-    			
-      totalPredictionMuCSElecAcc_->Fill(SearchBin, elecAccWeight*scaleFactorWeight/scaleMC);
-      totalPredictionMuCSElecReco_->Fill(SearchBin, elecRecoWeight*scaleFactorWeight/scaleMC);
-      totalPredictionMuCSElecIso_->Fill(SearchBin, elecIsoWeight*scaleFactorWeight/scaleMC);
-      totalPreElecAcc+=elecAccWeight*scaleFactorWeight/2/scaleMC;
-      totalPreElecReco+=elecRecoWeight*scaleFactorWeight/2/scaleMC;
-      totalPreElecIso+=elecIsoWeight*scaleFactorWeight/2/scaleMC;
-      totalPreMuElecAcc+=elecAccWeight*scaleFactorWeight/scaleMC;
-      totalPreMuElecReco+=elecRecoWeight*scaleFactorWeight/scaleMC;
-      totalPreMuElecIso+=elecIsoWeight*scaleFactorWeight/scaleMC;
     }
     if(selectedIDIsoMuonsNum==0 && selectedIDIsoElectronsNum==1)
       {
@@ -1808,27 +2149,6 @@ if(doExtrapolation){
 	totalPredictionElecIsoTrackReduction_->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/scaleMC);
 	totalPreIsoTrackElec+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/scaleMC;
 	totalPreIsoTrackElecError+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight*totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/scaleMC/scaleMC;
-
-	// separted closure
-	totalPredictionElecCSElecAcc_->Fill(SearchBin, elecAccWeight*scaleFactorWeight/scaleMC);
-	totalPredictionElecCSElecReco_->Fill(SearchBin, elecRecoWeight*scaleFactorWeight/scaleMC);
-	totalPredictionElecCSElecIso_->Fill(SearchBin, elecIsoWeight*scaleFactorWeight/scaleMC);
-	totalPreElecAcc+=elecAccWeight*scaleFactorWeight/2/scaleMC;
-	totalPreElecReco+=elecRecoWeight*scaleFactorWeight/2/scaleMC;
-	totalPreElecIso+=elecIsoWeight*scaleFactorWeight/2/scaleMC;
-	totalPreElecElecAcc+=elecAccWeight*scaleFactorWeight/scaleMC;
-	totalPreElecElecReco+=elecRecoWeight*scaleFactorWeight/scaleMC;
-	totalPreElecElecIso+=elecIsoWeight*scaleFactorWeight/scaleMC;
-          
-	totalPredictionElecCSMuAcc_->Fill(SearchBin, muAccWeight*scaleFactorWeight/scaleMC);
-	totalPredictionElecCSMuReco_->Fill(SearchBin, muRecoWeight*scaleFactorWeight/scaleMC);
-	totalPredictionElecCSMuIso_->Fill(SearchBin, muIsoWeight*scaleFactorWeight/scaleMC);
-	totalPreMuAcc+=muAccWeight*scaleFactorWeight/2/scaleMC;
-	totalPreMuReco+=muRecoWeight*scaleFactorWeight/2/scaleMC;
-	totalPreMuIso+=muIsoWeight*scaleFactorWeight/2/scaleMC;
-	totalPreElecMuAcc+=muAccWeight*scaleFactorWeight/scaleMC;
-	totalPreElecMuReco+=muRecoWeight*scaleFactorWeight/scaleMC;
-	totalPreElecMuIso+=muIsoWeight*scaleFactorWeight/scaleMC;
       }
   }
 
@@ -1926,6 +2246,70 @@ if(doExtrapolation){
   SaveClosure(totalPredictionElecCSElecAcc_, totalExpectationElecAcc_, dClosures);
   SaveClosure(totalPredictionElecCSElecReco_, totalExpectationElecReco_, dClosures);
   SaveClosure(totalPredictionElecCSElecIso_, totalExpectationElecIso_, dClosures);
+
+  SaveClosure(totalPredictionMuCSMuAccNJets_, totalExpectationMuAccNJets_, dClosures);
+  SaveClosure(totalPredictionMuCSMuRecoNJets_, totalExpectationMuRecoNJets_, dClosures);
+  SaveClosure(totalPredictionMuCSMuIsoNJets_, totalExpectationMuIsoNJets_, dClosures);
+  
+  SaveClosure(totalPredictionMuCSElecAccNJets_, totalExpectationElecAccNJets_, dClosures);
+  SaveClosure(totalPredictionMuCSElecRecoNJets_, totalExpectationElecRecoNJets_, dClosures);
+  SaveClosure(totalPredictionMuCSElecIsoNJets_, totalExpectationElecIsoNJets_, dClosures);
+  
+  SaveClosure(totalPredictionElecCSMuAccNJets_, totalExpectationMuAccNJets_, dClosures);
+  SaveClosure(totalPredictionElecCSMuRecoNJets_, totalExpectationMuRecoNJets_, dClosures);
+  SaveClosure(totalPredictionElecCSMuIsoNJets_, totalExpectationMuIsoNJets_, dClosures);
+  
+  SaveClosure(totalPredictionElecCSElecAccNJets_, totalExpectationElecAccNJets_, dClosures);
+  SaveClosure(totalPredictionElecCSElecRecoNJets_, totalExpectationElecRecoNJets_, dClosures);
+  SaveClosure(totalPredictionElecCSElecIsoNJets_, totalExpectationElecIsoNJets_, dClosures);
+
+  SaveClosure(totalPredictionMuCSMuAccHT_, totalExpectationMuAccHT_, dClosures);
+  SaveClosure(totalPredictionMuCSMuRecoHT_, totalExpectationMuRecoHT_, dClosures);
+  SaveClosure(totalPredictionMuCSMuIsoHT_, totalExpectationMuIsoHT_, dClosures);
+  
+  SaveClosure(totalPredictionMuCSElecAccHT_, totalExpectationElecAccHT_, dClosures);
+  SaveClosure(totalPredictionMuCSElecRecoHT_, totalExpectationElecRecoHT_, dClosures);
+  SaveClosure(totalPredictionMuCSElecIsoHT_, totalExpectationElecIsoHT_, dClosures);
+  
+  SaveClosure(totalPredictionElecCSMuAccHT_, totalExpectationMuAccHT_, dClosures);
+  SaveClosure(totalPredictionElecCSMuRecoHT_, totalExpectationMuRecoHT_, dClosures);
+  SaveClosure(totalPredictionElecCSMuIsoHT_, totalExpectationMuIsoHT_, dClosures);
+  
+  SaveClosure(totalPredictionElecCSElecAccHT_, totalExpectationElecAccHT_, dClosures);
+  SaveClosure(totalPredictionElecCSElecRecoHT_, totalExpectationElecRecoHT_, dClosures);
+  SaveClosure(totalPredictionElecCSElecIsoHT_, totalExpectationElecIsoHT_, dClosures);
+
+  SaveClosure(totalPredictionMuCSMuAccMHT_, totalExpectationMuAccMHT_, dClosures);
+  SaveClosure(totalPredictionMuCSMuRecoMHT_, totalExpectationMuRecoMHT_, dClosures);
+  SaveClosure(totalPredictionMuCSMuIsoMHT_, totalExpectationMuIsoMHT_, dClosures);
+  
+  SaveClosure(totalPredictionMuCSElecAccMHT_, totalExpectationElecAccMHT_, dClosures);
+  SaveClosure(totalPredictionMuCSElecRecoMHT_, totalExpectationElecRecoMHT_, dClosures);
+  SaveClosure(totalPredictionMuCSElecIsoMHT_, totalExpectationElecIsoMHT_, dClosures);
+  
+  SaveClosure(totalPredictionElecCSMuAccMHT_, totalExpectationMuAccMHT_, dClosures);
+  SaveClosure(totalPredictionElecCSMuRecoMHT_, totalExpectationMuRecoMHT_, dClosures);
+  SaveClosure(totalPredictionElecCSMuIsoMHT_, totalExpectationMuIsoMHT_, dClosures);
+  
+  SaveClosure(totalPredictionElecCSElecAccMHT_, totalExpectationElecAccMHT_, dClosures);
+  SaveClosure(totalPredictionElecCSElecRecoMHT_, totalExpectationElecRecoMHT_, dClosures);
+  SaveClosure(totalPredictionElecCSElecIsoMHT_, totalExpectationElecIsoMHT_, dClosures);
+
+  SaveClosure(totalPredictionMuCSMuAccBTag_, totalExpectationMuAccBTag_, dClosures);
+  SaveClosure(totalPredictionMuCSMuRecoBTag_, totalExpectationMuRecoBTag_, dClosures);
+  SaveClosure(totalPredictionMuCSMuIsoBTag_, totalExpectationMuIsoBTag_, dClosures);
+  
+  SaveClosure(totalPredictionMuCSElecAccBTag_, totalExpectationElecAccBTag_, dClosures);
+  SaveClosure(totalPredictionMuCSElecRecoBTag_, totalExpectationElecRecoBTag_, dClosures);
+  SaveClosure(totalPredictionMuCSElecIsoBTag_, totalExpectationElecIsoBTag_, dClosures);
+  
+  SaveClosure(totalPredictionElecCSMuAccBTag_, totalExpectationMuAccBTag_, dClosures);
+  SaveClosure(totalPredictionElecCSMuRecoBTag_, totalExpectationMuRecoBTag_, dClosures);
+  SaveClosure(totalPredictionElecCSMuIsoBTag_, totalExpectationMuIsoBTag_, dClosures);
+  
+  SaveClosure(totalPredictionElecCSElecAccBTag_, totalExpectationElecAccBTag_, dClosures);
+  SaveClosure(totalPredictionElecCSElecRecoBTag_, totalExpectationElecRecoBTag_, dClosures);
+  SaveClosure(totalPredictionElecCSElecIsoBTag_, totalExpectationElecIsoBTag_, dClosures);
 	
   SaveClosure(totalPredictionIsoTrackReduction_, totalExpectationIsoTrackReduction_, dClosures);
   SaveClosure(totalPredictionMuIsoTrackReduction_, totalExpectationIsoTrackReduction_, dClosures);

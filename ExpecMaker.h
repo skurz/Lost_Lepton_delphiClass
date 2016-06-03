@@ -48,7 +48,7 @@ const int useDeltaPhiCut = 1;  //<-check------------------------
 ///////////////////////
 
 // useFilterData = true; unless you want to run without MET filters
-const bool useFilterData = false;
+const bool useFilterData = true;
 // useTrigger = false; no simulated triggers in MC
 const bool useTrigger = false;
 // useTriggerEffWeight = true; correct for trigger inefficiency

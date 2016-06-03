@@ -17,8 +17,8 @@ void MakePrediction_Data()
 	bool useTProof = false;
 
 	TChain *Effchain = new TChain("tree");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/data_skims_v5/SLm/*.root");	
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/data_skims_v5/SLe/*.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLm/tree_HTMHT_2016B.root");	
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_HTMHT_2016B.root");
 
 	TProof *proof = NULL;
 

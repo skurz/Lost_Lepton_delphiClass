@@ -607,7 +607,7 @@ bool ExpecMaker::FiltersPass()
   bool result=true;
   if(useFilterData){
     //Applied via List on Data
-    //if(CSCTightHaloFilter!=1) result=false;
+    if(CSCTightHaloFilter!=1) result=false;
     if(eeBadScFilter!=1) result=false;
     //if(!eeBadSc4Filter) result=false;
     if(HBHENoiseFilter!=1) result=false;

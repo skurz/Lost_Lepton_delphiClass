@@ -200,6 +200,7 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   if(!runOnData){
     tPrediction_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
     tPrediction_->Branch("bTagProb", &bTagProb);
+    tPrediction_->Branch("madHT", &madHT);
   }
   if(runOnSignalMC){
     tPrediction_->Branch("SusyLSPMass", &SusyLSPMass);
@@ -344,7 +345,15 @@ Bool_t Prediction::Process(Long64_t entry)
       if(doBTagCorr){
         delete btagcorr;
         btagcorr = new BTagCorrector();
-        btagcorr->SetEffs(fChain->GetCurrentFile());
+
+        if(!runOnNtuples) btagcorr->SetEffs(fChain->GetCurrentFile());
+        else{
+          TObjArray *optionArray = currentTree.Tokenize("/");
+          TString currFileName = ((TObjString *)(optionArray->At(optionArray->GetEntries()-1)))->String();
+          TFile *skimFile = TFile::Open(path_toSkims+currFileName, "READ");
+          btagcorr->SetEffs(skimFile);
+        }
+
         btagcorr->SetCalib(path_bTagCalib);
         btagcorr->SetCalibFastSim(path_bTagCalibFastSim);
         if(runOnSignalMC) btagcorr->SetFastSim(true);
@@ -1109,7 +1118,7 @@ bool Prediction::FiltersPass()
       bool CSCTightHaloFilterUpdate = evtListFilter->CheckEvent(RunNum,LumiBlockNum,EvtNum);
       if(!CSCTightHaloFilterUpdate) result=false;
     } 
-    //if(CSCTightHaloFilter!=1) result=false;
+    if(CSCTightHaloFilter!=1) result=false;
     if(eeBadScFilter!=1) result=false;
     //if(!eeBadSc4Filter) result=false;
     if(HBHENoiseFilter!=1) result=false;

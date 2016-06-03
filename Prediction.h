@@ -44,6 +44,9 @@ const bool runOnData = false;  //<-check------------------------
 const bool runOnStandardModelMC = true;  //<-check------------------------
 const bool runOnSignalMC = false;  //<-check------------------------
 
+// Only needed if running on full nTuples not on Skims
+const bool runOnNtuples = true;
+const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_");
 
 // PU
 const TString path_puHist("PU/PileupHistograms_1117.root");
@@ -623,9 +626,9 @@ void Prediction::Init(TTree *tree)
 
   // Seta data specific options, e.g. Trigger
   // Apply trigger
-  if(runOnData) useTrigger = true;
+  if(runOnData) useTrigger = false;
   // Apply weights if trigger not simulated
-  if(runOnStandardModelMC || runOnSignalMC) useTriggerEffWeight = true;
+  if(runOnStandardModelMC || runOnSignalMC) useTriggerEffWeight = false;
 
   // Do PU reweighting. true for signal scan
   if(runOnSignalMC) doPUreweighting = true;
@@ -636,11 +639,11 @@ void Prediction::Init(TTree *tree)
 
   // useFilterData = true; unless you want to run without MET filters
   // useFilterData = false; For FastSim Samples, e.g. Signal Scans! Met filters not simulated
-  if(runOnStandardModelMC || runOnData) useFilterData = false;
+  if(runOnStandardModelMC || runOnData) useFilterData = true;
 
   // CSCTightHaloFilterUpdate from list
   // True if running on data
-  if(runOnData) useFilterList = true;  
+  // 2015 data only:  if(runOnData) useFilterList = true;  
 
 
 
