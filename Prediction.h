@@ -40,8 +40,8 @@
 // useDeltaPhiCut = -1: inverted deltaPhiCut
 const int useDeltaPhiCut = 1;  //<-check------------------------
 
-const bool runOnData = false;  //<-check------------------------
-const bool runOnStandardModelMC = true;  //<-check------------------------
+const bool runOnData = true;  //<-check------------------------
+const bool runOnStandardModelMC = false;  //<-check------------------------
 const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims
@@ -260,6 +260,8 @@ class Prediction : public TSelector {
   UShort_t JetsNum_;
   UShort_t selectedIDMuonsNum_, selectedIDIsoMuonsNum_;
   UShort_t selectedIDElectronsNum_, selectedIDIsoElectronsNum_;
+  Float_t selectedIDIsoMuonsPt_, selectedIDIsoMuonsEta_;
+  Float_t selectedIDIsoElectronsPt_, selectedIDIsoElectronsEta_;
   Float_t mtw;
   Float_t muPurityCorrection_;
   Float_t muMTWEff_, elecMTWEff_, mtwCorrectedWeight_;
@@ -369,6 +371,7 @@ class Prediction : public TSelector {
 
   
   Float_t totalWeight_, totalWeightDiLep_, totalWeightDiLepIsoTrackReduced_,totalWeightDiLepIsoMuTrackReduced_,totalWeightDiLepIsoElecTrackReduced_,totalWeightDiLepIsoPionTrackReduced_,totalWeightDiLepIsoTrackReducedCombined_;
+  Float_t totalWeight_BTags0_, totalWeight_BTags1Inf_;
   Float_t muTotalWeightDiLep_, muTotalWeightDiLepIsoTrackReduced_;
   Float_t elecTotalWeightDiLep_, elecTotalWeightDiLepIsoTrackReduced_;
   std::vector<Float_t> selectedIDIsoMuonsDeltaRJet, selectedIDIsoMuonsRelPTJet;
@@ -422,6 +425,23 @@ class Prediction : public TSelector {
   TH2Eff *MuAccHTMHTB0_;
   TH2Eff *MuAccHTMHTB1_Inf_;
 
+  TH2Eff *MuAccHTMHT_NJets2_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets3_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets4_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets5_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets6_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets78_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_BTags0_;
+  TH2Eff *MuAccHTMHT_NJetsHigh_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets2_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets3_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets4_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets5_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets6_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets78_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJetsHigh_BTags1Inf_;
+
   
   TH2Eff *ElecIsoActivityPT_;
   TH2Eff *ElecIsoRelPTDeltaRJet_;
@@ -453,6 +473,23 @@ class Prediction : public TSelector {
   TH2Eff *ElecAccMHTNJetsB1_Inf_; 
   TH2Eff *ElecAccHTMHTB0_;
   TH2Eff *ElecAccHTMHTB1_Inf_;
+
+  TH2Eff *ElecAccHTMHT_NJets2_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets3_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets4_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets5_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets6_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets78_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets2_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets3_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets4_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets5_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets6_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets78_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags1Inf_;
   
   // expectation reduction by the isolated track veto
   TH1Eff *ExpectationReductionIsoTrackNJetsEff_;
@@ -626,7 +663,7 @@ void Prediction::Init(TTree *tree)
 
   // Seta data specific options, e.g. Trigger
   // Apply trigger
-  if(runOnData) useTrigger = false;
+  if(runOnData) useTrigger = true;
   // Apply weights if trigger not simulated
   if(runOnStandardModelMC || runOnSignalMC) useTriggerEffWeight = false;
 
@@ -774,8 +811,8 @@ void Prediction::Init(TTree *tree)
   if(!runOnData){
     fChain->SetBranchStatus("Weight", 1);
     fChain->SetBranchStatus("Jets_hadronFlavor", 1);
-  }
-  if(HTgen_cut>0.01)  fChain->SetBranchStatus("madHT", 1);
+    fChain->SetBranchStatus("madHT", 1);
+  } 
   if(runOnSignalMC){
     fChain->SetBranchStatus("SusyLSPMass", 1);
     fChain->SetBranchStatus("SusyMotherMass", 1);
@@ -829,8 +866,8 @@ void Prediction::Init(TTree *tree)
   if(!runOnData){
     fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
     fChain->SetBranchAddress("Jets_hadronFlavor", &Jets_hadronFlavor, &b_Jets_hadronFlavor);
+    fChain->SetBranchAddress("madHT", &madHT, &b_madHT);
   }
-  if(HTgen_cut>0.01) fChain->SetBranchAddress("madHT", &madHT, &b_madHT);
   if(runOnSignalMC){
     fChain->SetBranchAddress("SusyLSPMass", &SusyLSPMass, &b_SusyLSPMass);
     fChain->SetBranchAddress("SusyMotherMass", &SusyMotherMass, &b_SusyMotherMass);

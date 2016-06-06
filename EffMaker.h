@@ -28,7 +28,7 @@ using std::cerr;
 using std::endl;
 const bool useFilterData = true;
 const bool useTrigger = false;
-
+const bool doBtagProbabilities = true;
 
 // output control
 const bool saveEffToPDF_=true;
@@ -174,6 +174,23 @@ class EffMaker : public TSelector {
   TH2Eff *MuAccHTDTT_NJets6_;
   TH2Eff *MuAccHTDTT_NJets78_;
   TH2Eff *MuAccHTDTT_NJets9Inf_;
+
+  TH2Eff *MuAccHTMHT_NJets2_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets3_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets4_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets5_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets6_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets78_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_BTags0_;
+  TH2Eff *MuAccHTMHT_NJetsHigh_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets2_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets3_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets4_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets5_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets6_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets78_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJetsHigh_BTags1Inf_;
   
   // elec
   //1D
@@ -209,6 +226,23 @@ class EffMaker : public TSelector {
   TH2Eff *ElecAccHTDTT_NJets6_;
   TH2Eff *ElecAccHTDTT_NJets78_;
   TH2Eff *ElecAccHTDTT_NJets9Inf_;
+
+  TH2Eff *ElecAccHTMHT_NJets2_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets3_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets4_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets5_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets6_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets78_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets2_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets3_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets4_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets5_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets6_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets78_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags1Inf_;
   
 
   // Reco 
@@ -481,6 +515,7 @@ class EffMaker : public TSelector {
   Int_t           isoTracksNum;
   UShort_t        Bin;
   UShort_t        BinQCD;
+  std::vector<double> *bTagProb=0;
   Int_t           NVtx;
   Double_t        DeltaPhi1;
   Double_t        DeltaPhi2;
@@ -810,6 +845,9 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("selectedIDMuons_MT2Activity", &selectedIDMuons_MT2Activity, &b_selectedIDMuons_MT2Activity);
   fChain->SetBranchStatus("cosDTT", 1);
   fChain->SetBranchAddress("cosDTT", &cosDTT, &b_cosDTT);
+  fChain->SetBranchStatus("bTagProb",1);
+  fChain->SetBranchAddress("bTagProb",&bTagProb);
+
 }
 
 Bool_t EffMaker::Notify()

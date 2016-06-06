@@ -612,6 +612,7 @@ bool ExpecMaker::FiltersPass()
     //if(!eeBadSc4Filter) result=false;
     if(HBHENoiseFilter!=1) result=false;
     if(HBHEIsoNoiseFilter!=1) result=false;
+    if(EcalDeadCellTriggerPrimitiveFilter!=1) result=false;    
   }
   if(NVtx<=0) result=false;
   if(applyJetID) if(JetID!=1) result=false;

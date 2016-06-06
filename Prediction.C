@@ -54,6 +54,22 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   MuAccHTMHTB0_ = new TH2Eff("MuAccHTMHTB0", EffInputFolder);
   MuAccHTMHTB1_Inf_ = new TH2Eff("MuAccHTMHTB1_Inf", EffInputFolder); 
 
+  MuAccHTMHT_NJets2_BTags0_ = new TH2Eff("MuAccHTMHT_NJets2_BTags0", EffInputFolder);
+  MuAccHTMHT_NJets3_BTags0_ = new TH2Eff("MuAccHTMHT_NJets3_BTags0", EffInputFolder);
+  MuAccHTMHT_NJets4_BTags0_ = new TH2Eff("MuAccHTMHT_NJets4_BTags0", EffInputFolder);
+  MuAccHTMHT_NJets5_BTags0_ = new TH2Eff("MuAccHTMHT_NJets5_BTags0", EffInputFolder);
+  MuAccHTMHT_NJets6_BTags0_ = new TH2Eff("MuAccHTMHT_NJets6_BTags0", EffInputFolder);
+  MuAccHTMHT_NJets78_BTags0_ = new TH2Eff("MuAccHTMHT_NJets78_BTags0", EffInputFolder);
+  MuAccHTMHT_NJets9Inf_BTags0_ = new TH2Eff("MuAccHTMHT_NJets9Inf_BTags0", EffInputFolder);
+  MuAccHTMHT_NJetsHigh_BTags0_ = new TH2Eff("MuAccHTMHT_NJetsHigh_BTags0", EffInputFolder);
+  MuAccHTMHT_NJets2_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets2_BTags1Inf", EffInputFolder);
+  MuAccHTMHT_NJets3_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets3_BTags1Inf", EffInputFolder);
+  MuAccHTMHT_NJets4_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets4_BTags1Inf", EffInputFolder);
+  MuAccHTMHT_NJets5_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets5_BTags1Inf", EffInputFolder);
+  MuAccHTMHT_NJets6_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets6_BTags1Inf", EffInputFolder);
+  MuAccHTMHT_NJets78_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets78_BTags1Inf", EffInputFolder);
+  MuAccHTMHT_NJets9Inf_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets9Inf_BTags1Inf", EffInputFolder);
+  MuAccHTMHT_NJetsHigh_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJetsHigh_BTags1Inf", EffInputFolder);
 
   ElecIsoActivityPT_ = new TH2Eff("ElecIsoActivityPT", EffInputFolder);
   ElecIsoRelPTDeltaRJet_ = new TH2Eff("ElecIsoRelPTDeltaRJet", EffInputFolder);
@@ -84,6 +100,23 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   ElecAccHTMHT_NJetsHigh_ = new TH2Eff("ElecAccHTMHT_NJetsHigh", EffInputFolder);
   ElecAccHTMHTB0_ = new TH2Eff("ElecAccHTMHTB0", EffInputFolder);
   ElecAccHTMHTB1_Inf_ = new TH2Eff("ElecAccHTMHTB1_Inf", EffInputFolder);
+
+  ElecAccHTMHT_NJets2_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets2_BTags0", EffInputFolder);
+  ElecAccHTMHT_NJets3_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets3_BTags0", EffInputFolder);
+  ElecAccHTMHT_NJets4_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets4_BTags0", EffInputFolder);
+  ElecAccHTMHT_NJets5_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets5_BTags0", EffInputFolder);
+  ElecAccHTMHT_NJets6_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets6_BTags0", EffInputFolder);
+  ElecAccHTMHT_NJets78_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets78_BTags0", EffInputFolder);
+  ElecAccHTMHT_NJets9Inf_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets9Inf_BTags0", EffInputFolder);
+  ElecAccHTMHT_NJetsHigh_BTags0_ = new TH2Eff("ElecAccHTMHT_NJetsHigh_BTags0", EffInputFolder);
+  ElecAccHTMHT_NJets2_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets2_BTags1Inf", EffInputFolder);
+  ElecAccHTMHT_NJets3_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets3_BTags1Inf", EffInputFolder);
+  ElecAccHTMHT_NJets4_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets4_BTags1Inf", EffInputFolder);
+  ElecAccHTMHT_NJets5_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets5_BTags1Inf", EffInputFolder);
+  ElecAccHTMHT_NJets6_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets6_BTags1Inf", EffInputFolder);
+  ElecAccHTMHT_NJets78_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets78_BTags1Inf", EffInputFolder);
+  ElecAccHTMHT_NJets9Inf_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets9Inf_BTags1Inf", EffInputFolder);
+  ElecAccHTMHT_NJetsHigh_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJetsHigh_BTags1Inf", EffInputFolder);
   
   
   ExpectationReductionIsoTrackNJetsEff_ = new TH1Eff("ExpectationReductionIsoTrackNJetsEff", EffInputFolder);
@@ -144,6 +177,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("MET",&MET);
   tPrediction_->Branch("METPhi",&METPhi);
   tPrediction_->Branch("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum_);
+  tPrediction_->Branch("selectedIDIsoMuonsPt",&selectedIDIsoMuonsPt_);
+  tPrediction_->Branch("selectedIDIsoMuonsEta",&selectedIDIsoMuonsEta_);
   tPrediction_->Branch("selectedIDIsoMuons", "std::vector<TLorentzVector>", &selectedIDIsoMuons, 32000, 0);
   tPrediction_->Branch("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity);
   tPrediction_->Branch("selectedIDIsoMuonsPTW", &selectedIDIsoMuonsPTW);
@@ -154,6 +189,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("selectedIDIsoElectrons", "std::vector<TLorentzVector>", &selectedIDIsoElectrons, 32000, 0);
   tPrediction_->Branch("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity);
   tPrediction_->Branch("selectedIDIsoElectronsPTW", &selectedIDIsoElectronsPTW);
+  tPrediction_->Branch("selectedIDIsoElectronsPt",&selectedIDIsoElectronsPt_);
+  tPrediction_->Branch("selectedIDIsoElectronsEta",&selectedIDIsoElectronsEta_);
   //  tPrediction_->Branch("selectedIDIsoElectronsCDTT", &selectedIDIsoElectronsCDTT);
 //  tPrediction_->Branch("selectedIDIsoElectronsRelPTJet", &selectedIDIsoElectronsRelPTJet);
 //  tPrediction_->Branch("selectedIDIsoElectronsDeltaRJet", &selectedIDIsoElectronsDeltaRJet);
@@ -167,6 +204,8 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("totalWeightDiLepIsoElecTrackReduced",&totalWeightDiLepIsoElecTrackReduced_);
   tPrediction_->Branch("totalWeightDiLepIsoPionTrackReduced",&totalWeightDiLepIsoPionTrackReduced_);
   tPrediction_->Branch("totalWeightDiLepIsoTrackReducedCombined",&totalWeightDiLepIsoTrackReducedCombined_);
+  tPrediction_->Branch("totalWeight_BTags0",&totalWeight_BTags0_);
+  tPrediction_->Branch("totalWeight_BTags1Inf",&totalWeight_BTags1Inf_);
   tPrediction_->Branch("muIsoWeight",&muIsoWeight_);
   tPrediction_->Branch("muIsoEff",&muIsoEff_);
   tPrediction_->Branch("muRecoWeight",&muRecoWeight_);
@@ -325,7 +364,8 @@ Bool_t Prediction::Process(Long64_t entry)
     //    selectedIDIsoElectronsCDTT.push_back(GetCosDTT(MHT,MHTPhi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi()));
   }
 
-  if(useTrigger) if(!TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
+  //if(useTrigger) if(!TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
+  if(useTrigger) if(!TriggerPass->at(29) && !TriggerPass->at(30) && !TriggerPass->at(31) && !TriggerPass->at(32)) return kTRUE;
 
 
   if(!runOnData){
@@ -447,6 +487,8 @@ Bool_t Prediction::Process(Long64_t entry)
     {
       // cout << "Single muon event...";
       mtw =  MTWCalculator(MET,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
+      selectedIDIsoMuonsPt_ = selectedIDIsoMuons->at(0).Pt();
+      selectedIDIsoMuonsEta_ = selectedIDIsoMuons->at(0).Eta();
 
     //  std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi());
     //  selectedIDIsoMuonsDeltaRJet.push_back(DeltaR_relPT.first);
@@ -472,8 +514,8 @@ Bool_t Prediction::Process(Long64_t entry)
       }
       else{
         //muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
-        if(NJets<8.5) muAccEffVec_ = MuAccHTMHT_NJets78_->GetEff(HT,MHT, useAsymmErrors);
-        else muAccEffVec_ = MuAccHTMHT_NJets9Inf_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<8.5) muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
       } 
 
       //elecAccEffVec_ = ElecAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
@@ -487,8 +529,8 @@ Bool_t Prediction::Process(Long64_t entry)
       }
       else{
         //elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
-        if(NJets<8.5) elecAccEffVec_ = ElecAccHTMHT_NJets78_->GetEff(HT,MHT, useAsymmErrors);
-        else elecAccEffVec_ = ElecAccHTMHT_NJets9Inf_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<8.5) elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_->GetEff(HT,MHT, useAsymmErrors);
       }
 
       //elecRecoEffVec_ = ElecRecoPTEta_->GetEff(selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), useAsymmErrors);
@@ -728,12 +770,84 @@ Bool_t Prediction::Process(Long64_t entry)
       totalStatDown = -sqrt(muIsoTrackStatDown*muIsoTrackStatDown+elecIsoTrackStatDown*elecIsoTrackStatDown+pionIsoTrackStatDown*pionIsoTrackStatDown+MTWStatDown*MTWStatDown+purityStatDown*purityStatDown+singleLepPurityStatDown*singleLepPurityStatDown+diLepFoundStatDown*diLepFoundStatDown+muIsoStatDown*muIsoStatDown+muRecoStatDown*muRecoStatDown+muAccStatDown*muAccStatDown+elecIsoStatDown*elecIsoStatDown+elecRecoStatDown*elecRecoStatDown+elecAccStatDown*elecAccStatDown);
       totalSysDown = -sqrt(muIsoTrackSysDown*muIsoTrackSysDown+elecIsoTrackSysDown*elecIsoTrackSysDown+pionIsoTrackSysDown*pionIsoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown);
       totalUncDown = -sqrt(totalStatDown*totalStatDown+totalSysDown*totalSysDown);
+
+
+      // Calculate weights if they do depend on the number of BTags:
+      // BTags == 0
+      if(NJets<6.5){
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJets6_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+      }
+      else{
+        if(NJets<8.5) muAccEffVec_ = MuAccHTMHT_NJetsHigh_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJetsHigh_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+      }
+
+      if(NJets<6.5){
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJets6_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+      }
+      else{
+        if(NJets<8.5) elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+      }
+
+      muAccEff_ = muAccEffVec_.eff;
+      elecAccEff_ = elecAccEffVec_.eff;
+
+      w2 = muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccEff_);
+      w3a = 1-muIsoEff_*muRecoEff_*muAccEff_;
+      w3b = 1-elecIsoEff_*elecRecoEff_*elecAccEff_ ;
+      totalWeight_BTags0_ = w1 * (w2 * (w3a+w3b) + w4);
+
+      // BTags >= 1
+      if(NJets<6.5){
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJets6_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+      }
+      else{
+        if(NJets<8.5) muAccEffVec_ = MuAccHTMHT_NJetsHigh_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJetsHigh_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+      } 
+
+      if(NJets<6.5){
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJets6_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+      }
+      else{
+        if(NJets<8.5) elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+      }
+
+      muAccEff_ = muAccEffVec_.eff;
+      elecAccEff_ = elecAccEffVec_.eff;
+
+      w2 = muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccEff_);
+      w3a = 1-muIsoEff_*muRecoEff_*muAccEff_;
+      w3b = 1-elecIsoEff_*elecRecoEff_*elecAccEff_ ;
+      totalWeight_BTags1Inf_ = w1 * (w2 * (w3a+w3b) + w4);
+
+
     } 
   else if(selectedIDIsoMuonsNum_==0 && selectedIDIsoElectronsNum_==1)
     {
       // cout << "Single electron event...";
       // cout << "get MTW...";
       mtw =  MTWCalculator(MET,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
+      selectedIDIsoElectronsPt_ = selectedIDIsoElectrons->at(0).Pt();
+      selectedIDIsoElectronsEta_ = selectedIDIsoElectrons->at(0).Eta();
 
     //  std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi());
     //  selectedIDIsoElectronsDeltaRJet.push_back(DeltaR_relPT.first);
@@ -1012,6 +1126,74 @@ Bool_t Prediction::Process(Long64_t entry)
       totalStatDown = -sqrt(muIsoTrackStatDown*muIsoTrackStatDown+elecIsoTrackStatDown*elecIsoTrackStatDown+pionIsoTrackStatDown*pionIsoTrackStatDown+MTWStatDown*MTWStatDown+purityStatDown*purityStatDown+singleLepPurityStatDown*singleLepPurityStatDown+diLepFoundStatDown*diLepFoundStatDown+muIsoStatDown*muIsoStatDown+muRecoStatDown*muRecoStatDown+muAccStatDown*muAccStatDown+elecIsoStatDown*elecIsoStatDown+elecRecoStatDown*elecRecoStatDown+elecAccStatDown*elecAccStatDown);
       totalSysDown = -sqrt(muIsoTrackSysDown*muIsoTrackSysDown+elecIsoTrackSysDown*elecIsoTrackSysDown+pionIsoTrackSysDown*pionIsoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown);
       totalUncDown = -sqrt(totalStatDown*totalStatDown+totalSysDown*totalSysDown);
+
+
+      // Calculate weights if they do depend on the number of BTags:
+      // BTags == 0
+      if(NJets<6.5){
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJets6_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+      }
+      else{
+        if(NJets<8.5) muAccEffVec_ = MuAccHTMHT_NJetsHigh_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJetsHigh_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+      }
+
+      if(NJets<6.5){
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJets6_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+      }
+      else{
+        if(NJets<8.5) elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+      }
+
+      muAccEff_ = muAccEffVec_.eff;
+      elecAccEff_ = elecAccEffVec_.eff;
+
+      w2 = elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_);
+      w3a = 1-elecIsoEff_*elecRecoEff_*elecAccEff_;
+      w3b = 1-muIsoEff_*muRecoEff_*muAccEff_;
+      totalWeight_BTags0_ = w1 * (w2 * (w3a+w3b) + w4);
+
+      // BTags >= 1
+      if(NJets<6.5){
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJets6_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+      }
+      else{
+        if(NJets<8.5) muAccEffVec_ = MuAccHTMHT_NJetsHigh_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else muAccEffVec_ = MuAccHTMHT_NJetsHigh_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+      } 
+
+      if(NJets<6.5){
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJets6_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+      }
+      else{
+        if(NJets<8.5) elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        else elecAccEffVec_ = ElecAccHTMHT_NJetsHigh_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+      }
+
+      muAccEff_ = muAccEffVec_.eff;
+      elecAccEff_ = elecAccEffVec_.eff;
+
+      w2 = elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_);
+      w3a = 1-elecIsoEff_*elecRecoEff_*elecAccEff_;
+      w3b = 1-muIsoEff_*muRecoEff_*muAccEff_;
+      totalWeight_BTags1Inf_ = w1 * (w2 * (w3a+w3b) + w4);
     }
 
   tPrediction_->Fill();
@@ -1103,8 +1285,12 @@ void Prediction::resetValues()
   selectedIDIsoElectronsRelPTJet.clear();
 
   selectedIDIsoMuonsPTW.clear();
+  selectedIDIsoMuonsPt_=0.;
+  selectedIDIsoMuonsEta_=0.;
   //  selectedIDIsoMuonsCDTT.clear();
   selectedIDIsoElectronsPTW.clear();
+  selectedIDIsoElectronsPt_=0.;
+  selectedIDIsoElectronsEta_=0.;
   //  selectedIDIsoElectronsCDTT.clear();
 
   ptw_bins.clear();
@@ -1123,6 +1309,7 @@ bool Prediction::FiltersPass()
     //if(!eeBadSc4Filter) result=false;
     if(HBHENoiseFilter!=1) result=false;
     if(HBHEIsoNoiseFilter!=1) result=false;
+    if(EcalDeadCellTriggerPrimitiveFilter!=1) result=false;
   }
   if(NVtx<=0) result=false;
   // Do not apply on fastSim samples!
