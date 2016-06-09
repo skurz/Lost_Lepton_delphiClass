@@ -22,7 +22,7 @@ void MakePrediction_separate_nTuples()
 
   gROOT->ProcessLine(".L Prediction.C+");
   
-  const int nChains = 19;
+  const int nChains = 33;
   TChain *Effchain[nChains];
   for(Int_t i=0; i<nChains; i++){
     Effchain[i] = new TChain("PreSelection");
@@ -50,6 +50,23 @@ void MakePrediction_separate_nTuples()
   Effchain[16]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ST_t-channel_top.root");
   Effchain[17]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ST_tW_antitop.root");
   Effchain[18]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ST_tW_top.root");
+
+  Effchain[19]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTGJets.root");
+  Effchain[20]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTTT.root");
+  Effchain[21]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTWJetsToLNu.root");
+  Effchain[22]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTWJetsToQQ.root");
+  Effchain[23]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTZToLLNuNu.root");
+  Effchain[24]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTZToQQ.root");
+  Effchain[25]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WWTo1L1Nu2Q.root");
+  Effchain[26]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WWTo2L2Nu.root");
+  Effchain[27]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WWZ.root");
+  Effchain[28]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WZTo1L1Nu2Q.root");
+  Effchain[29]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WZTo1L3Nu.root");
+  Effchain[30]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WZZ.root");
+  Effchain[31]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ZZTo2L2Q.root");
+  Effchain[32]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ZZZ.root");
+  //Effchain[33]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ZZTo2Q2Nu.root");
+
 
 
   for(Int_t i=0; i<nChains; i++){ //i<nChains i>2

@@ -43,8 +43,8 @@ const int oneDHT_=16;
 double OneDHT_[oneDHT_] = {250,300,350,500,550,600,650,700,750,800,900,1000,1200,1500,2000,10000};
 const int oneDMHT_=16;
 double OneDMHT_[oneDMHT_] = {0,50,100,150,200,250,300,350,450,500,600,750,900,1200,1700,10000};
-const int oneDNJets_=8;
-double OneDNJets_[oneDNJets_] = {2,3,4,5,6,7,9,21};
+const int oneDNJets_=7;
+double OneDNJets_[oneDNJets_] = {3,4,5,6,7,9,21};
 const int oneDBJets_=5;
 double OneDBJets_[oneDBJets_] = {0,1,2,3,10};
 const int oneDDeltaR_=8;
@@ -64,8 +64,8 @@ const int twoDHT_=7;
 double TwoDHT_[twoDHT_] = {250,350,500,750,1000,1500,10000};
 const int twoDMHT_=5;
 double TwoDMHT_[twoDMHT_] = {250,350,500,750,10000};
-const int twoDNJets_=8;
-double TwoDNJets_[twoDNJets_] = {2,3,4,5,6,7,9,21};
+const int twoDNJets_=7;
+double TwoDNJets_[twoDNJets_] = {3,4,5,6,7,9,21};
 const int twoDBJets_=5;
 double TwoDBJets_[twoDBJets_] = {0,1,2,3,10};
 const int twoDDeltaR_=8;
@@ -79,10 +79,14 @@ double TwoDActivity_[twoDActivity_]={0, 0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.4, 0
 const int twoDEta_=7;
 double TwoDEta_[twoDEta_]={0., 0.5, 1., 1.442, 1.566, 2., 2.52};
 
-const int threeDHT_=6;
-double ThreeDHT_[threeDHT_] = {250,350,500,750,1000,10000};
+//const int threeDHT_=6;
+//double ThreeDHT_[threeDHT_] = {250,350,500,750,1000,10000};
+const int threeDHT_=4;
+double ThreeDHT_[threeDHT_] = {300,500,1000,10000};
 const int threeDMHT_=4;
 double ThreeDMHT_[threeDMHT_] = {250,350,500,10000};
+const int threeDMHT_fine_=5;
+double ThreeDMHT_fine_[threeDMHT_fine_] = {250,300,350,500,10000};
 
 
 class EffMaker : public TSelector {

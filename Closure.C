@@ -49,6 +49,9 @@ void Closure(string InputPath_Expectation="Expectation.root",
     nSearchBinsTotal = 190;
   }
 
+  gSystem->Load("libPhysics.so");
+  gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
+
   SearchBins *SearchBins_ = new SearchBins(doQCDbinning);
 
 
@@ -453,6 +456,7 @@ void Closure(string InputPath_Expectation="Expectation.root",
     }
   }
 
+  fExp->Close();
   std::cout<<"Finished"<<std::endl;
 
 
@@ -700,6 +704,7 @@ void Closure(string InputPath_Expectation="Expectation.root",
       }
     }
 
+  fPreMC->Close();
   std::cout<<"Finished"<<std::endl;
 
   //closure test

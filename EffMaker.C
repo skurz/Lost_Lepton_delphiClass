@@ -99,19 +99,19 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuAccHTMHTB1_Inf_ = new TH2Eff("MuAccHTMHTB1_Inf","MuAccHTMHTB1_Inf",twoDHT_-1,TwoDHT_, twoDMHT_-1,TwoDMHT_);
 
   MuAccHTMHT_NJets2_BTags0_ = new TH2Eff("MuAccHTMHT_NJets2_BTags0","MuAccHTMHT_NJets2_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets3_BTags0_ = new TH2Eff("MuAccHTMHT_NJets3_BTags0","MuAccHTMHT_NJets3_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets4_BTags0_ = new TH2Eff("MuAccHTMHT_NJets4_BTags0","MuAccHTMHT_NJets4_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets5_BTags0_ = new TH2Eff("MuAccHTMHT_NJets5_BTags0","MuAccHTMHT_NJets5_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets6_BTags0_ = new TH2Eff("MuAccHTMHT_NJets6_BTags0","MuAccHTMHT_NJets6_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+  MuAccHTMHT_NJets3_BTags0_ = new TH2Eff("MuAccHTMHT_NJets3_BTags0","MuAccHTMHT_NJets3_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  MuAccHTMHT_NJets4_BTags0_ = new TH2Eff("MuAccHTMHT_NJets4_BTags0","MuAccHTMHT_NJets4_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  MuAccHTMHT_NJets5_BTags0_ = new TH2Eff("MuAccHTMHT_NJets5_BTags0","MuAccHTMHT_NJets5_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  MuAccHTMHT_NJets6_BTags0_ = new TH2Eff("MuAccHTMHT_NJets6_BTags0","MuAccHTMHT_NJets6_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
   MuAccHTMHT_NJets78_BTags0_ = new TH2Eff("MuAccHTMHT_NJets78_BTags0","MuAccHTMHT_NJets78_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
   MuAccHTMHT_NJets9Inf_BTags0_ = new TH2Eff("MuAccHTMHT_NJets9Inf_BTags0","MuAccHTMHT_NJets9Inf_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
   MuAccHTMHT_NJetsHigh_BTags0_ = new TH2Eff("MuAccHTMHT_NJetsHigh_BTags0","MuAccHTMHT_NJetsHigh_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 
   MuAccHTMHT_NJets2_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets2_BTags1Inf","MuAccHTMHT_NJets2_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets3_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets3_BTags1Inf","MuAccHTMHT_NJets3_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets4_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets4_BTags1Inf","MuAccHTMHT_NJets4_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets5_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets5_BTags1Inf","MuAccHTMHT_NJets5_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets6_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets6_BTags1Inf","MuAccHTMHT_NJets6_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+  MuAccHTMHT_NJets3_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets3_BTags1Inf","MuAccHTMHT_NJets3_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  MuAccHTMHT_NJets4_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets4_BTags1Inf","MuAccHTMHT_NJets4_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  MuAccHTMHT_NJets5_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets5_BTags1Inf","MuAccHTMHT_NJets5_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  MuAccHTMHT_NJets6_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets6_BTags1Inf","MuAccHTMHT_NJets6_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
   MuAccHTMHT_NJets78_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets78_BTags1Inf","MuAccHTMHT_NJets78_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
   MuAccHTMHT_NJets9Inf_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJets9Inf_BTags1Inf","MuAccHTMHT_NJets9Inf_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
   MuAccHTMHT_NJetsHigh_BTags1Inf_ = new TH2Eff("MuAccHTMHT_NJetsHigh_BTags1Inf","MuAccHTMHT_NJetsHigh_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
@@ -143,19 +143,19 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecAccHTMHTB1_Inf_ = new TH2Eff("ElecAccHTMHTB1_Inf","ElecAccHTMHTB1_Inf",twoDHT_-1,TwoDHT_, twoDMHT_-1,TwoDMHT_);
 
   ElecAccHTMHT_NJets2_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets2_BTags0","ElecAccHTMHT_NJets2_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets3_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets3_BTags0","ElecAccHTMHT_NJets3_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets4_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets4_BTags0","ElecAccHTMHT_NJets4_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets5_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets5_BTags0","ElecAccHTMHT_NJets5_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets6_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets6_BTags0","ElecAccHTMHT_NJets6_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+  ElecAccHTMHT_NJets3_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets3_BTags0","ElecAccHTMHT_NJets3_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  ElecAccHTMHT_NJets4_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets4_BTags0","ElecAccHTMHT_NJets4_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  ElecAccHTMHT_NJets5_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets5_BTags0","ElecAccHTMHT_NJets5_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  ElecAccHTMHT_NJets6_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets6_BTags0","ElecAccHTMHT_NJets6_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
   ElecAccHTMHT_NJets78_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets78_BTags0","ElecAccHTMHT_NJets78_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
   ElecAccHTMHT_NJets9Inf_BTags0_ = new TH2Eff("ElecAccHTMHT_NJets9Inf_BTags0","ElecAccHTMHT_NJets9Inf_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
   ElecAccHTMHT_NJetsHigh_BTags0_ = new TH2Eff("ElecAccHTMHT_NJetsHigh_BTags0","ElecAccHTMHT_NJetsHigh_BTags0",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 
   ElecAccHTMHT_NJets2_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets2_BTags1Inf","ElecAccHTMHT_NJets2_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets3_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets3_BTags1Inf","ElecAccHTMHT_NJets3_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets4_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets4_BTags1Inf","ElecAccHTMHT_NJets4_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets5_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets5_BTags1Inf","ElecAccHTMHT_NJets5_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets6_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets6_BTags1Inf","ElecAccHTMHT_NJets6_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+  ElecAccHTMHT_NJets3_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets3_BTags1Inf","ElecAccHTMHT_NJets3_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  ElecAccHTMHT_NJets4_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets4_BTags1Inf","ElecAccHTMHT_NJets4_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  ElecAccHTMHT_NJets5_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets5_BTags1Inf","ElecAccHTMHT_NJets5_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  ElecAccHTMHT_NJets6_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets6_BTags1Inf","ElecAccHTMHT_NJets6_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
   ElecAccHTMHT_NJets78_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets78_BTags1Inf","ElecAccHTMHT_NJets78_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
   ElecAccHTMHT_NJets9Inf_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJets9Inf_BTags1Inf","ElecAccHTMHT_NJets9Inf_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
   ElecAccHTMHT_NJetsHigh_BTags1Inf_ = new TH2Eff("ElecAccHTMHT_NJetsHigh_BTags1Inf","ElecAccHTMHT_NJetsHigh_BTags1Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
@@ -278,7 +278,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuDiLepContributionMTWNJets_ = new TH1Eff("MuDiLepContributionMTWNJets1D","MuDiLepContributionMTWNJets1D",oneDNJets_-1,OneDNJets_);
   MuDiLepContributionMTWHT_ = new TH1Eff("MuDiLepContributionMTWHT1D","MuDiLepContributionMTWHT1D",oneDHT_-1,OneDHT_);
   MuDiLepContributionMTWMHT_ = new TH1Eff("MuDiLepContributionMTWMHT1D","MuDiLepContributionMTWMHT1D",oneDMHT_-1,OneDMHT_);
-  MuDiLepContributionMTWMHTNJets_ = new TH2Eff("MuDiLepContributionMTWMHT1DNJets","MuDiLepContributionMTWMHT1DNJets",twoDMHT_-1,TwoDMHT_,twoDNJets_-1,TwoDNJets_);
+  MuDiLepContributionMTWMHTNJets_ = new TH2Eff("MuDiLepContributionMTWMHTNJets","MuDiLepContributionMTWMHTNJets",twoDMHT_-1,TwoDMHT_,twoDNJets_-1,TwoDNJets_);
 
   
   //electron
@@ -287,7 +287,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecDiLepContributionMTWNJets_ = new TH1Eff("ElecDiLepContributionMTWNJets1D","ElecDiLepContributionMTWNJets1D",oneDNJets_-1,OneDNJets_);
   ElecDiLepContributionMTWHT_ = new TH1Eff("ElecDiLepContributionMTWHT1D","ElecDiLepContributionMTWHT1D",oneDHT_-1,OneDHT_);
   ElecDiLepContributionMTWMHT_ = new TH1Eff("ElecDiLepContributionMTWMHT1D","ElecDiLepContributionMTWMHT1D",oneDMHT_-1,OneDMHT_);
-  ElecDiLepContributionMTWMHTNJets_ = new TH2Eff("ElecDiLepContributionMTWMHT1DNJets","ElecDiLepContributionMTWMHT1DNJets",twoDMHT_-1,TwoDMHT_,twoDNJets_-1,TwoDNJets_);
+  ElecDiLepContributionMTWMHTNJets_ = new TH2Eff("ElecDiLepContributionMTWMHTNJets","ElecDiLepContributionMTWMHTNJets",twoDMHT_-1,TwoDMHT_,twoDNJets_-1,TwoDNJets_);
 
   
   // acitivity and pt

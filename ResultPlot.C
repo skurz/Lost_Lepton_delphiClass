@@ -71,19 +71,8 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 
 
   // Begin of Code
-    int nSearchBinsTotal = 190;
-  if(doQCDbinning){
-    nSearchBinsTotal = 286;
-  }
-
   SearchBins *SearchBins_ = new SearchBins(doQCDbinning);
-
-/*  int nSearchBinsTotal = 72;
-  if(doQCDbinning){
-    nSearchBinsTotal = 220;
-    if(mergeQCDbins) nSearchBinsTotal = 55;
-  }
-*/ 
+  int nSearchBinsTotal = SearchBins_->GetNbins();
 
   TH1::SetDefaultSumw2();
 
@@ -139,6 +128,9 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   Float_t         totalWeightDiLepIsoTrackReducedCombined;
   Float_t         totalWeight_BTags0;
   Float_t         totalWeight_BTags1Inf;
+  Float_t         totalWeight_BTags0_noIsoTrack;
+  Float_t         totalWeight_BTags1Inf_noIsoTrack;
+
 
   Float_t         muTotalWeightDiLepIsoTrackReduced;
   Float_t         elecTotalWeightDiLepIsoTrackReduced;
@@ -987,6 +979,8 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   LostLeptonPrediction->SetBranchStatus("totalWeightDiLepIsoTrackReducedCombined",1);
   LostLeptonPrediction->SetBranchStatus("totalWeight_BTags0",1);
   LostLeptonPrediction->SetBranchStatus("totalWeight_BTags1Inf",1);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags0_noIsoTrack",1);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags1Inf_noIsoTrack",1);
   LostLeptonPrediction->SetBranchStatus("muTotalWeightDiLepIsoTrackReduced",1);
   LostLeptonPrediction->SetBranchStatus("elecTotalWeightDiLepIsoTrackReduced",1);
   LostLeptonPrediction->SetBranchStatus("muIsoWeight",1);
@@ -1080,6 +1074,8 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   LostLeptonPrediction->SetBranchAddress("totalWeightDiLepIsoTrackReducedCombined",&totalWeightDiLepIsoTrackReducedCombined);
   LostLeptonPrediction->SetBranchAddress("totalWeight_BTags0",&totalWeight_BTags0);
   LostLeptonPrediction->SetBranchAddress("totalWeight_BTags1Inf",&totalWeight_BTags1Inf);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags0_noIsoTrack",&totalWeight_BTags0_noIsoTrack);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags1Inf_noIsoTrack",&totalWeight_BTags1Inf_noIsoTrack);
   LostLeptonPrediction->SetBranchAddress("muTotalWeightDiLepIsoTrackReduced",&muTotalWeightDiLepIsoTrackReduced);
   LostLeptonPrediction->SetBranchAddress("elecTotalWeightDiLepIsoTrackReduced",&elecTotalWeightDiLepIsoTrackReduced);
   
@@ -1191,27 +1187,19 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
       for(int i = 0; i < nLoops; i++){
         double scaleFactorWeightBtagProb;
         if(doBtagProbabilities){
-          if(NJets > 2){
-            scaleFactorWeightBtagProb = scaleFactorWeight * bTagProb->at(i);
-            scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
-          }else{
-            if(i < 2){
-              scaleFactorWeightBtagProb = scaleFactorWeight * bTagProb->at(i);
-              scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
-            }else{
-              scaleFactorWeightBtagProb = scaleFactorWeight * (bTagProb->at(i)+bTagProb->at(i+1));
-              scaledWeight = Weight * scaleFactorWeight * (bTagProb->at(i)+bTagProb->at(i+1));
-            }
-          }
+          scaleFactorWeightBtagProb = scaleFactorWeight * bTagProb->at(i);
+          scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
         }else{
           scaleFactorWeightBtagProb = scaleFactorWeight;
           scaledWeight = Weight * scaleFactorWeight;
         }
 
-        totalPred_LL_MC_->Fill( Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-        //if(i==0) totalPred_LL_MC_->Fill( Bin_bTags.at(i), totalWeight_BTags0*scaleFactorWeightBtagProb/2);
-        //else totalPred_LL_MC_->Fill( Bin_bTags.at(i), totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
-        totalPredwoIso_LL_MC_->Fill( Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb/2);
+        //totalPred_LL_MC_->Fill( Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        if(i==0) totalPred_LL_MC_->Fill( Bin_bTags.at(i), totalWeight_BTags0*scaleFactorWeightBtagProb/2);
+        else totalPred_LL_MC_->Fill( Bin_bTags.at(i), totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
+        //totalPredwoIso_LL_MC_->Fill( Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb/2);
+        if(i==0) totalPredwoIso_LL_MC_->Fill( Bin_bTags.at(i), totalWeight_BTags0_noIsoTrack*scaleFactorWeightBtagProb/2);
+        else totalPredwoIso_LL_MC_->Fill( Bin_bTags.at(i), totalWeight_BTags1Inf_noIsoTrack*scaleFactorWeightBtagProb/2);
         //    totalPred_LL_NoTk_MC_->Fill( Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb/2);
         totalPred_HT_LL_MC_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         totalPred_MHT_LL_MC_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
@@ -1499,15 +1487,7 @@ if(doExtrapolation){
       //fill event 4 times weighting with the btag probability
       for(int i = 0; i < nLoops; i++){
         if(doBtagProbabilities){
-          if(NJets > 2){
-            scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
-          }else{
-            if(i < 2){
-              scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
-            }else{
-              scaledWeight = Weight * scaleFactorWeight * (bTagProb->at(i)+bTagProb->at(i+1));
-            }
-          }
+          scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
         }else{
           scaledWeight = Weight * scaleFactorWeight;
         }

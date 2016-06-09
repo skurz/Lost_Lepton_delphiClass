@@ -17,8 +17,8 @@ void MakePrediction_Data()
 	bool useTProof = false;
 
 	TChain *Effchain = new TChain("tree");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLm/tree_MET_2016B.root");	
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_MET_2016B.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLm/tree_HTMHT_2016B.root");	
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_HTMHT_2016B.root");
 
 	TProof *proof = NULL;
 
@@ -27,7 +27,7 @@ void MakePrediction_Data()
     	Effchain->SetProof();     	
     }
 
-	Effchain->Process("Prediction.C++g", "Prediction_data.root");
+	Effchain->Process("Prediction.C++g", "Prediction_data_HTMET.root");
 
     delete proof;
 }

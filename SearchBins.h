@@ -30,6 +30,7 @@ public:
   SearchBins() : SearchBins(false) {}
   SearchBins(bool useQCDbinning);
   unsigned int GetBinNumber(double HT, double MHT, int NJets, int BTags);
+  unsigned int GetNbins();
   void PrintUsed();
   Bin* GetSearchBin(int i);
   
@@ -51,9 +52,15 @@ protected:
 SearchBins::SearchBins(bool useQCDbinning)
 {
 	if(!useQCDbinning){
-		// 10 HTMHT bins
+		// 10(+3) HTMHT bins
+		// Increased HT and MHT to 300
 		// [HT range]
-		HT_bins.push_back(std::make_pair(250, 500));
+		// QCD Control bins
+		HT_bins.push_back(std::make_pair(300, 500));
+		HT_bins.push_back(std::make_pair(500, 1000));
+		HT_bins.push_back(std::make_pair(1000, 99999));
+		// Search Bins
+		HT_bins.push_back(std::make_pair(300, 500));
 		HT_bins.push_back(std::make_pair(500, 1000));
 		HT_bins.push_back(std::make_pair(1000, 99999));
 		HT_bins.push_back(std::make_pair(350, 500));
@@ -65,9 +72,14 @@ SearchBins::SearchBins(bool useQCDbinning)
 		HT_bins.push_back(std::make_pair(1500, 99999));
 
 		// [MHT range]
-		MHT_bins.push_back(std::make_pair(250, 350));
-		MHT_bins.push_back(std::make_pair(250, 350));
-		MHT_bins.push_back(std::make_pair(250, 350));
+		// QCD Control bins
+		MHT_bins.push_back(std::make_pair(250, 300));
+		MHT_bins.push_back(std::make_pair(250, 300));
+		MHT_bins.push_back(std::make_pair(250, 300));
+		// Search Bins
+		MHT_bins.push_back(std::make_pair(300, 350));
+		MHT_bins.push_back(std::make_pair(300, 350));
+		MHT_bins.push_back(std::make_pair(300, 350));
 		MHT_bins.push_back(std::make_pair(350, 500));
 		MHT_bins.push_back(std::make_pair(350, 500));
 		MHT_bins.push_back(std::make_pair(350, 500));
@@ -77,7 +89,7 @@ SearchBins::SearchBins(bool useQCDbinning)
 		MHT_bins.push_back(std::make_pair(750, 99999));
 
 		// NJets
-		NJets_bins.push_back(std::make_pair(2, 2));
+		//NJets_bins.push_back(std::make_pair(2, 2));
 		NJets_bins.push_back(std::make_pair(3, 4));
 		NJets_bins.push_back(std::make_pair(5, 6));
 		NJets_bins.push_back(std::make_pair(7, 8));
@@ -93,9 +105,15 @@ SearchBins::SearchBins(bool useQCDbinning)
 		BTags_bins_NJets2.push_back(std::make_pair(1, 1));
 		BTags_bins_NJets2.push_back(std::make_pair(2, 99));
 	}else{
-		// 10 HTMHT bins
+		// 10(+3) HTMHT bins
+		// Increased HT and MHT to 300
 		// [HT range]
-		HT_bins.push_back(std::make_pair(250, 500));
+		// QCD Control bins
+		HT_bins.push_back(std::make_pair(300, 500));
+		HT_bins.push_back(std::make_pair(500, 1000));
+		HT_bins.push_back(std::make_pair(1000, 99999));
+		// Search Bins
+		HT_bins.push_back(std::make_pair(300, 500));
 		HT_bins.push_back(std::make_pair(500, 1000));
 		HT_bins.push_back(std::make_pair(1000, 99999));
 		HT_bins.push_back(std::make_pair(350, 500));
@@ -107,9 +125,14 @@ SearchBins::SearchBins(bool useQCDbinning)
 		HT_bins.push_back(std::make_pair(1500, 99999));
 
 		// [MHT range]
-		MHT_bins.push_back(std::make_pair(250, 350));
-		MHT_bins.push_back(std::make_pair(250, 350));
-		MHT_bins.push_back(std::make_pair(250, 350));
+		// QCD Control bins
+		MHT_bins.push_back(std::make_pair(250, 300));
+		MHT_bins.push_back(std::make_pair(250, 300));
+		MHT_bins.push_back(std::make_pair(250, 300));
+		// Search Bins
+		MHT_bins.push_back(std::make_pair(300, 350));
+		MHT_bins.push_back(std::make_pair(300, 350));
+		MHT_bins.push_back(std::make_pair(300, 350));
 		MHT_bins.push_back(std::make_pair(350, 500));
 		MHT_bins.push_back(std::make_pair(350, 500));
 		MHT_bins.push_back(std::make_pair(350, 500));
@@ -119,7 +142,7 @@ SearchBins::SearchBins(bool useQCDbinning)
 		MHT_bins.push_back(std::make_pair(750, 99999));
 
 		// NJets
-		NJets_bins.push_back(std::make_pair(2, 2));
+		//NJets_bins.push_back(std::make_pair(2, 2));
 		NJets_bins.push_back(std::make_pair(3, 4));
 		NJets_bins.push_back(std::make_pair(5, 6));
 		NJets_bins.push_back(std::make_pair(7, 8));
@@ -141,7 +164,7 @@ SearchBins::SearchBins(bool useQCDbinning)
 
 	for(unsigned i_NJets = 0; i_NJets < NJets_bins.size(); ++i_NJets){
 		// distinguish between BTag multiplicities
-		if(i_NJets == 0){
+		if(NJets_bins[i_NJets].second == 2){
 			for(unsigned i_bTags = 0; i_bTags < BTags_bins_NJets2.size(); ++i_bTags){
 				for(unsigned i_HTMHT = 0; i_HTMHT < HT_bins.size(); ++i_HTMHT){
 					bins_.push_back(Bin(HT_bins[i_HTMHT].first, HT_bins[i_HTMHT].second,
@@ -204,6 +227,10 @@ unsigned int SearchBins::GetBinNumber(double HT, double MHT, int NJets, int BTag
     std::cout<<"Error event fits in more than one bin! HT: "<<HT<<", MHT: "<<MHT<<", NJets: "<<NJets<<", BTags: "<<BTags<<std::endl;
   }
   return result+1; // to not use the 0 bin but start counting at 1
+}
+
+unsigned int SearchBins::GetNbins(){
+	return bins_.size();
 }
 
 void SearchBins::PrintUsed()

@@ -40,8 +40,8 @@
 // useDeltaPhiCut = -1: inverted deltaPhiCut
 const int useDeltaPhiCut = 1;  //<-check------------------------
 
-const bool runOnData = true;  //<-check------------------------
-const bool runOnStandardModelMC = false;  //<-check------------------------
+const bool runOnData = false;  //<-check------------------------
+const bool runOnStandardModelMC = true;  //<-check------------------------
 const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims
@@ -109,7 +109,7 @@ const double maxDeltaRGenToRecoIsoMuon_=0.3;
 const double maxDiffPtGenToRecoIsoMuon_=0.3;
 const double minHT_=250;
 const double minMHT_=250;
-const double minNJets_=1.5;
+const double minNJets_=2.5;
 const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;
 const double deltaPhi3_=0.3;
@@ -372,6 +372,7 @@ class Prediction : public TSelector {
   
   Float_t totalWeight_, totalWeightDiLep_, totalWeightDiLepIsoTrackReduced_,totalWeightDiLepIsoMuTrackReduced_,totalWeightDiLepIsoElecTrackReduced_,totalWeightDiLepIsoPionTrackReduced_,totalWeightDiLepIsoTrackReducedCombined_;
   Float_t totalWeight_BTags0_, totalWeight_BTags1Inf_;
+  Float_t totalWeight_BTags0_noIsoTrack_, totalWeight_BTags1Inf_noIsoTrack_;
   Float_t muTotalWeightDiLep_, muTotalWeightDiLepIsoTrackReduced_;
   Float_t elecTotalWeightDiLep_, elecTotalWeightDiLepIsoTrackReduced_;
   std::vector<Float_t> selectedIDIsoMuonsDeltaRJet, selectedIDIsoMuonsRelPTJet;
@@ -397,8 +398,10 @@ class Prediction : public TSelector {
   TH2Eff *MuMTWPTActivity_;
   TH1Eff *MuMTWNJets_;
   TH2Eff *MuMTWHTNJets_;
+  TH2Eff *MuMTWMHTNJets_;
 
   TH1Eff *MuDiLepContributionMTWAppliedNJets_;
+  TH2Eff *MuDiLepContributionMTWAppliedMHTNJets_;
   TH2Eff *MuIsoActivityPT_;
   TH2Eff *MuIsoRelPTDeltaRJet_;
   TH2Eff *MuRecoActivityPT_;
@@ -455,9 +458,11 @@ class Prediction : public TSelector {
   TH2Eff *ElecPurityMHTNJets_;
   TH1Eff *ElecMTWNJets_;
   TH2Eff *ElecMTWHTNJets_;
+  TH2Eff *ElecMTWMHTNJets_;
 
 
   TH1Eff *ElecDiLepContributionMTWAppliedNJets_;
+  TH2Eff *ElecDiLepContributionMTWAppliedMHTNJets_;
   TH1Eff *ElecDiLepEffMTWAppliedNJets_;
 
   TH2Eff *ElecAccHTMHT_NJetsLow_;

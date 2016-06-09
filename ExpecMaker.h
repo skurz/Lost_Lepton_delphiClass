@@ -89,7 +89,7 @@ const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
 // cuts baseline
 const double minHT_=250;
 const double minMHT_=250;
-const double minNJets_=1.5;
+const double minNJets_=2.5;
 const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;
 const double deltaPhi3_=0.3;
