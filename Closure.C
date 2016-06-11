@@ -99,6 +99,8 @@ void Closure(string InputPath_Expectation="Expectation.root",
   Float_t         totalWeightDiLepIsoTrackReducedCombined;
   Float_t         totalWeight_BTags0;
   Float_t         totalWeight_BTags1Inf;
+  Float_t         totalWeight_BTags0_noIsoTrack;
+  Float_t         totalWeight_BTags1Inf_noIsoTrack;
 
   Float_t         muTotalWeightDiLepIsoTrackReduced;
   Float_t         elecTotalWeightDiLepIsoTrackReduced;
@@ -355,7 +357,7 @@ void Closure(string InputPath_Expectation="Expectation.root",
       }
     }
 
-        // Fill events 4 times if using bTag probabilities
+    // Fill events 4 times if using bTag probabilities
     int nLoops = 4;
     if(!doBtagProbabilities){
       nLoops = 1;
@@ -364,17 +366,8 @@ void Closure(string InputPath_Expectation="Expectation.root",
     }
 
     for(int i = 0; i < nLoops; i++){
-
       if(doBtagProbabilities){
-        if(NJets > 2){
-          scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
-        }else{
-          if(i < 2){
-            scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
-          }else{
-            scaledWeight = Weight * scaleFactorWeight * (bTagProb->at(i)+bTagProb->at(i+1));
-          }
-        }
+        scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
       }else{
         scaledWeight = Weight * scaleFactorWeight;
       }
@@ -505,6 +498,10 @@ void Closure(string InputPath_Expectation="Expectation.root",
   LostLeptonPrediction->SetBranchAddress("totalWeight_BTags0",&totalWeight_BTags0);
   LostLeptonPrediction->SetBranchStatus("totalWeight_BTags1Inf",1);
   LostLeptonPrediction->SetBranchAddress("totalWeight_BTags1Inf",&totalWeight_BTags1Inf);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags0_noIsoTrack",1);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags0_noIsoTrack",&totalWeight_BTags0_noIsoTrack);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags1Inf_noIsoTrack",1);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags1Inf_noIsoTrack",&totalWeight_BTags1Inf_noIsoTrack);
   LostLeptonPrediction->SetBranchStatus("muTotalWeightDiLepIsoTrackReduced",1);
   LostLeptonPrediction->SetBranchAddress("muTotalWeightDiLepIsoTrackReduced",&muTotalWeightDiLepIsoTrackReduced);
   LostLeptonPrediction->SetBranchStatus("elecTotalWeightDiLepIsoTrackReduced",1);
@@ -558,38 +555,53 @@ void Closure(string InputPath_Expectation="Expectation.root",
       for(int i = 0; i < nLoops; i++){
         double scaleFactorWeightBtagProb;
         if(doBtagProbabilities){
-          if(NJets > 2){
-            scaleFactorWeightBtagProb = scaleFactorWeight * bTagProb->at(i);
-            scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
-          }else{
-            if(i < 2){
-              scaleFactorWeightBtagProb = scaleFactorWeight * bTagProb->at(i);
-              scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
-            }else{
-              scaleFactorWeightBtagProb = scaleFactorWeight * (bTagProb->at(i)+bTagProb->at(i+1));
-              scaledWeight = Weight * scaleFactorWeight * (bTagProb->at(i)+bTagProb->at(i+1));
-            }
-          }
+          scaleFactorWeightBtagProb = scaleFactorWeight * bTagProb->at(i);
+          scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
         }else{
           scaleFactorWeightBtagProb = scaleFactorWeight;
           scaledWeight = Weight * scaleFactorWeight;
         }
-
-        totalPrediction_->Fill( Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-        //if(i==0) totalPrediction_->Fill( Bin_bTags.at(i), totalWeight_BTags0*scaleFactorWeightBtagProb/2);
-        //else totalPrediction_->Fill( Bin_bTags.at(i), totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
-        totalPre+=totalWeightDiLep*scaleFactorWeightBtagProb/2;
-        totalPreError+= totalWeightDiLep*scaleFactorWeightBtagProb/2*totalWeightDiLep*scaleFactorWeightBtagProb/2;
-        
-
-        totalPredictionWoIso_->Fill( Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb/2);
+/*
+        totalPrediction_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);        
         totalPreIsoTrack+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2;
-        totalPreIsoTrackError+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2*totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2;
+        totalPreIsoTrackError+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2*totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2;       
+
+        totalPredictionWoIso_->Fill(Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb/2);
+        totalPre+=totalWeightDiLep*scaleFactorWeightBtagProb/2;
+        totalPreError+= totalWeightDiLep*scaleFactorWeightBtagProb/2*totalWeightDiLep*scaleFactorWeightBtagProb/2;         
             
         totalPrediction_HT_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         totalPrediction_MHT_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         totalPrediction_NJets_->Fill(NJets, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         totalPrediction_BTags_->Fill(i, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+*/
+        if(i==0){
+          totalPrediction_->Fill(Bin_bTags.at(i), totalWeight_BTags0*scaleFactorWeightBtagProb/2);
+          totalPreIsoTrack+=totalWeight_BTags0*scaleFactorWeightBtagProb/2;
+          totalPreIsoTrackError+=totalWeight_BTags0*scaleFactorWeightBtagProb/2*totalWeight_BTags0*scaleFactorWeightBtagProb/2;
+
+          totalPredictionWoIso_->Fill(Bin_bTags.at(i), totalWeight_BTags0_noIsoTrack*scaleFactorWeightBtagProb/2);
+          totalPre+=totalWeight_BTags0_noIsoTrack*scaleFactorWeightBtagProb/2;
+          totalPreError+= totalWeight_BTags0_noIsoTrack*scaleFactorWeightBtagProb/2*totalWeight_BTags0_noIsoTrack*scaleFactorWeightBtagProb/2;         
+              
+          totalPrediction_HT_->Fill(HT, totalWeight_BTags0*scaleFactorWeightBtagProb/2);
+          totalPrediction_MHT_->Fill(MHT, totalWeight_BTags0*scaleFactorWeightBtagProb/2);
+          totalPrediction_NJets_->Fill(NJets, totalWeight_BTags0*scaleFactorWeightBtagProb/2);
+          totalPrediction_BTags_->Fill(i, totalWeight_BTags0*scaleFactorWeightBtagProb/2);
+        }else{
+          totalPrediction_->Fill(Bin_bTags.at(i), totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
+          totalPreIsoTrack+=totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2;
+          totalPreIsoTrackError+=totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2*totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2;
+
+          totalPredictionWoIso_->Fill(Bin_bTags.at(i), totalWeight_BTags1Inf_noIsoTrack*scaleFactorWeightBtagProb/2);
+          totalPre+=totalWeight_BTags1Inf_noIsoTrack*scaleFactorWeightBtagProb/2;
+          totalPreError+= totalWeight_BTags1Inf_noIsoTrack*scaleFactorWeightBtagProb/2*totalWeight_BTags1Inf_noIsoTrack*scaleFactorWeightBtagProb/2;         
+              
+          totalPrediction_HT_->Fill(HT, totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
+          totalPrediction_MHT_->Fill(MHT, totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
+          totalPrediction_NJets_->Fill(NJets, totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
+          totalPrediction_BTags_->Fill(i, totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
+        }
 
           if(selectedIDIsoMuonsNum == 1){
             totalPredictionMu_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb);
@@ -720,7 +732,12 @@ void Closure(string InputPath_Expectation="Expectation.root",
 
   SaveClosure(totalPredictionWoIso_, totalExpectationWoIso_, dClosures);
   SaveClosure(totalPredictionMuWoIso_, totalExpectationWoIso_, dClosures);
-  SaveClosure(totalPredictionElecWoIso_, totalExpectationWoIso_, dClosures);  
+  SaveClosure(totalPredictionElecWoIso_, totalExpectationWoIso_, dClosures);
+
+  SaveClosure(totalPrediction_HT_, totalExpectation_HT_, dClosures);    
+  SaveClosure(totalPrediction_MHT_, totalExpectation_MHT_, dClosures);    
+  SaveClosure(totalPrediction_NJets_, totalExpectation_NJets_, dClosures);    
+  SaveClosure(totalPrediction_BTags_, totalExpectation_BTags_, dClosures);    
 
   outPutFile->cd();
   outPutFile->mkdir("Steps");
