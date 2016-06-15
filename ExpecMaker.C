@@ -185,7 +185,7 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   //    std::cout << "Event falls in bin " << Bin_ << std::endl;
   isoTracksNum = isoMuonTracksNum + isoPionTracksNum + isoElectronTracksNum;
 
-  if(Bin_ > 900) return kTRUE;
+  if(Bin_ > 900 && BinQCD_ > 900) return kTRUE;
 
   GenMuNum_ = GenMus->size();
   GenElecNum_ = GenEls->size();
@@ -520,11 +520,14 @@ void ExpecMaker::SlaveTerminate()
   // have been processed. When running with PROOF SlaveTerminate() is called
   // on each slave server.
 
+  std::cout<<"--- Search bins ---"<<std::endl;
+  SearchBins_->PrintUsed();
+
 }
 
 void ExpecMaker::Terminate()
 {
-  GetOutputList()->Print();
+  //GetOutputList()->Print();
   //std::cout << "tExpectation_:" << tExpectation_ << '\n';
   tExpectation_ = dynamic_cast<TTree*>(GetOutputList()->FindObject("LostLeptonExpectation"));
   //std::cout << "tExpectation_:" << tExpectation_ << '\n';

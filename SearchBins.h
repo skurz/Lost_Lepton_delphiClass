@@ -56,9 +56,9 @@ SearchBins::SearchBins(bool useQCDbinning)
 		// Increased HT and MHT to 300
 		// [HT range]
 		// QCD Control bins
-		HT_bins.push_back(std::make_pair(300, 500));
-		HT_bins.push_back(std::make_pair(500, 1000));
-		HT_bins.push_back(std::make_pair(1000, 99999));
+		//HT_bins.push_back(std::make_pair(300, 500));
+		//HT_bins.push_back(std::make_pair(500, 1000));
+		//HT_bins.push_back(std::make_pair(1000, 99999));
 		// Search Bins
 		HT_bins.push_back(std::make_pair(300, 500));
 		HT_bins.push_back(std::make_pair(500, 1000));
@@ -73,9 +73,9 @@ SearchBins::SearchBins(bool useQCDbinning)
 
 		// [MHT range]
 		// QCD Control bins
-		MHT_bins.push_back(std::make_pair(250, 300));
-		MHT_bins.push_back(std::make_pair(250, 300));
-		MHT_bins.push_back(std::make_pair(250, 300));
+		//MHT_bins.push_back(std::make_pair(250, 300));
+		//MHT_bins.push_back(std::make_pair(250, 300));
+		//MHT_bins.push_back(std::make_pair(250, 300));
 		// Search Bins
 		MHT_bins.push_back(std::make_pair(300, 350));
 		MHT_bins.push_back(std::make_pair(300, 350));
@@ -241,5 +241,5 @@ void SearchBins::PrintUsed()
   	total+=usedBin_[i];;
   }
   std::cout<<"Total: "<<total<<std::endl;
-  std::cout<<"Skipped events (passed baseline but no search bin): "<<nSkipped<<"/"<<total<<std::endl;
+  std::cout<<"Skipped events (passed baseline but no search bin)/passed: "<<nSkipped<<"/"<<total<<std::endl;
 }

@@ -9,7 +9,7 @@ void saveHistograms(TFile* tf);
 void PlotMaker(string InputPath_Expectation="Expectation.root",
 	string InputPath_Efficiencies="Efficiencies.root",
 	string InputPath_Prediction="Prediction.root",
-	string InputPath_Prediction_Data="Prediction.root", // Use same path as above if pure MC prediction wanted
+	string InputPath_Prediction_Data="Prediction_data.root", // Use same path as above if pure MC prediction wanted
 	string OutputPath_Prediction="LLPrediction.root"){
 	
 	gSystem->Load("libPhysics.so");
@@ -23,7 +23,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	const bool doBtagProbabilities = true;
 
 	// Fill MC histograms only (saves time)
-	const bool doMConly = true;
+	const bool doMConly = false;
 
 	// Prepare Code for Extrapolation Method
 	const bool doExtrapolation = false;		// NOT IMPLEMENTED
@@ -32,7 +32,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	const bool useMCForDataTree = false;	// NOT IMPLEMENTED
 
 	// Scale all MC weights by this factor
-	const Double_t scaleFactorWeight = 2262;  //in units of [pb] //<-check------------------------
+	const Double_t scaleFactorWeight = 813;  // 2262  //in units of [pb] //<-check------------------------
 
 
 	// Init
@@ -149,98 +149,100 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	        }
 
 			//totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-			//avgWeight_LL_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+			//avgWeight_LL_MC_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
 			if(i==0){
 				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags0*scaleFactorWeightBtagProb/2);
-				avgWeight_LL_->Fill(SearchBin, abs(totalWeight_BTags0/Weight/2), Weight);
+				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags0_noIsoTrack*scaleFactorWeightBtagProb/2);
+				avgWeight_LL_MC_->Fill(SearchBin, abs(totalWeight_BTags0/Weight/2), Weight);
 			}else{
 				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
-				avgWeight_LL_->Fill(SearchBin, abs(totalWeight_BTags1Inf/Weight/2), Weight);
+				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags1Inf_noIsoTrack*scaleFactorWeightBtagProb/2);
+				avgWeight_LL_MC_->Fill(SearchBin, abs(totalWeight_BTags1Inf/Weight/2), Weight);
 			}
 
 			totalCS_LL_MC_->Fill(Bin_bTags.at(i), scaledWeight);
         	nEvtsCS_LL_MC_->Fill(Bin_bTags.at(i));
 
 
-        	totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, elecIsoTrackSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, elecIsoTrackSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredIsoTrackSysUp_LL_MC_->Fill(SearchBin, pionIsoTrackSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredIsoTrackSysDown_LL_MC_->Fill(SearchBin, pionIsoTrackSysDown*scaleFactorWeightBtagProb/2);
+        	totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackSysDown*scaleFactorWeightBtagProb/2);
 
-		    totalPredMuIsoTrackSysUp_LL_MC_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredMuIsoTrackSysDown_LL_MC_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredElecIsoTrackSysUp_LL_MC_->Fill(SearchBin, elecIsoTrackSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredElecIsoTrackSysDown_LL_MC_->Fill(SearchBin, elecIsoTrackSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredPionIsoTrackSysUp_LL_MC_->Fill(SearchBin, pionIsoTrackSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredPionIsoTrackSysDown_LL_MC_->Fill(SearchBin, pionIsoTrackSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredMTWSysUp_LL_MC_->Fill(SearchBin, MTWSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredMTWSysDown_LL_MC_->Fill(SearchBin, MTWSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredPuritySysUp_LL_MC_->Fill(SearchBin, puritySysUp*scaleFactorWeightBtagProb/2);
-		    totalPredPuritySysDown_LL_MC_->Fill(SearchBin, puritySysDown*scaleFactorWeightBtagProb/2);
-		    totalPredSingleLepPuritySysUp_LL_MC_->Fill(SearchBin, singleLepPuritySysUp*scaleFactorWeightBtagProb/2);
-		    totalPredSingleLepPuritySysDown_LL_MC_->Fill(SearchBin, singleLepPuritySysDown*scaleFactorWeightBtagProb/2);
-		    totalPredDiLepFoundSysUp_LL_MC_->Fill(SearchBin, diLepFoundSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredDiLepFoundSysDown_LL_MC_->Fill(SearchBin, diLepFoundSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredMuIsoSysUp_LL_MC_->Fill(SearchBin, muIsoSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredMuIsoSysDown_LL_MC_->Fill(SearchBin, muIsoSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredMuRecoSysUp_LL_MC_->Fill(SearchBin, muRecoSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredMuRecoSysDown_LL_MC_->Fill(SearchBin, muRecoSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredMuAccSysUp_LL_MC_->Fill(SearchBin, muAccSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredMuAccSysDown_LL_MC_->Fill(SearchBin, muAccSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredMuAccQsquareSysUp_LL_MC_->Fill(SearchBin, muAccQsquareSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredMuAccQsquareSysDown_LL_MC_->Fill(SearchBin, muAccQsquareSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredElecIsoSysUp_LL_MC_->Fill(SearchBin, elecIsoSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredElecIsoSysDown_LL_MC_->Fill(SearchBin, elecIsoSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredElecRecoSysUp_LL_MC_->Fill(SearchBin, elecRecoSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredElecRecoSysDown_LL_MC_->Fill(SearchBin, elecRecoSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredElecAccSysUp_LL_MC_->Fill(SearchBin, elecAccSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredElecAccSysDown_LL_MC_->Fill(SearchBin, elecAccSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredElecAccQsquareSysUp_LL_MC_->Fill(SearchBin, elecAccQsquareSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredElecAccQsquareSysDown_LL_MC_->Fill(SearchBin, elecAccQsquareSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredMuIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredMuIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredElecIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredElecIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredPionIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredPionIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredMTWSysUp_LL_MC_->Fill(Bin_bTags.at(i), MTWSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredMTWSysDown_LL_MC_->Fill(Bin_bTags.at(i), MTWSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredPuritySysUp_LL_MC_->Fill(Bin_bTags.at(i), puritySysUp*scaleFactorWeightBtagProb/2);
+		    totalPredPuritySysDown_LL_MC_->Fill(Bin_bTags.at(i), puritySysDown*scaleFactorWeightBtagProb/2);
+		    totalPredSingleLepPuritySysUp_LL_MC_->Fill(Bin_bTags.at(i), singleLepPuritySysUp*scaleFactorWeightBtagProb/2);
+		    totalPredSingleLepPuritySysDown_LL_MC_->Fill(Bin_bTags.at(i), singleLepPuritySysDown*scaleFactorWeightBtagProb/2);
+		    totalPredDiLepFoundSysUp_LL_MC_->Fill(Bin_bTags.at(i), diLepFoundSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredDiLepFoundSysDown_LL_MC_->Fill(Bin_bTags.at(i), diLepFoundSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredMuIsoSysUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredMuIsoSysDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredMuRecoSysUp_LL_MC_->Fill(Bin_bTags.at(i), muRecoSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredMuRecoSysDown_LL_MC_->Fill(Bin_bTags.at(i), muRecoSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredMuAccSysUp_LL_MC_->Fill(Bin_bTags.at(i), muAccSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredMuAccSysDown_LL_MC_->Fill(Bin_bTags.at(i), muAccSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredMuAccQsquareSysUp_LL_MC_->Fill(Bin_bTags.at(i), muAccQsquareSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredMuAccQsquareSysDown_LL_MC_->Fill(Bin_bTags.at(i), muAccQsquareSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredElecIsoSysUp_LL_MC_->Fill(Bin_bTags.at(i), elecIsoSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredElecIsoSysDown_LL_MC_->Fill(Bin_bTags.at(i), elecIsoSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredElecRecoSysUp_LL_MC_->Fill(Bin_bTags.at(i), elecRecoSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredElecRecoSysDown_LL_MC_->Fill(Bin_bTags.at(i), elecRecoSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredElecAccSysUp_LL_MC_->Fill(Bin_bTags.at(i), elecAccSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredElecAccSysDown_LL_MC_->Fill(Bin_bTags.at(i), elecAccSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredElecAccQsquareSysUp_LL_MC_->Fill(Bin_bTags.at(i), elecAccQsquareSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredElecAccQsquareSysDown_LL_MC_->Fill(Bin_bTags.at(i), elecAccQsquareSysDown*scaleFactorWeightBtagProb/2);
 
-		    totalPredIsoTrackStatUp_LL_MC_->Fill(SearchBin, isoTrackStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredIsoTrackStatDown_LL_MC_->Fill(SearchBin, isoTrackStatDown*scaleFactorWeightBtagProb/2);
-		    /*    totalPredIsoTrackStatUp_LL_MC_->Fill(SearchBin, muIsoTrackStatUp*scaleFactorWeightBtagProb/2);
-			  totalPredIsoTrackStatDown_LL_MC_->Fill(SearchBin, muIsoTrackStatDown*scaleFactorWeightBtagProb/2);
-			  totalPredIsoTrackStatUp_LL_MC_->Fill(SearchBin, elecIsoTrackStatUp*scaleFactorWeightBtagProb/2);
-			  totalPredIsoTrackStatDown_LL_MC_->Fill(SearchBin, elecIsoTrackStatDown*scaleFactorWeightBtagProb/2);
-			  totalPredIsoTrackStatUp_LL_MC_->Fill(SearchBin, pionIsoTrackStatUp*scaleFactorWeightBtagProb/2);
-			  totalPredIsoTrackStatDown_LL_MC_->Fill(SearchBin, pionIsoTrackStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackStatDown*scaleFactorWeightBtagProb/2);
+		    /*    totalPredIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackStatUp*scaleFactorWeightBtagProb/2);
+			  totalPredIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackStatDown*scaleFactorWeightBtagProb/2);
+			  totalPredIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackStatUp*scaleFactorWeightBtagProb/2);
+			  totalPredIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackStatDown*scaleFactorWeightBtagProb/2);
+			  totalPredIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackStatUp*scaleFactorWeightBtagProb/2);
+			  totalPredIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackStatDown*scaleFactorWeightBtagProb/2);
 		    */
-		    totalPredMuIsoTrackStatUp_LL_MC_->Fill(SearchBin, muIsoTrackStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredMuIsoTrackStatDown_LL_MC_->Fill(SearchBin, muIsoTrackStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredElecIsoTrackStatUp_LL_MC_->Fill(SearchBin, elecIsoTrackStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredElecIsoTrackStatDown_LL_MC_->Fill(SearchBin, elecIsoTrackStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredPionIsoTrackStatUp_LL_MC_->Fill(SearchBin, pionIsoTrackStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredPionIsoTrackStatDown_LL_MC_->Fill(SearchBin, pionIsoTrackStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredMTWStatUp_LL_MC_->Fill(SearchBin, MTWStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredMTWStatDown_LL_MC_->Fill(SearchBin, MTWStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredPurityStatUp_LL_MC_->Fill(SearchBin, purityStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredPurityStatDown_LL_MC_->Fill(SearchBin, purityStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredSingleLepPurityStatUp_LL_MC_->Fill(SearchBin, singleLepPurityStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredSingleLepPurityStatDown_LL_MC_->Fill(SearchBin, singleLepPurityStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredDiLepFoundStatUp_LL_MC_->Fill(SearchBin, diLepFoundStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredDiLepFoundStatDown_LL_MC_->Fill(SearchBin, diLepFoundStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredMuIsoStatUp_LL_MC_->Fill(SearchBin, muIsoStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredMuIsoStatDown_LL_MC_->Fill(SearchBin, muIsoStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredMuRecoStatUp_LL_MC_->Fill(SearchBin, muRecoStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredMuRecoStatDown_LL_MC_->Fill(SearchBin, muRecoStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredMuAccStatUp_LL_MC_->Fill(SearchBin, muAccStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredMuAccStatDown_LL_MC_->Fill(SearchBin, muAccStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredElecIsoStatUp_LL_MC_->Fill(SearchBin, elecIsoStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredElecIsoStatDown_LL_MC_->Fill(SearchBin, elecIsoStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredElecRecoStatUp_LL_MC_->Fill(SearchBin, elecRecoStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredElecRecoStatDown_LL_MC_->Fill(SearchBin, elecRecoStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredElecAccStatUp_LL_MC_->Fill(SearchBin, elecAccStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredElecAccStatDown_LL_MC_->Fill(SearchBin, elecAccStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredMuIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredMuIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredElecIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredElecIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredPionIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredPionIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredMTWStatUp_LL_MC_->Fill(Bin_bTags.at(i), MTWStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredMTWStatDown_LL_MC_->Fill(Bin_bTags.at(i), MTWStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredPurityStatUp_LL_MC_->Fill(Bin_bTags.at(i), purityStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredPurityStatDown_LL_MC_->Fill(Bin_bTags.at(i), purityStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredSingleLepPurityStatUp_LL_MC_->Fill(Bin_bTags.at(i), singleLepPurityStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredSingleLepPurityStatDown_LL_MC_->Fill(Bin_bTags.at(i), singleLepPurityStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredDiLepFoundStatUp_LL_MC_->Fill(Bin_bTags.at(i), diLepFoundStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredDiLepFoundStatDown_LL_MC_->Fill(Bin_bTags.at(i), diLepFoundStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredMuIsoStatUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredMuIsoStatDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredMuRecoStatUp_LL_MC_->Fill(Bin_bTags.at(i), muRecoStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredMuRecoStatDown_LL_MC_->Fill(Bin_bTags.at(i), muRecoStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredMuAccStatUp_LL_MC_->Fill(Bin_bTags.at(i), muAccStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredMuAccStatDown_LL_MC_->Fill(Bin_bTags.at(i), muAccStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredElecIsoStatUp_LL_MC_->Fill(Bin_bTags.at(i), elecIsoStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredElecIsoStatDown_LL_MC_->Fill(Bin_bTags.at(i), elecIsoStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredElecRecoStatUp_LL_MC_->Fill(Bin_bTags.at(i), elecRecoStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredElecRecoStatDown_LL_MC_->Fill(Bin_bTags.at(i), elecRecoStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredElecAccStatUp_LL_MC_->Fill(Bin_bTags.at(i), elecAccStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredElecAccStatDown_LL_MC_->Fill(Bin_bTags.at(i), elecAccStatDown*scaleFactorWeightBtagProb/2);
 
 		    //totalPropSysUp = sqrt(isoTrackSysUp*isoTrackSysUp+MTWSysUp*MTWSysUp+puritySysUp*puritySysUp+singleLepPuritySysUp*singleLepPuritySysUp+diLepFoundSysUp*diLepFoundSysUp+muIsoSysUp*muIsoSysUp+muRecoSysUp*muRecoSysUp+muAccSysUp*muAccSysUp+muAccQsquareSysUp*muAccQsquareSysUp+elecIsoSysUp*elecIsoSysUp+elecRecoSysUp*elecRecoSysUp+elecAccSysUp*elecAccSysUp+elecAccQsquareSysUp*elecAccQsquareSysUp+isoTrackStatUp*isoTrackStatUp+MTWStatUp*MTWStatUp+purityStatUp*purityStatUp+singleLepPurityStatUp*singleLepPurityStatUp+diLepFoundStatUp*diLepFoundStatUp+muIsoStatUp*muIsoStatUp+muRecoStatUp*muRecoStatUp+muAccStatUp*muAccStatUp+elecIsoStatUp*elecIsoStatUp+elecRecoStatUp*elecRecoStatUp+elecAccStatUp*elecAccStatUp);
 		    //totalPropSysDown = -sqrt(isoTrackSysDown*isoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+muAccQsquareSysDown*muAccQsquareSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown+elecAccQsquareSysDown*elecAccQsquareSysDown+isoTrackStatDown*isoTrackStatDown+MTWStatDown*MTWStatDown+purityStatDown*purityStatDown+singleLepPurityStatDown*singleLepPurityStatDown+diLepFoundStatDown*diLepFoundStatDown+muIsoStatDown*muIsoStatDown+muRecoStatDown*muRecoStatDown+muAccStatDown*muAccStatDown+elecIsoStatDown*elecIsoStatDown+elecRecoStatDown*elecRecoStatDown+elecAccStatDown*elecAccStatDown);
 
-		    //totalPropSysUp_LL_MC_->Fill(SearchBin, totalPropSysUp*scaleFactorWeightBtagProb/2);
-		    //totalPropSysDown_LL_MC_->Fill(SearchBin, totalPropSysDown*scaleFactorWeightBtagProb/2)
+		    //totalPropSysUp_LL_MC_->Fill(Bin_bTags.at(i), totalPropSysUp*scaleFactorWeightBtagProb/2);
+		    //totalPropSysDown_LL_MC_->Fill(Bin_bTags.at(i), totalPropSysDown*scaleFactorWeightBtagProb/2)
 	   	}
 	}
 
@@ -256,7 +258,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 		fPre = new TFile(InputPath_Prediction_Data.c_str());
 		}
 		TTree* LostLeptonPredictionData = (TTree*) fPre->Get("LostLeptonPrediction");
-		setBranchesPrediction(LostLeptonPrediction, true);
+		setBranchesPrediction(LostLeptonPredictionData, true);
 
 		 
 		std::cout<<"Loop on Prediction (Data)"<<std::endl;
@@ -272,93 +274,97 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 		    if(MTW>100)continue;
 		    if(selectedIDIsoMuonsNum+selectedIDIsoElectronsNum!=1)continue;
 
-		    scaledWeight = Weight * scaleFactorWeight;
+		    double scaleFactorWeightData = 1.;
+		    if(InputPath_Prediction_Data == InputPath_Prediction) scaleFactorWeightData = scaleFactorWeight;
 
-		    totalPred_LL_->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2);
+		    scaledWeight = Weight * scaleFactorWeightData;
+		    
+
+		    totalPred_LL_->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightData/2);
 		    avgWeight_LL_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
 
 		    totalCS_LL_->Fill(SearchBin, scaledWeight);
 		    nEvtsCS_LL_->Fill(SearchBin);
 
-		    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2);
-		    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeight/2);
-		    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, elecIsoTrackSysUp*scaleFactorWeight/2);
-		    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, elecIsoTrackSysDown*scaleFactorWeight/2);
-		    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, pionIsoTrackSysUp*scaleFactorWeight/2);
-		    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, pionIsoTrackSysDown*scaleFactorWeight/2);
+		    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeightData/2);
+		    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeightData/2);
+		    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, elecIsoTrackSysUp*scaleFactorWeightData/2);
+		    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, elecIsoTrackSysDown*scaleFactorWeightData/2);
+		    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, pionIsoTrackSysUp*scaleFactorWeightData/2);
+		    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, pionIsoTrackSysDown*scaleFactorWeightData/2);
 
-		    totalPredMuIsoTrackSysUp_LL_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeight/2);
-		    totalPredMuIsoTrackSysDown_LL_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeight/2);
-		    totalPredElecIsoTrackSysUp_LL_->Fill(SearchBin, elecIsoTrackSysUp*scaleFactorWeight/2);
-		    totalPredElecIsoTrackSysDown_LL_->Fill(SearchBin, elecIsoTrackSysDown*scaleFactorWeight/2);
-		    totalPredPionIsoTrackSysUp_LL_->Fill(SearchBin, pionIsoTrackSysUp*scaleFactorWeight/2);
-		    totalPredPionIsoTrackSysDown_LL_->Fill(SearchBin, pionIsoTrackSysDown*scaleFactorWeight/2);
-		    totalPredMTWSysUp_LL_->Fill(SearchBin, MTWSysUp*scaleFactorWeight/2);
-		    totalPredMTWSysDown_LL_->Fill(SearchBin, MTWSysDown*scaleFactorWeight/2);
-		    totalPredPuritySysUp_LL_->Fill(SearchBin, puritySysUp*scaleFactorWeight/2);
-		    totalPredPuritySysDown_LL_->Fill(SearchBin, puritySysDown*scaleFactorWeight/2);
-		    totalPredSingleLepPuritySysUp_LL_->Fill(SearchBin, singleLepPuritySysUp*scaleFactorWeight/2);
-		    totalPredSingleLepPuritySysDown_LL_->Fill(SearchBin, singleLepPuritySysDown*scaleFactorWeight/2);
-		    totalPredDiLepFoundSysUp_LL_->Fill(SearchBin, diLepFoundSysUp*scaleFactorWeight/2);
-		    totalPredDiLepFoundSysDown_LL_->Fill(SearchBin, diLepFoundSysDown*scaleFactorWeight/2);
-		    totalPredMuIsoSysUp_LL_->Fill(SearchBin, muIsoSysUp*scaleFactorWeight/2);
-		    totalPredMuIsoSysDown_LL_->Fill(SearchBin, muIsoSysDown*scaleFactorWeight/2);
-		    totalPredMuRecoSysUp_LL_->Fill(SearchBin, muRecoSysUp*scaleFactorWeight/2);
-		    totalPredMuRecoSysDown_LL_->Fill(SearchBin, muRecoSysDown*scaleFactorWeight/2);
-		    totalPredMuAccSysUp_LL_->Fill(SearchBin, muAccSysUp*scaleFactorWeight/2);
-		    totalPredMuAccSysDown_LL_->Fill(SearchBin, muAccSysDown*scaleFactorWeight/2);
-		    totalPredMuAccQsquareSysUp_LL_->Fill(SearchBin, muAccQsquareSysUp*scaleFactorWeight/2);
-		    totalPredMuAccQsquareSysDown_LL_->Fill(SearchBin, muAccQsquareSysDown*scaleFactorWeight/2);
-		    totalPredElecIsoSysUp_LL_->Fill(SearchBin, elecIsoSysUp*scaleFactorWeight/2);
-		    totalPredElecIsoSysDown_LL_->Fill(SearchBin, elecIsoSysDown*scaleFactorWeight/2);
-		    totalPredElecRecoSysUp_LL_->Fill(SearchBin, elecRecoSysUp*scaleFactorWeight/2);
-		    totalPredElecRecoSysDown_LL_->Fill(SearchBin, elecRecoSysDown*scaleFactorWeight/2);
-		    totalPredElecAccSysUp_LL_->Fill(SearchBin, elecAccSysUp*scaleFactorWeight/2);
-		    totalPredElecAccSysDown_LL_->Fill(SearchBin, elecAccSysDown*scaleFactorWeight/2);
-		    totalPredElecAccQsquareSysUp_LL_->Fill(SearchBin, elecAccQsquareSysUp*scaleFactorWeight/2);
-		    totalPredElecAccQsquareSysDown_LL_->Fill(SearchBin, elecAccQsquareSysDown*scaleFactorWeight/2);
+		    totalPredMuIsoTrackSysUp_LL_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeightData/2);
+		    totalPredMuIsoTrackSysDown_LL_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeightData/2);
+		    totalPredElecIsoTrackSysUp_LL_->Fill(SearchBin, elecIsoTrackSysUp*scaleFactorWeightData/2);
+		    totalPredElecIsoTrackSysDown_LL_->Fill(SearchBin, elecIsoTrackSysDown*scaleFactorWeightData/2);
+		    totalPredPionIsoTrackSysUp_LL_->Fill(SearchBin, pionIsoTrackSysUp*scaleFactorWeightData/2);
+		    totalPredPionIsoTrackSysDown_LL_->Fill(SearchBin, pionIsoTrackSysDown*scaleFactorWeightData/2);
+		    totalPredMTWSysUp_LL_->Fill(SearchBin, MTWSysUp*scaleFactorWeightData/2);
+		    totalPredMTWSysDown_LL_->Fill(SearchBin, MTWSysDown*scaleFactorWeightData/2);
+		    totalPredPuritySysUp_LL_->Fill(SearchBin, puritySysUp*scaleFactorWeightData/2);
+		    totalPredPuritySysDown_LL_->Fill(SearchBin, puritySysDown*scaleFactorWeightData/2);
+		    totalPredSingleLepPuritySysUp_LL_->Fill(SearchBin, singleLepPuritySysUp*scaleFactorWeightData/2);
+		    totalPredSingleLepPuritySysDown_LL_->Fill(SearchBin, singleLepPuritySysDown*scaleFactorWeightData/2);
+		    totalPredDiLepFoundSysUp_LL_->Fill(SearchBin, diLepFoundSysUp*scaleFactorWeightData/2);
+		    totalPredDiLepFoundSysDown_LL_->Fill(SearchBin, diLepFoundSysDown*scaleFactorWeightData/2);
+		    totalPredMuIsoSysUp_LL_->Fill(SearchBin, muIsoSysUp*scaleFactorWeightData/2);
+		    totalPredMuIsoSysDown_LL_->Fill(SearchBin, muIsoSysDown*scaleFactorWeightData/2);
+		    totalPredMuRecoSysUp_LL_->Fill(SearchBin, muRecoSysUp*scaleFactorWeightData/2);
+		    totalPredMuRecoSysDown_LL_->Fill(SearchBin, muRecoSysDown*scaleFactorWeightData/2);
+		    totalPredMuAccSysUp_LL_->Fill(SearchBin, muAccSysUp*scaleFactorWeightData/2);
+		    totalPredMuAccSysDown_LL_->Fill(SearchBin, muAccSysDown*scaleFactorWeightData/2);
+		    totalPredMuAccQsquareSysUp_LL_->Fill(SearchBin, muAccQsquareSysUp*scaleFactorWeightData/2);
+		    totalPredMuAccQsquareSysDown_LL_->Fill(SearchBin, muAccQsquareSysDown*scaleFactorWeightData/2);
+		    totalPredElecIsoSysUp_LL_->Fill(SearchBin, elecIsoSysUp*scaleFactorWeightData/2);
+		    totalPredElecIsoSysDown_LL_->Fill(SearchBin, elecIsoSysDown*scaleFactorWeightData/2);
+		    totalPredElecRecoSysUp_LL_->Fill(SearchBin, elecRecoSysUp*scaleFactorWeightData/2);
+		    totalPredElecRecoSysDown_LL_->Fill(SearchBin, elecRecoSysDown*scaleFactorWeightData/2);
+		    totalPredElecAccSysUp_LL_->Fill(SearchBin, elecAccSysUp*scaleFactorWeightData/2);
+		    totalPredElecAccSysDown_LL_->Fill(SearchBin, elecAccSysDown*scaleFactorWeightData/2);
+		    totalPredElecAccQsquareSysUp_LL_->Fill(SearchBin, elecAccQsquareSysUp*scaleFactorWeightData/2);
+		    totalPredElecAccQsquareSysDown_LL_->Fill(SearchBin, elecAccQsquareSysDown*scaleFactorWeightData/2);
 
-		    totalPredIsoTrackStatUp_LL_->Fill(SearchBin, isoTrackStatUp*scaleFactorWeight/2);
-		    totalPredIsoTrackStatDown_LL_->Fill(SearchBin, isoTrackStatDown*scaleFactorWeight/2);
-		    /*    totalPredIsoTrackStatUp_LL_->Fill(SearchBin, muIsoTrackStatUp*scaleFactorWeight/2);
-			  totalPredIsoTrackStatDown_LL_->Fill(SearchBin, muIsoTrackStatDown*scaleFactorWeight/2);
-			  totalPredIsoTrackStatUp_LL_->Fill(SearchBin, elecIsoTrackStatUp*scaleFactorWeight/2);
-			  totalPredIsoTrackStatDown_LL_->Fill(SearchBin, elecIsoTrackStatDown*scaleFactorWeight/2);
-			  totalPredIsoTrackStatUp_LL_->Fill(SearchBin, pionIsoTrackStatUp*scaleFactorWeight/2);
-			  totalPredIsoTrackStatDown_LL_->Fill(SearchBin, pionIsoTrackStatDown*scaleFactorWeight/2);
+		    totalPredIsoTrackStatUp_LL_->Fill(SearchBin, isoTrackStatUp*scaleFactorWeightData/2);
+		    totalPredIsoTrackStatDown_LL_->Fill(SearchBin, isoTrackStatDown*scaleFactorWeightData/2);
+		    /*    totalPredIsoTrackStatUp_LL_->Fill(SearchBin, muIsoTrackStatUp*scaleFactorWeightData/2);
+			  totalPredIsoTrackStatDown_LL_->Fill(SearchBin, muIsoTrackStatDown*scaleFactorWeightData/2);
+			  totalPredIsoTrackStatUp_LL_->Fill(SearchBin, elecIsoTrackStatUp*scaleFactorWeightData/2);
+			  totalPredIsoTrackStatDown_LL_->Fill(SearchBin, elecIsoTrackStatDown*scaleFactorWeightData/2);
+			  totalPredIsoTrackStatUp_LL_->Fill(SearchBin, pionIsoTrackStatUp*scaleFactorWeightData/2);
+			  totalPredIsoTrackStatDown_LL_->Fill(SearchBin, pionIsoTrackStatDown*scaleFactorWeightData/2);
 		    */
-		    totalPredMuIsoTrackStatUp_LL_->Fill(SearchBin, muIsoTrackStatUp*scaleFactorWeight/2);
-		    totalPredMuIsoTrackStatDown_LL_->Fill(SearchBin, muIsoTrackStatDown*scaleFactorWeight/2);
-		    totalPredElecIsoTrackStatUp_LL_->Fill(SearchBin, elecIsoTrackStatUp*scaleFactorWeight/2);
-		    totalPredElecIsoTrackStatDown_LL_->Fill(SearchBin, elecIsoTrackStatDown*scaleFactorWeight/2);
-		    totalPredPionIsoTrackStatUp_LL_->Fill(SearchBin, pionIsoTrackStatUp*scaleFactorWeight/2);
-		    totalPredPionIsoTrackStatDown_LL_->Fill(SearchBin, pionIsoTrackStatDown*scaleFactorWeight/2);
-		    totalPredMTWStatUp_LL_->Fill(SearchBin, MTWStatUp*scaleFactorWeight/2);
-		    totalPredMTWStatDown_LL_->Fill(SearchBin, MTWStatDown*scaleFactorWeight/2);
-		    totalPredPurityStatUp_LL_->Fill(SearchBin, purityStatUp*scaleFactorWeight/2);
-		    totalPredPurityStatDown_LL_->Fill(SearchBin, purityStatDown*scaleFactorWeight/2);
-		    totalPredSingleLepPurityStatUp_LL_->Fill(SearchBin, singleLepPurityStatUp*scaleFactorWeight/2);
-		    totalPredSingleLepPurityStatDown_LL_->Fill(SearchBin, singleLepPurityStatDown*scaleFactorWeight/2);
-		    totalPredDiLepFoundStatUp_LL_->Fill(SearchBin, diLepFoundStatUp*scaleFactorWeight/2);
-		    totalPredDiLepFoundStatDown_LL_->Fill(SearchBin, diLepFoundStatDown*scaleFactorWeight/2);
-		    totalPredMuIsoStatUp_LL_->Fill(SearchBin, muIsoStatUp*scaleFactorWeight/2);
-		    totalPredMuIsoStatDown_LL_->Fill(SearchBin, muIsoStatDown*scaleFactorWeight/2);
-		    totalPredMuRecoStatUp_LL_->Fill(SearchBin, muRecoStatUp*scaleFactorWeight/2);
-		    totalPredMuRecoStatDown_LL_->Fill(SearchBin, muRecoStatDown*scaleFactorWeight/2);
-		    totalPredMuAccStatUp_LL_->Fill(SearchBin, muAccStatUp*scaleFactorWeight/2);
-		    totalPredMuAccStatDown_LL_->Fill(SearchBin, muAccStatDown*scaleFactorWeight/2);
-		    totalPredElecIsoStatUp_LL_->Fill(SearchBin, elecIsoStatUp*scaleFactorWeight/2);
-		    totalPredElecIsoStatDown_LL_->Fill(SearchBin, elecIsoStatDown*scaleFactorWeight/2);
-		    totalPredElecRecoStatUp_LL_->Fill(SearchBin, elecRecoStatUp*scaleFactorWeight/2);
-		    totalPredElecRecoStatDown_LL_->Fill(SearchBin, elecRecoStatDown*scaleFactorWeight/2);
-		    totalPredElecAccStatUp_LL_->Fill(SearchBin, elecAccStatUp*scaleFactorWeight/2);
-		    totalPredElecAccStatDown_LL_->Fill(SearchBin, elecAccStatDown*scaleFactorWeight/2);
+		    totalPredMuIsoTrackStatUp_LL_->Fill(SearchBin, muIsoTrackStatUp*scaleFactorWeightData/2);
+		    totalPredMuIsoTrackStatDown_LL_->Fill(SearchBin, muIsoTrackStatDown*scaleFactorWeightData/2);
+		    totalPredElecIsoTrackStatUp_LL_->Fill(SearchBin, elecIsoTrackStatUp*scaleFactorWeightData/2);
+		    totalPredElecIsoTrackStatDown_LL_->Fill(SearchBin, elecIsoTrackStatDown*scaleFactorWeightData/2);
+		    totalPredPionIsoTrackStatUp_LL_->Fill(SearchBin, pionIsoTrackStatUp*scaleFactorWeightData/2);
+		    totalPredPionIsoTrackStatDown_LL_->Fill(SearchBin, pionIsoTrackStatDown*scaleFactorWeightData/2);
+		    totalPredMTWStatUp_LL_->Fill(SearchBin, MTWStatUp*scaleFactorWeightData/2);
+		    totalPredMTWStatDown_LL_->Fill(SearchBin, MTWStatDown*scaleFactorWeightData/2);
+		    totalPredPurityStatUp_LL_->Fill(SearchBin, purityStatUp*scaleFactorWeightData/2);
+		    totalPredPurityStatDown_LL_->Fill(SearchBin, purityStatDown*scaleFactorWeightData/2);
+		    totalPredSingleLepPurityStatUp_LL_->Fill(SearchBin, singleLepPurityStatUp*scaleFactorWeightData/2);
+		    totalPredSingleLepPurityStatDown_LL_->Fill(SearchBin, singleLepPurityStatDown*scaleFactorWeightData/2);
+		    totalPredDiLepFoundStatUp_LL_->Fill(SearchBin, diLepFoundStatUp*scaleFactorWeightData/2);
+		    totalPredDiLepFoundStatDown_LL_->Fill(SearchBin, diLepFoundStatDown*scaleFactorWeightData/2);
+		    totalPredMuIsoStatUp_LL_->Fill(SearchBin, muIsoStatUp*scaleFactorWeightData/2);
+		    totalPredMuIsoStatDown_LL_->Fill(SearchBin, muIsoStatDown*scaleFactorWeightData/2);
+		    totalPredMuRecoStatUp_LL_->Fill(SearchBin, muRecoStatUp*scaleFactorWeightData/2);
+		    totalPredMuRecoStatDown_LL_->Fill(SearchBin, muRecoStatDown*scaleFactorWeightData/2);
+		    totalPredMuAccStatUp_LL_->Fill(SearchBin, muAccStatUp*scaleFactorWeightData/2);
+		    totalPredMuAccStatDown_LL_->Fill(SearchBin, muAccStatDown*scaleFactorWeightData/2);
+		    totalPredElecIsoStatUp_LL_->Fill(SearchBin, elecIsoStatUp*scaleFactorWeightData/2);
+		    totalPredElecIsoStatDown_LL_->Fill(SearchBin, elecIsoStatDown*scaleFactorWeightData/2);
+		    totalPredElecRecoStatUp_LL_->Fill(SearchBin, elecRecoStatUp*scaleFactorWeightData/2);
+		    totalPredElecRecoStatDown_LL_->Fill(SearchBin, elecRecoStatDown*scaleFactorWeightData/2);
+		    totalPredElecAccStatUp_LL_->Fill(SearchBin, elecAccStatUp*scaleFactorWeightData/2);
+		    totalPredElecAccStatDown_LL_->Fill(SearchBin, elecAccStatDown*scaleFactorWeightData/2);
 
 		    //totalPropSysUp = sqrt(isoTrackSysUp*isoTrackSysUp+MTWSysUp*MTWSysUp+puritySysUp*puritySysUp+singleLepPuritySysUp*singleLepPuritySysUp+diLepFoundSysUp*diLepFoundSysUp+muIsoSysUp*muIsoSysUp+muRecoSysUp*muRecoSysUp+muAccSysUp*muAccSysUp+muAccQsquareSysUp*muAccQsquareSysUp+elecIsoSysUp*elecIsoSysUp+elecRecoSysUp*elecRecoSysUp+elecAccSysUp*elecAccSysUp+elecAccQsquareSysUp*elecAccQsquareSysUp+isoTrackStatUp*isoTrackStatUp+MTWStatUp*MTWStatUp+purityStatUp*purityStatUp+singleLepPurityStatUp*singleLepPurityStatUp+diLepFoundStatUp*diLepFoundStatUp+muIsoStatUp*muIsoStatUp+muRecoStatUp*muRecoStatUp+muAccStatUp*muAccStatUp+elecIsoStatUp*elecIsoStatUp+elecRecoStatUp*elecRecoStatUp+elecAccStatUp*elecAccStatUp);
 		    //totalPropSysDown = -sqrt(isoTrackSysDown*isoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+muAccQsquareSysDown*muAccQsquareSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown+elecAccQsquareSysDown*elecAccQsquareSysDown+isoTrackStatDown*isoTrackStatDown+MTWStatDown*MTWStatDown+purityStatDown*purityStatDown+singleLepPurityStatDown*singleLepPurityStatDown+diLepFoundStatDown*diLepFoundStatDown+muIsoStatDown*muIsoStatDown+muRecoStatDown*muRecoStatDown+muAccStatDown*muAccStatDown+elecIsoStatDown*elecIsoStatDown+elecRecoStatDown*elecRecoStatDown+elecAccStatDown*elecAccStatDown);
 
-		    //totalPropSysUp_LL_->Fill(SearchBin, totalPropSysUp*scaleFactorWeight/2);
-		    //totalPropSysDown_LL_->Fill(SearchBin, totalPropSysDown*scaleFactorWeight/2;
+		    //totalPropSysUp_LL_->Fill(SearchBin, totalPropSysUp*scaleFactorWeightData/2);
+		    //totalPropSysDown_LL_->Fill(SearchBin, totalPropSysDown*scaleFactorWeightData/2;
 		}
 
 		fPre->Close();
@@ -387,8 +393,8 @@ void saveHistograms(TFile* tf){
 	SetBinLabel(ClosureTest);
 	ClosureTest->Write();
 
-	TH1D *ClosureTest_woIsoTrack = (TH1D*) totalExp_LL_->Clone("ClosureTest_woIsoTrack");
-	ClosureTest_woIsoTrack->Divide(totalPred_LL_MC_);
+	TH1D *ClosureTest_woIsoTrack = (TH1D*) totalExp_woIsoTrack_LL_->Clone("ClosureTest_woIsoTrack");
+	ClosureTest_woIsoTrack->Divide(totalPred_woIsoTrack_LL_MC_);
 	ClosureTest_woIsoTrack->SetTitle("Expectation / Prediction");
 	SetBinLabel(ClosureTest_woIsoTrack);
 	ClosureTest_woIsoTrack->Write();
@@ -401,6 +407,8 @@ void saveHistograms(TFile* tf){
 
 	SetBinLabel(totalExp_LL_);
 	totalExp_LL_->Write();
+	SetBinLabel(totalExp_woIsoTrack_LL_);
+	totalExp_woIsoTrack_LL_->Write();	
 	SetBinLabel(nEvtsExp_LL_);
 	nEvtsExp_LL_->Write();
 
@@ -415,6 +423,7 @@ void saveHistograms(TFile* tf){
 
 	for(int i = 0; i<=ClosureTest->GetNbinsX()+1; ++i){
 		totalPredNonClosureUp_LL_->SetBinContent(i, 1.+min(1., max(abs(ClosureTest->GetBinContent(i)-1.), ClosureTest->GetBinError(i))));
+		//std::cout<<i<<": "<<ClosureTest->GetBinContent(i)<<"-"<<ClosureTest->GetBinError(i)<<std::endl;
 		totalPredNonClosureDown_LL_->SetBinContent(i, 1.-min(1., max(abs(ClosureTest->GetBinContent(i)-1.), ClosureTest->GetBinError(i))));
 	}
 	SetBinLabel(totalPredNonClosureUp_LL_);
@@ -562,6 +571,8 @@ void saveHistograms(TFile* tf){
 
 	SetBinLabel(totalPred_LL_MC_);
 	totalPred_LL_MC_->Write();
+	SetBinLabel(totalPred_woIsoTrack_LL_MC_);
+	totalPred_woIsoTrack_LL_MC_->Write();
 
 	for(int i = 0; i<=ClosureTest->GetNbinsX()+1; ++i){
 	    totalPredNonClosureUp_LL_MC_->SetBinContent(i, 1.+min(1., max(abs(ClosureTest->GetBinContent(i)-1.), ClosureTest->GetBinError(i))));
@@ -747,6 +758,7 @@ void initHistograms(Int_t nBins){
 	avgWeight_LL_ = new TProfile("avgWeight_LL","avgWeight_LL", nBins, 0.5, nBins+0.5);
 
 	totalPred_LL_MC_ = new TH1D("totalPred_LL_MC","totalPred_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPred_woIsoTrack_LL_MC_ = new TH1D("totalPred_woIsoTrack_LL_MC","totalPred_woIsoTrack_LL_MC", nBins, 0.5, nBins+0.5);
  	totalCS_LL_MC_ = new TH1D("totalCS_LL_MC","totalCS_LL_MC", nBins, 0.5, nBins+0.5);
 	nEvtsCS_LL_MC_ = new TH1D("nEvtsCS_LL_MC","nEvtsCS_LL_MC", nBins, 0.5, nBins+0.5);
 	avgWeight_LL_MC_ = new TProfile("avgWeight_LL_MC","avgWeight_LL_MC", nBins, 0.5, nBins+0.5);

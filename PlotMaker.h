@@ -146,6 +146,7 @@ TH1D* nEvtsCS_LL_ = 0;
 TProfile* avgWeight_LL_ = 0;
 
 TH1D* totalPred_LL_MC_ = 0;
+TH1D* totalPred_woIsoTrack_LL_MC_ = 0;
 TH1D* totalCS_LL_MC_ = 0;
 TH1D* nEvtsCS_LL_MC_ = 0;
 TProfile* avgWeight_LL_MC_ = 0;
@@ -287,7 +288,7 @@ TH1D* totalPropSysDown_LL_MC_ = 0;
 
 
 void SetBinLabel(TH1D* hist){
-  if(hist->GetNbinsX()==190)
+  if(hist->GetNbinsX()==190){
     // only BTags=0,1,2 for NJets=2
     for(int nbi = 0; nbi<4; ++nbi){
       for(int hti = 0; hti<10; ++hti){
@@ -304,7 +305,6 @@ void SetBinLabel(TH1D* hist){
       }
     }
 
-    //NJets>=3
     for(int nji = 1; nji<5; ++nji){
       for(int nbi = 0; nbi<4; ++nbi){
         for(int hti = 0; hti<10; ++hti){
@@ -321,8 +321,27 @@ void SetBinLabel(TH1D* hist){
         }
       }
     }
+  }
+
+  if(hist->GetNbinsX()==160)
+  for(int nji = 0; nji<4; ++nji){
+    for(int nbi = 0; nbi<4; ++nbi){
+      for(int hti = 0; hti<10; ++hti){
+        int mhti =0;
+        if(hti >=0 && hti <=2) mhti = 0;
+        else if(hti >=3 && hti <=5) mhti = 1;
+        else if(hti >=6 && hti <=7) mhti = 2;
+        else mhti = 3;
+        char binlabel[100];
+        int bi = (nji) * 40 + nbi * 10 + hti + 1;
+        //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
+        sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
+        hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
+      }
+    }
+  }
   
-  if(hist->GetNbinsX()==190) hist -> GetXaxis() -> LabelsOption("v");
+  if(hist->GetNbinsX()==190 || hist->GetNbinsX()==160) hist -> GetXaxis() -> LabelsOption("v");
 }
 
 void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // prediction durch expectation

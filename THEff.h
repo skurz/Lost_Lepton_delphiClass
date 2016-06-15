@@ -170,6 +170,8 @@ effVec TH1Eff::GetEff(double xValue, bool asymm)
 	if(result<0.01){
 		std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.01 for histo: "<<RatioTH1D_->GetName()<<std::endl;
 		result =0.01;
+		errUp_ = 0.99;
+		errDown_ = 0.01;
 	}
 	if(result>1){
 		std::cout<<"Warning efficiency is: "<<result<<" is bigger than 1 for histo: "<<RatioTH1D_->GetName()<<std::endl;

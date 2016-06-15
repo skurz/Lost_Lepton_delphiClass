@@ -444,9 +444,9 @@ Bool_t EffMaker::Process(Long64_t entry)
 //  if (entry%10000==0) cout << "fChain->GetTree()->GetEntry(" << entry << ");" << endl;
   fChain->GetTree()->GetEntry(entry);
 
-  if(Weight<0) Weight*=-1;
-  if(Bin > 900) return kTRUE;
+  if(Bin > 900 && BinQCD > 900) return kTRUE;
 
+  if(Weight<0) Weight*=-1;
 
   // Fill events 4 times if using bTag probabilities
   int nLoops = 4;
