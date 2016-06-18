@@ -361,8 +361,13 @@ Bool_t Prediction::Process(Long64_t entry)
   if((selectedIDIsoMuonsNum_+selectedIDIsoElectronsNum_) !=1) return kTRUE;
 
   //if(useTrigger) if(!TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
-  if(useTrigger) if(!TriggerPass->at(29) && !TriggerPass->at(30) && !TriggerPass->at(31) && !TriggerPass->at(32)) return kTRUE;
+  if(useTrigger) if(!TriggerPass->at(29) && !TriggerPass->at(30) && !TriggerPass->at(31) && !TriggerPass->at(32) 
+    && !TriggerPass->at(33) && !TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
   //if(useTrigger) if(!TriggerPass->at(25) && !TriggerPass->at(26)) return kTRUE;
+
+  if(useTrigger) if(!(TriggerPass->at(29) || TriggerPass->at(30) || TriggerPass->at(31) || TriggerPass->at(32))
+    && (TriggerPass->at(33) || TriggerPass->at(34) || TriggerPass->at(35) || TriggerPass->at(36)))
+    std::cout<<"Event passed noMu trigger but did non pass standart version"<<std::endl;
 
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
   BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
@@ -1408,7 +1413,7 @@ bool Prediction::FiltersPass()
     } 
     if(CSCTightHaloFilter!=1) result=false;
     if(eeBadScFilter!=1) result=false;
-    //if(!eeBadSc4Filter) result=false;
+    //2015only//if(!eeBadSc4Filter) result=false;
     if(HBHENoiseFilter!=1) result=false;
     if(HBHEIsoNoiseFilter!=1) result=false;
     if(EcalDeadCellTriggerPrimitiveFilter!=1) result=false;

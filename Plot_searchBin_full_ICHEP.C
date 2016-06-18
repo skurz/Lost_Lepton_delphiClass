@@ -87,8 +87,8 @@ void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="
 
   //
   // Luminosity information for scaling
-  double lumi     = 10.0; // normaliza to this lumi (fb-1)
-  double lumi_ref = 10.0; // normaliza to 3 (fb-1)
+  double lumi     = 2.3; // normaliza to this lumi (fb-1)
+  double lumi_ref = 2.3; // normaliza to 3 (fb-1)
   
   ///////////////////////////////////////////////////////////////////////////////////////////
   //

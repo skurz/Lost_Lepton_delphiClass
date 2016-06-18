@@ -32,7 +32,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	const bool useMCForDataTree = false;	// NOT IMPLEMENTED
 
 	// Scale all MC weights by this factor
-	const Double_t scaleFactorWeight = 813;  // 2262  //in units of [pb] //<-check------------------------
+	const Double_t scaleFactorWeight = 2262;  // 2262 813  //in units of [pb] //<-check------------------------
 
 
 	// Init

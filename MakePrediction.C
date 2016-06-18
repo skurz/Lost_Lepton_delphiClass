@@ -21,7 +21,7 @@ void MakePrediction()
   gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
   
   TChain *Effchain = new TChain("tree");
-
+/*
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_ZJetsToNuNu_HT-100to200.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLm/tree_ZJetsToNuNu_HT-100to200.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_ZJetsToNuNu_HT-200to400.root");
@@ -69,7 +69,7 @@ void MakePrediction()
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLm/tree_QCD_HT-1500to2000.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_QCD_HT-2000toInf.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLm/tree_QCD_HT-2000toInf.root");
-/*
+*/
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_WWTo1L1Nu2Q.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLm/tree_WWTo1L1Nu2Q.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_WWTo2L2Nu.root");
@@ -102,14 +102,14 @@ void MakePrediction()
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLm/tree_TTZToLLNuNu.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_TTZToQQ.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLm/tree_TTZToQQ.root");
-*/
+
 
   if(useTProof){
     proof = TProof::Open("workers=2");
     Effchain->SetProof();     	
   }
 
-  Effchain->Process("Prediction.C++g", "Prediction_other.root"); //specify output path/file here
+  Effchain->Process("Prediction.C++g", "Prediction_rare.root"); //specify output path/file here
   // No HT cut: Effchain->Process("Prediction.C++g", "outputFile.root");
   // HT cut: Effchain->Process("Prediction.C++g", "outputFile.root, genHTcut");
   // for Jacks Syntax (outputname based on input) use: Effchain->Process("Prediction.C++g", "*, genHTcut");

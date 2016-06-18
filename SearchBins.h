@@ -241,5 +241,5 @@ void SearchBins::PrintUsed()
   	total+=usedBin_[i];;
   }
   std::cout<<"Total: "<<total<<std::endl;
-  std::cout<<"Skipped events (passed baseline but no search bin)/passed: "<<nSkipped<<"/"<<total<<std::endl;
+  std::cout<<"Skipped events (passed baseline but no search bin)/total: "<<nSkipped<<"/"<<nSkipped+total<<std::endl;
 }
