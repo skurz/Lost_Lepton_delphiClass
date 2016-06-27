@@ -39,7 +39,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
 		string InputPath_Prediction="Prediction.root",
 		string InputPath_Prediction_Data="Prediction_data.root", // Use same path as above if pure MC prediction wanted
 		string OutputPath_Closure="Closure.root",
-		string OutputPath_Prediction="LLPrediction.root")
+		string OutputPath_Prediction="LLPrediction_ResultsPlot.root")
 {
   
   // Present output in QCD binning
@@ -55,7 +55,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   bool useMCForDataTree = false;
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 813;  //in units of [pb] //<-check------------------------
+  Double_t scaleFactorWeight = 2585;  //in units of [pb] //<-check------------------------
 
   // Do approximation of statistical uncertainties if full MC statistics are used (stat. unc. then refers to a given luminosity of data)
   // Leave at 'false' if doing a closure test so stat. uncertainty is the one using full MC statistics
@@ -581,11 +581,13 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TH1D* totalCS_mu_MHT_LL_ = new TH1D("totalCS_mu_MHT_LL","totalCS_mu_MHT_LL", 16, 300, 1100);
   TH1D* totalCS_mu_NJets_LL_ = new TH1D("totalCS_mu_NJets_LL","totalCS_mu_NJets_LL", 8, 2.5, 10.5);
   TH1D* totalCS_mu_BTags_LL_ = new TH1D("totalCS_mu_BTags_LL","totalCS_mu_BTags_LL", 6, -0.5, 5.5);
+  TH1D* totalCS_mu_pT_LL_ = new TH1D("totalCS_mu_pT_LL","totalCS_mu_pT_LL", 12, 0, 300);
 
   TH1D* totalCS_elec_HT_LL_ = new TH1D("totalCS_elec_HT_LL","totalCS_elec_HT_LL", 20, 300, 2300);
   TH1D* totalCS_elec_MHT_LL_ = new TH1D("totalCS_elec_MHT_LL","totalCS_elec_MHT_LL", 16, 300, 1100);
   TH1D* totalCS_elec_NJets_LL_ = new TH1D("totalCS_elec_NJets_LL","totalCS_elec_NJets_LL", 8, 2.5, 10.5);
   TH1D* totalCS_elec_BTags_LL_ = new TH1D("totalCS_elec_BTags_LL","totalCS_elec_BTags_LL", 6, -0.5, 5.5);
+  TH1D* totalCS_elec_pT_LL_ = new TH1D("totalCS_elec_pT_LL","totalCS_elec_pT_LL", 12, 0, 300);
 
   TProfile* avgWeight_LL_ = new TProfile("avgWeight_LL","avgWeight_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* EXTRAP_weight_SF_LL_ = new TH1D("EXTRAP_weight_SF_LL","EXTRAP_weight_SF_LL", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
@@ -683,11 +685,13 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TH1D* totalCS_mu_MHT_LL_MC_ = new TH1D("totalCS_mu_MHT_LL_MC","totalCS_mu_MHT_LL_MC", 16, 300, 1100);
   TH1D* totalCS_mu_NJets_LL_MC_ = new TH1D("totalCS_mu_NJets_LL_MC","totalCS_mu_NJets_LL_MC", 8, 2.5, 10.5);
   TH1D* totalCS_mu_BTags_LL_MC_ = new TH1D("totalCS_mu_BTags_LL_MC","totalCS_mu_BTags_LL_MC", 6, -0.5, 5.5);
+  TH1D* totalCS_mu_pT_LL_MC_ = new TH1D("totalCS_mu_pT_LL_MC","totalCS_mu_pT_LL_MC", 12, 0, 300);
 
   TH1D* totalCS_elec_HT_LL_MC_ = new TH1D("totalCS_elec_HT_LL_MC","totalCS_elec_HT_LL_MC", 20, 300, 2300);
   TH1D* totalCS_elec_MHT_LL_MC_ = new TH1D("totalCS_elec_MHT_LL_MC","totalCS_elec_MHT_LL_MC", 16, 300, 1100);
   TH1D* totalCS_elec_NJets_LL_MC_ = new TH1D("totalCS_elec_NJets_LL_MC","totalCS_elec_NJets_LL_MC", 8, 2.5, 10.5);
   TH1D* totalCS_elec_BTags_LL_MC_ = new TH1D("totalCS_elec_BTags_LL_MC","totalCS_elec_BTags_LL_MC", 6, -0.5, 5.5);
+  TH1D* totalCS_elec_pT_LL_MC_ = new TH1D("totalCS_elec_pT_LL_MC","totalCS_elec_pT_LL_MC", 12, 0, 300);
 
 
   TProfile* avgWeight_LL_MC_ = new TProfile("avgWeight_LL_MC","avgWeight_LL_MC", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
@@ -1521,11 +1525,13 @@ if(doExtrapolation){
           totalCS_mu_MHT_LL_MC_->Fill(MHT, scaledWeight);
           totalCS_mu_NJets_LL_MC_->Fill(NJets, scaledWeight);
           totalCS_mu_BTags_LL_MC_->Fill(i, scaledWeight);
+          totalCS_mu_pT_LL_MC_->Fill(selectedIDIsoMuons->at(0).Pt(), scaledWeight);
         }else if(selectedIDIsoElectronsNum==1){
           totalCS_elec_HT_LL_MC_->Fill(HT, scaledWeight);
           totalCS_elec_MHT_LL_MC_->Fill(MHT, scaledWeight);
           totalCS_elec_NJets_LL_MC_->Fill(NJets, scaledWeight);
           totalCS_elec_BTags_LL_MC_->Fill(i, scaledWeight);
+          totalCS_elec_pT_LL_MC_->Fill(selectedIDIsoElectrons->at(0).Pt(), scaledWeight);
         }
       }
     
@@ -1949,11 +1955,13 @@ if(doExtrapolation){
         totalCS_mu_MHT_LL_->Fill(MHT, scaledWeight/scaleMC);
         totalCS_mu_NJets_LL_->Fill(NJets, scaledWeight/scaleMC);
         totalCS_mu_BTags_LL_->Fill(BTags, scaledWeight/scaleMC);
+        totalCS_mu_pT_LL_->Fill(selectedIDIsoMuons->at(0).Pt(), scaledWeight/scaleMC);
     }else if(selectedIDIsoElectronsNum==1){
         totalCS_elec_HT_LL_->Fill(HT, scaledWeight/scaleMC);
         totalCS_elec_MHT_LL_->Fill(MHT, scaledWeight/scaleMC);
         totalCS_elec_NJets_LL_->Fill(NJets, scaledWeight/scaleMC);
         totalCS_elec_BTags_LL_->Fill(BTags, scaledWeight/scaleMC);
+        totalCS_elec_pT_LL_->Fill(selectedIDIsoElectrons->at(0).Pt(), scaledWeight/scaleMC);
     }
 
 if(doExtrapolation){
@@ -2211,21 +2219,25 @@ if(doExtrapolation){
   totalCS_mu_MHT_LL_MC_->Write();
   totalCS_mu_NJets_LL_MC_->Write();
   totalCS_mu_BTags_LL_MC_->Write();
+  totalCS_mu_pT_LL_MC_->Write();
 
   totalCS_elec_HT_LL_MC_->Write();
   totalCS_elec_MHT_LL_MC_->Write();
   totalCS_elec_NJets_LL_MC_->Write();
   totalCS_elec_BTags_LL_MC_->Write();
+  totalCS_elec_pT_LL_MC_->Write();
 
   totalCS_mu_HT_LL_->Write();
   totalCS_mu_MHT_LL_->Write();
   totalCS_mu_NJets_LL_->Write();
   totalCS_mu_BTags_LL_->Write();
+  totalCS_mu_pT_LL_->Write();
 
   totalCS_elec_HT_LL_->Write();
   totalCS_elec_MHT_LL_->Write();
   totalCS_elec_NJets_LL_->Write();
   totalCS_elec_BTags_LL_->Write();
+  totalCS_elec_pT_LL_->Write();
 
   TH1D* muOverE_HT_LL_ = (TH1D*) totalCS_mu_HT_LL_->Clone("muOverE_HT_LL_");
   muOverE_HT_LL_->Divide(totalCS_mu_HT_LL_, totalCS_elec_HT_LL_, 1., totalCS_mu_HT_LL_->Integral()/totalCS_elec_HT_LL_->Integral());
@@ -2296,6 +2308,15 @@ if(doExtrapolation){
   elecCS_BTags->Divide(totalCS_elec_BTags_LL_, totalCS_elec_BTags_LL_MC_, 1., totalCS_elec_BTags_LL_->Integral()/totalCS_elec_BTags_LL_MC_->Integral());
   muOverE_BTags_DoubleRatio->Divide(muCS_BTags, elecCS_BTags);
   muOverE_BTags_DoubleRatio->Write();
+
+  TH1D* muOverE_pT_DoubleRatio = (TH1D*) totalCS_mu_pT_LL_MC_->Clone("muOverE_pT_DoubleRatio");
+  muOverE_pT_DoubleRatio->SetTitle(";B_{Tags};DoubleRatio: #mu CS(data/MC) / e CS(data/MC)");
+  TH1D* muCS_pT= (TH1D*) totalCS_mu_pT_LL_MC_->Clone("muCS_pT");
+  TH1D* elecCS_pT = (TH1D*) totalCS_mu_pT_LL_MC_->Clone("elecCS_pT");
+  muCS_pT->Divide(totalCS_mu_pT_LL_, totalCS_mu_pT_LL_MC_, 1., totalCS_mu_pT_LL_->Integral()/totalCS_mu_pT_LL_MC_->Integral());
+  elecCS_pT->Divide(totalCS_elec_pT_LL_, totalCS_elec_pT_LL_MC_, 1., totalCS_elec_pT_LL_->Integral()/totalCS_elec_pT_LL_MC_->Integral());
+  muOverE_pT_DoubleRatio->Divide(muCS_pT, elecCS_pT);
+  muOverE_pT_DoubleRatio->Write();
 
 
   LLoutPutFile->cd();

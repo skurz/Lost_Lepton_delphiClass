@@ -609,16 +609,18 @@ bool ExpecMaker::FiltersPass()
 {
   bool result=true;
   if(useFilterData){
-    //Applied via List on Data
-    if(CSCTightHaloFilter!=1) result=false;
+    // 2015 only if(CSCTightHaloFilter!=1) result=false;
+    // 2015 only if(!eeBadSc4Filter) result=false;
+    if(!BadChargedCandidateFilter) result=false;
+    if(!BadPFMuonFilter) result=false;
+    if(EcalDeadCellTriggerPrimitiveFilter!=1) result=false;    
     if(eeBadScFilter!=1) result=false;
-    //if(!eeBadSc4Filter) result=false;
+    if(globalTightHalo2016Filter!=1) result=false;
     if(HBHENoiseFilter!=1) result=false;
     if(HBHEIsoNoiseFilter!=1) result=false;
-    if(EcalDeadCellTriggerPrimitiveFilter!=1) result=false;    
   }
   if(NVtx<=0) result=false;
-  if(applyJetID) if(JetID!=1) result=false;
+  if(applyJetID) if(!JetID) result=false;
   return result;
 }
 

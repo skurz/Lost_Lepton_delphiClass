@@ -49,7 +49,7 @@ const bool runOnNtuples = true;
 const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_");
 
 // PU
-const TString path_puHist("PU/PileupHistograms_1117.root");
+const TString path_puHist("PU/PileupHistograms_0621.root");
 // bTag corrections
 const string path_bTagCalib("btag/CSVv2_mod.csv");
 const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
@@ -517,15 +517,18 @@ class Prediction : public TSelector {
   UInt_t          RunNum;
   UInt_t          LumiBlockNum;
   ULong64_t       EvtNum;
+  Bool_t           BadChargedCandidateFilter;
+  Bool_t           BadPFMuonFilter;
   Int_t           BTags;
   Int_t          CSCTightHaloFilter;
   Double_t        DeltaPhi1;
   Double_t        DeltaPhi2;
   Double_t        DeltaPhi3;
   Double_t        DeltaPhi4;
+  Int_t           globalTightHalo2016Filter;
   Int_t           EcalDeadCellTriggerPrimitiveFilter;
   Int_t           eeBadScFilter;
-  Bool_t           eeBadSc4Filter;
+  //Bool_t           eeBadSc4Filter;
   std::vector<TLorentzVector> *Electrons=0;
   std::vector<TLorentzVector> *GenEls=0;
   std::vector<TLorentzVector> *GenMus=0;
@@ -541,6 +544,7 @@ class Prediction : public TSelector {
   std::vector<bool>    *HTJetsMask=0;
   Double_t        METPhi;
   Double_t        MET;
+  Double_t        PFCaloMETRatio;
   Double_t        MHT;
   Double_t        MHTPhi;
   std::vector<TLorentzVector> *Muons=0;
@@ -572,14 +576,17 @@ class Prediction : public TSelector {
   TBranch        *b_LumiBlockNum=0;   //!
   TBranch        *b_EvtNum=0;   //!
   TBranch        *b_BTags=0;   //!
+  TBranch        *b_BadChargedCandidateFilter=0;   //!
+  TBranch        *b_BadPFMuonFilter=0;   //!
   TBranch        *b_CSCTightHaloFilter=0;   //!
   TBranch        *b_DeltaPhi1=0;   //!
   TBranch        *b_DeltaPhi2=0;   //!
   TBranch        *b_DeltaPhi3=0;   //!
   TBranch        *b_DeltaPhi4=0;   //!
+  TBranch        *b_globalTightHalo2016Filter=0;   //!
   TBranch        *b_EcalDeadCellTriggerPrimitiveFilter=0;   //!
   TBranch        *b_eeBadScFilter=0;   //!
-  TBranch        *b_eeBadSc4Filter=0;   //!
+  //TBranch        *b_eeBadSc4Filter=0;   //!
   TBranch        *b_Electrons=0;   //!
   TBranch        *b_HBHENoiseFilter=0;   //!
   TBranch        *b_HBHEIsoNoiseFilter=0;   //!
@@ -593,6 +600,7 @@ class Prediction : public TSelector {
   TBranch        *b_HTJetsMask=0;   //!
   TBranch        *b_METPhi=0;   //!
   TBranch        *b_MET=0;   //!
+  TBranch        *b_PFCaloMETRatio=0;   //!
   TBranch        *b_MHT=0;   //!
   TBranch        *b_MHTPhi=0;   //!
   TBranch        *b_Muons=0;   //!
@@ -785,9 +793,12 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("DeltaPhi4", 1);
   if(!runOnSignalMC){
     fChain->SetBranchStatus("CSCTightHaloFilter", 1);
+    fChain->SetBranchStatus("globalTightHalo2016Filter", 1);
     fChain->SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter", 1);
     fChain->SetBranchStatus("eeBadScFilter", 1);
-    fChain->SetBranchStatus("eeBadSc4Filter", 1);
+    //fChain->SetBranchStatus("eeBadSc4Filter", 1);
+    fChain->SetBranchStatus("BadChargedCandidateFilter", 1);
+    fChain->SetBranchStatus("BadPFMuonFilter", 1);
     fChain->SetBranchStatus("HBHENoiseFilter", 1);
     fChain->SetBranchStatus("HBHEIsoNoiseFilter", 1);
   }
@@ -801,6 +812,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("HTJetsMask", 1);
   fChain->SetBranchStatus("METPhi", 1);
   fChain->SetBranchStatus("MET", 1);
+  fChain->SetBranchStatus("PFCaloMETRatio", 1);
   fChain->SetBranchStatus("MHT", 1);
   fChain->SetBranchStatus("MHTPhi", 1);
   fChain->SetBranchStatus("Muons", 1);
@@ -840,9 +852,12 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("DeltaPhi4", &DeltaPhi4, &b_DeltaPhi4);
   if(!runOnSignalMC){
     fChain->SetBranchAddress("CSCTightHaloFilter", &CSCTightHaloFilter, &b_CSCTightHaloFilter);
+    fChain->SetBranchAddress("globalTightHalo2016Filter", &globalTightHalo2016Filter, &b_globalTightHalo2016Filter);
     fChain->SetBranchAddress("EcalDeadCellTriggerPrimitiveFilter", &EcalDeadCellTriggerPrimitiveFilter, &b_EcalDeadCellTriggerPrimitiveFilter);
     fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
-    fChain->SetBranchAddress("eeBadSc4Filter", &eeBadSc4Filter, &b_eeBadSc4Filter);
+    //fChain->SetBranchAddress("eeBadSc4Filter", &eeBadSc4Filter, &b_eeBadSc4Filter);
+    fChain->SetBranchAddress("BadChargedCandidateFilter", &BadChargedCandidateFilter, &b_BadChargedCandidateFilter);
+    fChain->SetBranchAddress("BadPFMuonFilter", &BadPFMuonFilter, &b_BadPFMuonFilter);
     fChain->SetBranchAddress("HBHENoiseFilter", &HBHENoiseFilter, &b_HBHENoiseFilter);
     fChain->SetBranchAddress("HBHEIsoNoiseFilter", &HBHEIsoNoiseFilter, &b_HBHEIsoNoiseFilter);
   }
@@ -856,6 +871,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("HTJetsMask", &HTJetsMask, &b_HTJetsMask);
   fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
   fChain->SetBranchAddress("MET", &MET, &b_MET);
+  fChain->SetBranchAddress("PFCaloMETRatio", &PFCaloMETRatio, &b_PFCaloMETRatio);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
   fChain->SetBranchAddress("MHTPhi", &MHTPhi, &b_MHTPhi);
   fChain->SetBranchAddress("Muons", &Muons, &b_Muons);

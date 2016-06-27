@@ -446,8 +446,14 @@ class EffMaker : public TSelector {
   TH2Eff *IsoTrackReductionHTMHT_NJetsHigh_;
   TH2Eff *IsoTrackReductionBTagNJets_;
   TH2Eff *IsoTrackReductionPTActivity_;
-  
-  
+
+  TH2Eff *IsoTrackReductionHTMHT_NJetsVeryLow_BTags0_;
+  TH2Eff *IsoTrackReductionHTMHT_NJetsLow_BTags0_;
+  TH2Eff *IsoTrackReductionHTMHT_NJetsHigh_BTags0_;
+  TH2Eff *IsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_;
+  TH2Eff *IsoTrackReductionHTMHT_NJetsLow_BTags1Inf_;
+  TH2Eff *IsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_;
+
   // mu iso tracks
   TH1Eff *ExpectationReductionMuIsoTrackBTagEff_;
   TH1Eff *ExpectationReductionMuIsoTrackNJetsEff_;
@@ -463,6 +469,13 @@ class EffMaker : public TSelector {
   TH2Eff *MuIsoTrackReductionHTMHT_NJetsVeryLow_;
   TH2Eff *MuIsoTrackReductionHTMHT_NJetsLow_;
   TH2Eff *MuIsoTrackReductionHTMHT_NJetsHigh_;
+
+  TH2Eff *MuIsoTrackReductionHTMHT_NJetsVeryLow_BTags0_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJetsLow_BTags0_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJetsHigh_BTags0_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJetsLow_BTags1Inf_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_;
   
   //elec iso tracks
   TH1Eff *ExpectationReductionElecIsoTrackBTagEff_;
@@ -479,6 +492,13 @@ class EffMaker : public TSelector {
   TH2Eff *ElecIsoTrackReductionHTMHT_NJetsVeryLow_;
   TH2Eff *ElecIsoTrackReductionHTMHT_NJetsLow_;
   TH2Eff *ElecIsoTrackReductionHTMHT_NJetsHigh_;
+
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsVeryLow_BTags0_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsLow_BTags0_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsHigh_BTags0_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsLow_BTags1Inf_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_;
   
   //pion iso tracks
   TH1Eff *ExpectationReductionPionIsoTrackBTagEff_;
@@ -487,6 +507,13 @@ class EffMaker : public TSelector {
   TH1Eff *ExpectationReductionPionIsoTrackMHTEff_;
   TH1Eff *ExpectationReductionPionIsoTrackPTEff_;
   TH1Eff *ExpectationReductionPionIsoTrackActivityEff_;
+
+  TH2Eff *PionIsoTrackReductionHTMHT_NJetsVeryLow_BTags0_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJetsLow_BTags0_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJetsHigh_BTags0_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJetsLow_BTags1Inf_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_;
   //2D
   TH2Eff *PionIsoTrackReductionHTNJets_; 
   TH2Eff *PionIsoTrackReductionMHTNJets_;

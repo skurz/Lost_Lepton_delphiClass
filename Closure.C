@@ -17,6 +17,8 @@
 #include "LLTools.h"
 #include "THEff.h"
 #include "TROOT.h"
+#include "TSystem.h"
+
 
 //needed to write vector<TLorentzVector> to tree
 #ifdef __CINT__
@@ -140,7 +142,7 @@ void Closure(string InputPath_Expectation="Expectation.root",
   TH1D* totalExpectation_ = new TH1D("TotalLostLeptonExpecation", "TotalLostLeptonExpecation", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalExpectationWoIso_ = new TH1D("TotalExpectationWoIso", "TotalExpectationWoIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TH1D* totalExpectation_HT_ = new TH1D("totalExpectation_HT","totalExpectation_HT", 18, 25., 2500.);
+  TH1D* totalExpectation_HT_ = new TH1D("totalExpectation_HT","totalExpectation_HT", 20, 300., 2300.);
   TH1D* totalExpectation_MHT_ = new TH1D("totalExpectation_MHT","totalExpectation_MHT", 12, 250., 1200.);
   TH1D* totalExpectation_NJets_ = new TH1D("totalExpectation_NJets","totalExpectation_NJets", 9, 1.5, 10.5);
   TH1D* totalExpectation_BTags_ = new TH1D("totalExpectation_BTags","totalExpectation_BTags", 7, -0.5, 6.5);
@@ -153,7 +155,7 @@ void Closure(string InputPath_Expectation="Expectation.root",
   TH1D* totalPredictionMuWoIso_ = new TH1D("TotalLostLeptonPredictionMuWoIso", "TotalLostLeptonPredictionMuWoIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPredictionElecWoIso_ = new TH1D("TotalLostLeptonPredictionElecWoIso", "TotalLostLeptonPredictionElecWoIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TH1D* totalPrediction_HT_ = new TH1D("totalPrediction_HT","totalPrediction_HT", 18, 25., 2500.);
+  TH1D* totalPrediction_HT_ = new TH1D("totalPrediction_HT","totalPrediction_HT", 20, 300., 2300.);
   TH1D* totalPrediction_MHT_ = new TH1D("totalPrediction_MHT","totalPrediction_MHT", 12, 250., 1200.);
   TH1D* totalPrediction_NJets_ = new TH1D("totalPrediction_NJets","totalPrediction_NJets", 9, 1.5, 10.5);
   TH1D* totalPrediction_BTags_ = new TH1D("totalPrediction_BTags","totalPrediction_BTags", 7, -0.5, 6.5);
@@ -723,6 +725,19 @@ void Closure(string InputPath_Expectation="Expectation.root",
   TFile *outPutFile = new TFile(OutputPath_Closure.c_str(),"RECREATE"); 
   outPutFile->cd();
 
+  outPutFile->mkdir("Expectation");
+  TDirectory *dExpectation = (TDirectory*)outPutFile->Get("Expectation");
+  dExpectation->cd();
+  totalExpectation_->Write();
+  totalExpectation_HT_->Write();
+  outPutFile->mkdir("Prediction");
+  TDirectory *dPrediction = (TDirectory*)outPutFile->Get("Prediction");
+  dPrediction->cd();
+  totalPrediction_->Write();
+  totalPredictionMu_->Write();
+  totalPredictionElec_->Write();
+  totalPrediction_HT_->Write();
+
   outPutFile->mkdir("Closures");
   TDirectory *dClosures = (TDirectory*)outPutFile->Get("Closures");
 
@@ -823,17 +838,6 @@ void Closure(string InputPath_Expectation="Expectation.root",
   SaveClosure(totalPredictionElecCSElecRecoBTag_, totalExpectationElecRecoBTag_, dSteps);
   SaveClosure(totalPredictionElecCSElecIsoBTag_, totalExpectationElecIsoBTag_, dSteps);
 
-  
-  outPutFile->mkdir("Expectation");
-  TDirectory *dExpectation = (TDirectory*)outPutFile->Get("Expectation");
-  dExpectation->cd();
-  totalExpectation_->Write();
-  outPutFile->mkdir("Prediction");
-  TDirectory *dPrediction = (TDirectory*)outPutFile->Get("Prediction");
-  dPrediction->cd();
-  totalPrediction_->Write();
-  totalPredictionMu_->Write();
-  totalPredictionElec_->Write();
   
 
   std::cout<<"--------------------------------------------------------------------------------------------------------------------------\n";

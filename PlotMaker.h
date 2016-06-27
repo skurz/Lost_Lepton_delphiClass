@@ -340,8 +340,28 @@ void SetBinLabel(TH1D* hist){
       }
     }
   }
+
+  if(hist->GetNbinsX()==208)
+  for(int nji = 0; nji<4; ++nji){
+    for(int nbi = 0; nbi<4; ++nbi){
+      for(int hti = 0; hti<13; ++hti){
+        int mhti =0;
+        if(hti >=0 && hti <=2) mhti = -1;
+        else if(hti >=3 && hti <=5) mhti = 0;
+        else if(hti >=6 && hti <=8) mhti = 1;
+        else if(hti >=9 && hti <=10) mhti = 2;
+        else mhti = 3;
+        char binlabel[100];
+        int bi = (nji) * 52 + nbi * 13 + hti + 1;
+        //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
+        if(mhti < 0)  sprintf(binlabel, "NJets%d-BTags%d-MHTC-HT%d", nji, nbi, hti);
+        else sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti-3);
+        hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
+      }
+    }
+  }
   
-  if(hist->GetNbinsX()==190 || hist->GetNbinsX()==160) hist -> GetXaxis() -> LabelsOption("v");
+  if(hist->GetNbinsX()==190 || hist->GetNbinsX()==160 || hist->GetNbinsX()==208) hist -> GetXaxis() -> LabelsOption("v");
 }
 
 void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // prediction durch expectation

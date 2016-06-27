@@ -32,7 +32,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	const bool useMCForDataTree = false;	// NOT IMPLEMENTED
 
 	// Scale all MC weights by this factor
-	const Double_t scaleFactorWeight = 2262;  // 2262 813  //in units of [pb] //<-check------------------------
+	const Double_t scaleFactorWeight = 2585;  // 2585 813  //in units of [pb] //<-check------------------------
 
 
 	// Init
@@ -149,15 +149,15 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	        }
 
 			//totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-			//avgWeight_LL_MC_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+			//avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
 			if(i==0){
 				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags0*scaleFactorWeightBtagProb/2);
 				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags0_noIsoTrack*scaleFactorWeightBtagProb/2);
-				avgWeight_LL_MC_->Fill(SearchBin, abs(totalWeight_BTags0/Weight/2), Weight);
+				avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeight_BTags0/Weight/2), abs(Weight));
 			}else{
 				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
 				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags1Inf_noIsoTrack*scaleFactorWeightBtagProb/2);
-				avgWeight_LL_MC_->Fill(SearchBin, abs(totalWeight_BTags1Inf/Weight/2), Weight);
+				avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeight_BTags1Inf/Weight/2), abs(Weight));
 			}
 
 			totalCS_LL_MC_->Fill(Bin_bTags.at(i), scaledWeight);
@@ -589,6 +589,18 @@ void saveHistograms(TFile* tf){
 	nEvtsCS_LL_MC_->Write();
 
 	SetBinLabel(avgWeight_LL_MC_);
+	// Fill empty bins with avg. of remaining HTMHT bins
+	for(int i = 1; i < avgWeight_LL_MC_->GetNbinsX(); i++){
+		if(avgWeight_LL_MC_->GetBinContent(i) <= 0.01){
+			for(int j = 0; j < avgWeight_LL_MC_->GetNbinsX(); j++){
+				if(i == j) continue;
+				if(avgWeight_LL_MC_->GetBinContent(j) <= 0.01) continue;
+				if(std::string(avgWeight_LL_MC_->GetXaxis()->GetBinLabel(j), 0, 13) == std::string(avgWeight_LL_MC_->GetXaxis()->GetBinLabel(i), 0, 13)){
+					avgWeight_LL_MC_->Fill(i, avgWeight_LL_MC_->GetBinContent(j), 1.);
+				}
+			}
+		}
+	}
 	avgWeight_LL_MC_->Write();
 
 	tf->cd();
@@ -599,6 +611,11 @@ void saveHistograms(TFile* tf){
 	TH1D* PredOverCS_LL_MC_ = (TH1D*) totalPred_LL_MC_->Clone("PredOverCS_LL_MC");
 	PredOverCS_LL_MC_->Divide(totalCS_LL_MC_);
 	PredOverCS_LL_MC_->SetTitle("Prediction / CS (=0L/1L)");
+	//Fix for bins where negative sum of events
+	for(int i = 1; i < PredOverCS_LL_MC_->GetNbinsX(); i++){
+		PredOverCS_LL_MC_->SetBinContent(i, abs(PredOverCS_LL_MC_->GetBinContent(i)));
+	}
+	SetBinLabel(PredOverCS_LL_MC_);
 	PredOverCS_LL_MC_->Write();
 
 

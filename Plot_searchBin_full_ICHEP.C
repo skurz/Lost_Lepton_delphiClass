@@ -41,7 +41,7 @@ void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="
 
   // true: do closure test (MC prediction vs MC truth)
   // false: do data driven prediction and compare to MC truth
-  bool doDataVsMC = false;
+  bool doDataVsMC = true;
 
   // Add systematics in quadrature to stat. uncertainty on prediction
   // Non-closure systematic not included yet!
@@ -87,8 +87,8 @@ void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="
 
   //
   // Luminosity information for scaling
-  double lumi     = 2.3; // normaliza to this lumi (fb-1)
-  double lumi_ref = 2.3; // normaliza to 3 (fb-1)
+  double lumi     = 2.6; // normaliza to this lumi (fb-1)
+  double lumi_ref = 2.6; // normaliza to 3 (fb-1)
   
   ///////////////////////////////////////////////////////////////////////////////////////////
   //
@@ -733,7 +733,6 @@ void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="
       tl_nb->DrawLine(170.-0.5,ymin_bottom,170.-0.5,ymax2_bottom);
       tl_nb->DrawLine(183.-0.5,ymin_bottom,183.-0.5,ymax2_bottom);
       tl_nb->DrawLine(196.-0.5,ymin_bottom,196.-0.5,ymax2_bottom);
-      tl_nb->DrawLine(210.,ymin_bottom,210.,ymax2_bottom); 
     
       }
 

@@ -225,6 +225,8 @@ public :
   UInt_t          RunNum;
   UInt_t          LumiBlockNum;
   ULong64_t       EvtNum;
+  Bool_t          BadChargedCandidateFilter;
+  Bool_t          BadPFMuonFilter;
   Int_t           BTags;
   Int_t           CSCTightHaloFilter;
   Double_t        DeltaPhi1;
@@ -236,13 +238,14 @@ public :
   Double_t        DeltaPhiN3;
   Int_t           EcalDeadCellTriggerPrimitiveFilter;
   Int_t           eeBadScFilter;
-  Bool_t           eeBadSc4Filter;
+  //Bool_t           eeBadSc4Filter;
   std::vector<TLorentzVector> *Electrons=0;
   std::vector<TLorentzVector> *GenEls=0;
   std::vector<TLorentzVector> *GenMus=0;
   std::vector<TLorentzVector> *GenTaus=0;
-  Int_t          HBHENoiseFilter;
-  Int_t          HBHEIsoNoiseFilter;
+  Int_t           globalTightHalo2016Filter;
+  Int_t           HBHENoiseFilter;
+  Int_t           HBHEIsoNoiseFilter;
   Double_t        HT;
   Int_t           isoElectronTracksNum;
   Int_t           isoMuonTracksNum;
@@ -251,6 +254,7 @@ public :
   std::vector<TLorentzVector> *Jets=0;
   Double_t        METPhi;
   Double_t        MET;
+  Double_t        PFCaloMETRatio;
   std::vector<double>   *METUp=0;
   std::vector<double>   *METDown=0;
   Double_t        MHT;
@@ -311,6 +315,8 @@ public :
   TBranch        *b_RunNum=0;   //!
   TBranch        *b_LumiBlockNum=0;   //!
   TBranch        *b_EvtNum=0;   //!
+  TBranch        *b_BadChargedCandidateFilter=0;
+  TBranch        *b_BadPFMuonFilter=0;
   TBranch        *b_BTags=0;   //!
   TBranch        *b_CSCTightHaloFilter=0;   //!
   TBranch        *b_DeltaPhi1=0;   //!
@@ -319,11 +325,12 @@ public :
   TBranch        *b_DeltaPhi4=0;   //!
   TBranch        *b_EcalDeadCellTriggerPrimitiveFilter=0;   //!
   TBranch        *b_eeBadScFilter=0;   //!
-  TBranch        *b_eeBadSc4Filter=0;   //!
+  //TBranch        *b_eeBadSc4Filter=0;   //!
   TBranch        *b_Electrons=0;   //!
   TBranch        *b_GenEls=0;   //!
   TBranch        *b_GenMus=0;   //!
   TBranch        *b_GenTaus=0;   //!
+  TBranch        *b_globalTightHalo2016Filter=0;   //!
   TBranch        *b_HBHENoiseFilter=0;   //!
   TBranch        *b_HBHEIsoNoiseFilter=0;   //!
   TBranch        *b_HT=0;   //!
@@ -334,6 +341,7 @@ public :
   TBranch        *b_Jets=0;   //!
   TBranch        *b_METPhi=0;   //!
   TBranch        *b_MET=0;   //!
+  TBranch        *b_PFCaloMETRatio=0;   //!
   TBranch        *b_METUp=0;   //!
   TBranch        *b_METDown=0;   //!
   TBranch        *b_MHT=0;   //!
@@ -480,18 +488,21 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("LumiBlockNum", 1);
   fChain->SetBranchStatus("EvtNum", 1);
   fChain->SetBranchStatus("BTags", 1);
+  fChain->SetBranchStatus("BadChargedCandidateFilter", 1);
+  fChain->SetBranchStatus("BadPFMuonFilter", 1);
   fChain->SetBranchStatus("DeltaPhi1", 1);
   fChain->SetBranchStatus("DeltaPhi2", 1);
   fChain->SetBranchStatus("DeltaPhi3", 1);
   fChain->SetBranchStatus("DeltaPhi4", 1);
   fChain->SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter", 1);
   fChain->SetBranchStatus("eeBadScFilter", 1);
-  fChain->SetBranchStatus("eeBadSc4Filter", 1);
+  //fChain->SetBranchStatus("eeBadSc4Filter", 1);
   fChain->SetBranchStatus("CSCTightHaloFilter", 1);
   fChain->SetBranchStatus("Electrons", 1);
   fChain->SetBranchStatus("GenEls", 1);
   fChain->SetBranchStatus("GenMus", 1);
   fChain->SetBranchStatus("GenTaus", 1);
+  fChain->SetBranchStatus("globalTightHalo2016Filter", 1);
   fChain->SetBranchStatus("HBHENoiseFilter", 1);
   fChain->SetBranchStatus("HBHEIsoNoiseFilter", 1);
   fChain->SetBranchStatus("HT", 1);
@@ -502,6 +513,7 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("Jets", 1);
   fChain->SetBranchStatus("METPhi", 1);
   fChain->SetBranchStatus("MET", 1);
+  fChain->SetBranchStatus("PFCaloMETRatio", 1);
   fChain->SetBranchStatus("METUp", 1);
   fChain->SetBranchStatus("METDown", 1);
   fChain->SetBranchStatus("MHT", 1);
@@ -561,6 +573,8 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("LumiBlockNum", &LumiBlockNum, &b_LumiBlockNum);
   fChain->SetBranchAddress("EvtNum", &EvtNum, &b_EvtNum);
   fChain->SetBranchAddress("BTags", &BTags, &b_BTags);
+  fChain->SetBranchAddress("BadChargedCandidateFilter", &BadChargedCandidateFilter, &b_BadChargedCandidateFilter);
+  fChain->SetBranchAddress("BadPFMuonFilter", &BadPFMuonFilter, &b_BadPFMuonFilter);
   fChain->SetBranchAddress("CSCTightHaloFilter", &CSCTightHaloFilter, &b_CSCTightHaloFilter);
   fChain->SetBranchAddress("DeltaPhi1", &DeltaPhi1, &b_DeltaPhi1);
   fChain->SetBranchAddress("DeltaPhi2", &DeltaPhi2, &b_DeltaPhi2);
@@ -568,11 +582,12 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("DeltaPhi4", &DeltaPhi4, &b_DeltaPhi4);
   fChain->SetBranchAddress("EcalDeadCellTriggerPrimitiveFilter", &EcalDeadCellTriggerPrimitiveFilter, &b_EcalDeadCellTriggerPrimitiveFilter);
   fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
-  fChain->SetBranchAddress("eeBadSc4Filter", &eeBadSc4Filter, &b_eeBadSc4Filter);
+  //fChain->SetBranchAddress("eeBadSc4Filter", &eeBadSc4Filter, &b_eeBadSc4Filter);
   fChain->SetBranchAddress("Electrons", &Electrons, &b_Electrons);
   fChain->SetBranchAddress("GenEls", &GenEls, &b_GenEls);
   fChain->SetBranchAddress("GenMus", &GenMus, &b_GenMus);
   fChain->SetBranchAddress("GenTaus", &GenTaus, &b_GenTaus);
+  fChain->SetBranchAddress("globalTightHalo2016Filter", &globalTightHalo2016Filter, &b_globalTightHalo2016Filter);
   fChain->SetBranchAddress("HBHENoiseFilter", &HBHENoiseFilter, &b_HBHENoiseFilter);
   fChain->SetBranchAddress("HBHEIsoNoiseFilter", &HBHEIsoNoiseFilter, &b_HBHEIsoNoiseFilter);
   fChain->SetBranchAddress("HT", &HT, &b_HT);
@@ -583,6 +598,7 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("Jets", &Jets, &b_Jets);
   fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
   fChain->SetBranchAddress("MET", &MET, &b_MET);
+  fChain->SetBranchAddress("PFCaloMETRatio", &PFCaloMETRatio, &b_PFCaloMETRatio);
   fChain->SetBranchAddress("METUp", &METUp, &b_METUp);
   fChain->SetBranchAddress("METDown", &METDown, &b_METDown);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
