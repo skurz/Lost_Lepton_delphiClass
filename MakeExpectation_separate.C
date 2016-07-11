@@ -26,44 +26,44 @@ void MakeExpectation_separate()
     Effchain[i] = new TChain("PreSelection");
   }   
 
-  Effchain[0]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTJets_SingleLeptFromT.root");
-  Effchain[1]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTJets_SingleLeptFromTbar.root");
-  Effchain[2]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTJets_DiLept.root");
+  Effchain[0]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTJets_SingleLeptFromT.root");
+  Effchain[1]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTJets_SingleLeptFromTbar.root");
+  Effchain[2]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTJets_DiLept.root");
   
-  Effchain[3]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTJets_HT-600to800.root");
-  Effchain[4]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTJets_HT-800to1200.root");
-  Effchain[5]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTJets_HT-1200to2500.root");
-  Effchain[6]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTJets_HT-2500toInf.root");
+  Effchain[3]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTJets_HT-600to800.root");
+  Effchain[4]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTJets_HT-800to1200.root");
+  Effchain[5]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTJets_HT-1200to2500.root");
+  Effchain[6]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTJets_HT-2500toInf.root");
 
-  Effchain[7]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WJetsToLNu_HT-100to200.root");
-  Effchain[8]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WJetsToLNu_HT-200to400.root");
-  Effchain[9]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WJetsToLNu_HT-400to600.root");
-  Effchain[10]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WJetsToLNu_HT-600to800.root");
-  Effchain[11]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WJetsToLNu_HT-800to1200.root");
-  Effchain[12]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WJetsToLNu_HT-1200to2500.root");
-  Effchain[13]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WJetsToLNu_HT-2500toInf.root");
+  Effchain[7]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WJetsToLNu_HT-100to200.root");
+  Effchain[8]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WJetsToLNu_HT-200to400.root");
+  Effchain[9]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WJetsToLNu_HT-400to600.root");
+  Effchain[10]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WJetsToLNu_HT-600to800.root");
+  Effchain[11]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WJetsToLNu_HT-800to1200.root");
+  Effchain[12]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WJetsToLNu_HT-1200to2500.root");
+  Effchain[13]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WJetsToLNu_HT-2500toInf.root");
 
-  Effchain[14]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ST_s-channel.root");
-  Effchain[15]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ST_t-channel_antitop.root");
-  Effchain[16]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ST_t-channel_top.root");
-  Effchain[17]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ST_tW_antitop.root");
-  Effchain[18]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ST_tW_top.root");
+  Effchain[14]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/ST_s-channel.root");
+  Effchain[15]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/ST_t-channel_antitop.root");
+  Effchain[16]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/ST_t-channel_top.root");
+  Effchain[17]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/ST_tW_antitop.root");
+  Effchain[18]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/ST_tW_top.root");
 
-  Effchain[19]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTGJets.root");
-  Effchain[20]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTTT.root");
-  Effchain[21]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTWJetsToLNu.root");
-  Effchain[22]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTWJetsToQQ.root");
-  Effchain[23]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTZToLLNuNu.root");
-  Effchain[24]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/TTZToQQ.root");
-  Effchain[25]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WWTo1L1Nu2Q.root");
-  Effchain[26]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WWTo2L2Nu.root");
-  Effchain[27]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WWZ.root");
-  Effchain[28]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WZTo1L1Nu2Q.root");
-  Effchain[29]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WZTo1L3Nu.root");
-  Effchain[30]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/WZZ.root");
-  Effchain[31]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ZZTo2L2Q.root");
-  Effchain[32]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ZZZ.root");
-  //Effchain[33]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v7_baseline/ZZTo2Q2Nu.root");
+  Effchain[19]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTGJets.root");
+  Effchain[20]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTTT.root");
+  Effchain[21]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTWJetsToLNu.root");
+  Effchain[22]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTWJetsToQQ.root");
+  Effchain[23]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTZToLLNuNu.root");
+  Effchain[24]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/TTZToQQ.root");
+  Effchain[25]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WWTo1L1Nu2Q.root");
+  Effchain[26]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WWTo2L2Nu.root");
+  Effchain[27]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WWZ.root");
+  Effchain[28]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WZTo1L1Nu2Q.root");
+  Effchain[29]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WZTo1L3Nu.root");
+  Effchain[30]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/WZZ.root");
+  Effchain[31]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/ZZTo2L2Q.root");
+  Effchain[32]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_baseline/ZZZ.root");
+  //Effchain[33]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v8_baseline/ZZTo2Q2Nu.root");
 
 
   for(Int_t i=0; i<nChains; i++){ // i<nChains

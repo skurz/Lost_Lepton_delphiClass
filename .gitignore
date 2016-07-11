@@ -9,6 +9,7 @@
 *.d
 *.so
 *.pcm
+*.cxx
 
 # log files
 *.log

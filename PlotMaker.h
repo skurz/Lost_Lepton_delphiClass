@@ -381,7 +381,7 @@ void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // pre
 
 void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir){
   for(int i = 1; i<Bottom->GetNbinsX()+1; ++i){
-    if(Bottom->GetBinContent(i)>0) Top->SetBinContent(i, 1.+Top->GetBinContent(i)/Bottom->GetBinContent(i));
+    if(Bottom->GetBinContent(i)!=0) Top->SetBinContent(i, 1.+std::abs(Top->GetBinContent(i)/Bottom->GetBinContent(i)));
     else Top->SetBinContent(i, -999);
     //else Top->SetBinContent(i, 0);
     Top->SetBinError(i, 0);

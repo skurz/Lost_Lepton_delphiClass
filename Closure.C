@@ -138,8 +138,10 @@ void Closure(string InputPath_Expectation="Expectation.root",
   double totalPreElecMuAcc=0, totalPreElecMuReco=0, totalPreElecMuIso=0;
   double totalPreElecElecAcc=0, totalPreElecElecReco=0, totalPreElecElecIso=0;
 
+  TH1D* totalMuons_ = new TH1D("totalMuons", "totalMuons", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1D* totalElectrons_ = new TH1D("totalElectrons", "totalElectrons", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   
-  TH1D* totalExpectation_ = new TH1D("TotalLostLeptonExpecation", "TotalLostLeptonExpecation", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1D* totalExpectation_ = new TH1D("TotalLostLeptonExpectation", "TotalLostLeptonExpectation", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalExpectationWoIso_ = new TH1D("TotalExpectationWoIso", "TotalExpectationWoIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
   TH1D* totalExpectation_HT_ = new TH1D("totalExpectation_HT","totalExpectation_HT", 20, 300., 2300.);
@@ -311,7 +313,7 @@ void Closure(string InputPath_Expectation="Expectation.root",
   LostLeptonExpectation->SetBranchStatus("GenMus",1);
   LostLeptonExpectation->SetBranchAddress("GenMus",&GenMus);
   LostLeptonExpectation->SetBranchStatus("GenEls",1);
-  LostLeptonExpectation->SetBranchAddress("GenEls",&GenEls);
+  LostLeptonExpectation->SetBranchAddress("GenEls",&GenEls);  
   LostLeptonExpectation->SetBranchStatus("Expectation",1);
   LostLeptonExpectation->SetBranchAddress("Expectation",&Expectation);
   LostLeptonExpectation->SetBranchStatus("ExpectationReductionIsoTrack",1);
@@ -372,6 +374,12 @@ void Closure(string InputPath_Expectation="Expectation.root",
         scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
       }else{
         scaledWeight = Weight * scaleFactorWeight;
+      }
+
+      if(GenMus->size()==1 && GenEls->size()==0){
+        totalMuons_->Fill(Bin_bTags.at(i), scaledWeight);
+      }else if(GenMus->size()==0 && GenEls->size()==1){
+        totalElectrons_->Fill(Bin_bTags.at(i), scaledWeight);
       }
 
       if(Expectation==1)
@@ -730,6 +738,12 @@ void Closure(string InputPath_Expectation="Expectation.root",
   dExpectation->cd();
   totalExpectation_->Write();
   totalExpectation_HT_->Write();
+  totalMuons_->Write();
+  totalElectrons_->Write();
+  TH1D* totalMuonElectronRatio = (TH1D*) totalMuons_->Clone("totalMuonElectronRatio");
+  totalMuonElectronRatio->SetTitle("totalMuonElectronRatio");
+  totalMuonElectronRatio->Divide(totalMuons_, totalElectrons_);
+  totalMuonElectronRatio->Write();
   outPutFile->mkdir("Prediction");
   TDirectory *dPrediction = (TDirectory*)outPutFile->Get("Prediction");
   dPrediction->cd();

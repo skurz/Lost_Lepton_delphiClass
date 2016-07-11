@@ -44,12 +44,12 @@ const bool runOnData = false;  //<-check------------------------
 const bool runOnStandardModelMC = true;  //<-check------------------------
 const bool runOnSignalMC = false;  //<-check------------------------
 
-// Only needed if running on full nTuples not on Skims
+// Only needed if running on full nTuples not on Skims (bTag reweighting)
 const bool runOnNtuples = true;
-const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_");
+const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_");
 
 // PU
-const TString path_puHist("PU/PileupHistograms_0621.root");
+const TString path_puHist("PU/PileupHistograms_0704.root");
 // bTag corrections
 const string path_bTagCalib("btag/CSVv2_mod.csv");
 const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
@@ -57,7 +57,8 @@ const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
 // ISR corrections: NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond! Just uncomment in Prediction::Init(Tree*) of this file
 const TString path_ISRcorr("isr_corrections/ISRWeights.root");
 // Signal x-sec: "dict_xsec.txt" for gluino pair prod; "dict_xsec_T2.txt" for (anti)stop pair prod.
-const string path_xsec("xsec/dict_xsec.txt");
+const string path_xsecT1T5("xsec/dict_xsec.txt");
+const string path_xsecT2("xsec/dict_xsec_T2.txt");
 
 // CSCTightHaloFilterUpdate from list
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -77,6 +78,10 @@ const TString path_muIso("SFs/TnP_MuonID_NUM_MiniIsoTight_DENOM_LooseID_VAR_map_
 // muIso: still binned in pt/eta since this was recommended! Has to be changed for Moriond (also in Prediction.C when getting the uncertainties)!
 const TString hist_muIso("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass");
 
+//Acceptance uncertainty maps
+const TString path_AccPDF("AcceptanceUncertainty/PDFuncertainty.root");
+const TString path_AccQ2("AcceptanceUncertainty/Q2uncertainty.root");
+
 
 ////////////////////////
 //////// Usually don't have to be changed
@@ -87,6 +92,9 @@ const TString hist_muIso("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combR
 const bool usePrelimSFs = false;
 // Those are the SFs you want! Read from root file
 const bool useSFs = true;
+
+// Flat uncertainties for acceptance efficiency. Just for testing
+const bool useFlatAccUnc = false;
 
 // scaleMet = 0: keep things the way they are
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%// NOT USED ANYMORE
@@ -229,7 +237,10 @@ class Prediction : public TSelector {
   TFile* pufile = 0;
   TH1* puhist = 0;
 
-  std::vector<std::pair<double, double>> xsecs;
+  std::vector<std::pair<double, double>> xsecsT1T5;
+  std::vector<std::pair<double, double>> xsecsT2;
+  std::vector<std::pair<double, double>> *xsecs;
+
 
     //open skim file as skimfile
   TH1* h_genpt;
@@ -249,6 +260,12 @@ class Prediction : public TSelector {
   TH2F* h_muIsoSF;
   TH2D* h_elecIsoSF;
   TH2D* h_elecIDSF;
+
+  std::vector<TH2D*> h_muAccPDF;
+  std::vector<TH2D*> h_elecAccPDF;
+  std::vector<TH2D*> h_muAccQ2;
+  std::vector<TH2D*> h_elecAccQ2;
+
 
   TString treeName = " ";
 
@@ -540,6 +557,7 @@ class Prediction : public TSelector {
   Int_t           isoPionTracksNum;
   Bool_t          JetID;
   std::vector<TLorentzVector> *Jets=0;
+  std::vector<double>     *Jets_muonEnergyFraction=0;
   std::vector<int>     *Jets_hadronFlavor=0;
   std::vector<bool>    *HTJetsMask=0;
   Double_t        METPhi;
@@ -596,6 +614,7 @@ class Prediction : public TSelector {
   TBranch        *b_isoPionTracksNum=0;   //!
   TBranch        *b_JetID=0;   //!
   TBranch        *b_Jets=0;   //!
+  TBranch        *b_Jets_muonEnergyFraction=0;   //!
   TBranch        *b_Jets_hadronFlavor=0;   //!
   TBranch        *b_HTJetsMask=0;   //!
   TBranch        *b_METPhi=0;   //!
@@ -745,13 +764,22 @@ void Prediction::Init(TTree *tree)
 
   std::cout << "Saving file to: " << fileName << std::endl;
 
-  std::ifstream signal_xsec(path_xsec);
-  std::string str_xsec;
-  while (std::getline(signal_xsec, str_xsec))
+  std::ifstream signal_xsecT1T5(path_xsecT1T5);
+  std::string str_xsecT1T5;
+  while (std::getline(signal_xsecT1T5, str_xsecT1T5))
   {
-    TObjArray *tokens = TString(str_xsec).Tokenize(",");
+    TObjArray *tokens = TString(str_xsecT1T5).Tokenize(",");
     //std::cout<<((TObjString *)(tokens->At(0)))->String()<<"; "<<((TObjString *)(tokens->At(1)))->String()<<";"<<std::endl;
-    xsecs.push_back(std::make_pair(std::atof(((TObjString *)(tokens->At(0)))->String()), std::atof(((TObjString *)(tokens->At(1)))->String())));
+    xsecsT1T5.push_back(std::make_pair(std::atof(((TObjString *)(tokens->At(0)))->String()), std::atof(((TObjString *)(tokens->At(1)))->String())));
+  }
+
+  std::ifstream signal_xsecT2(path_xsecT2);
+  std::string str_xsecT2;
+  while (std::getline(signal_xsecT2, str_xsecT2))
+  {
+    TObjArray *tokens = TString(str_xsecT2).Tokenize(",");
+    //std::cout<<((TObjString *)(tokens->At(0)))->String()<<"; "<<((TObjString *)(tokens->At(1)))->String()<<";"<<std::endl;
+    xsecsT2.push_back(std::make_pair(std::atof(((TObjString *)(tokens->At(0)))->String()), std::atof(((TObjString *)(tokens->At(1)))->String())));
   }
 
   // Open histograms for SFs
@@ -766,6 +794,31 @@ void Prediction::Init(TTree *tree)
 
   TFile *elecIsoSF_histFile = TFile::Open(path_elecIso, "READ");
   h_elecIsoSF = (TH2D*) elecIsoSF_histFile->Get(hist_elecIso)->Clone();
+
+  //Open histograms for Acceptance uncertainties
+  TFile *accPDF_histFile = TFile::Open(path_AccPDF, "READ");
+  h_muAccPDF.push_back((TH2D*) accPDF_histFile->Get("MuAccPDFUnc_NJets3")->Clone());
+  h_muAccPDF.push_back((TH2D*) accPDF_histFile->Get("MuAccPDFUnc_NJets4")->Clone());
+  h_muAccPDF.push_back((TH2D*) accPDF_histFile->Get("MuAccPDFUnc_NJets5")->Clone());
+  h_muAccPDF.push_back((TH2D*) accPDF_histFile->Get("MuAccPDFUnc_NJets6")->Clone());
+  h_muAccPDF.push_back((TH2D*) accPDF_histFile->Get("MuAccPDFUnc_NJets7Inf")->Clone());
+  h_elecAccPDF.push_back((TH2D*) accPDF_histFile->Get("ElecAccPDFUnc_NJets3")->Clone());
+  h_elecAccPDF.push_back((TH2D*) accPDF_histFile->Get("ElecAccPDFUnc_NJets4")->Clone());
+  h_elecAccPDF.push_back((TH2D*) accPDF_histFile->Get("ElecAccPDFUnc_NJets5")->Clone());
+  h_elecAccPDF.push_back((TH2D*) accPDF_histFile->Get("ElecAccPDFUnc_NJets6")->Clone());
+  h_elecAccPDF.push_back((TH2D*) accPDF_histFile->Get("ElecAccPDFUnc_NJets7Inf")->Clone());
+
+  TFile *accQ2_histFile = TFile::Open(path_AccQ2, "READ");
+  h_muAccQ2.push_back((TH2D*) accQ2_histFile->Get("MuAccQ2Unc_NJets3")->Clone());
+  h_muAccQ2.push_back((TH2D*) accQ2_histFile->Get("MuAccQ2Unc_NJets4")->Clone());
+  h_muAccQ2.push_back((TH2D*) accQ2_histFile->Get("MuAccQ2Unc_NJets5")->Clone());
+  h_muAccQ2.push_back((TH2D*) accQ2_histFile->Get("MuAccQ2Unc_NJets6")->Clone());
+  h_muAccQ2.push_back((TH2D*) accQ2_histFile->Get("MuAccQ2Unc_NJets7Inf")->Clone());
+  h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets3")->Clone());
+  h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets4")->Clone());
+  h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets5")->Clone());
+  h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets6")->Clone());
+  h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets7Inf")->Clone());
 
   if(runOnSignalMC){
     // ISR setup
@@ -825,6 +878,8 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("TriggerNames", 1);
   fChain->SetBranchStatus("TriggerPass", 1);
   fChain->SetBranchStatus("TriggerPrescales", 1);
+  fChain->SetBranchStatus("Jets_muonEnergyFraction", 1);
+
   if(!runOnData){
     fChain->SetBranchStatus("Weight", 1);
     fChain->SetBranchStatus("Jets_hadronFlavor", 1);
@@ -884,6 +939,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("TriggerNames", &TriggerNames, &b_TriggerNames);
   fChain->SetBranchAddress("TriggerPass", &TriggerPass, &b_TriggerPass);
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
+  fChain->SetBranchAddress("Jets_muonEnergyFraction", &Jets_muonEnergyFraction, &b_Jets_muonEnergyFraction);
   if(!runOnData){
     fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
     fChain->SetBranchAddress("Jets_hadronFlavor", &Jets_hadronFlavor, &b_Jets_hadronFlavor);

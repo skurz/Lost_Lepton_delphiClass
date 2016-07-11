@@ -31,13 +31,13 @@ void shift_bin(TH1* input, TH1* output){
 
 }
 
-void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="QCD"
+void Plot_searchBin_full_ICHEP_wQCD(string option="", int pull=0){ // string option="QCD"
 
   // Use option="QCD" to produce plots in QCD binning
 
   char tempname[200];
   // Open root file
-  sprintf(tempname,"LLPrediction.root");
+  sprintf(tempname,"LLPrediction_QCD.root");
 
   // true: do closure test (MC prediction vs MC truth)
   // false: do data driven prediction and compare to MC truth
@@ -182,7 +182,7 @@ void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="
   double MHT_x_max=1000.;
   double NJet_x_max=15.;
   double NBtag_x_max=4.;
-  double search_x_max=160.-0.5;
+  double search_x_max=208.-0.5;
   if(option.find("QCD")!=string::npos)search_x_max=208.-0.5;
   double search_x_min=1.-0.5;
 
@@ -321,7 +321,7 @@ void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="
   //EstHist_Normalize->DrawCopy("esame");
 
   TH1D *EstHist_Normalize_Clone = (TH1D*)EstHist_Normalize->Clone();
-  for(int i=1; i<EstHist_Normalize_Clone->GetNbinsX(); i++) {
+  for(int i=1; i<208; i++) {
     EstHist_Normalize_Clone->SetBinError(i,0);
   }
   EstHist_Normalize_Clone->SetFillColor(kWhite);
@@ -412,61 +412,6 @@ void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="
     // Njet separation lines
     TLine *tl_njet = new TLine();
     tl_njet->SetLineStyle(2);
-    tl_njet->DrawLine(41.-0.5,ymin_top,41.-0.5,ymax_top); 
-    tl_njet->DrawLine(81.-0.5,ymin_top,81.-0.5,ymax_top); 
-    tl_njet->DrawLine(121.-0.5,ymin_top,121.-0.5,ymax_top); 
-
-    // Njet labels
-    TLatex * ttext_njet = new TLatex();
-    ttext_njet->SetTextFont(42);
-    ttext_njet->SetTextSize(0.04);
-    ttext_njet->SetTextAlign(22);
-    ttext_njet->DrawLatex(20.-0.5 , ymax_top/4. , "3 #leq N_{#scale[0.2]{ }jet} #leq 4");
-    ttext_njet->DrawLatex(60.-0.5 , ymax_top/4. , "5 #leq N_{#scale[0.2]{ }jet} #leq 6");
-    ttext_njet->DrawLatex(100.-0.5 , ymax_top/4. , "7 #leq N_{#scale[0.2]{ }jet} #leq 8");
-    ttext_njet->DrawLatex(140.-0.5 , ymax_top/4. , "N_{#scale[0.2]{ }jet} #geq 9");
-
-    // Nb separation lines
-    TLine *tl_nb = new TLine();
-    tl_nb->SetLineStyle(3);
-    tl_nb->DrawLine(11.-0.5,ymin_top,11.-0.5,ymax2_top); 
-    tl_nb->DrawLine(21.-0.5,ymin_top,21.-0.5,ymax2_top); 
-    tl_nb->DrawLine(31.-0.5,ymin_top,31.-0.5,ymax2_top);
-    tl_nb->DrawLine(41.-0.5,ymin_top,41.-0.5,ymax2_top);
-    tl_nb->DrawLine(51.-0.5,ymin_top,51.-0.5,ymax3_top); 
-    tl_nb->DrawLine(61.-0.5,ymin_top,61.-0.5,ymax3_top); 
-    tl_nb->DrawLine(71.-0.5,ymin_top,71.-0.5,ymax3_top); 
-    tl_nb->DrawLine(81.-0.5,ymin_top,81.-0.5,ymax3_top); 
-    tl_nb->DrawLine(91.-0.5,ymin_top,91.-0.5,ymax4_top); 
-    tl_nb->DrawLine(101.-0.5,ymin_top,101.-0.5,ymax4_top); 
-    tl_nb->DrawLine(111.-0.5,ymin_top,111.-0.5,ymax4_top);
-    tl_nb->DrawLine(121.-0.5,ymin_top,121.-0.5,ymax4_top);
-    tl_nb->DrawLine(131.-0.5,ymin_top,131.-0.5,ymax5_top);
-    tl_nb->DrawLine(141.-0.5,ymin_top,141.-0.5,ymax5_top);
-    tl_nb->DrawLine(151.-0.5,ymin_top,151.-0.5,ymax5_top);
-    
-    // Nb labels
-    TLatex * ttext_nb = new TLatex();
-    ttext_nb->SetTextFont(42);
-    ttext_nb->SetTextSize(0.04);
-    ttext_nb->SetTextAlign(22);
-    
-    ttext_nb->DrawLatex(9.-0.5 , ymax_top/12. , "N_{#scale[0.2]{ }b-jet}");
-    ttext_nb->DrawLatex(6.-0.5 , ymax_top/40. , "0");
-    ttext_nb->DrawLatex(16.-0.5 , ymax_top/40. , "1");
-    ttext_nb->DrawLatex(26.-0.5 , ymax_top/40. , "2");
-    ttext_nb->DrawLatex(36.-0.5 , ymax_top/40. , "#geq 3");
-
-    //
-  } else {
-    
-    //-----------------------------------------------------------
-    // Putting lines and labels explaining search region definitions
-    //-----------------------------------------------------------
-
-    // Njet separation lines
-    TLine *tl_njet = new TLine();
-    tl_njet->SetLineStyle(2);
     tl_njet->DrawLine(53.-0.5,ymin_top,53.-0.5,ymax_top); 
     tl_njet->DrawLine(105.-0.5,ymin_top,105.-0.5,ymax_top); 
     tl_njet->DrawLine(157.-0.5,ymin_top,157.-0.5,ymax_top); 
@@ -512,6 +457,73 @@ void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="
     ttext_nb->DrawLatex(33.-0.5 , ymax_top/40. , "2");
     ttext_nb->DrawLatex(46.-0.5 , ymax_top/40. , "#geq 3");
 
+    //
+  } else {
+    
+    //-----------------------------------------------------------
+    // Putting lines and labels explaining search region definitions
+    //-----------------------------------------------------------
+
+    // Njet separation lines
+    TLine *tl_njet = new TLine();
+    tl_njet->SetLineStyle(2);
+    tl_njet->DrawLine( 45.,ymin_top, 45.,ymax_top); 
+    tl_njet->DrawLine( 89.,ymin_top, 89.,ymax_top); 
+    tl_njet->DrawLine(133.,ymin_top,133.,ymax_top); 
+    tl_njet->DrawLine(177.,ymin_top,177.,ymax_top); 
+
+    // Njet labels
+    TLatex * ttext_njet = new TLatex();
+    ttext_njet->SetTextFont(42);
+    ttext_njet->SetTextSize(0.04);
+    ttext_njet->SetTextAlign(22);
+    ttext_njet->DrawLatex(23. , ymax_top/4. , "N_{jets} = 4");
+    ttext_njet->DrawLatex(67. , ymax_top/4. , "N_{jets} = 5");
+    ttext_njet->DrawLatex(111., ymax_top/4. , "N_{jets} = 6");
+    ttext_njet->DrawLatex(155., ymax_top/4. , "7 #leq N_{jets} #leq 8");
+    ttext_njet->DrawLatex(199., ymax_top/4. , "N_{jets} #geq 9");
+
+    // Nb separation lines
+    TLine *tl_nb = new TLine();
+    tl_nb->SetLineStyle(3);
+    tl_nb->DrawLine(12.,ymin_top,12.,ymax2_top); 
+    tl_nb->DrawLine(23.,ymin_top,23.,ymax2_top); 
+    tl_nb->DrawLine(34.,ymin_top,34.,ymax2_top); 
+
+    tl_nb->DrawLine(56.,ymin_top,56.,ymax2_top); 
+    tl_nb->DrawLine(67.,ymin_top,67.,ymax2_top); 
+    tl_nb->DrawLine(78.,ymin_top,78.,ymax2_top); 
+
+    tl_nb->DrawLine(100.,ymin_top,100.,ymax2_top); 
+    tl_nb->DrawLine(111.,ymin_top,111.,ymax2_top); 
+    tl_nb->DrawLine(122.,ymin_top,122.,ymax2_top); 
+
+    tl_nb->DrawLine(144.,ymin_top,144.,ymax3_top); 
+    tl_nb->DrawLine(155.,ymin_top,155.,ymax3_top); 
+    tl_nb->DrawLine(166.,ymin_top,166.,ymax3_top); 
+
+    tl_nb->DrawLine(188.,ymin_top,188.,ymax4_top); 
+    tl_nb->DrawLine(199.,ymin_top,199.,ymax4_top); 
+    tl_nb->DrawLine(210.,ymin_top,210.,ymax4_top); 
+
+    // Nb labels
+    TLatex * ttext_nb = new TLatex();
+    ttext_nb->SetTextFont(42);
+    ttext_nb->SetTextSize(0.04);
+    ttext_nb->SetTextAlign(22);
+    ttext_nb->SetTextAngle(90);
+
+    ttext_nb->DrawLatex( 6. , ymax_top/50. , "N_{b} = 0");
+    ttext_nb->DrawLatex(17. , ymax_top/50. , "N_{b} = 1");
+    ttext_nb->DrawLatex(28. , ymax_top/50. , "N_{b} = 2");
+    ttext_nb->DrawLatex(39. , ymax_top/50. , "N_{b} #geq 3");
+    
+    TText * ttext = new TLatex(160. , ymax_top/50. , "Normalized to 10 fb^{-1}");
+    ttext->SetTextFont(42);
+    ttext->SetTextSize(0.045);
+    ttext->SetTextAlign(22);
+    ttext->Draw();
+
   }
 
   // Legend & texts
@@ -544,9 +556,9 @@ void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="
       TH1D * EstHist_NoError = static_cast<TH1D*>(EstHist->Clone("EstHist_NoError"));
       TH1D * One_NoError = static_cast<TH1D*>(EstHist->Clone("EstHist_NoError"));
       for (int ibin=0; ibin<EstHist_NoError->GetNbinsX()+2; ibin++){ // scan including underflow and overflow bins
-      	EstHist_NoError->SetBinError(ibin,0.);
-      	One_NoError->SetBinContent(ibin,1.);
-      	One_NoError->SetBinError(ibin,0.);
+	EstHist_NoError->SetBinError(ibin,0.);
+	One_NoError->SetBinContent(ibin,1.);
+	One_NoError->SetBinError(ibin,0.);
       }
 
       //EstHistD->Add(GenHistD,-1);
@@ -604,50 +616,43 @@ void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="
 
       if (pull==1){
 
-        //sprintf(ytitlename,"#frac{Exp - Pre}{Stat Error} ");
-      	sprintf(ytitlename,"pull    ");
-      	numerator_fullstaterr->SetMaximum(3.9);
-      	numerator_fullstaterr->SetMinimum(-3.9);
-      	
-      	//
-      	// Specific to each bottom plot
-      	//
-      	// Setting style
+	sprintf(ytitlename,"#frac{Exp - Pre}{Stat Error} ");
+	numerator->SetMaximum(8.);
+	numerator->SetMinimum(-8.);
+	
+	//
+	// Specific to each bottom plot
+	//
+	// Setting style
 
-      	for (int ibin=0; ibin<numerator_fullstaterr->GetNbinsX()+2; ibin++){ // scan including underflow and overflow bins
-          if(numerator_fullstaterr->GetBinError(ibin) < 0.00000001){
-            numerator_fullstaterr->SetBinContent(ibin, 0);
-          }else{
-            numerator_fullstaterr->SetBinContent(ibin,numerator_fullstaterr->GetBinContent(ibin)/numerator_fullstaterr->GetBinError(ibin));
-          }      	  
-      	  numerator_fullstaterr->SetBinError(ibin,0.);
-      	}
-      	numerator_fullstaterr->Print("all");
-      	
-      	numerator_fullstaterr->GetXaxis()->SetLabelSize(font_size_dw);
-      	numerator_fullstaterr->GetXaxis()->SetTitleSize(font_size_dw);
-      	numerator_fullstaterr->GetYaxis()->SetLabelSize(font_size_dw);
-      	numerator_fullstaterr->GetYaxis()->SetTitleSize(font_size_dw);
+	for (int ibin=0; ibin<numerator_fullstaterr->GetNbinsX()+2; ibin++){ // scan including underflow and overflow bins
+	  numerator_fullstaterr->SetBinContent(ibin,numerator_fullstaterr->GetBinContent(ibin)/numerator_fullstaterr->GetBinError(ibin));
+	  numerator_fullstaterr->SetBinError(ibin,0.);
+	}
+	numerator_fullstaterr->Print("all");
+	
+	numerator_fullstaterr->GetXaxis()->SetLabelSize(font_size_dw);
+	numerator_fullstaterr->GetXaxis()->SetTitleSize(font_size_dw);
+	numerator_fullstaterr->GetYaxis()->SetLabelSize(font_size_dw);
+	numerator_fullstaterr->GetYaxis()->SetTitleSize(font_size_dw);
 
-        numerator_fullstaterr->GetXaxis()->SetLabelSize(0.18*0.045/0.06);
-        numerator_fullstaterr->GetXaxis()->SetTitleSize(0.18);
-        numerator_fullstaterr->GetXaxis()->SetTitleOffset(0.9);
-        numerator_fullstaterr->GetXaxis()->SetTitleFont(42);
-        numerator_fullstaterr->GetYaxis()->SetLabelSize(0.18*0.045/0.06);
-        numerator_fullstaterr->GetYaxis()->SetTitleSize(0.15);
-        numerator_fullstaterr->GetYaxis()->SetTitleOffset(0.25);
-        numerator_fullstaterr->GetYaxis()->SetTitleFont(42);
-      	
-      	numerator_fullstaterr->GetXaxis()->SetTitle(xtitlename);
-      	numerator_fullstaterr->GetYaxis()->SetTitle(ytitlename);
-      	//numerator_fullstaterr->SetFillColor(kGreen-3);
-      	numerator_fullstaterr->SetFillColor(kRed-10);
-      	numerator_fullstaterr->DrawCopy("");
+	numerator_fullstaterr->GetXaxis()->SetTitleSize(0.12);
+	numerator_fullstaterr->GetXaxis()->SetTitleOffset(0.9);
+	numerator_fullstaterr->GetXaxis()->SetTitleFont(42);
+	numerator_fullstaterr->GetYaxis()->SetTitleSize(0.13);
+	numerator_fullstaterr->GetYaxis()->SetTitleOffset(0.5);
+	numerator_fullstaterr->GetYaxis()->SetTitleFont(42);
+	
+	numerator_fullstaterr->GetXaxis()->SetTitle(xtitlename);
+	numerator_fullstaterr->GetYaxis()->SetTitle(ytitlename);
+	//numerator_fullstaterr->SetFillColor(kGreen-3);
+	numerator_fullstaterr->SetFillColor(kRed-10);
+	numerator_fullstaterr->DrawCopy();
 
-      	//
-      	// Drawing lines
-      	tline0->SetLineStyle(2);
-	      //tline0->Draw();
+	//
+	// Drawing lines
+	tline0->SetLineStyle(2);
+	//tline0->Draw();
 
       }
       else {
@@ -690,56 +695,62 @@ void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="
         // Njet separation lines
         TLine *tl_njet = new TLine();
         tl_njet->SetLineStyle(2);
-        tl_njet->DrawLine(41.-0.5,ymin_top,41.-0.5,ymax_top); 
-        tl_njet->DrawLine(81.-0.5,ymin_top,81.-0.5,ymax_top); 
-        tl_njet->DrawLine(121.-0.5,ymin_top,121.-0.5,ymax_top); 
+        tl_njet->DrawLine(53.-0.5,ymin_bottom,53.-0.5,ymax_bottom); 
+        tl_njet->DrawLine(105.-0.5,ymin_bottom,105.-0.5,ymax_bottom); 
+        tl_njet->DrawLine(157.-0.5,ymin_bottom,157.-0.5,ymax_bottom); 
 
         // Nb separation lines
         TLine *tl_nb = new TLine();
         tl_nb->SetLineStyle(3);
-        tl_nb->DrawLine(11.-0.5,ymin_top,11.-0.5,ymax2_top); 
-        tl_nb->DrawLine(21.-0.5,ymin_top,21.-0.5,ymax2_top); 
-        tl_nb->DrawLine(31.-0.5,ymin_top,31.-0.5,ymax2_top);
-        tl_nb->DrawLine(41.-0.5,ymin_top,41.-0.5,ymax2_top);
-        tl_nb->DrawLine(51.-0.5,ymin_top,51.-0.5,ymax3_top); 
-        tl_nb->DrawLine(61.-0.5,ymin_top,61.-0.5,ymax3_top); 
-        tl_nb->DrawLine(71.-0.5,ymin_top,71.-0.5,ymax3_top); 
-        tl_nb->DrawLine(81.-0.5,ymin_top,81.-0.5,ymax3_top); 
-        tl_nb->DrawLine(91.-0.5,ymin_top,91.-0.5,ymax4_top); 
-        tl_nb->DrawLine(101.-0.5,ymin_top,101.-0.5,ymax4_top); 
-        tl_nb->DrawLine(111.-0.5,ymin_top,111.-0.5,ymax4_top);
-        tl_nb->DrawLine(121.-0.5,ymin_top,121.-0.5,ymax4_top);
-        tl_nb->DrawLine(131.-0.5,ymin_top,131.-0.5,ymax5_top);
-        tl_nb->DrawLine(141.-0.5,ymin_top,141.-0.5,ymax5_top);
-        tl_nb->DrawLine(151.-0.5,ymin_top,151.-0.5,ymax5_top);
+        tl_nb->DrawLine(14.-0.5,ymin_bottom,14.-0.5,ymax2_bottom); 
+        tl_nb->DrawLine(27.-0.5,ymin_bottom,27.-0.5,ymax2_bottom); 
+        tl_nb->DrawLine(40.-0.5,ymin_bottom,40.-0.5,ymax2_bottom);
+        tl_nb->DrawLine(53.-0.5,ymin_bottom,53.-0.5,ymax2_bottom);
+        tl_nb->DrawLine(66.-0.5,ymin_bottom,66.-0.5,ymax2_bottom); 
+        tl_nb->DrawLine(79.-0.5,ymin_bottom,79.-0.5,ymax2_bottom); 
+        tl_nb->DrawLine(92.-0.5,ymin_bottom,92.-0.5,ymax2_bottom); 
+        tl_nb->DrawLine(105.-0.5,ymin_bottom,105.-0.5,ymax2_bottom); 
+        tl_nb->DrawLine(118.-0.5,ymin_bottom,118.-0.5,ymax2_bottom); 
+        tl_nb->DrawLine(131.-0.5,ymin_bottom,131.-0.5,ymax2_bottom); 
+        tl_nb->DrawLine(144.-0.5,ymin_bottom,144.-0.5,ymax2_bottom);
+        tl_nb->DrawLine(157.-0.5,ymin_bottom,157.-0.5,ymax2_bottom);
+        tl_nb->DrawLine(170.-0.5,ymin_bottom,170.-0.5,ymax2_bottom);
+        tl_nb->DrawLine(183.-0.5,ymin_bottom,183.-0.5,ymax2_bottom);
+        tl_nb->DrawLine(196.-0.5,ymin_bottom,196.-0.5,ymax2_bottom);
 
       } else {
 	
       // Njet separation lines
       TLine *tl_njet = new TLine();
       tl_njet->SetLineStyle(2);
-      tl_njet->DrawLine(53.-0.5,ymin_bottom,53.-0.5,ymax_bottom); 
-      tl_njet->DrawLine(105.-0.5,ymin_bottom,105.-0.5,ymax_bottom); 
-      tl_njet->DrawLine(157.-0.5,ymin_bottom,157.-0.5,ymax_bottom); 
+      tl_njet->DrawLine( 45.,ymin_bottom, 45.,ymax_bottom); 
+      tl_njet->DrawLine( 89.,ymin_bottom, 89.,ymax_bottom); 
+      tl_njet->DrawLine(133.,ymin_bottom,133.,ymax_bottom); 
+      tl_njet->DrawLine(177.,ymin_bottom,177.,ymax_bottom); 
+
 
       // Nb separation lines
       TLine *tl_nb = new TLine();
       tl_nb->SetLineStyle(3);
-      tl_nb->DrawLine(14.-0.5,ymin_bottom,14.-0.5,ymax2_bottom); 
-      tl_nb->DrawLine(27.-0.5,ymin_bottom,27.-0.5,ymax2_bottom); 
-      tl_nb->DrawLine(40.-0.5,ymin_bottom,40.-0.5,ymax2_bottom);
-      tl_nb->DrawLine(53.-0.5,ymin_bottom,53.-0.5,ymax2_bottom);
-      tl_nb->DrawLine(66.-0.5,ymin_bottom,66.-0.5,ymax2_bottom); 
-      tl_nb->DrawLine(79.-0.5,ymin_bottom,79.-0.5,ymax2_bottom); 
-      tl_nb->DrawLine(92.-0.5,ymin_bottom,92.-0.5,ymax2_bottom); 
-      tl_nb->DrawLine(105.-0.5,ymin_bottom,105.-0.5,ymax2_bottom); 
-      tl_nb->DrawLine(118.-0.5,ymin_bottom,118.-0.5,ymax2_bottom); 
-      tl_nb->DrawLine(131.-0.5,ymin_bottom,131.-0.5,ymax2_bottom); 
-      tl_nb->DrawLine(144.-0.5,ymin_bottom,144.-0.5,ymax2_bottom);
-      tl_nb->DrawLine(157.-0.5,ymin_bottom,157.-0.5,ymax2_bottom);
-      tl_nb->DrawLine(170.-0.5,ymin_bottom,170.-0.5,ymax2_bottom);
-      tl_nb->DrawLine(183.-0.5,ymin_bottom,183.-0.5,ymax2_bottom);
-      tl_nb->DrawLine(196.-0.5,ymin_bottom,196.-0.5,ymax2_bottom);
+      tl_nb->DrawLine(12.,ymin_bottom,12.,ymax2_bottom); 
+      tl_nb->DrawLine(23.,ymin_bottom,23.,ymax2_bottom); 
+      tl_nb->DrawLine(34.,ymin_bottom,34.,ymax2_bottom); 
+      
+      tl_nb->DrawLine(56.,ymin_bottom,56.,ymax2_bottom); 
+      tl_nb->DrawLine(67.,ymin_bottom,67.,ymax2_bottom); 
+      tl_nb->DrawLine(78.,ymin_bottom,78.,ymax2_bottom); 
+      
+      tl_nb->DrawLine(100.,ymin_bottom,100.,ymax2_bottom); 
+      tl_nb->DrawLine(111.,ymin_bottom,111.,ymax2_bottom); 
+      tl_nb->DrawLine(122.,ymin_bottom,122.,ymax2_bottom); 
+
+      tl_nb->DrawLine(144.,ymin_bottom,144.,ymax2_bottom); 
+      tl_nb->DrawLine(155.,ymin_bottom,155.,ymax2_bottom); 
+      tl_nb->DrawLine(166.,ymin_bottom,166.,ymax2_bottom); 
+      
+      tl_nb->DrawLine(188.,ymin_bottom,188.,ymax2_bottom); 
+      tl_nb->DrawLine(199.,ymin_bottom,199.,ymax2_bottom); 
+      tl_nb->DrawLine(210.,ymin_bottom,210.,ymax2_bottom); 
     
       }
 

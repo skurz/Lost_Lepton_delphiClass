@@ -78,26 +78,28 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("selectedIDElectronsNum",&selectedIDElectronsNum_);
   tExpectation_->Branch("selectedIDElectrons", "std::vector<TLorentzVector>", &selectedIDElectrons, 32000, 0);
   tExpectation_->Branch("selectedIDElectrons_MT2Activity", &selectedIDElectrons_MT2Activity);
-  tExpectation_->Branch("HTJetsMask", &HTJetsMask);
-  tExpectation_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
+  //tExpectation_->Branch("HTJetsMask", &HTJetsMask);
+  //tExpectation_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
   tExpectation_->Branch("bTagProb", &bTagProb);
   tExpectation_->Branch("cosDTT", &cosDTT);
   tExpectation_->Branch("genCosDTT", &genCosDTT);
+  tExpectation_->Branch("PDFweights", &PDFweights);
+  tExpectation_->Branch("ScaleWeights", &ScaleWeights);
   tExpectation_->Branch("isoElectronTracks", "std::vector<TLorentzVector>", &isoElectronTracks, 32000, 0);
-  tExpectation_->Branch("isoElectronTracks_activity", &isoElectronTracks_activity);
-  tExpectation_->Branch("isoElectronTracks_chg", &isoElectronTracks_chg);
-  tExpectation_->Branch("isoElectronTracks_mT", &isoElectronTracks_mT);
-  tExpectation_->Branch("isoElectronTracks_trkiso", &isoElectronTracks_trkiso);
+  //tExpectation_->Branch("isoElectronTracks_activity", &isoElectronTracks_activity);
+  //tExpectation_->Branch("isoElectronTracks_chg", &isoElectronTracks_chg);
+  //tExpectation_->Branch("isoElectronTracks_mT", &isoElectronTracks_mT);
+  //tExpectation_->Branch("isoElectronTracks_trkiso", &isoElectronTracks_trkiso);
   tExpectation_->Branch("isoMuonTracks", "std::vector<TLorentzVector>", &isoMuonTracks, 32000, 0);
-  tExpectation_->Branch("isoMuonTracks_activity", &isoMuonTracks_activity);
-  tExpectation_->Branch("isoMuonTracks_chg", &isoMuonTracks_chg);
-  tExpectation_->Branch("isoMuonTracks_mT", &isoMuonTracks_mT);
-  tExpectation_->Branch("isoMuonTracks_trkiso", &isoMuonTracks_trkiso);
+  //tExpectation_->Branch("isoMuonTracks_activity", &isoMuonTracks_activity);
+  //tExpectation_->Branch("isoMuonTracks_chg", &isoMuonTracks_chg);
+  //tExpectation_->Branch("isoMuonTracks_mT", &isoMuonTracks_mT);
+  //tExpectation_->Branch("isoMuonTracks_trkiso", &isoMuonTracks_trkiso);
   tExpectation_->Branch("isoPionTracks", "std::vector<TLorentzVector>", &isoPionTracks, 32000, 0);
-  tExpectation_->Branch("isoPionTracks_activity", &isoPionTracks_activity);
-  tExpectation_->Branch("isoPionTracks_chg", &isoPionTracks_chg);
-  tExpectation_->Branch("isoPionTracks_mT", &isoPionTracks_mT);
-  tExpectation_->Branch("isoPionTracks_trkiso", &isoPionTracks_trkiso);
+  //tExpectation_->Branch("isoPionTracks_activity", &isoPionTracks_activity);
+  //tExpectation_->Branch("isoPionTracks_chg", &isoPionTracks_chg);
+  //tExpectation_->Branch("isoPionTracks_mT", &isoPionTracks_mT);
+  //tExpectation_->Branch("isoPionTracks_trkiso", &isoPionTracks_trkiso);
   
   tExpectation_->Branch("isoElectronTracksNum",&isoElectronTracksNum);   
   tExpectation_->Branch("isoMuonTracksNum",&isoMuonTracksNum);   
@@ -120,7 +122,7 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
     }
 
   SearchBins_ = new SearchBins();
-  SearchBinsQCD_ = new SearchBins(true); // 220 QCD binning
+  SearchBinsQCD_ = new SearchBins(true); // QCD binning
   
   std::cout<<"DeltaPhi Cut: "<<useDeltaPhiCut<<std::endl;
   std::cout<<"----------------"<<std::endl;
@@ -144,20 +146,26 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
 
-  if(useTrigger) if(!TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
-
-
-  if(useTriggerEffWeight) Weight = Weight * GetTriggerEffWeight(MHT);
-
-  if(doPUreweighting){
-    w_pu = puhist->GetBinContent(puhist->GetXaxis()->FindBin(min(TrueNumInteractions,puhist->GetBinLowEdge(puhist->GetNbinsX()+1))));
-    Weight *= w_pu;
-  }
+  //if(useTrigger) if(!TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
 
   if(doBTagCorrFullSim || doBTagCorrFastSim){
     TString currentTree = TString(fChain->GetCurrentFile()->GetName());
+
+    // Fix for v8 production
+      //TObjArray *optionArrayFix = currentTree.Tokenize("/");
+      //TString currFileNameFix = ((TObjString *)(optionArrayFix->At(optionArrayFix->GetEntries()-1)))->String();
+      //std::string wrongWeights = "TTJets_SingleLeptFromT.root";
+      //std::size_t found = std::string(currFileNameFix.Data()).find(wrongWeights);
+      //if(found!=std::string::npos){
+      //  Weight = 3.52337e-6;
+      //}
+
     if(currentTree != treeName){
       treeName = currentTree;
+
+      //if(found!=std::string::npos){
+      //  std::cout<<"Correcting Weight!"<<std::endl;
+      //}
 
       delete btagcorr;
       btagcorr = new BTagCorrector();
@@ -176,6 +184,13 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     bTagProb = btagcorr->GetCorrections(Jets,Jets_hadronFlavor,HTJetsMask);
   }
   else bTagProb = {0, 0, 0, 0};
+
+  if(useTriggerEffWeight) Weight = Weight * GetTriggerEffWeight(MHT);
+
+  if(doPUreweighting){
+    w_pu = puhist->GetBinContent(puhist->GetXaxis()->FindBin(min(TrueNumInteractions,puhist->GetBinLowEdge(puhist->GetNbinsX()+1))));
+    Weight *= w_pu;
+  }
 
   //Account for efficiency of JetID since we cannot apply it on fastSim
   if(!applyJetID) Weight *= 0.99;
@@ -615,9 +630,17 @@ bool ExpecMaker::FiltersPass()
     if(!BadPFMuonFilter) result=false;
     if(EcalDeadCellTriggerPrimitiveFilter!=1) result=false;    
     if(eeBadScFilter!=1) result=false;
-    if(globalTightHalo2016Filter!=1) result=false;
+    if(std::abs(globalTightHalo2016Filter)!=1) result=false;
     if(HBHENoiseFilter!=1) result=false;
     if(HBHEIsoNoiseFilter!=1) result=false;
+    // Preliminary filters
+    if(PFCaloMETRatio>5) result=false;
+    for(unsigned j = 0; j < Jets->size(); j++){
+    	if(Jets->at(j).Pt()>200 && Jets_muonEnergyFraction->at(j)>0.5 && (TVector2::Phi_mpi_pi(Jets->at(j).Phi()-METPhi)>(TMath::Pi()-0.4))){
+    		//std::cout<<"found bad muon jet"<<std::endl;
+    		result=false;
+    	}
+    }
   }
   if(NVtx<=0) result=false;
   if(applyJetID) if(!JetID) result=false;

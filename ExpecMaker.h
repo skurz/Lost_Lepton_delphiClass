@@ -78,7 +78,7 @@ const int propagateJECtoMET = 0;
 const bool applyFilters_=true;
 
 // bTag corrections
-const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v7/SLe/tree_");
+const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_");
 const string path_bTagCalib("btag/CSVv2_mod.csv");
 const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
 
@@ -289,6 +289,7 @@ public :
   std::vector<double>  *PDFweights=0;
   std::vector<double>  *ScaleWeights=0;
   std::vector<int>     *Jets_hadronFlavor=0;
+  std::vector<double>     *Jets_muonEnergyFraction=0;
   std::vector<bool>    *HTJetsMask=0;
   Double_t        cosDTT=0;
   Double_t        genCosDTT=0;
@@ -377,6 +378,7 @@ public :
   TBranch        *b_selectedIDIsoMuons_MT2Activity=0;   //!
   TBranch        *b_selectedIDMuons_MT2Activity=0;   //!
   TBranch        *b_Jets_hadronFlavor=0;   //!
+  TBranch        *b_Jets_muonEnergyFraction=0;   //!
   TBranch        *b_HTJetsMask=0;   //!
   TBranch        *b_TAPElectronTracks;   //!
   TBranch        *b_TAPElectronTracks_activity;   //!
@@ -550,6 +552,7 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("selectedIDIsoMuons_MT2Activity",1);
   fChain->SetBranchStatus("selectedIDMuons_MT2Activity", 1);
   fChain->SetBranchStatus("Jets_hadronFlavor", 1);
+  fChain->SetBranchStatus("Jets_muonEnergyFraction", 1);
   fChain->SetBranchStatus("HTJetsMask", 1);
   fChain->SetBranchStatus("TAPElectronTracks", 1);
   fChain->SetBranchStatus("TAPElectronTracks_activity", 1);
@@ -632,6 +635,7 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity, &b_selectedIDIsoMuons_MT2Activity);
   fChain->SetBranchAddress("selectedIDMuons_MT2Activity", &selectedIDMuons_MT2Activity, &b_selectedIDMuons_MT2Activity);
   fChain->SetBranchAddress("Jets_hadronFlavor", &Jets_hadronFlavor, &b_Jets_hadronFlavor);
+  fChain->SetBranchAddress("Jets_muonEnergyFraction", &Jets_muonEnergyFraction, &b_Jets_muonEnergyFraction);
   fChain->SetBranchAddress("HTJetsMask", &HTJetsMask, &b_HTJetsMask);
   fChain->SetBranchAddress("TAPElectronTracks", &TAPElectronTracks, &b_TAPElectronTracks);
   fChain->SetBranchAddress("TAPElectronTracks_activity", &TAPElectronTracks_activity, &b_TAPElectronTracks_activity);

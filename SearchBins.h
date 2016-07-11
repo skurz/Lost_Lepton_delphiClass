@@ -45,7 +45,7 @@ protected:
   std::vector<std::pair<int, int>> BTags_bins_NJets3Inf;
   std::vector<std::pair<int, int>> BTags_bins_NJets2;
 
-  int nSkipped = 0;
+  Long64_t nSkipped = 0;
 };
 
 
@@ -235,7 +235,7 @@ unsigned int SearchBins::GetNbins(){
 
 void SearchBins::PrintUsed()
 {
-  int total = 0;
+  Long64_t total = 0;
   for(unsigned int i=0; i< usedBin_.size();i++){
   	std::cout<<"Bin["<<i+1<<"] has been used: "<<usedBin_[i]<<std::endl;
   	total+=usedBin_[i];;

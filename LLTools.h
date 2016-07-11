@@ -106,6 +106,65 @@ static double GetSF(TH2 *hist, Double_t xVal, Double_t yVal, bool addSys) {
   return SF;
 }
 
+static double GetAccSF(std::vector<TH2D*> hists, Int_t NJets, Double_t xVal, Double_t yVal) {
+  if(hists.size() != 5){
+    std::cout<<"Wrong dimension of histograms for acceptance uncertainty maps!"<<std::endl;
+    return 0;
+  }
+
+  TH2D* hist = 0;
+
+  switch(NJets){
+    case 3:
+      hist = hists.at(0);
+      break;
+    case 4:
+      hist = hists.at(1);
+      break;
+    case 5:
+      hist = hists.at(2);
+      break;
+    case 6:
+      hist = hists.at(3);
+      break;
+    default:
+      hist = hists.at(4);
+      break;
+  }
+
+  // Dont use overflow bins!
+  if(xVal < hist->GetXaxis()->GetXmin() )
+    {
+      //std::cout<<"SF: Warning xVal: "<<xVal<<" is smaller than minimum of histo: "<<hist->GetName()<<std::endl;
+      xVal= hist->GetXaxis()->GetXmin()+0.01;
+    }
+  else if(xVal > hist->GetXaxis()->GetXmax() )
+    {
+      //std::cout<<"SF: Warning xVal: "<<xVal<<" is bigger than maximum of histo: "<<hist->GetName()<<" which is: "<<hist->GetXaxis()->GetXmax()<<std::endl;
+      xVal= hist->GetXaxis()->GetXmax()-0.01;
+    }
+  
+  if(yVal < hist->GetYaxis()->GetXmin() )
+    {
+      //std::cout<<"SF: Warning yVal: "<<yVal<<" is smaller than minimum of histo: "<<hist->GetName()<<std::endl;
+      yVal= hist->GetYaxis()->GetXmin()+0.01;
+    }
+  else if(yVal > hist->GetYaxis()->GetXmax() )
+    {
+      //std::cout<<"SF: Warning yVal: "<<yVal<<" is bigger than maximum of histo: "<<hist->GetName()<<std::endl;
+      yVal= hist->GetYaxis()->GetXmax()-0.01;
+    }
+
+  int nxBin = hist->GetXaxis()->FindBin(xVal);
+  int nyBin = hist->GetYaxis()->FindBin(yVal);
+
+  if(nxBin > hist->GetNbinsX() || nyBin > hist->GetNbinsY()) std::cout<<"SF: Problem in getting Efficiencies!"<<std::endl;
+  if(nxBin > hist->GetNbinsX()) nxBin = hist->GetNbinsX();
+  if(nyBin > hist->GetNbinsY()) nyBin = hist->GetNbinsY();
+
+  return hist->GetBinContent(nxBin, nyBin);
+}
+
 static double getMuonIDSF(Double_t pt, Double_t eta){
   double sf = 1.;
 

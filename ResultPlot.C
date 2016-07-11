@@ -17,6 +17,7 @@
 #include "LLTools.h"
 #include "THEff.h"
 #include "TROOT.h"
+#include "TStyle.h"
 
 //needed to write vector<TLorentzVector> to tree
 #ifdef __CINT__
@@ -29,6 +30,7 @@ UShort_t getHTMHTBox(Double_t HT, Double_t MHT);
 void SetBinLabel(TH1D* hist);
 void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir);
 void addUncertainties(TH1D* total, std::vector<TH1D*> uncertainties, bool upperUnc);
+void SavePlot(TProfile* plot);
 
 const int nTemplateBins(13);
 
@@ -55,7 +57,7 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   bool useMCForDataTree = false;
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 2585;  //in units of [pb] //<-check------------------------
+  Double_t scaleFactorWeight = 3998;  //in units of [pb] //<-check------------------------
 
   // Do approximation of statistical uncertainties if full MC statistics are used (stat. unc. then refers to a given luminosity of data)
   // Leave at 'false' if doing a closure test so stat. uncertainty is the one using full MC statistics
@@ -704,6 +706,21 @@ void ResultPlot(string InputPath_Expectation="Expectation.root",
   TProfile* avgWeight_MHT_HT500_800_LL_MC_ = new TProfile("avgWeight_HT500_800_MHT_LL_MC","avgWeight_HT500_800_MHT_LL_MC", 12, 250., 850.);
   TProfile* avgWeight_MHT_HT800_1200_LL_MC_ = new TProfile("avgWeight_HT800_1200_MHT_LL_MC","avgWeight_HT800_1200_MHT_LL_MC", 12, 250., 850.);
   TProfile* avgWeight_MHT_HT1200_Inf_LL_MC_ = new TProfile("avgWeight_HT1200_Inf_MHT_LL_MC","avgWeight_HT1200_Inf_MHT_LL_MC", 12, 250., 850.);
+
+  TProfile* avgWeight_MHT_HT300_500_NJets34_LL_MC_ = new TProfile("avgWeight_HT300_500_NJets34_MHT_LL_MC","avgWeight_HT300_500_NJets34_MHT_LL_MC", 12, 250., 850.);
+  TProfile* avgWeight_MHT_HT500_800_NJets34_LL_MC_ = new TProfile("avgWeight_HT500_800_NJets34_MHT_LL_MC","avgWeight_HT500_800_NJets34_MHT_LL_MC", 12, 250., 850.);
+  TProfile* avgWeight_MHT_HT800_1200_NJets34_LL_MC_ = new TProfile("avgWeight_HT800_1200_NJets34_MHT_LL_MC","avgWeight_HT800_1200_NJets34_MHT_LL_MC", 12, 250., 850.);
+  TProfile* avgWeight_MHT_HT1200_Inf_NJets34_LL_MC_ = new TProfile("avgWeight_HT1200_Inf_NJets34_MHT_LL_MC","avgWeight_HT1200_Inf_NJets34_MHT_LL_MC", 12, 250., 850.);
+ 
+  TProfile* avgWeight_MHT_HT300_500_NJets56_LL_MC_ = new TProfile("avgWeight_HT300_500_NJets56_MHT_LL_MC","avgWeight_HT300_500_NJets56_MHT_LL_MC", 12, 250., 850.);
+  TProfile* avgWeight_MHT_HT500_800_NJets56_LL_MC_ = new TProfile("avgWeight_HT500_800_NJets56_MHT_LL_MC","avgWeight_HT500_800_NJets56_MHT_LL_MC", 12, 250., 850.);
+  TProfile* avgWeight_MHT_HT800_1200_NJets56_LL_MC_ = new TProfile("avgWeight_HT800_1200_NJets56_MHT_LL_MC","avgWeight_HT800_1200_NJets56_MHT_LL_MC", 12, 250., 850.);
+  TProfile* avgWeight_MHT_HT1200_Inf_NJets56_LL_MC_ = new TProfile("avgWeight_HT1200_Inf_NJets56_MHT_LL_MC","avgWeight_HT1200_Inf_NJets56_MHT_LL_MC", 12, 250., 850.);
+
+  TProfile* avgWeight_MHT_HT300_500_NJets7Inf_LL_MC_ = new TProfile("avgWeight_HT300_500_NJets7Inf_MHT_LL_MC","avgWeight_HT300_500_NJets7Inf_MHT_LL_MC", 12, 250., 850.);
+  TProfile* avgWeight_MHT_HT500_800_NJets7Inf_LL_MC_ = new TProfile("avgWeight_HT500_800_NJets7Inf_MHT_LL_MC","avgWeight_HT500_800_NJets7Inf_MHT_LL_MC", 12, 250., 850.);
+  TProfile* avgWeight_MHT_HT800_1200_NJets7Inf_LL_MC_ = new TProfile("avgWeight_HT800_1200_NJets7Inf_MHT_LL_MC","avgWeight_HT800_1200_NJets7Inf_MHT_LL_MC", 12, 250., 850.);
+  TProfile* avgWeight_MHT_HT1200_Inf_NJets7Inf_LL_MC_ = new TProfile("avgWeight_HT1200_Inf_NJets7Inf_MHT_LL_MC","avgWeight_HT1200_Inf_NJets7Inf_MHT_LL_MC", 12, 250., 850.);
  
 
   // Histograms for Readiness Talk
@@ -1560,6 +1577,23 @@ if(doExtrapolation){
       if(HT<800) avgWeight_MHT_HT500_800_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
       else if(HT<1200) avgWeight_MHT_HT800_1200_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
       else avgWeight_MHT_HT1200_Inf_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+    }
+
+    if(NJets < 4.5){
+      if(HT<500) avgWeight_MHT_HT300_500_NJets34_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+      else if(HT<800) avgWeight_MHT_HT500_800_NJets34_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+      else if(HT<1200) avgWeight_MHT_HT800_1200_NJets34_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+      else avgWeight_MHT_HT1200_Inf_NJets34_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+    }else if(NJets < 6.5){
+      if(HT<500) avgWeight_MHT_HT300_500_NJets56_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+      else if(HT<800) avgWeight_MHT_HT500_800_NJets56_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+      else if(HT<1200) avgWeight_MHT_HT800_1200_NJets56_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+      else avgWeight_MHT_HT1200_Inf_NJets56_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+    }else{
+      if(HT<500) avgWeight_MHT_HT300_500_NJets7Inf_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+      else if(HT<800) avgWeight_MHT_HT500_800_NJets7Inf_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+      else if(HT<1200) avgWeight_MHT_HT800_1200_NJets7Inf_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+      else avgWeight_MHT_HT1200_Inf_NJets7Inf_LL_MC_->Fill(MHT, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
     }
     
     hAvgWeightAllBins->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2));
@@ -2865,6 +2899,36 @@ if(doExtrapolation){
   avgWeight_MHT_HT800_1200_LL_MC_->Write();
   avgWeight_MHT_HT1200_Inf_LL_MC_->Write();
 
+  avgWeight_MHT_HT300_500_NJets34_LL_MC_->Write();
+  avgWeight_MHT_HT500_800_NJets34_LL_MC_->Write();
+  avgWeight_MHT_HT800_1200_NJets34_LL_MC_->Write();
+  avgWeight_MHT_HT1200_Inf_NJets34_LL_MC_->Write();
+
+  avgWeight_MHT_HT300_500_NJets56_LL_MC_->Write();
+  avgWeight_MHT_HT500_800_NJets56_LL_MC_->Write();
+  avgWeight_MHT_HT800_1200_NJets56_LL_MC_->Write();
+  avgWeight_MHT_HT1200_Inf_NJets56_LL_MC_->Write();
+
+  avgWeight_MHT_HT300_500_NJets7Inf_LL_MC_->Write();
+  avgWeight_MHT_HT500_800_NJets7Inf_LL_MC_->Write();
+  avgWeight_MHT_HT800_1200_NJets7Inf_LL_MC_->Write();
+  avgWeight_MHT_HT1200_Inf_NJets7Inf_LL_MC_->Write();
+
+  SavePlot(avgWeight_MHT_HT300_500_NJets34_LL_MC_);
+  SavePlot(avgWeight_MHT_HT500_800_NJets34_LL_MC_);
+  SavePlot(avgWeight_MHT_HT800_1200_NJets34_LL_MC_);
+  SavePlot(avgWeight_MHT_HT1200_Inf_NJets34_LL_MC_);
+
+  SavePlot(avgWeight_MHT_HT300_500_NJets56_LL_MC_);
+  SavePlot(avgWeight_MHT_HT500_800_NJets56_LL_MC_);
+  SavePlot(avgWeight_MHT_HT800_1200_NJets56_LL_MC_);
+  SavePlot(avgWeight_MHT_HT1200_Inf_NJets56_LL_MC_);
+
+  SavePlot(avgWeight_MHT_HT300_500_NJets7Inf_LL_MC_);
+  SavePlot(avgWeight_MHT_HT500_800_NJets7Inf_LL_MC_);
+  SavePlot(avgWeight_MHT_HT800_1200_NJets7Inf_LL_MC_);
+  SavePlot(avgWeight_MHT_HT1200_Inf_NJets7Inf_LL_MC_);
+
   TH1D* PredOverCS_LL_MC = (TH1D*) totalPred_LL_MC_->Clone("PredOverCS_LL_MC");
   PredOverCS_LL_MC->Divide(totalCS_LL_MC_);
   PredOverCS_LL_MC->SetTitle("Prediction / CS (=0L/1L)");
@@ -3030,6 +3094,22 @@ void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // pre
   Closure->SetName(title);
   Folder->cd();
   Closure->Write();
+}
+
+void SavePlot(TProfile* plot){
+
+  TString name(plot->GetName());
+  plot->GetXaxis()->SetTitle("MHT");
+
+  gROOT->SetBatch(true);
+  TCanvas *c1 = new TCanvas(name,name,1);
+  c1->cd();
+
+  gStyle->SetOptStat(0);
+  plot->Draw();
+  c1->SaveAs(TString("Teruki/")+name+TString(".pdf"));
+
+  gROOT->SetBatch(false);
 }
 
 UShort_t getMergedBinQCD(UShort_t BinQCD, Int_t NJets){
