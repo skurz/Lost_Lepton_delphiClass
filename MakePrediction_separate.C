@@ -101,7 +101,7 @@ void MakePrediction_separate()
   //Effchain[33]->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_ZZTo2Q2Nu.root");
 
 
-  for(Int_t i=19; i<nChains; i++){ //i<nChains i>2
+  for(Int_t i=0; i<nChains; i++){ //i<nChains i>2
     std::cout<<"Processing Tree: "<<i<<std::endl;
     if(i>2)    Effchain[i]->Process("Prediction", TString::Format("Prediction_separate/Prediction_%d.root",i));
     else Effchain[i]->Process("Prediction", TString::Format("Prediction_separate/Prediction_%d.root, 600",i)); // folder already has to exist for the time beeing...
