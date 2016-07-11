@@ -45,6 +45,7 @@ const bool runOnStandardModelMC = true;  //<-check------------------------
 const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims (bTag reweighting)
+// Does not matter for Data
 const bool runOnNtuples = true;
 const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_");
 
@@ -701,6 +702,7 @@ void Prediction::Init(TTree *tree)
 
   // Do PU reweighting. true for signal scan
   if(runOnSignalMC) doPUreweighting = true;
+  //if(runOnStandardModelMC) doPUreweighting = true;
   // bTag corrections. Use for signal scan
   if(!runOnData) doBTagCorr = true;
   // ISR corrections. NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond
@@ -884,11 +886,11 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchStatus("Weight", 1);
     fChain->SetBranchStatus("Jets_hadronFlavor", 1);
     fChain->SetBranchStatus("madHT", 1);
+    fChain->SetBranchStatus("TrueNumInteractions", 1);
   } 
   if(runOnSignalMC){
     fChain->SetBranchStatus("SusyLSPMass", 1);
     fChain->SetBranchStatus("SusyMotherMass", 1);
-    fChain->SetBranchStatus("TrueNumInteractions", 1);
     fChain->SetBranchStatus("genParticles",1);
     fChain->SetBranchStatus("genParticles_PDGid",1);
   }
@@ -944,11 +946,11 @@ void Prediction::Init(TTree *tree)
     fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
     fChain->SetBranchAddress("Jets_hadronFlavor", &Jets_hadronFlavor, &b_Jets_hadronFlavor);
     fChain->SetBranchAddress("madHT", &madHT, &b_madHT);
+    fChain->SetBranchAddress("TrueNumInteractions", &TrueNumInteractions, &b_TrueNumInteractions);
   }
   if(runOnSignalMC){
     fChain->SetBranchAddress("SusyLSPMass", &SusyLSPMass, &b_SusyLSPMass);
     fChain->SetBranchAddress("SusyMotherMass", &SusyMotherMass, &b_SusyMotherMass);
-    fChain->SetBranchAddress("TrueNumInteractions", &TrueNumInteractions, &b_TrueNumInteractions);
     fChain->SetBranchAddress("genParticles", &genParticles, &b_genParticles);
     fChain->SetBranchAddress("genParticles_PDGid", &genParticles_PDGid, &b_genParticles_PDGid);
   }

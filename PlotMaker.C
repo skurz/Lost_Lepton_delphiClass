@@ -10,20 +10,20 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	string InputPath_Efficiencies="Efficiencies.root",
 	string InputPath_Prediction="Prediction.root",
 	string InputPath_Prediction_Data="Prediction_data.root", // Use same path as above if pure MC prediction wanted
-	string OutputPath_Prediction="LLPrediction_QCD.root"){
+	string OutputPath_Prediction="LLPrediction.root"){
 	
 	gSystem->Load("libPhysics.so");
 	gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
 
 
 	 // Present output in QCD binning
-	const bool doQCDbinning = true;  //<-check------------------------
+	const bool doQCDbinning = false;  //<-check------------------------
 
 	// Weight MC events with bTag probabilities
 	const bool doBtagProbabilities = true;
 
 	// Fill MC histograms only (saves time)
-	const bool doMConly = true;
+	const bool doMConly = false;
 
 	// Prepare Code for Extrapolation Method
 	const bool doExtrapolation = false;		// NOT IMPLEMENTED

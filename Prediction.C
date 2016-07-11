@@ -246,12 +246,12 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
     //tPrediction_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
     tPrediction_->Branch("bTagProb", &bTagProb);
     tPrediction_->Branch("madHT", &madHT);
+    tPrediction_->Branch("w_pu", &w_pu);
   }
   if(runOnSignalMC){
     tPrediction_->Branch("SusyLSPMass", &SusyLSPMass);
     tPrediction_->Branch("SusyMotherMass", &SusyMotherMass);
     tPrediction_->Branch("w_isr", &w_isr);
-    tPrediction_->Branch("w_pu", &w_pu);
     tPrediction_->Branch("xsec", &xsec);
     tPrediction_->Branch("nEvtsTotal", &nEvtsTotal);
 
