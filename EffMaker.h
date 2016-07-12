@@ -195,6 +195,22 @@ class EffMaker : public TSelector {
   TH2Eff *MuAccHTMHT_NJets78_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJets9Inf_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJetsHigh_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets2_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets3_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets4_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets5_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets6_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets78_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_BTags1_;
+  TH2Eff *MuAccHTMHT_NJetsHigh_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets2_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets3_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets4_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets5_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets6_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets78_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJetsHigh_BTags2Inf_;
   
   // elec
   //1D
@@ -247,6 +263,22 @@ class EffMaker : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets78_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJets9Inf_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJetsHigh_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets2_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets3_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets4_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets5_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets6_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets78_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets2_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets3_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets4_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets5_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets6_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets78_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags2Inf_;
   
 
   // Reco 

@@ -10,14 +10,14 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	string InputPath_Efficiencies="Efficiencies.root",
 	string InputPath_Prediction="Prediction.root",
 	string InputPath_Prediction_Data="Prediction_data.root", // Use same path as above if pure MC prediction wanted
-	string OutputPath_Prediction="LLPrediction.root"){
+	string OutputPath_Prediction="LLPrediction_QCD.root"){
 	
 	gSystem->Load("libPhysics.so");
 	gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
 
 
 	 // Present output in QCD binning
-	const bool doQCDbinning = false;  //<-check------------------------
+	const bool doQCDbinning = true;  //<-check------------------------
 
 	// Weight MC events with bTag probabilities
 	const bool doBtagProbabilities = true;
@@ -148,16 +148,14 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	          scaledWeight = Weight * scaleFactorWeight;
 	        }
 
-			//totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-			//avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
-			if(i==0){
-				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags0*scaleFactorWeightBtagProb/2);
-				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags0_noIsoTrack*scaleFactorWeightBtagProb/2);
-				avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeight_BTags0/Weight/2), abs(Weight));
+	        if(nLoops==1){
+				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb/2);
+				avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
 			}else{
-				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
-				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags1Inf_noIsoTrack*scaleFactorWeightBtagProb/2);
-				avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeight_BTags1Inf/Weight/2), abs(Weight));
+				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb/2);
+				avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeight_BTags->at(i)/Weight/2), abs(Weight));
 			}
 
 			totalCS_LL_MC_->Fill(Bin_bTags.at(i), scaledWeight);

@@ -49,6 +49,9 @@ const bool runOnSignalMC = false;  //<-check------------------------
 const bool runOnNtuples = true;
 const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_");
 
+// Useful for T2tt corridor studies
+const bool useGenHTMHT = false;
+
 // PU
 const TString path_puHist("PU/PileupHistograms_0704.root");
 // bTag corrections
@@ -389,8 +392,8 @@ class Prediction : public TSelector {
 
   
   Float_t totalWeight_, totalWeightDiLep_, totalWeightDiLepIsoTrackReduced_,totalWeightDiLepIsoMuTrackReduced_,totalWeightDiLepIsoElecTrackReduced_,totalWeightDiLepIsoPionTrackReduced_,totalWeightDiLepIsoTrackReducedCombined_;
-  Float_t totalWeight_BTags0_, totalWeight_BTags1Inf_;
-  Float_t totalWeight_BTags0_noIsoTrack_, totalWeight_BTags1Inf_noIsoTrack_;
+  std::vector<Float_t> totalWeight_BTags_;
+  std::vector<Float_t> totalWeight_BTags_noIsoTrack_;
   Float_t muTotalWeightDiLep_, muTotalWeightDiLepIsoTrackReduced_;
   Float_t elecTotalWeightDiLep_, elecTotalWeightDiLepIsoTrackReduced_;
   std::vector<Float_t> selectedIDIsoMuonsDeltaRJet, selectedIDIsoMuonsRelPTJet;
@@ -462,6 +465,22 @@ class Prediction : public TSelector {
   TH2Eff *MuAccHTMHT_NJets78_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJets9Inf_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJetsHigh_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets2_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets3_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets4_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets5_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets6_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets78_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_BTags1_;
+  TH2Eff *MuAccHTMHT_NJetsHigh_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets2_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets3_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets4_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets5_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets6_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets78_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJetsHigh_BTags2Inf_;
 
   
   TH2Eff *ElecIsoActivityPT_;
@@ -513,6 +532,22 @@ class Prediction : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets78_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJets9Inf_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJetsHigh_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets2_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets3_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets4_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets5_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets6_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets78_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets2_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets3_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets4_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets5_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets6_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets78_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags2Inf_;
   
   // expectation reduction by the isolated track veto
   TH1Eff *ExpectationReductionIsoTrackNJetsEff_;
@@ -553,6 +588,8 @@ class Prediction : public TSelector {
   Int_t          HBHENoiseFilter;
   Int_t          HBHEIsoNoiseFilter;
   Double_t        HT;
+  Double_t        GenHT;
+  Double_t        GenMHT;
   Int_t           isoElectronTracksNum;
   Int_t           isoMuonTracksNum;
   Int_t           isoPionTracksNum;
@@ -610,6 +647,8 @@ class Prediction : public TSelector {
   TBranch        *b_HBHENoiseFilter=0;   //!
   TBranch        *b_HBHEIsoNoiseFilter=0;   //!
   TBranch        *b_HT=0;   //!
+  TBranch        *b_GenHT=0;   //!
+  TBranch        *b_GenMHT=0;   //!
   TBranch        *b_isoElectronTracksNum=0;   //!
   TBranch        *b_isoMuonTracksNum=0;   //!
   TBranch        *b_isoPionTracksNum=0;   //!
@@ -698,8 +737,8 @@ void Prediction::Init(TTree *tree)
   // Apply trigger
   if(runOnData) useTrigger = true;
   // Apply weights if trigger not simulated
-  if(runOnStandardModelMC || runOnSignalMC) useTriggerEffWeight = false;
-
+  if(runOnStandardModelMC) useTriggerEffWeight = false;
+  if(runOnSignalMC) useTriggerEffWeight = true;
   // Do PU reweighting. true for signal scan
   if(runOnSignalMC) doPUreweighting = true;
   //if(runOnStandardModelMC) doPUreweighting = true;
@@ -891,9 +930,16 @@ void Prediction::Init(TTree *tree)
   if(runOnSignalMC){
     fChain->SetBranchStatus("SusyLSPMass", 1);
     fChain->SetBranchStatus("SusyMotherMass", 1);
+  }
+  if(doISRcorr){
     fChain->SetBranchStatus("genParticles",1);
     fChain->SetBranchStatus("genParticles_PDGid",1);
   }
+  if(useGenHTMHT){
+    fChain->SetBranchStatus("GenHT", 1);
+    fChain->SetBranchStatus("GenMHT", 1);
+  }
+
   fChain->SetBranchStatus("selectedIDElectrons_MT2Activity",1);
   fChain->SetBranchStatus("selectedIDIsoElectrons_MT2Activity", 1);
   fChain->SetBranchStatus("selectedIDIsoMuons_MT2Activity",1);
@@ -951,9 +997,16 @@ void Prediction::Init(TTree *tree)
   if(runOnSignalMC){
     fChain->SetBranchAddress("SusyLSPMass", &SusyLSPMass, &b_SusyLSPMass);
     fChain->SetBranchAddress("SusyMotherMass", &SusyMotherMass, &b_SusyMotherMass);
+  }
+  if(doISRcorr){
     fChain->SetBranchAddress("genParticles", &genParticles, &b_genParticles);
     fChain->SetBranchAddress("genParticles_PDGid", &genParticles_PDGid, &b_genParticles_PDGid);
   }
+  if(useGenHTMHT){
+    fChain->SetBranchAddress("GenHT", &GenHT, &b_GenHT);
+    fChain->SetBranchAddress("GenMHT", &GenMHT, &b_GenMHT);
+  }
+
   fChain->SetBranchAddress("selectedIDElectrons_MT2Activity", &selectedIDElectrons_MT2Activity, &b_selectedIDElectrons_MT2Activity);
   fChain->SetBranchAddress("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity, &b_selectedIDIsoElectrons_MT2Activity);
   fChain->SetBranchAddress("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity, &b_selectedIDIsoMuons_MT2Activity);

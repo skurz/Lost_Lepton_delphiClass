@@ -64,10 +64,8 @@ std::vector<TLorentzVector> *GenEls=0;
 Float_t         totalWeightDiLep;
 Float_t         totalWeightDiLepIsoTrackReduced;
 Float_t         totalWeightDiLepIsoTrackReducedCombined;
-Float_t         totalWeight_BTags0;
-Float_t         totalWeight_BTags1Inf;
-Float_t         totalWeight_BTags0_noIsoTrack;
-Float_t         totalWeight_BTags1Inf_noIsoTrack;
+std::vector<Float_t>*         totalWeight_BTags=0;
+std::vector<Float_t>*         totalWeight_BTags_noIsoTrack=0;
 
 // Uncertainties
 Float_t isoTrackStatUp;
@@ -484,20 +482,14 @@ void setBranchesPrediction(TTree *tree, bool isData){
     tree->SetBranchStatus("bTagProb",1);
     tree->SetBranchAddress("bTagProb",&bTagProb);
 
-    tree->SetBranchStatus("totalWeight_BTags0",1);
-    tree->SetBranchAddress("totalWeight_BTags0",&totalWeight_BTags0);
-    tree->SetBranchStatus("totalWeight_BTags1Inf",1);
-    tree->SetBranchAddress("totalWeight_BTags1Inf",&totalWeight_BTags1Inf);
-    tree->SetBranchStatus("totalWeight_BTags0_noIsoTrack",1);
-    tree->SetBranchAddress("totalWeight_BTags0_noIsoTrack",&totalWeight_BTags0_noIsoTrack);
-    tree->SetBranchStatus("totalWeight_BTags1Inf_noIsoTrack",1);
-    tree->SetBranchAddress("totalWeight_BTags1Inf_noIsoTrack",&totalWeight_BTags1Inf_noIsoTrack); 
+    tree->SetBranchStatus("totalWeight_BTags",1);
+    tree->SetBranchAddress("totalWeight_BTags",&totalWeight_BTags);
+    tree->SetBranchStatus("totalWeight_BTags_noIsoTrack",1);
+    tree->SetBranchAddress("totalWeight_BTags_noIsoTrack",&totalWeight_BTags_noIsoTrack);
   }else{
     bTagProb = 0;
-    totalWeight_BTags0 = 0;
-    totalWeight_BTags1Inf = 0;
-    totalWeight_BTags0_noIsoTrack = 0;
-    totalWeight_BTags1Inf_noIsoTrack = 0;
+    totalWeight_BTags = 0;
+    totalWeight_BTags_noIsoTrack = 0;
   }  
 
   tree->SetBranchStatus("isoTrackSysUp", 1);

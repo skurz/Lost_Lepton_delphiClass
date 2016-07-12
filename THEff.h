@@ -393,7 +393,52 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   if(result<0.01)
   {
     std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.01 for histo: "<<RatioTH2D_->GetName()<<std::endl;
-    effVec effVec_ = {0.01, 0.99, 0.01};
+    int nValidBins = 0;
+    double sum = 0;
+    double sumUp = 0;
+    double sumDown = 0;
+
+    if(nxBin > 1){
+    	if(RatioTH2D_->GetBinContent(nxBin-1, nyBin) > 0.01){
+	    	nValidBins++;
+	    	sum += RatioTH2D_->GetBinContent(nxBin-1, nyBin);
+	    	sumUp += RatioTH2D_->GetBinErrorUp(nxBin-1, nyBin);
+	    	sumDown += RatioTH2D_->GetBinErrorLow(nxBin-1, nyBin);
+    	}
+    }
+    if(nyBin > 1){
+    	if(RatioTH2D_->GetBinContent(nxBin, nyBin-1) > 0.01){
+	    	nValidBins++;
+	    	sum += RatioTH2D_->GetBinContent(nxBin, nyBin-1);
+	    	sumUp += RatioTH2D_->GetBinErrorUp(nxBin, nyBin-1);
+	    	sumDown += RatioTH2D_->GetBinErrorLow(nxBin, nyBin-1);
+	    }
+    }
+    if(nxBin < RatioTH2D_->GetNbinsX()){
+    	if(RatioTH2D_->GetBinContent(nxBin+1, nyBin) > 0.01){
+	    	nValidBins++;
+	    	sum += RatioTH2D_->GetBinContent(nxBin+1, nyBin);
+	    	sumUp += RatioTH2D_->GetBinErrorUp(nxBin+1, nyBin);
+	    	sumDown += RatioTH2D_->GetBinErrorLow(nxBin+1, nyBin);
+    	}
+    }
+    if(nyBin < RatioTH2D_->GetNbinsY()){
+    	if(RatioTH2D_->GetBinContent(nxBin, nyBin+1) > 0.01){
+	    	nValidBins++;
+	    	sum += RatioTH2D_->GetBinContent(nxBin, nyBin+1);
+	    	sumUp += RatioTH2D_->GetBinErrorUp(nxBin, nyBin+1);
+	    	sumDown += RatioTH2D_->GetBinErrorLow(nxBin, nyBin+1);
+    	}
+    }
+
+    effVec effVec_;
+    if(sum/double(nValidBins)<0.01){
+    	std::cout<<"Warning: efficiency still < 0.01!"<<std::endl;
+    	effVec_ = {0.01, 0.99, 0.01};
+	}else{
+		std::cout<<"Warning applying fix (avg. of surrounding bins): "<<sum/double(nValidBins)<<std::endl;
+    	effVec_ = {sum/double(nValidBins), sumUp/double(nValidBins), sumDown/double(nValidBins)};
+	}
     return effVec_; 
   }
   if(result>1)

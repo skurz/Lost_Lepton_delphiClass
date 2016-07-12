@@ -57,9 +57,11 @@ static double GetTriggerEffWeight(Double_t MHT){
 }
 
 static double GetSignalTriggerEffWeight(Double_t MHT) {
-  if (MHT<200) return 0;
-  else if (MHT<500) return 0.9819;
-  else return 0.9833;
+  if (MHT<250) return 0;
+  else if(MHT<300) return 0.982;
+  else if (MHT<350) return 0.985;
+  else if (MHT<500) return 0.995;
+  else return 1.00;
 }
 
 static double GetSF(TH2 *hist, Double_t xVal, Double_t yVal, bool addSys) {

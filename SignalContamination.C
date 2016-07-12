@@ -27,12 +27,12 @@ void SignalContamination()
 {
 
   // General Settings
-  TString InputPath_Prediction("Prediction_T2tt_175_0.root");
-  TString OutputPath_Prediction("LLContamination_T2tt_175_0.root");
+  TString InputPath_Prediction("Prediction_Scan_T2tt.root");
+  TString OutputPath_Prediction("LLContamination_T2tt.root");
 
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 2262; // in units of [pb] //<-check------------------------
+  Double_t scaleFactorWeight = 7632; // in units of [pb] //<-check------------------------
 
   // Present output in QCD binning
   bool doQCDbinning = false;  //<-check------------------------;
@@ -40,10 +40,8 @@ void SignalContamination()
   // Begin of Code
   SearchBins *SearchBins_ = new SearchBins(doQCDbinning);
 
-  int nSearchBinsTotal = 72;
-  if(doQCDbinning){
-    nSearchBinsTotal = 220;
-  }
+  const int nSearchBinsTotal = SearchBins_->GetNbins();
+
   UShort_t         SearchBin=0;
 
 
@@ -65,8 +63,10 @@ void SignalContamination()
   UShort_t        selectedIDIsoElectronsNum;
   
   Float_t         totalWeightDiLep;
-  Float_t         totalWeightDiLepIsoTrackReduced;
   Float_t         totalWeightDiLepIsoTrackReducedCombined;
+
+  std::vector<Float_t>*         totalWeight_BTags=0;
+  std::vector<Float_t>*         totalWeight_BTags_noIsoTrack=0;
 
   std::vector<UShort_t> Bin_bTags(4, 0.);
   std::vector<double> *bTagProb=0;
@@ -98,8 +98,9 @@ void SignalContamination()
   LostLeptonPrediction->SetBranchStatus("selectedIDIsoMuonsNum",1);
   LostLeptonPrediction->SetBranchStatus("selectedIDIsoElectronsNum",1);
   LostLeptonPrediction->SetBranchStatus("totalWeightDiLep",1);
-  LostLeptonPrediction->SetBranchStatus("totalWeightDiLepIsoTrackReduced",1);
   LostLeptonPrediction->SetBranchStatus("totalWeightDiLepIsoTrackReducedCombined",1);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags",1);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags_noIsoTrack",1);
   LostLeptonPrediction->SetBranchStatus("SusyLSPMass", 1);
   LostLeptonPrediction->SetBranchStatus("SusyMotherMass", 1);
   LostLeptonPrediction->SetBranchStatus("bTagProb", 1);
@@ -117,9 +118,10 @@ void SignalContamination()
   LostLeptonPrediction->SetBranchAddress("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum);
   LostLeptonPrediction->SetBranchAddress("selectedIDIsoElectronsNum",&selectedIDIsoElectronsNum);
   LostLeptonPrediction->SetBranchAddress("totalWeightDiLep",&totalWeightDiLep);
-  LostLeptonPrediction->SetBranchAddress("totalWeightDiLepIsoTrackReduced",&totalWeightDiLepIsoTrackReduced);
   LostLeptonPrediction->SetBranchAddress("totalWeightDiLepIsoTrackReducedCombined",&totalWeightDiLepIsoTrackReducedCombined);
-  
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags",&totalWeight_BTags);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags_noIsoTrack",&totalWeight_BTags_noIsoTrack);
+
   LostLeptonPrediction->SetBranchAddress("SusyLSPMass",&SusyLSPMass);
   LostLeptonPrediction->SetBranchAddress("SusyMotherMass",&SusyMotherMass);
 
@@ -157,18 +159,32 @@ void SignalContamination()
 
 
     if(found < 0){
+      TString currentTree = TString(LostLeptonPrediction->GetCurrentFile()->GetName());
       char buffer [50];
-      sprintf(buffer, "mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
-      histVec.push_back(new TH1D(buffer, buffer, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
       char buffer_mu [50];
-      sprintf(buffer_mu, "muCS_mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
-      histVec_muCS.push_back(new TH1D(buffer_mu, buffer_mu, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
       char buffer_e [50];
-      sprintf(buffer_e, "elecCS_mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
-      histVec_eCS.push_back(new TH1D(buffer_e, buffer_e, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
       char buffer_avgWeight [50];
-      sprintf(buffer_avgWeight, "avgWeight_mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+
+      if((std::string(currentTree.Data()).find(std::string("T1"))) != std::string::npos || (std::string(currentTree.Data()).find(std::string("T5"))) != std::string::npos){
+        sprintf(buffer, "mGluino_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+        sprintf(buffer_mu, "muCS_mGluino_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+        sprintf(buffer_e, "elecCS_mGluino_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+        sprintf(buffer_avgWeight, "avgWeight_mGluino_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+      }else if((std::string(currentTree.Data()).find(std::string("T2"))) != std::string::npos){
+        sprintf(buffer, "mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+        sprintf(buffer_mu, "muCS_mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+        sprintf(buffer_e, "elecCS_mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+        sprintf(buffer_avgWeight, "avgWeight_mStop_%.0f_mLSP_%.0f", SusyMotherMass, SusyLSPMass);
+      }else{
+        std::cout<<"No valid sample found (T1/T2/T5)!"<<std::endl;
+        return;
+      }
+
+      histVec.push_back(new TH1D(buffer, buffer, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
+      histVec_muCS.push_back(new TH1D(buffer_mu, buffer_mu, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
+      histVec_eCS.push_back(new TH1D(buffer_e, buffer_e, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
       histVec_avgWeight.push_back(new TH1D(buffer_avgWeight, buffer_avgWeight, nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5));
+
       found = histVec.size()-1;
       histVec.at(found)->Sumw2();
       lspMass.push_back(SusyLSPMass);
@@ -181,7 +197,7 @@ void SignalContamination()
       if(selectedIDIsoElectronsNum > 0) histVec_eCS.at(found)->Fill(Bin_bTags.at(i), scaledWeight*bTagProb->at(i));
       histVec_avgWeight.at(found)->Fill(Bin_bTags.at(i), scaledWeight*bTagProb->at(i));
       
-      histVec.at(found)->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeight/2*bTagProb->at(i));
+      histVec.at(found)->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeight/2*bTagProb->at(i));
     }
   }
 
@@ -367,42 +383,80 @@ UShort_t getHTMHTBox(Double_t HT, Double_t MHT){
 }
 
 void SetBinLabel(TH1D* hist){
-  if(hist->GetNbinsX()==72)
-  for(int nji = 0; nji<3; ++nji){
+  if(hist->GetNbinsX()==190){
+    // only BTags=0,1,2 for NJets=2
     for(int nbi = 0; nbi<4; ++nbi){
-        for(int hti = 0; hti<6; ++hti){
+      for(int hti = 0; hti<10; ++hti){
+        int mhti =0;
+        if(hti >=0 && hti <=2) mhti = 0;
+        else if(hti >=3 && hti <=5) mhti = 1;
+        else if(hti >=6 && hti <=7) mhti = 2;
+        else mhti = 3;
+        char binlabel[100];
+        int bi = nbi * 10 + hti + 1;
+        //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", 0, nbi, mhti, hti, bi);
+        sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", 0, nbi, mhti, hti);
+        hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
+      }
+    }
+
+    for(int nji = 1; nji<5; ++nji){
+      for(int nbi = 0; nbi<4; ++nbi){
+        for(int hti = 0; hti<10; ++hti){
           int mhti =0;
           if(hti >=0 && hti <=2) mhti = 0;
-          else if(hti >=3 && hti <=4) mhti = 1;
-          else mhti = 2;
+          else if(hti >=3 && hti <=5) mhti = 1;
+          else if(hti >=6 && hti <=7) mhti = 2;
+          else mhti = 3;
           char binlabel[100];
-          int bi = nji * 24 + nbi * 6 + hti + 1;
+          int bi = 30 + (nji-1) * 40 + nbi * 10 + hti + 1;
           //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
           sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
           hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
         }
+      }
     }
   }
 
-  if(hist->GetNbinsX()==220)
-  for(int nji = 0; nji<5; ++nji){
+  if(hist->GetNbinsX()==160)
+  for(int nji = 0; nji<4; ++nji){
     for(int nbi = 0; nbi<4; ++nbi){
-        for(int mhti = 0; mhti<4; ++mhti){
-          int htiMin = 0;
-          if(mhti==3) htiMin = 1;
-          for(int hti = htiMin; hti<3; ++hti){
-            char binlabel[100];
-            int bi = nji * 44 + nbi * 11 + mhti * 3 + hti + 1;
-            if(htiMin==1) bi = nji * 44 + nbi * 11 + mhti * 3 + hti;
-            //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
-            sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
-            hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
-          }
-        }
+      for(int hti = 0; hti<10; ++hti){
+        int mhti =0;
+        if(hti >=0 && hti <=2) mhti = 0;
+        else if(hti >=3 && hti <=5) mhti = 1;
+        else if(hti >=6 && hti <=7) mhti = 2;
+        else mhti = 3;
+        char binlabel[100];
+        int bi = (nji) * 40 + nbi * 10 + hti + 1;
+        //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
+        sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
+        hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
+      }
+    }
+  }
+
+  if(hist->GetNbinsX()==208)
+  for(int nji = 0; nji<4; ++nji){
+    for(int nbi = 0; nbi<4; ++nbi){
+      for(int hti = 0; hti<13; ++hti){
+        int mhti =0;
+        if(hti >=0 && hti <=2) mhti = -1;
+        else if(hti >=3 && hti <=5) mhti = 0;
+        else if(hti >=6 && hti <=8) mhti = 1;
+        else if(hti >=9 && hti <=10) mhti = 2;
+        else mhti = 3;
+        char binlabel[100];
+        int bi = (nji) * 52 + nbi * 13 + hti + 1;
+        //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
+        if(mhti < 0)  sprintf(binlabel, "NJets%d-BTags%d-MHTC-HT%d", nji, nbi, hti);
+        else sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti-3);
+        hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
+      }
     }
   }
   
-  hist -> GetXaxis() -> LabelsOption("v");
+  if(hist->GetNbinsX()==190 || hist->GetNbinsX()==160 || hist->GetNbinsX()==208) hist -> GetXaxis() -> LabelsOption("v");
 }
 
 void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir){
