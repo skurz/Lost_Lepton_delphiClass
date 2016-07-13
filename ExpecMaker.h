@@ -72,15 +72,15 @@ const bool doBTagCorrFastSim = false;
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
 const int scaleMet = 0;
 // propagate JEC only. +/-1 = up/down
-const int propagateJECtoMET = 0;
+//const int propagateJECtoMET = 1; // not used anymore
 
 // apply filters
 const bool applyFilters_=true;
 
 // bTag corrections
 const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_");
-const string path_bTagCalib("btag/CSVv2_mod.csv");
-const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
+const string path_bTagCalib("btag/CSVv2_4invfb.csv");
+const string path_bTagCalibFastSim("btag/CSV_13TEV_TTJets_11_7_2016.csv");
 
 ////////////////////////
 //////// Don't change anything below
@@ -198,6 +198,8 @@ public :
   
   
   Float_t mtw;
+  Float_t mtw_METup;
+  Float_t mtw_METdown;
 
   UShort_t selectedIDMuonsNum_, selectedIDIsoMuonsNum_;
   UShort_t selectedIDElectronsNum_, selectedIDIsoElectronsNum_;
@@ -257,6 +259,8 @@ public :
   Double_t        PFCaloMETRatio;
   std::vector<double>   *METUp=0;
   std::vector<double>   *METDown=0;
+  std::vector<double>   *METPhiUp=0;
+  std::vector<double>   *METPhiDown=0;
   Double_t        MHT;
   Double_t        MHTPhi;
   Double_t        GenHT;
@@ -345,6 +349,8 @@ public :
   TBranch        *b_PFCaloMETRatio=0;   //!
   TBranch        *b_METUp=0;   //!
   TBranch        *b_METDown=0;   //!
+  TBranch        *b_METPhiUp=0;   //!
+  TBranch        *b_METPhiDown=0;   //!
   TBranch        *b_MHT=0;   //!
   TBranch        *b_MHTPhi=0;   //!
   TBranch        *b_GenHT=0;
@@ -518,6 +524,8 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("PFCaloMETRatio", 1);
   fChain->SetBranchStatus("METUp", 1);
   fChain->SetBranchStatus("METDown", 1);
+  fChain->SetBranchStatus("METPhiUp", 1);
+  fChain->SetBranchStatus("METPhiDown", 1);
   fChain->SetBranchStatus("MHT", 1);
   fChain->SetBranchStatus("MHTPhi", 1);
   fChain->SetBranchStatus("GenMHT", 1);
@@ -604,6 +612,8 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("PFCaloMETRatio", &PFCaloMETRatio, &b_PFCaloMETRatio);
   fChain->SetBranchAddress("METUp", &METUp, &b_METUp);
   fChain->SetBranchAddress("METDown", &METDown, &b_METDown);
+  fChain->SetBranchAddress("METPhiUp", &METPhiUp, &b_METPhiUp);
+  fChain->SetBranchAddress("METPhiDown", &METPhiDown, &b_METPhiDown);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
   fChain->SetBranchAddress("MHTPhi", &MHTPhi, &b_MHTPhi);
   fChain->SetBranchAddress("GenMHT", &GenMHT, &b_GenMHT);

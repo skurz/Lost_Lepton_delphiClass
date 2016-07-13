@@ -46,7 +46,7 @@ const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims (bTag reweighting)
 // Does not matter for Data
-const bool runOnNtuples = true;
+const bool runOnNtuples = false;
 const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_");
 
 // Useful for T2tt corridor studies
@@ -55,8 +55,8 @@ const bool useGenHTMHT = false;
 // PU
 const TString path_puHist("PU/PileupHistograms_0704.root");
 // bTag corrections
-const string path_bTagCalib("btag/CSVv2_mod.csv");
-const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
+const string path_bTagCalib("btag/CSVv2_4invfb.csv");
+const string path_bTagCalibFastSim("btag/CSV_13TEV_TTJets_11_7_2016.csv");
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // ISR corrections: NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond! Just uncomment in Prediction::Init(Tree*) of this file
 const TString path_ISRcorr("isr_corrections/ISRWeights.root");
@@ -83,7 +83,8 @@ const TString path_muIso("SFs/TnP_MuonID_NUM_MiniIsoTight_DENOM_LooseID_VAR_map_
 const TString hist_muIso("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass");
 
 //Acceptance uncertainty maps
-const TString path_AccPDF("AcceptanceUncertainty/PDFuncertainty.root");
+const TString path_AccPDF_up("AcceptanceUncertainty/PDFuncertainty_up.root");
+const TString path_AccPDF_down("AcceptanceUncertainty/PDFuncertainty_down.root");
 const TString path_AccQ2("AcceptanceUncertainty/Q2uncertainty.root");
 
 
@@ -265,8 +266,10 @@ class Prediction : public TSelector {
   TH2D* h_elecIsoSF;
   TH2D* h_elecIDSF;
 
-  std::vector<TH2D*> h_muAccPDF;
-  std::vector<TH2D*> h_elecAccPDF;
+  std::vector<TH2D*> h_muAccPDF_up;
+  std::vector<TH2D*> h_elecAccPDF_up;
+  std::vector<TH2D*> h_muAccPDF_down;
+  std::vector<TH2D*> h_elecAccPDF_down;
   std::vector<TH2D*> h_muAccQ2;
   std::vector<TH2D*> h_elecAccQ2;
 
@@ -837,17 +840,29 @@ void Prediction::Init(TTree *tree)
   h_elecIsoSF = (TH2D*) elecIsoSF_histFile->Get(hist_elecIso)->Clone();
 
   //Open histograms for Acceptance uncertainties
-  TFile *accPDF_histFile = TFile::Open(path_AccPDF, "READ");
-  h_muAccPDF.push_back((TH2D*) accPDF_histFile->Get("MuAccPDFUnc_NJets3")->Clone());
-  h_muAccPDF.push_back((TH2D*) accPDF_histFile->Get("MuAccPDFUnc_NJets4")->Clone());
-  h_muAccPDF.push_back((TH2D*) accPDF_histFile->Get("MuAccPDFUnc_NJets5")->Clone());
-  h_muAccPDF.push_back((TH2D*) accPDF_histFile->Get("MuAccPDFUnc_NJets6")->Clone());
-  h_muAccPDF.push_back((TH2D*) accPDF_histFile->Get("MuAccPDFUnc_NJets7Inf")->Clone());
-  h_elecAccPDF.push_back((TH2D*) accPDF_histFile->Get("ElecAccPDFUnc_NJets3")->Clone());
-  h_elecAccPDF.push_back((TH2D*) accPDF_histFile->Get("ElecAccPDFUnc_NJets4")->Clone());
-  h_elecAccPDF.push_back((TH2D*) accPDF_histFile->Get("ElecAccPDFUnc_NJets5")->Clone());
-  h_elecAccPDF.push_back((TH2D*) accPDF_histFile->Get("ElecAccPDFUnc_NJets6")->Clone());
-  h_elecAccPDF.push_back((TH2D*) accPDF_histFile->Get("ElecAccPDFUnc_NJets7Inf")->Clone());
+  TFile *accPDF_histFile_up = TFile::Open(path_AccPDF_up, "READ");
+  h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets3")->Clone());
+  h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets4")->Clone());
+  h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets5")->Clone());
+  h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets6")->Clone());
+  h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets7Inf")->Clone());
+  h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets3")->Clone());
+  h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets4")->Clone());
+  h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets5")->Clone());
+  h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets6")->Clone());
+  h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets7Inf")->Clone());
+
+  TFile *accPDF_histFile_down = TFile::Open(path_AccPDF_down, "READ");
+  h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets3")->Clone());
+  h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets4")->Clone());
+  h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets5")->Clone());
+  h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets6")->Clone());
+  h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets7Inf")->Clone());
+  h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets3")->Clone());
+  h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets4")->Clone());
+  h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets5")->Clone());
+  h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets6")->Clone());
+  h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets7Inf")->Clone());
 
   TFile *accQ2_histFile = TFile::Open(path_AccQ2, "READ");
   h_muAccQ2.push_back((TH2D*) accQ2_histFile->Get("MuAccQ2Unc_NJets3")->Clone());

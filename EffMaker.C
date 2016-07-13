@@ -955,11 +955,11 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuRecoMHT_->Fill(MHT,WeightBTagProb,true);
       MuRecoPT_->Fill(GenMus->at(0).Pt(),WeightBTagProb,true);
       MuRecoActivity_->Fill(GenMu_MT2Activity->at(0),WeightBTagProb,true);
-      MuRecoRelPTJet_->Fill(GenMuRelPTJet->at(0),WeightBTagProb,true);
-      MuRecoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),WeightBTagProb,true);
+      //MuRecoRelPTJet_->Fill(GenMuRelPTJet->at(0),WeightBTagProb,true);
+      //MuRecoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),WeightBTagProb,true);
       //2D
       MuRecoActivityPT_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),WeightBTagProb,true);
-      MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,true);
+      //MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,true);
       MuRecoPTEta_->Fill(GenMus->at(0).Pt(),std::abs(GenMus->at(0).Eta()),WeightBTagProb,true);
   }
 
@@ -971,11 +971,11 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuRecoMHT_->Fill(MHT,WeightBTagProb,false);
       MuRecoPT_->Fill(GenMus->at(0).Pt(),WeightBTagProb,false);
       MuRecoActivity_->Fill(GenMu_MT2Activity->at(0),WeightBTagProb,false);
-      MuRecoRelPTJet_->Fill(GenMuRelPTJet->at(0),WeightBTagProb,false);
-      MuRecoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),WeightBTagProb,false);
+      //MuRecoRelPTJet_->Fill(GenMuRelPTJet->at(0),WeightBTagProb,false);
+      //MuRecoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),WeightBTagProb,false);
       //2D
       MuRecoActivityPT_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),WeightBTagProb,false);
-      MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,false);
+      //MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,false);
       MuRecoPTEta_->Fill(GenMus->at(0).Pt(),std::abs(GenMus->at(0).Eta()),WeightBTagProb,false);
   }
   
@@ -988,11 +988,11 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecRecoMHT_->Fill(MHT,WeightBTagProb,true);
       ElecRecoPT_->Fill(GenEls->at(0).Pt(),WeightBTagProb,true);
       ElecRecoActivity_->Fill(GenElec_MT2Activity->at(0),WeightBTagProb,true);
-      ElecRecoRelPTJet_->Fill(GenElecRelPTJet->at(0),WeightBTagProb,true);
-      ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),WeightBTagProb,true);
+      //ElecRecoRelPTJet_->Fill(GenElecRelPTJet->at(0),WeightBTagProb,true);
+      //ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),WeightBTagProb,true);
       //2D
       ElecRecoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),WeightBTagProb,true);
-      ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,true);
+      //ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,true);
       ElecRecoPTEta_->Fill(GenEls->at(0).Pt(),std::abs(GenEls->at(0).Eta()),WeightBTagProb,true);
   }
 
@@ -1004,11 +1004,11 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecRecoMHT_->Fill(MHT,WeightBTagProb,false);
       ElecRecoPT_->Fill(GenEls->at(0).Pt(),WeightBTagProb,false);
       ElecRecoActivity_->Fill(GenElec_MT2Activity->at(0),WeightBTagProb,false);
-      ElecRecoRelPTJet_->Fill(GenElecRelPTJet->at(0),WeightBTagProb,false);
-      ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),WeightBTagProb,false);
+      //ElecRecoRelPTJet_->Fill(GenElecRelPTJet->at(0),WeightBTagProb,false);
+      //ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),WeightBTagProb,false);
       //2D
       ElecRecoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),WeightBTagProb,false);
-      ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,false);
+      //ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,false);
       ElecRecoPTEta_->Fill(GenEls->at(0).Pt(),std::abs(GenEls->at(0).Eta()),WeightBTagProb,false);
   }
   
@@ -1022,11 +1022,11 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuIsoMHT_->Fill(MHT,WeightBTagProb,true);
       MuIsoPT_->Fill(GenMus->at(0).Pt(),WeightBTagProb,true);
       MuIsoActivity_->Fill(GenMu_MT2Activity->at(0),WeightBTagProb,true);
-      MuIsoRelPTJet_->Fill(GenMuRelPTJet->at(0),WeightBTagProb,true);
-      MuIsoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),WeightBTagProb,true);
+      //MuIsoRelPTJet_->Fill(GenMuRelPTJet->at(0),WeightBTagProb,true);
+      //MuIsoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),WeightBTagProb,true);
       //2D
       MuIsoActivityPT_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),WeightBTagProb,true);
-      MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,true);
+      //MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,true);
   }
 
   if(muIso==0){
@@ -1037,11 +1037,11 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuIsoMHT_->Fill(MHT,WeightBTagProb,false);
       MuIsoPT_->Fill(GenMus->at(0).Pt(),WeightBTagProb,false);
       MuIsoActivity_->Fill(GenMu_MT2Activity->at(0),WeightBTagProb,false);
-      MuIsoRelPTJet_->Fill(GenMuRelPTJet->at(0),WeightBTagProb,false);
-      MuIsoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),WeightBTagProb,false);
+      //MuIsoRelPTJet_->Fill(GenMuRelPTJet->at(0),WeightBTagProb,false);
+      //MuIsoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),WeightBTagProb,false);
       //2D
       MuIsoActivityPT_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),WeightBTagProb,false);
-      MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,false);
+      //MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,false);
   }
   
   // single elecon control sample
@@ -1053,11 +1053,11 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecIsoMHT_->Fill(MHT,WeightBTagProb,true);
       ElecIsoPT_->Fill(GenEls->at(0).Pt(),WeightBTagProb,true);
       ElecIsoActivity_->Fill(GenElec_MT2Activity->at(0),WeightBTagProb,true);
-      ElecIsoRelPTJet_->Fill(GenElecRelPTJet->at(0),WeightBTagProb,true);
-      ElecIsoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),WeightBTagProb,true);
+      //ElecIsoRelPTJet_->Fill(GenElecRelPTJet->at(0),WeightBTagProb,true);
+      //ElecIsoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),WeightBTagProb,true);
       //2D
       ElecIsoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),WeightBTagProb,true);
-      ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,true);
+      //ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,true);
   }
 
   if(elecIso==0){
@@ -1068,11 +1068,11 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecIsoMHT_->Fill(MHT,WeightBTagProb,false);
       ElecIsoPT_->Fill(GenEls->at(0).Pt(),WeightBTagProb,false);
       ElecIsoActivity_->Fill(GenElec_MT2Activity->at(0),WeightBTagProb,false);
-      ElecIsoRelPTJet_->Fill(GenElecRelPTJet->at(0),WeightBTagProb,false);
-      ElecIsoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),WeightBTagProb,false);
+      //ElecIsoRelPTJet_->Fill(GenElecRelPTJet->at(0),WeightBTagProb,false);
+      //ElecIsoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),WeightBTagProb,false);
       //2D
       ElecIsoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),WeightBTagProb,false);
-      ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,false);
+      //ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,false);
   }
 
   // mtw

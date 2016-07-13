@@ -70,12 +70,12 @@ void MakeExpectation_separate()
     std::cout<<"Processing Tree: "<<i<<std::endl;
     if(i>2){ //2
       //Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d.root",i)); // folder already has to exist for the time beeing...
-      Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d_1.root",i), 2000000, 0);
-      Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d_2.root",i), TChain::kBigNumber, 2000001);
+      Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d_1.root",i), 1000000, 0);
+      Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d_2.root",i), TChain::kBigNumber, 1000001);
     }else{
       //Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d.root, 600",i));
-      Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d_1.root, 600",i), 2000000, 0);
-      Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d_2.root, 600",i), TChain::kBigNumber, 2000001);
+      Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d_1.root, 600",i), 1000000, 0);
+      Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d_2.root, 600",i), TChain::kBigNumber, 1000001);
     }
   }
 /*

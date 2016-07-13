@@ -26,7 +26,7 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("isoTracksNum",&isoTracksNum);
   tExpectation_->Branch("Bin",&Bin_);
   tExpectation_->Branch("BinQCD",&BinQCD_);
-  tExpectation_->Branch("madHT",&madHT);
+  //tExpectation_->Branch("madHT",&madHT);
   tExpectation_->Branch("NVtx",&NVtx);
   tExpectation_->Branch("DeltaPhi1",&DeltaPhi1);
   tExpectation_->Branch("DeltaPhi2",&DeltaPhi2);
@@ -42,13 +42,13 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("GenMHT",&GenMHT);
   tExpectation_->Branch("GenMuNum",&GenMuNum_);
   tExpectation_->Branch("GenMus", "std::vector<TLorentzVector>", &GenMus,32000,0);
-  tExpectation_->Branch("GenMuDeltaRJet",&GenMuDeltaRJet_);
-  tExpectation_->Branch("GenMuRelPTJet",&GenMuRelPTJet_);
+  //tExpectation_->Branch("GenMuDeltaRJet",&GenMuDeltaRJet_);
+  //tExpectation_->Branch("GenMuRelPTJet",&GenMuRelPTJet_);
   tExpectation_->Branch("GenMu_MT2Activity", &GenMu_MT2Activity);
   tExpectation_->Branch("GenElecNum",&GenElecNum_);
   tExpectation_->Branch("GenEls", "std::vector<TLorentzVector>", &GenEls, 32000, 0);
-  tExpectation_->Branch("GenElecDeltaRJet", &GenElecDeltaRJet_);
-  tExpectation_->Branch("GenElecRelPTJet", &GenElecRelPTJet_);
+  //tExpectation_->Branch("GenElecDeltaRJet", &GenElecDeltaRJet_);
+  //tExpectation_->Branch("GenElecRelPTJet", &GenElecRelPTJet_);
   tExpectation_->Branch("GenElec_MT2Activity", &GenElec_MT2Activity);
   tExpectation_->Branch("GenTauNum",&GenTauNum_);
   tExpectation_->Branch("GenTaus", "std::vector<TLorentzVector>", &GenTaus, 32000, 0); 
@@ -59,6 +59,8 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("muReco",&muReco);  
   tExpectation_->Branch("muIso",&muIso);  
   tExpectation_->Branch("MTW",&mtw);  
+  tExpectation_->Branch("MTW_METup",&mtw_METup);  
+  tExpectation_->Branch("MTW_METdown",&mtw_METdown);  
   tExpectation_->Branch("elecAcc",&elecAcc);  
   tExpectation_->Branch("elecReco",&elecReco);  
   tExpectation_->Branch("elecIso",&elecIso);   
@@ -167,7 +169,10 @@ Bool_t ExpecMaker::Process(Long64_t entry)
       //  std::cout<<"Correcting Weight!"<<std::endl;
       //}
 
-      delete btagcorr;
+      if(btagcorr!=0){
+        delete btagcorr;
+        btagcorr = 0;
+      }
       btagcorr = new BTagCorrector();
 
       TObjArray *optionArray = currentTree.Tokenize("/");
@@ -176,9 +181,11 @@ Bool_t ExpecMaker::Process(Long64_t entry)
       TFile *skimFile = TFile::Open(path_toSkims+currFileName, "READ");
 
       btagcorr->SetEffs(skimFile);
-      btagcorr->SetCalib(path_bTagCalib);
-      btagcorr->SetCalibFastSim(path_bTagCalibFastSim);
-      if(doBTagCorrFastSim) btagcorr->SetFastSim(true);
+      btagcorr->SetCalib(path_bTagCalib);      
+      if(doBTagCorrFastSim){
+        btagcorr->SetCalibFastSim(path_bTagCalibFastSim);
+        btagcorr->SetFastSim(true);
+      }
       else btagcorr->SetFastSim(false);
     }
     bTagProb = btagcorr->GetCorrections(Jets,Jets_hadronFlavor,HTJetsMask);
@@ -211,9 +218,6 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   selectedIDElectronsNum_ = selectedIDElectrons->size();
   selectedIDIsoElectronsNum_ = selectedIDIsoElectrons->size();
 
-  if(propagateJECtoMET == +1) MET = METUp->at(1);
-  if(propagateJECtoMET == -1) MET = METDown->at(1);
-	
   // Muons
   if(GenMuNum_==1 && GenElecNum_==0){ 
     genCosDTT = 0.5 * (1. - GetCosDTT(GenMHT, GenMHTPhi, GenMus->at(0).Pt(), GenMus->at(0).Phi()));
@@ -237,6 +241,8 @@ Bool_t ExpecMaker::Process(Long64_t entry)
               muIso=2;
               Expectation=2;
               mtw =  MTWCalculator(MET,METPhi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi(), scaleMet);
+              mtw_METup = MTWCalculator(METUp->at(1),METPhiUp->at(1), selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi(), scaleMet);
+              mtw_METdown = MTWCalculator(METDown->at(1),METPhiDown->at(1), selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi(), scaleMet);
               MuDiLepControlSample_=2;
             }
           }
@@ -276,6 +282,8 @@ Bool_t ExpecMaker::Process(Long64_t entry)
               elecIso=2;
               Expectation=2;
               mtw =  MTWCalculator(MET,METPhi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi(), scaleMet);
+              mtw_METup = MTWCalculator(METUp->at(1),METPhiUp->at(1), selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi(), scaleMet);
+              mtw_METdown = MTWCalculator(METDown->at(1),METPhiDown->at(1), selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi(), scaleMet);
               ElecDiLepControlSample_=2;
             }
           }
@@ -313,10 +321,14 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     }
     if(selectedIDIsoMuonsNum_==1 && selectedIDIsoElectronsNum_==0){
       mtw =  MTWCalculator(MET,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
+      mtw_METup = MTWCalculator(METUp->at(1),METPhiUp->at(1), selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
+      mtw_METdown = MTWCalculator(METDown->at(1),METPhiDown->at(1), selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
       MuDiLepControlSample_=0;
     }
     if(selectedIDIsoMuonsNum_==0 && selectedIDIsoElectronsNum_==1){
       mtw =  MTWCalculator(MET,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
+      mtw_METup = MTWCalculator(METUp->at(1),METPhiUp->at(1), selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
+      mtw_METdown = MTWCalculator(METDown->at(1),METPhiDown->at(1), selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
       ElecDiLepControlSample_=0;
     }
   }
