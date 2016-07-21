@@ -18,8 +18,6 @@
 #include <algorithm>
 
 void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder);
-UShort_t getMergedBinQCD(UShort_t BinQCD, Int_t NJets);
-UShort_t getHTMHTBox(Double_t HT, Double_t MHT);
 void SetBinLabel(TH1D* hist);
 void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir);
 
@@ -329,57 +327,6 @@ void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // pre
   Closure->SetName(title);
   Folder->cd();
   Closure->Write();
-}
-
-UShort_t getMergedBinQCD(UShort_t BinQCD, Int_t NJets){
-  if(BinQCD > 900) return 900;
-  if(NJets < 4) return 900;
-
-  UShort_t bin = 0;
-
-  switch(NJets){
-    case 4:
-      bin = BinQCD % 11;
-      if(bin == 0) bin = 11;
-      break;
-    case 5:
-      bin = BinQCD % 11 + 11;
-      if(bin == 11) bin = 22;
-      break;
-    case 6:
-      bin = BinQCD % 11 + 22;
-      if(bin == 22) bin = 33;
-      break;
-    case 7:
-    case 8:
-      bin = BinQCD % 11 + 33;
-      if(bin == 33) bin = 44;
-      break;
-    default:
-      bin = BinQCD % 11 + 44;
-      if(bin == 44) bin = 55;
-      break;
-  }
-
-  return bin;
-}
-
-UShort_t getHTMHTBox(Double_t HT, Double_t MHT){
-  if(MHT < 200 || HT < 500) return -1;
-  if(MHT >= 750 && HT < 800) return -1;
-
-  if(MHT < 500){
-    if(HT < 800) return 1;
-    if(HT < 1200) return 2;
-    else return 3;
-  }else if(MHT < 750){
-    if(HT < 1200) return 4;
-    else return 5;
-  }else{
-    return 6;
-  }
-
-  return -1; // Should not be reached
 }
 
 void SetBinLabel(TH1D* hist){
