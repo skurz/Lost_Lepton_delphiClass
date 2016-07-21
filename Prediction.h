@@ -56,7 +56,7 @@ const bool useGenHTMHT = false;
 const TString path_puHist("PU/PileupHistograms_0704.root");
 // bTag corrections
 const string path_bTagCalib("btag/CSVv2_4invfb.csv");
-const string path_bTagCalibFastSim("btag/CSV_13TEV_TTJets_11_7_2016.csv");
+const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // ISR corrections: NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond! Just uncomment in Prediction::Init(Tree*) of this file
 const TString path_ISRcorr("isr_corrections/ISRWeights.root");
@@ -97,6 +97,11 @@ const TString path_AccQ2("AcceptanceUncertainty/Q2uncertainty.root");
 const bool usePrelimSFs = false;
 // Those are the SFs you want! Read from root file
 const bool useSFs = true;
+// Apply corrections on ID/Iso based on SFs. Used to correct for systematic offsets
+const bool correctElectronID = false;
+const bool correctElectronIso = false;
+const bool correctMuonID = false;
+const bool correctMuonIso = false;
 
 // Flat uncertainties for acceptance efficiency. Just for testing
 const bool useFlatAccUnc = false;
@@ -234,7 +239,7 @@ class Prediction : public TSelector {
   bool useFilterList = false;
 
   // output variables
-  TTree *tPrediction_;
+  TTree *tPrediction_ = 0;
 
   std::string fname; // for fetching file name
   TString fileName;
@@ -248,23 +253,25 @@ class Prediction : public TSelector {
 
 
     //open skim file as skimfile
-  TH1* h_genpt;
+  TH1* h_njetsisr = 0;
   double nEvtsTotal;
   Double_t xsec;
   ISRCorrector *isrcorr = 0;
-  TFile* isrfile;
-  TH1* h_isr;
+  TFile* isrfile = 0;
+  TH1* h_isr = 0;
   Double_t w_isr;
   Double_t w_pu;
   BTagCorrector *btagcorr = 0;
   std::vector<double> bTagProb;
+  Double_t        Weight_bTagCorr;
+  Double_t        bTagCorr_cut;
 
   EventListFilter *evtListFilter = 0;
 
-  TH2F* h_muIDSF;
-  TH2F* h_muIsoSF;
-  TH2D* h_elecIsoSF;
-  TH2D* h_elecIDSF;
+  TH2F* h_muIDSF = 0;
+  TH2F* h_muIsoSF = 0;
+  TH2D* h_elecIsoSF = 0;
+  TH2D* h_elecIDSF = 0;
 
   std::vector<TH2D*> h_muAccPDF_up;
   std::vector<TH2D*> h_elecAccPDF_up;
@@ -599,6 +606,7 @@ class Prediction : public TSelector {
   Bool_t          JetID;
   std::vector<TLorentzVector> *Jets=0;
   std::vector<double>     *Jets_muonEnergyFraction=0;
+  std::vector<double>     *Jets_bDiscriminatorCSV=0;
   std::vector<int>     *Jets_hadronFlavor=0;
   std::vector<bool>    *HTJetsMask=0;
   Double_t        METPhi;
@@ -626,9 +634,7 @@ class Prediction : public TSelector {
   std::vector<double>  *selectedIDIsoElectrons_MT2Activity=0;
   std::vector<double>  *selectedIDMuons_MT2Activity=0;
   std::vector<double>  *selectedIDIsoMuons_MT2Activity=0;
-  std::vector<TLorentzVector> *genParticles=0;
-  std::vector<int> *genParticles_PDGid=0;
-
+  Int_t           NJetsISR;
 
   // List of branches
   TBranch        *b_RunNum=0;   //!
@@ -658,6 +664,7 @@ class Prediction : public TSelector {
   TBranch        *b_JetID=0;   //!
   TBranch        *b_Jets=0;   //!
   TBranch        *b_Jets_muonEnergyFraction=0;   //!
+  TBranch        *b_Jets_bDiscriminatorCSV=0;   //!
   TBranch        *b_Jets_hadronFlavor=0;   //!
   TBranch        *b_HTJetsMask=0;   //!
   TBranch        *b_METPhi=0;   //!
@@ -681,12 +688,11 @@ class Prediction : public TSelector {
   TBranch        *b_SusyLSPMass=0;
   TBranch        *b_SusyMotherMass=0;
   TBranch        *b_TrueNumInteractions=0;
-  TBranch        *b_genParticles=0;
-  TBranch        *b_genParticles_PDGid=0;
   TBranch        *b_selectedIDElectrons_MT2Activity=0;   //!
   TBranch        *b_selectedIDIsoElectrons_MT2Activity=0;   //!
   TBranch        *b_selectedIDIsoMuons_MT2Activity=0;   //!
   TBranch        *b_selectedIDMuons_MT2Activity=0;   //!
+  TBranch        *b_NJetsISR=0;
 
   
  Prediction(TTree * /*tree*/ =0) : fChain(0) { }
@@ -741,14 +747,14 @@ void Prediction::Init(TTree *tree)
   if(runOnData) useTrigger = true;
   // Apply weights if trigger not simulated
   if(runOnStandardModelMC) useTriggerEffWeight = false;
-  if(runOnSignalMC) useTriggerEffWeight = true;
+  if(runOnSignalMC && !useGenHTMHT) useTriggerEffWeight = true;
   // Do PU reweighting. true for signal scan
   if(runOnSignalMC) doPUreweighting = true;
   //if(runOnStandardModelMC) doPUreweighting = true;
   // bTag corrections. Use for signal scan
   if(!runOnData) doBTagCorr = true;
-  // ISR corrections. NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond
-  //if(runOnSignalMC) doISRcorr = true; //<-check---------------------------------------
+  // ISR corrections.
+  if(runOnSignalMC) doISRcorr = true; //<-check---------------------------------------
 
   // useFilterData = true; unless you want to run without MET filters
   // useFilterData = false; For FastSim Samples, e.g. Signal Scans! Met filters not simulated
@@ -880,7 +886,6 @@ void Prediction::Init(TTree *tree)
     // ISR setup
     isrfile = TFile::Open(path_ISRcorr, "READ");
     h_isr = (TH1*)isrfile->Get("isr_weights_central");
-    // everything else: done in loop!
   }
 
   if(useFilterList) evtListFilter = new EventListFilter(path_evtListFilter);
@@ -901,15 +906,17 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("DeltaPhi3", 1);
   fChain->SetBranchStatus("DeltaPhi4", 1);
   if(!runOnSignalMC){
-    fChain->SetBranchStatus("CSCTightHaloFilter", 1);
-    fChain->SetBranchStatus("globalTightHalo2016Filter", 1);
+    //fChain->SetBranchStatus("CSCTightHaloFilter", 1);
     fChain->SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter", 1);
     fChain->SetBranchStatus("eeBadScFilter", 1);
-    //fChain->SetBranchStatus("eeBadSc4Filter", 1);
-    fChain->SetBranchStatus("BadChargedCandidateFilter", 1);
-    fChain->SetBranchStatus("BadPFMuonFilter", 1);
+    //fChain->SetBranchStatus("eeBadSc4Filter", 1);    
     fChain->SetBranchStatus("HBHENoiseFilter", 1);
     fChain->SetBranchStatus("HBHEIsoNoiseFilter", 1);
+    if(runOnData){
+      fChain->SetBranchStatus("globalTightHalo2016Filter", 1);
+      fChain->SetBranchStatus("BadChargedCandidateFilter", 1);
+      fChain->SetBranchStatus("BadPFMuonFilter", 1);
+    }
   }
   fChain->SetBranchStatus("Electrons", 1);
   fChain->SetBranchStatus("HT", 1);
@@ -935,6 +942,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("TriggerPass", 1);
   fChain->SetBranchStatus("TriggerPrescales", 1);
   fChain->SetBranchStatus("Jets_muonEnergyFraction", 1);
+  fChain->SetBranchStatus("Jets_bDiscriminatorCSV", 1);
 
   if(!runOnData){
     fChain->SetBranchStatus("Weight", 1);
@@ -945,15 +953,13 @@ void Prediction::Init(TTree *tree)
   if(runOnSignalMC){
     fChain->SetBranchStatus("SusyLSPMass", 1);
     fChain->SetBranchStatus("SusyMotherMass", 1);
+    fChain->SetBranchStatus("NJetsISR", 1);
   }
-  if(doISRcorr){
-    fChain->SetBranchStatus("genParticles",1);
-    fChain->SetBranchStatus("genParticles_PDGid",1);
-  }
-  if(useGenHTMHT){
-    fChain->SetBranchStatus("GenHT", 1);
-    fChain->SetBranchStatus("GenMHT", 1);
-  }
+
+  //if(useGenHTMHT){
+  //  fChain->SetBranchStatus("GenHT", 1);
+  //  fChain->SetBranchStatus("GenMHT", 1);
+  //}
 
   fChain->SetBranchStatus("selectedIDElectrons_MT2Activity",1);
   fChain->SetBranchStatus("selectedIDIsoElectrons_MT2Activity", 1);
@@ -969,15 +975,17 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("DeltaPhi3", &DeltaPhi3, &b_DeltaPhi3);
   fChain->SetBranchAddress("DeltaPhi4", &DeltaPhi4, &b_DeltaPhi4);
   if(!runOnSignalMC){
-    fChain->SetBranchAddress("CSCTightHaloFilter", &CSCTightHaloFilter, &b_CSCTightHaloFilter);
-    fChain->SetBranchAddress("globalTightHalo2016Filter", &globalTightHalo2016Filter, &b_globalTightHalo2016Filter);
+    //fChain->SetBranchAddress("CSCTightHaloFilter", &CSCTightHaloFilter, &b_CSCTightHaloFilter);
     fChain->SetBranchAddress("EcalDeadCellTriggerPrimitiveFilter", &EcalDeadCellTriggerPrimitiveFilter, &b_EcalDeadCellTriggerPrimitiveFilter);
     fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
-    //fChain->SetBranchAddress("eeBadSc4Filter", &eeBadSc4Filter, &b_eeBadSc4Filter);
-    fChain->SetBranchAddress("BadChargedCandidateFilter", &BadChargedCandidateFilter, &b_BadChargedCandidateFilter);
-    fChain->SetBranchAddress("BadPFMuonFilter", &BadPFMuonFilter, &b_BadPFMuonFilter);
+    //fChain->SetBranchAddress("eeBadSc4Filter", &eeBadSc4Filter, &b_eeBadSc4Filter);    
     fChain->SetBranchAddress("HBHENoiseFilter", &HBHENoiseFilter, &b_HBHENoiseFilter);
     fChain->SetBranchAddress("HBHEIsoNoiseFilter", &HBHEIsoNoiseFilter, &b_HBHEIsoNoiseFilter);
+    if(runOnData){
+      fChain->SetBranchAddress("globalTightHalo2016Filter", &globalTightHalo2016Filter, &b_globalTightHalo2016Filter);
+      fChain->SetBranchAddress("BadChargedCandidateFilter", &BadChargedCandidateFilter, &b_BadChargedCandidateFilter);
+      fChain->SetBranchAddress("BadPFMuonFilter", &BadPFMuonFilter, &b_BadPFMuonFilter);
+    }
   }
   fChain->SetBranchAddress("Electrons", &Electrons, &b_Electrons);
   fChain->SetBranchAddress("HT", &HT, &b_HT);
@@ -1003,6 +1011,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchAddress("TriggerPass", &TriggerPass, &b_TriggerPass);
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
   fChain->SetBranchAddress("Jets_muonEnergyFraction", &Jets_muonEnergyFraction, &b_Jets_muonEnergyFraction);
+  fChain->SetBranchAddress("Jets_bDiscriminatorCSV", &Jets_bDiscriminatorCSV, &b_Jets_bDiscriminatorCSV);
   if(!runOnData){
     fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
     fChain->SetBranchAddress("Jets_hadronFlavor", &Jets_hadronFlavor, &b_Jets_hadronFlavor);
@@ -1012,15 +1021,13 @@ void Prediction::Init(TTree *tree)
   if(runOnSignalMC){
     fChain->SetBranchAddress("SusyLSPMass", &SusyLSPMass, &b_SusyLSPMass);
     fChain->SetBranchAddress("SusyMotherMass", &SusyMotherMass, &b_SusyMotherMass);
+    fChain->SetBranchAddress("NJetsISR", &NJetsISR, &b_NJetsISR);
   }
-  if(doISRcorr){
-    fChain->SetBranchAddress("genParticles", &genParticles, &b_genParticles);
-    fChain->SetBranchAddress("genParticles_PDGid", &genParticles_PDGid, &b_genParticles_PDGid);
-  }
-  if(useGenHTMHT){
-    fChain->SetBranchAddress("GenHT", &GenHT, &b_GenHT);
-    fChain->SetBranchAddress("GenMHT", &GenMHT, &b_GenMHT);
-  }
+
+  //if(useGenHTMHT){
+  //  fChain->SetBranchAddress("GenHT", &GenHT, &b_GenHT);
+  //  fChain->SetBranchAddress("GenMHT", &GenMHT, &b_GenMHT);
+  //}
 
   fChain->SetBranchAddress("selectedIDElectrons_MT2Activity", &selectedIDElectrons_MT2Activity, &b_selectedIDElectrons_MT2Activity);
   fChain->SetBranchAddress("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity, &b_selectedIDIsoElectrons_MT2Activity);

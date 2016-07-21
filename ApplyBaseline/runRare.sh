@@ -36,9 +36,9 @@
 #root -l -q "run_ApplyBaseline_script.C+(\"ZZZ\", \"Spring16.ZZZ*.root\")"
 #wait
 
-#echo "Running TTTT"
-#root -l -q "run_ApplyBaseline_script.C+(\"TTTT\", \"Spring16.TTTT*.root\")"
-#wait
+echo "Running TTTT"
+root -l -q "run_ApplyBaseline_script.C+(\"TTTT\", \"Spring16.TTTT*.root\")"
+wait
 
 #echo "Running TTGJets"
 #root -l -q "run_ApplyBaseline_script.C+(\"TTGJets\", \"Spring16.TTGJets*.root\")"
@@ -56,6 +56,6 @@
 #root -l -q "run_ApplyBaseline_script.C+(\"TTZToLLNuNu\", \"Spring16.TTZToLLNuNu*.root\")"
 #wait
 
-echo "Running TTZToQQ"
-root -l -q "run_ApplyBaseline_script.C+(\"TTZToQQ\", \"Spring16.TTZToQQ*.root\")"
-wait
+#echo "Running TTZToQQ"
+#root -l -q "run_ApplyBaseline_script.C+(\"TTZToQQ\", \"Spring16.TTZToQQ*.root\")"
+#wait

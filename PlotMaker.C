@@ -155,7 +155,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 			}else{
 				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
 				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb/2);
-				avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeight_BTags->at(i)/Weight/2), abs(Weight));
+				avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeight_BTags->at(i)/Weight/2), abs(Weight* bTagProb->at(i)));
 			}
 
 			totalCS_LL_MC_->Fill(Bin_bTags.at(i), scaledWeight);

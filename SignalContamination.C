@@ -27,12 +27,12 @@ void SignalContamination()
 {
 
   // General Settings
-  TString InputPath_Prediction("Prediction_Scan_T2tt.root");
-  TString OutputPath_Prediction("LLContamination_T2tt.root");
+  TString InputPath_Prediction("Prediction_Scan_T5qqqqVV_genMHT.root");
+  TString OutputPath_Prediction("LLContamination_T5qqqqVV_genMHT_Jul20.root");
 
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 7632; // in units of [pb] //<-check------------------------
+  Double_t scaleFactorWeight = 1; // in units of [pb] //<-check------------------------
 
   // Present output in QCD binning
   bool doQCDbinning = false;  //<-check------------------------;

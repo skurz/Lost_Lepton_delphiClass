@@ -277,14 +277,15 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
     tPrediction_->Branch("bTagProb", &bTagProb);
     tPrediction_->Branch("madHT", &madHT);
     tPrediction_->Branch("w_pu", &w_pu);
+    tPrediction_->Branch("Weight_bTagCorr", &Weight_bTagCorr);
   }
   if(runOnSignalMC){
     tPrediction_->Branch("SusyLSPMass", &SusyLSPMass);
     tPrediction_->Branch("SusyMotherMass", &SusyMotherMass);
     tPrediction_->Branch("w_isr", &w_isr);
+    tPrediction_->Branch("w_pu", &w_pu);
     tPrediction_->Branch("xsec", &xsec);
     tPrediction_->Branch("nEvtsTotal", &nEvtsTotal);
-
   }
 
   tPrediction_->Branch("isoTrackStatUp", &isoTrackStatUp);
@@ -376,10 +377,11 @@ Bool_t Prediction::Process(Long64_t entry)
 
   if(HTgen_cut > 0.01) if(madHT > HTgen_cut) return kTRUE;
 
-  if(useGenHTMHT){
-    HT = GenHT;
-    MHT = GenMHT;
-  }
+// Not needed anymore. Special Skims used.
+//  if(useGenHTMHT){
+//    HT = GenHT;
+//    MHT = GenMHT;
+//  }
   
   if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_  ) return kTRUE;
   if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_) return kTRUE;
@@ -430,12 +432,13 @@ Bool_t Prediction::Process(Long64_t entry)
       //}
 
       if(doISRcorr){
-        // not recommended for Jamboree
-        h_genpt = (TH1*)fChain->GetCurrentFile()->Get("GenPt");
-        delete isrcorr;
+        h_njetsisr = (TH1*) fChain->GetCurrentFile()->Get("NJetsISR");
+        if(isrcorr!=0){
+          delete isrcorr;
+          isrcorr = 0;
+        }
         isrcorr = new ISRCorrector();
-        isrcorr->SetWeights(h_isr,h_genpt);
-        isrcorr->SetMother(1000021);
+		isrcorr->SetWeights(h_isr,h_njetsisr);
       }
 
       if(doBTagCorr){
@@ -464,8 +467,10 @@ Bool_t Prediction::Process(Long64_t entry)
       if(runOnSignalMC){
         if((std::string(currentTree.Data()).find(std::string("T1"))) != std::string::npos || (std::string(currentTree.Data()).find(std::string("T5"))) != std::string::npos){
           xsecs = &xsecsT1T5;
+          //std::cout<<"Using xsecs for gluino pair production!"<<std::endl;
         }else if((std::string(currentTree.Data()).find(std::string("T2"))) != std::string::npos){
           xsecs = &xsecsT2;
+          //std::cout<<"Using xsecs for stop pair production!"<<std::endl;
         }else{
           std::cout<<"No valid dictionary with xsecs found!"<<std::endl;
           return kTRUE;
@@ -485,6 +490,10 @@ Bool_t Prediction::Process(Long64_t entry)
           break;
         }
       }
+      if(xsec < 1e-10){
+        std::cout<<"No valid xsec found!"<<std::endl;
+        return kTRUE;
+      }
 
       Weight = xsec / nEvtsTotal;
       if(Weight < 0) Weight *= -1;
@@ -492,12 +501,13 @@ Bool_t Prediction::Process(Long64_t entry)
 
     if(doISRcorr){
     // not recommended for Jamboree
-      w_isr = isrcorr->GetCorrection(genParticles,genParticles_PDGid);
+      w_isr = isrcorr->GetCorrection(NJetsISR);
       Weight *= w_isr;
     }
 
     if(doBTagCorr) bTagProb = btagcorr->GetCorrections(Jets,Jets_hadronFlavor,HTJetsMask);
     else bTagProb = {0, 0, 0, 0};
+    if(!runOnData) bTagCorr_cut = btagcorr->GetSimpleCorrection(Jets,Jets_hadronFlavor,HTJetsMask,Jets_bDiscriminatorCSV);
   }
 
   if(runOnData) Weight = 1.;
@@ -520,6 +530,10 @@ Bool_t Prediction::Process(Long64_t entry)
     Weight *= w_pu;
   }
 
+  if(!runOnData){
+    if(bTagCorr_cut < 0 || bTagCorr_cut > 10 || std::isnan(bTagCorr_cut)) Weight_bTagCorr = 0.; 
+    else Weight_bTagCorr = Weight * bTagCorr_cut;
+  }
     // fill PTW values for extrapolation
   for (UShort_t ii=0; ii < selectedIDIsoMuonsNum_; ii++){
     selectedIDIsoMuonsPTW.push_back(PTWCalculator(MHT,MHTPhi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi()));
@@ -692,7 +706,12 @@ Bool_t Prediction::Process(Long64_t entry)
       muAccEff_ = muAccEffVec_.eff;
       elecAccEff_ = elecAccEffVec_.eff;
       elecRecoEff_ = elecRecoEffVec_.eff;
-      elecIsoEff_ = elecIsoEffVec_.eff;      
+      elecIsoEff_ = elecIsoEffVec_.eff;
+
+      if(correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
+      if(correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
+      if(correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
+      if(correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons_MT2Activity->at(0));
 
       // calculate Weights
       // muCS >99% purity
@@ -846,25 +865,25 @@ Bool_t Prediction::Process(Long64_t entry)
       double muIsoMax = muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_);
       if(usePrelimSFs) muIsoMax = muIsoEff_ *(1 + 0.01 * getMuonIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
       // add 1% systematic to uncertainty (set bool to true)
-      if(useSFs) muIsoMax = muIsoEff_ *(1 + GetSF(h_muIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), true));
+      if(useSFs) muIsoMax = muIsoEff_ *(1 + GetSFUnc(h_muIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), true));
       if(muIsoMax > 1) muIsoMax = 1;
       muIsoSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoMax*muRecoEff_*muAccEff_) * (1-muIsoMax*muRecoEff_*muAccEff_ +w3b) + w4) - wGes;
       double muIsoMin = muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_);
       if(usePrelimSFs) muIsoMin = muIsoEff_ *(1 - 0.01 * getMuonIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
       // add 1% systematic to uncertainty (set bool to true)
-      if(useSFs) muIsoMin = muIsoEff_ *(1 - GetSF(h_muIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), true));
+      if(useSFs) muIsoMin = muIsoEff_ *(1 - GetSFUnc(h_muIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), true));
       muIsoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoMin*muRecoEff_*muAccEff_) * (1-muIsoMin*muRecoEff_*muAccEff_ +w3b) + w4) - wGes;
 
       double muRecoMax = muRecoEff_ *(1 + 0.01 * MuRecoUncertaintyUp_);
       if(usePrelimSFs) muRecoMax = muRecoEff_ *(1 + 0.01 * getMuonIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
       // add 1% systematic to uncertainty (set bool to true)
-      if(useSFs) muRecoMax = muRecoEff_ *(1 + GetSF(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), true));
+      if(useSFs) muRecoMax = muRecoEff_ *(1 + GetSFUnc(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), true));
       if(muRecoMax > 1) muRecoMax = 1;
       muRecoSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoMax*muAccEff_) * (1-muIsoEff_*muRecoMax*muAccEff_ +w3b) + w4) - wGes;
       double muRecoMin = muRecoEff_ *(1 - 0.01 * MuRecoUncertaintyDown_);
       if(usePrelimSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * getMuonIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
       // add 1% systematic to uncertainty (set bool to true)
-      if(useSFs) muRecoMin = muRecoEff_ *(1 - GetSF(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), true));
+      if(useSFs) muRecoMin = muRecoEff_ *(1 - GetSFUnc(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), true));
       muRecoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoMin*muAccEff_) * (1-muIsoEff_*muRecoMin*muAccEff_ +w3b) + w4) - wGes;
 
       double muAccMax, muAccMin;       
@@ -901,22 +920,22 @@ Bool_t Prediction::Process(Long64_t entry)
       
       double elecIsoMax = elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_);
       if(usePrelimSFs) elecIsoMax = elecIsoEff_ *(1 + 0.01 * getElecIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
-      if(useSFs) elecIsoMax = elecIsoEff_ *(1 + GetSF(h_elecIsoSF, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons_MT2Activity->at(0), false));
+      if(useSFs) elecIsoMax = elecIsoEff_ *(1 + GetSFUnc(h_elecIsoSF, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons_MT2Activity->at(0), false));
       if(elecIsoMax > 1) elecIsoMax = 1;
       elecIsoSysDown = w1 * (w2 * (w3a + 1-elecIsoMax*elecRecoEff_*elecAccEff_) + w4) - wGes;
       double elecIsoMin = elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_);
       if(usePrelimSFs) elecIsoMin = elecIsoEff_ *(1 - 0.01 * getElecIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
-      if(useSFs) elecIsoMin = elecIsoEff_ *(1 - GetSF(h_elecIsoSF, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons_MT2Activity->at(0), false));
+      if(useSFs) elecIsoMin = elecIsoEff_ *(1 - GetSFUnc(h_elecIsoSF, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons_MT2Activity->at(0), false));
       elecIsoSysUp = w1 * (w2 * (w3a + 1-elecIsoMin*elecRecoEff_*elecAccEff_) + w4) - wGes;
 
       double elecRecoMax = elecRecoEff_*(1 + 0.01 * ElecRecoUncertaintyUp_);
       if(usePrelimSFs) elecRecoMax = elecRecoEff_ *(1 + 0.01 * getElecIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
-      if(useSFs) elecRecoMax = elecRecoEff_ *(1 + GetSF(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), false));
+      if(useSFs) elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), false));
       if(elecRecoMax > 1) elecRecoMax = 1;
       elecRecoSysDown = w1 * (w2 * (w3a + 1-elecIsoEff_*elecRecoMax*elecAccEff_) + w4) - wGes;
       double elecRecoMin = elecRecoEff_*(1 - 0.01 * ElecRecoUncertaintyDown_);
       if(usePrelimSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * getElecIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
-      if(useSFs) elecRecoMin = elecRecoEff_ *(1 - GetSF(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), false));
+      if(useSFs) elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), false));
       elecRecoSysUp = w1 * (w2 * (w3a + 1-elecIsoEff_*elecRecoMin*elecAccEff_) + w4) - wGes;
 
       double elecAccMax, elecAccMin;       
@@ -1284,6 +1303,11 @@ Bool_t Prediction::Process(Long64_t entry)
       muRecoEff_ = muRecoEffVec_.eff;
       muIsoEff_ = muIsoEffVec_.eff;
 
+      if(correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
+      if(correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
+      if(correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
+      if(correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons_MT2Activity->at(0));
+
       // calculate Weights
       // cout << "calculate weights...";
       purityCorrectedWeight_ = Weight * elecPurityCorrection_;
@@ -1430,22 +1454,22 @@ Bool_t Prediction::Process(Long64_t entry)
 
       double elecIsoMax = elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_);
       if(usePrelimSFs) elecIsoMax = elecIsoEff_ *(1 + 0.01 * getElecIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
-      if(useSFs) elecIsoMax = elecIsoEff_ *(1 + GetSF(h_elecIsoSF, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons_MT2Activity->at(0), false));
+      if(useSFs) elecIsoMax = elecIsoEff_ *(1 + GetSFUnc(h_elecIsoSF, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons_MT2Activity->at(0), false));
       if(elecIsoMax > 1) elecIsoMax = 1;
       elecIsoSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoMax*elecRecoEff_*elecAccEff_) * (1-elecIsoMax*elecRecoEff_*elecAccEff_ +w3b) + w4) - wGes;
       double elecIsoMin = elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_);
       if(usePrelimSFs) elecIsoMin = elecIsoEff_ *(1 - 0.01 * getElecIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
-      if(useSFs) elecIsoMin = elecIsoEff_ *(1 - GetSF(h_elecIsoSF, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons_MT2Activity->at(0), false));
+      if(useSFs) elecIsoMin = elecIsoEff_ *(1 - GetSFUnc(h_elecIsoSF, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons_MT2Activity->at(0), false));
       elecIsoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoMin*elecRecoEff_*elecAccEff_) * (1-elecIsoMin*elecRecoEff_*elecAccEff_ +w3b) + w4) - wGes;
 
       double elecRecoMax = elecRecoEff_ *(1 + 0.01 * ElecRecoUncertaintyUp_);
       if(usePrelimSFs) elecRecoMax = elecRecoEff_ *(1 + 0.01 * getElecIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
-      if(useSFs) elecRecoMax = elecRecoEff_ *(1 + GetSF(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), false));
+      if(useSFs) elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), false));
       if(elecRecoMax > 1) elecRecoMax = 1;
       elecRecoSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoMax*elecAccEff_) * (1-elecIsoEff_*elecRecoMax*elecAccEff_ +w3b) + w4) - wGes;
       double elecRecoMin = elecRecoEff_ *(1 - 0.01 * ElecRecoUncertaintyDown_);
       if(usePrelimSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * getElecIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
-      if(useSFs) elecRecoMin = elecRecoEff_ *(1 - GetSF(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), false));
+      if(useSFs) elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), false));
       elecRecoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoMin*elecAccEff_) * (1-elecIsoEff_*elecRecoMin*elecAccEff_ +w3b) + w4) - wGes;
 
       double elecAccMax, elecAccMin;       
@@ -1483,25 +1507,25 @@ Bool_t Prediction::Process(Long64_t entry)
       double muIsoMax = muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_);
       if(usePrelimSFs) muIsoMax = muIsoEff_ *(1 + 0.01 * getMuonIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
       // add 1% systematic to uncertainty (set bool to true)
-      if(useSFs) muIsoMax = muIsoEff_ *(1 + GetSF(h_muIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), true));
+      if(useSFs) muIsoMax = muIsoEff_ *(1 + GetSFUnc(h_muIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), true));
       if(muIsoMax > 1) muIsoMax = 1;
       muIsoSysDown = w1 * (w2 * (w3a + 1-muIsoMax*muRecoEff_*muAccEff_) + w4) - wGes;
       double muIsoMin = muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_);
       if(usePrelimSFs) muIsoMin = muIsoEff_ *(1 - 0.01 * getMuonIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
       // add 1% systematic to uncertainty (set bool to true)
-      if(useSFs) muIsoMin = muIsoEff_ *(1 - GetSF(h_muIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), true));
+      if(useSFs) muIsoMin = muIsoEff_ *(1 - GetSFUnc(h_muIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), true));
       muIsoSysUp = w1 * (w2 * (w3a + 1-muIsoMin*muRecoEff_*muAccEff_) + w4) - wGes;
 
       double muRecoMax = muRecoEff_*(1 + 0.01 * MuRecoUncertaintyUp_);
       if(usePrelimSFs) muRecoMax = muRecoEff_ *(1 + 0.01 * getMuonIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
       // add 1% systematic to uncertainty (set bool to true)
-      if(useSFs) muRecoMax = muRecoEff_ *(1 + GetSF(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), true));
+      if(useSFs) muRecoMax = muRecoEff_ *(1 + GetSFUnc(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), true));
       if(muRecoMax > 1) muRecoMax = 1;
       muRecoSysDown = w1 * (w2 * (w3a + 1-muIsoEff_*muRecoMax*muAccEff_) + w4) - wGes;
       double muRecoMin = muRecoEff_*(1 - 0.01 * MuRecoUncertaintyDown_);
       if(usePrelimSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * getMuonIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
       // add 1% systematic to uncertainty (set bool to true)
-      if(useSFs) muRecoMin = muRecoEff_ *(1 - GetSF(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), true));
+      if(useSFs) muRecoMin = muRecoEff_ *(1 - GetSFUnc(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), true));
       muRecoSysUp = w1 * (w2 * (w3a + 1-muIsoEff_*muRecoMin*muAccEff_) + w4) - wGes;
 
       double muAccMax, muAccMin;       
@@ -1821,24 +1845,30 @@ bool Prediction::FiltersPass()
     //} 
     // 2015 only if(CSCTightHaloFilter!=1) result=false;
     // 2015 only if(!eeBadSc4Filter) result=false;
-    if(!BadChargedCandidateFilter) result=false;
-    if(!BadPFMuonFilter) result=false;
+  	if(HBHENoiseFilter!=1) result=false;
+    if(HBHEIsoNoiseFilter!=1) result=false;
     if(EcalDeadCellTriggerPrimitiveFilter!=1) result=false;    
     if(eeBadScFilter!=1) result=false;
-    if(std::abs(globalTightHalo2016Filter)!=1) result=false;
-    if(HBHENoiseFilter!=1) result=false;
-    if(HBHEIsoNoiseFilter!=1) result=false;
+
+    if(runOnData){
+    	if(!BadChargedCandidateFilter) result=false;
+    	if(!BadPFMuonFilter) result=false;
+    	if(globalTightHalo2016Filter!=1) result=false;
+    }    
   }
+  if(NVtx<=0) result=false;
+
   // Preliminary filters
   if(PFCaloMETRatio>5) result=false;
+
   for(unsigned j = 0; j < Jets->size(); j++){
+    if(TMath::IsNaN(Jets->at(j).Phi()-METPhi)) result=false;
     if(Jets->at(j).Pt()>200 && Jets_muonEnergyFraction->at(j)>0.5 && (TVector2::Phi_mpi_pi(Jets->at(j).Phi()-METPhi)>(TMath::Pi()-0.4))){
       //std::cout<<"found bad muon jet"<<std::endl;
       result=false;
     }
   }
 
-  if(NVtx<=0) result=false;
   // Do not apply on fastSim samples!
   if(!runOnSignalMC) if(!JetID) result=false;
   return result;

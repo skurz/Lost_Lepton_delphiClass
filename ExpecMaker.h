@@ -80,7 +80,7 @@ const bool applyFilters_=true;
 // bTag corrections
 const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_");
 const string path_bTagCalib("btag/CSVv2_4invfb.csv");
-const string path_bTagCalibFastSim("btag/CSV_13TEV_TTJets_11_7_2016.csv");
+const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
 
 ////////////////////////
 //////// Don't change anything below
@@ -496,8 +496,8 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("LumiBlockNum", 1);
   fChain->SetBranchStatus("EvtNum", 1);
   fChain->SetBranchStatus("BTags", 1);
-  fChain->SetBranchStatus("BadChargedCandidateFilter", 1);
-  fChain->SetBranchStatus("BadPFMuonFilter", 1);
+  //fChain->SetBranchStatus("BadChargedCandidateFilter", 1);
+  //fChain->SetBranchStatus("BadPFMuonFilter", 1);
   fChain->SetBranchStatus("DeltaPhi1", 1);
   fChain->SetBranchStatus("DeltaPhi2", 1);
   fChain->SetBranchStatus("DeltaPhi3", 1);
@@ -505,12 +505,12 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter", 1);
   fChain->SetBranchStatus("eeBadScFilter", 1);
   //fChain->SetBranchStatus("eeBadSc4Filter", 1);
-  fChain->SetBranchStatus("CSCTightHaloFilter", 1);
+  //fChain->SetBranchStatus("CSCTightHaloFilter", 1);
   fChain->SetBranchStatus("Electrons", 1);
   fChain->SetBranchStatus("GenEls", 1);
   fChain->SetBranchStatus("GenMus", 1);
   fChain->SetBranchStatus("GenTaus", 1);
-  fChain->SetBranchStatus("globalTightHalo2016Filter", 1);
+  //fChain->SetBranchStatus("globalTightHalo2016Filter", 1);
   fChain->SetBranchStatus("HBHENoiseFilter", 1);
   fChain->SetBranchStatus("HBHEIsoNoiseFilter", 1);
   fChain->SetBranchStatus("HT", 1);
@@ -584,8 +584,8 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("LumiBlockNum", &LumiBlockNum, &b_LumiBlockNum);
   fChain->SetBranchAddress("EvtNum", &EvtNum, &b_EvtNum);
   fChain->SetBranchAddress("BTags", &BTags, &b_BTags);
-  fChain->SetBranchAddress("BadChargedCandidateFilter", &BadChargedCandidateFilter, &b_BadChargedCandidateFilter);
-  fChain->SetBranchAddress("BadPFMuonFilter", &BadPFMuonFilter, &b_BadPFMuonFilter);
+  //fChain->SetBranchAddress("BadChargedCandidateFilter", &BadChargedCandidateFilter, &b_BadChargedCandidateFilter);
+  //fChain->SetBranchAddress("BadPFMuonFilter", &BadPFMuonFilter, &b_BadPFMuonFilter);
   fChain->SetBranchAddress("CSCTightHaloFilter", &CSCTightHaloFilter, &b_CSCTightHaloFilter);
   fChain->SetBranchAddress("DeltaPhi1", &DeltaPhi1, &b_DeltaPhi1);
   fChain->SetBranchAddress("DeltaPhi2", &DeltaPhi2, &b_DeltaPhi2);
@@ -598,7 +598,7 @@ void ExpecMaker::Init(TTree *tree)
   fChain->SetBranchAddress("GenEls", &GenEls, &b_GenEls);
   fChain->SetBranchAddress("GenMus", &GenMus, &b_GenMus);
   fChain->SetBranchAddress("GenTaus", &GenTaus, &b_GenTaus);
-  fChain->SetBranchAddress("globalTightHalo2016Filter", &globalTightHalo2016Filter, &b_globalTightHalo2016Filter);
+  //fChain->SetBranchAddress("globalTightHalo2016Filter", &globalTightHalo2016Filter, &b_globalTightHalo2016Filter);
   fChain->SetBranchAddress("HBHENoiseFilter", &HBHENoiseFilter, &b_HBHENoiseFilter);
   fChain->SetBranchAddress("HBHEIsoNoiseFilter", &HBHEIsoNoiseFilter, &b_HBHEIsoNoiseFilter);
   fChain->SetBranchAddress("HT", &HT, &b_HT);

@@ -636,26 +636,28 @@ bool ExpecMaker::FiltersPass()
 {
   bool result=true;
   if(useFilterData){
-    // 2015 only if(CSCTightHaloFilter!=1) result=false;
-    // 2015 only if(!eeBadSc4Filter) result=false;
-    if(!BadChargedCandidateFilter) result=false;
-    if(!BadPFMuonFilter) result=false;
-    if(EcalDeadCellTriggerPrimitiveFilter!=1) result=false;    
-    if(eeBadScFilter!=1) result=false;
-    if(std::abs(globalTightHalo2016Filter)!=1) result=false;
     if(HBHENoiseFilter!=1) result=false;
     if(HBHEIsoNoiseFilter!=1) result=false;
-    // Preliminary filters
-    if(PFCaloMETRatio>5) result=false;
-    for(unsigned j = 0; j < Jets->size(); j++){
-    	if(Jets->at(j).Pt()>200 && Jets_muonEnergyFraction->at(j)>0.5 && (TVector2::Phi_mpi_pi(Jets->at(j).Phi()-METPhi)>(TMath::Pi()-0.4))){
-    		//std::cout<<"found bad muon jet"<<std::endl;
-    		result=false;
-    	}
-    }
+    if(EcalDeadCellTriggerPrimitiveFilter!=1) result=false;    
+    if(eeBadScFilter!=1) result=false;
+    //if(!BadChargedCandidateFilter) result=false;
+    //if(!BadPFMuonFilter) result=false;
+    //if(globalTightHalo2016Filter!=1) result=false;
   }
   if(NVtx<=0) result=false;
-  if(applyJetID) if(!JetID) result=false;
+  // Preliminary filters
+  if(PFCaloMETRatio>5) result=false;
+
+  for(unsigned j = 0; j < Jets->size(); j++){
+    if(TMath::IsNaN(Jets->at(j).Phi()-METPhi)) result=false;
+    if(Jets->at(j).Pt()>200 && Jets_muonEnergyFraction->at(j)>0.5 && (TVector2::Phi_mpi_pi(Jets->at(j).Phi()-METPhi)>(TMath::Pi()-0.4))){
+      //std::cout<<"found bad muon jet"<<std::endl;
+      result=false;
+    }
+  }
+
+  // Do not apply on fastSim samples!
+  if(!JetID) result=false;
   return result;
 }
 

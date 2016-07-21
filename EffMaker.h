@@ -39,10 +39,10 @@ const double mtwCut_ = 100;
 // binning of efficiencies
 // gloabel 1D binning
 
-const int oneDHT_=16;
-double OneDHT_[oneDHT_] = {250,300,350,500,550,600,650,700,750,800,900,1000,1200,1500,2000,10000};
+const int oneDHT_=17;
+double OneDHT_[oneDHT_] = {300,350,400,450,500,550,600,650,700,750,800,900,1000,1200,1500,2000,10000};
 const int oneDMHT_=16;
-double OneDMHT_[oneDMHT_] = {0,50,100,150,200,250,300,350,450,500,600,750,900,1200,1700,10000};
+double OneDMHT_[oneDMHT_] = {250,300,350,400,450,500,550,600,650,700,750,800,900,1000,1200,10000};
 const int oneDNJets_=7;
 double OneDNJets_[oneDNJets_] = {2.5,3.5,4.5,5.5,6.5,8.5,21.5};
 const int oneDBJets_=5;
