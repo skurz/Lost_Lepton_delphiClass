@@ -40,8 +40,8 @@
 // useDeltaPhiCut = -1: inverted deltaPhiCut
 const int useDeltaPhiCut = 1;  //<-check------------------------
 
-const bool runOnData = true;  //<-check------------------------
-const bool runOnStandardModelMC = false;  //<-check------------------------
+const bool runOnData = false;  //<-check------------------------
+const bool runOnStandardModelMC = true;  //<-check------------------------
 const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims (bTag reweighting)
@@ -69,18 +69,18 @@ const string path_xsecT2("xsec/dict_xsec_T2.txt");
 // Extract csc2015.tar.gz! Txt file > 100MB!
 const string path_evtListFilter("eventFilter/csc2015.txt");
 
-const TString path_elecID("SFs/kinematicBinSFele.root");
-const TString hist_elecID("CutBasedVeto");
-const TString path_elecIso("SFs/kinematicBinSFele.root");
-const TString hist_elecIso("MiniIso0p1_vs_RelActivity");
+const TString path_elecID("SFs/scaleFactors_electrons.root");
+const TString hist_elecID("GsfElectronToVeto");
+const TString path_elecIso("SFs/scaleFactors_electrons.root");
+const TString hist_elecIso("MVAVLooseElectronToMini");
 
 const TString path_muID("SFs/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root");
-const TString hist_muID("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_tag_IsoMu20_pass");
-// for muons: add 1% systematic to uncertainty -> set boolean to true in GetSF function
-const TString path_muIso("SFs/TnP_MuonID_NUM_MiniIsoTight_DENOM_LooseID_VAR_map_pt_eta.root");
+const TString hist_muID("pt_abseta_PLOT_pair_probeMultiplicity_bin0");
+// for muons: add 3% systematic to uncertainty -> set boolean to true in GetSF function
+const TString path_muIso("SFs/TnP_MuonID_NUM_MiniIsoTight_DENOM_MediumID_VAR_map_pt_eta.root");
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // muIso: still binned in pt/eta since this was recommended! Has to be changed for Moriond (also in Prediction.C when getting the uncertainties)!
-const TString hist_muIso("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_tag_combRelIsoPF04dBeta_bin0_&_tag_pt_bin0_&_PF_pass_&_tag_IsoMu20_pass");
+const TString hist_muIso("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
 
 //Acceptance uncertainty maps
 const TString path_AccPDF_up("AcceptanceUncertainty/PDFuncertainty_up.root");
@@ -282,8 +282,8 @@ class Prediction : public TSelector {
 
   TH2F* h_muIDSF = 0;
   TH2F* h_muIsoSF = 0;
-  TH2D* h_elecIsoSF = 0;
-  TH2D* h_elecIDSF = 0;
+  TH2F* h_elecIsoSF = 0;
+  TH2F* h_elecIDSF = 0;
 
   std::vector<TH2D*> h_muAccPDF_up;
   std::vector<TH2D*> h_elecAccPDF_up;
@@ -852,10 +852,10 @@ void Prediction::Init(TTree *tree)
   h_muIsoSF = (TH2F*) muIsoSF_histFile->Get(hist_muIso)->Clone();
 
   TFile *elecIDSF_histFile = TFile::Open(path_elecID, "READ");
-  h_elecIDSF = (TH2D*) elecIDSF_histFile->Get(hist_elecID)->Clone();
+  h_elecIDSF = (TH2F*) elecIDSF_histFile->Get(hist_elecID)->Clone();
 
   TFile *elecIsoSF_histFile = TFile::Open(path_elecIso, "READ");
-  h_elecIsoSF = (TH2D*) elecIsoSF_histFile->Get(hist_elecIso)->Clone();
+  h_elecIsoSF = (TH2F*) elecIsoSF_histFile->Get(hist_elecIso)->Clone();
 
   //Open histograms for Acceptance uncertainties
   TFile *accPDF_histFile_up = TFile::Open(path_AccPDF_up, "READ");

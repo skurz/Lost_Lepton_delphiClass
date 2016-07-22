@@ -382,7 +382,7 @@ void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir){
   	if(std::string(Top->GetName()).find(std::string("Up")) != std::string::npos && Top->GetBinContent(i)/Bottom->GetBinContent(i)<0) std::cout << Top->GetName() << "/" << Bottom->GetName() << ": " << (Top->GetBinContent(i)/Bottom->GetBinContent(i)) << std::endl;
 	if(std::string(Top->GetName()).find(std::string("Down")) != std::string::npos && Top->GetBinContent(i)/Bottom->GetBinContent(i)>0) std::cout << Top->GetName() << "/" << Bottom->GetName() << ": " << (Top->GetBinContent(i)/Bottom->GetBinContent(i)) << std::endl;
     
-    if(Bottom->GetBinContent(i)!=0) Top->SetBinContent(i, 1.+std::abs(Top->GetBinContent(i)/Bottom->GetBinContent(i)));
+    if(Bottom->GetBinContent(i)!=0) Top->SetBinContent(i, 1.+Top->GetBinContent(i)/Bottom->GetBinContent(i));
     else Top->SetBinContent(i, -999);
 
     //else Top->SetBinContent(i, 0);
