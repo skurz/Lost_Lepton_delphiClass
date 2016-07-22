@@ -40,8 +40,8 @@
 // useDeltaPhiCut = -1: inverted deltaPhiCut
 const int useDeltaPhiCut = 1;  //<-check------------------------
 
-const bool runOnData = false;  //<-check------------------------
-const bool runOnStandardModelMC = true;  //<-check------------------------
+const bool runOnData = true;  //<-check------------------------
+const bool runOnStandardModelMC = false;  //<-check------------------------
 const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims (bTag reweighting)
@@ -55,7 +55,7 @@ const bool useGenHTMHT = false;
 // PU
 const TString path_puHist("PU/PileupHistograms_0704.root");
 // bTag corrections
-const string path_bTagCalib("btag/CSVv2_4invfb.csv");
+const string path_bTagCalib("btag/CSVv2_ichep.csv");
 const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // ISR corrections: NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond! Just uncomment in Prediction::Init(Tree*) of this file
@@ -87,6 +87,11 @@ const TString path_AccPDF_up("AcceptanceUncertainty/PDFuncertainty_up.root");
 const TString path_AccPDF_down("AcceptanceUncertainty/PDFuncertainty_down.root");
 const TString path_AccQ2("AcceptanceUncertainty/Q2uncertainty.root");
 
+// Muon tracking inefficiency
+const TString path_muonTrk("SFs/general_tracks_and_early_general_tracks_corr_ratio.root");
+const TString hist_muonTrkHighPt("mutrksfptg10");
+const TString hist_muonTrkLowPt("mutrksfptl10");
+
 
 ////////////////////////
 //////// Usually don't have to be changed
@@ -102,6 +107,9 @@ const bool correctElectronID = false;
 const bool correctElectronIso = false;
 const bool correctMuonID = false;
 const bool correctMuonIso = false;
+
+// Correction for muon tracking inefficiency due to high luminosity (on muon ID efficiency)
+const bool doMuTrackingCorrection = true;
 
 // Flat uncertainties for acceptance efficiency. Just for testing
 const bool useFlatAccUnc = false;
@@ -247,9 +255,13 @@ class Prediction : public TSelector {
   TFile* pufile = 0;
   TH1* puhist = 0;
 
+  TH1D * h_muTrkLowPtSF = 0;
+  TH1D * h_muTrkHighPtSF = 0;
+
+
   std::vector<std::pair<double, double>> xsecsT1T5;
   std::vector<std::pair<double, double>> xsecsT2;
-  std::vector<std::pair<double, double>> *xsecs;
+  std::vector<std::pair<double, double>> *xsecs = 0;
 
 
     //open skim file as skimfile
@@ -881,6 +893,10 @@ void Prediction::Init(TTree *tree)
   h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets5")->Clone());
   h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets6")->Clone());
   h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets7Inf")->Clone());
+
+  TFile *muTrkSF_histFile = TFile::Open(path_muonTrk, "READ");
+  h_muTrkLowPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkLowPt)->Clone();
+  h_muTrkHighPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkHighPt)->Clone();
 
   if(runOnSignalMC){
     // ISR setup

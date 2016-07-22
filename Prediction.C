@@ -708,10 +708,15 @@ Bool_t Prediction::Process(Long64_t entry)
       elecRecoEff_ = elecRecoEffVec_.eff;
       elecIsoEff_ = elecIsoEffVec_.eff;
 
-      if(correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
-      if(correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
-      if(correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
-      if(correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons_MT2Activity->at(0));
+      if(!runOnStandardModelMC && correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons_MT2Activity->at(0));
+
+      if(!runOnStandardModelMC && doMuTrackingCorrection){
+        if(selectedIDIsoMuons->at(0).Pt() > 10) muRecoEff_ *= GetSF(h_muTrkHighPtSF, selectedIDIsoMuons->at(0).Eta());
+        else muRecoEff_ *= GetSF(h_muTrkLowPtSF, selectedIDIsoMuons->at(0).Eta());
+      }
 
       // calculate Weights
       // muCS >99% purity
@@ -768,7 +773,7 @@ Bool_t Prediction::Process(Long64_t entry)
       // 3a: iso(e),reco(e),acc(e)
       // 4: diLeptonic contribution: singleLep purity, diLep found
 
-      Float_t w1 = Weight * (1 - expectationReductionIsoTrackEff_) * 1/muMTWEff_; // * muPurityCorrection_
+      Float_t w1 = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * 1/muMTWEff_; // * muPurityCorrection_
       Float_t w2 = muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccEff_);
       Float_t w3a = 1-muIsoEff_*muRecoEff_*muAccEff_;
       Float_t w3b = 1-elecIsoEff_*elecRecoEff_*elecAccEff_ ;
@@ -788,8 +793,17 @@ Bool_t Prediction::Process(Long64_t entry)
       purityStatUp = 0; // no purity correction for muCS (>99%)
       purityStatDown = 0; // no purity correction for muCS (>99%)
 
-      singleLepPurityStatUp = w1 * ((muDiLepContributionMTWAppliedEff_ + muDiLepContributionMTWAppliedEffVec_.errUp) * 1/(muIsoEff_*muRecoEff_*muAccEff_) * (w3a+w3b) + (1 - muDiLepContributionMTWAppliedEff_-muDiLepContributionMTWAppliedEffVec_.errUp) * (1-muDiLepEffMTWAppliedEff_)/muDiLepEffMTWAppliedEff_) - wGes;
-      singleLepPurityStatDown = w1 * ((muDiLepContributionMTWAppliedEff_ - muDiLepContributionMTWAppliedEffVec_.errDown) * 1/(muIsoEff_*muRecoEff_*muAccEff_) * (w3a+w3b) + (1 - muDiLepContributionMTWAppliedEff_+muDiLepContributionMTWAppliedEffVec_.errDown) * (1-muDiLepEffMTWAppliedEff_)/muDiLepEffMTWAppliedEff_) - wGes;
+      double singleLepPurityStat1 = w1 * ((muDiLepContributionMTWAppliedEff_ + muDiLepContributionMTWAppliedEffVec_.errUp) * 1/(muIsoEff_*muRecoEff_*muAccEff_) * (w3a+w3b) + (1 - muDiLepContributionMTWAppliedEff_-muDiLepContributionMTWAppliedEffVec_.errUp) * (1-muDiLepEffMTWAppliedEff_)/muDiLepEffMTWAppliedEff_) - wGes;
+      double singleLepPurityStat2 = w1 * ((muDiLepContributionMTWAppliedEff_ - muDiLepContributionMTWAppliedEffVec_.errDown) * 1/(muIsoEff_*muRecoEff_*muAccEff_) * (w3a+w3b) + (1 - muDiLepContributionMTWAppliedEff_+muDiLepContributionMTWAppliedEffVec_.errDown) * (1-muDiLepEffMTWAppliedEff_)/muDiLepEffMTWAppliedEff_) - wGes;
+      if((singleLepPurityStat1 > 0 && singleLepPurityStat2 > 0) || (singleLepPurityStat1 < 0 && singleLepPurityStat2 < 0)) std::cout << "Error calculating singleLepPurityStat" << std::endl;
+      else if(singleLepPurityStat1 > 0){
+        singleLepPurityStatUp = singleLepPurityStat1;
+        singleLepPurityStatDown = singleLepPurityStat2;
+      }else{
+        singleLepPurityStatUp = singleLepPurityStat2;
+        singleLepPurityStatDown = singleLepPurityStat1;
+      }
+
       diLepFoundStatDown = w1 * (w2 * (w3a+w3b) + (1-muDiLepContributionMTWAppliedEff_) * (1-muDiLepEffMTWAppliedEff_-muDiLepEffMTWAppliedEffVec_.errUp)/(muDiLepEffMTWAppliedEff_+muDiLepEffMTWAppliedEffVec_.errUp)) - wGes;
       diLepFoundStatUp =w1 * (w2 * (w3a+w3b) + (1-muDiLepContributionMTWAppliedEff_) * (1-muDiLepEffMTWAppliedEff_+muDiLepEffMTWAppliedEffVec_.errDown)/(muDiLepEffMTWAppliedEff_-muDiLepEffMTWAppliedEffVec_.errDown)) - wGes;
 
@@ -1303,10 +1317,15 @@ Bool_t Prediction::Process(Long64_t entry)
       muRecoEff_ = muRecoEffVec_.eff;
       muIsoEff_ = muIsoEffVec_.eff;
 
-      if(correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
-      if(correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
-      if(correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
-      if(correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons_MT2Activity->at(0));
+      if(!runOnStandardModelMC && correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons_MT2Activity->at(0));
+
+      if(!runOnStandardModelMC && doMuTrackingCorrection){
+        if(selectedIDIsoElectrons->at(0).Pt() > 10) muRecoEff_ *= GetSF(h_muTrkHighPtSF, selectedIDIsoElectrons->at(0).Eta());
+        else muRecoEff_ *= GetSF(h_muTrkLowPtSF, selectedIDIsoElectrons->at(0).Eta());
+      }
 
       // calculate Weights
       // cout << "calculate weights...";
@@ -1355,7 +1374,7 @@ Bool_t Prediction::Process(Long64_t entry)
      
       // Uncertainties
       // For explanation see muons
-      Float_t w1 = Weight * (1 - expectationReductionIsoTrackEff_) * elecPurityCorrection_ * 1/elecMTWEff_;
+      Float_t w1 = Weight * (1 - (expectationReductionMuIsoTrackEff_ + expectationReductionElecIsoTrackEff_ + expectationReductionPionIsoTrackEff_)) * elecPurityCorrection_ * 1/elecMTWEff_;
       Float_t w2 = elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_);
       Float_t w3a = 1-elecIsoEff_*elecRecoEff_*elecAccEff_;
       Float_t w3b = 1-muIsoEff_*muRecoEff_*muAccEff_;
@@ -1375,8 +1394,17 @@ Bool_t Prediction::Process(Long64_t entry)
       purityStatUp = Weight * (1 - expectationReductionIsoTrackEff_) * 1/elecMTWEff_ * (elecPurityCorrection_ + elecPurityCorrectionVec_.errUp) * (w2 * (w3a+w3b) + w4) - wGes;
       purityStatDown = Weight * (1 - expectationReductionIsoTrackEff_) * 1/elecMTWEff_ * (elecPurityCorrection_ - elecPurityCorrectionVec_.errUp) * (w2 * (w3a+w3b) + w4) - wGes;
 
-      singleLepPurityStatUp = w1 * ((elecDiLepContributionMTWAppliedEff_ + elecDiLepContributionMTWAppliedEffVec_.errUp) * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_) * (w3a+w3b) + (1 - elecDiLepContributionMTWAppliedEff_-elecDiLepContributionMTWAppliedEffVec_.errUp) * (1-elecDiLepEffMTWAppliedEff_)/elecDiLepEffMTWAppliedEff_) - wGes;
-      singleLepPurityStatDown = w1 * ((elecDiLepContributionMTWAppliedEff_ - elecDiLepContributionMTWAppliedEffVec_.errDown) * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_) * (w3a+w3b) + (1 - elecDiLepContributionMTWAppliedEff_+elecDiLepContributionMTWAppliedEffVec_.errDown) * (1-elecDiLepEffMTWAppliedEff_)/elecDiLepEffMTWAppliedEff_) - wGes;
+      double singleLepPurityStat1 = w1 * ((elecDiLepContributionMTWAppliedEff_ + elecDiLepContributionMTWAppliedEffVec_.errUp) * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_) * (w3a+w3b) + (1 - elecDiLepContributionMTWAppliedEff_-elecDiLepContributionMTWAppliedEffVec_.errUp) * (1-elecDiLepEffMTWAppliedEff_)/elecDiLepEffMTWAppliedEff_) - wGes;
+      double singleLepPurityStat2 = w1 * ((elecDiLepContributionMTWAppliedEff_ - elecDiLepContributionMTWAppliedEffVec_.errDown) * 1/(elecIsoEff_*elecRecoEff_*elecAccEff_) * (w3a+w3b) + (1 - elecDiLepContributionMTWAppliedEff_+elecDiLepContributionMTWAppliedEffVec_.errDown) * (1-elecDiLepEffMTWAppliedEff_)/elecDiLepEffMTWAppliedEff_) - wGes;
+      if((singleLepPurityStat1 > 0 && singleLepPurityStat2 > 0) || (singleLepPurityStat1 < 0 && singleLepPurityStat2 < 0)) std::cout << "Error calculating singleLepPurityStat" << std::endl;
+      else if(singleLepPurityStat1 > 0){
+        singleLepPurityStatUp = singleLepPurityStat1;
+        singleLepPurityStatDown = singleLepPurityStat2;
+      }else{
+        singleLepPurityStatUp = singleLepPurityStat2;
+        singleLepPurityStatDown = singleLepPurityStat1;
+      }
+
       diLepFoundStatDown = w1 * (w2 * (w3a+w3b) + (1-elecDiLepContributionMTWAppliedEff_) * (1-elecDiLepEffMTWAppliedEff_-elecDiLepEffMTWAppliedEffVec_.errUp)/(elecDiLepEffMTWAppliedEff_+elecDiLepEffMTWAppliedEffVec_.errUp)) - wGes;
       diLepFoundStatUp =w1 * (w2 * (w3a+w3b) + (1-elecDiLepContributionMTWAppliedEff_) * (1-elecDiLepEffMTWAppliedEff_+elecDiLepEffMTWAppliedEffVec_.errDown)/(elecDiLepEffMTWAppliedEff_-elecDiLepEffMTWAppliedEffVec_.errDown)) - wGes;
 

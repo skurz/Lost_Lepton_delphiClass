@@ -57,6 +57,9 @@ const bool useTriggerEffWeight = false; //<-check------------------------ right 
 // Write some variables to tree for isotrack studies
 const bool doIsoTrackStudies = false;
 
+// Correction for tracking inefficiency due to high luminosity
+const bool doMuIsoTrackTrackingCorrection = false;
+
 //////////////////////
 //// IMPORTANT: running on signal not fully implemented yet (e.g. get x-sec/weight from txt file)
 // If needed, look up at Prediction.C
@@ -79,8 +82,13 @@ const bool applyFilters_=true;
 
 // bTag corrections
 const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_");
-const string path_bTagCalib("btag/CSVv2_4invfb.csv");
+const string path_bTagCalib("btag/CSVv2_ichep.csv");
 const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
+
+// Muon tracking inefficiency
+const TString path_muonTrk("SFs/general_tracks_and_early_general_tracks_corr_ratio.root");
+const TString hist_muonTrkHighPt("mutrksfptg10");
+const TString hist_muonTrkLowPt("mutrksfptl10");
 
 ////////////////////////
 //////// Don't change anything below
@@ -160,6 +168,9 @@ public :
   TFile* pufile = 0;
   TH1* puhist = 0;
   Double_t w_pu;
+
+  TH1D * h_muTrkLowPtSF = 0;
+  TH1D * h_muTrkHighPtSF = 0;
 
   BTagCorrector *btagcorr = 0;
   std::vector<double> bTagProb;
@@ -489,6 +500,10 @@ void ExpecMaker::Init(TTree *tree)
     puhist = (TH1*)pufile->Get("pu_weights_central");
   }
 
+  // Open histograms for SFs
+  TFile *muTrkSF_histFile = TFile::Open(path_muonTrk, "READ");
+  h_muTrkLowPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkLowPt)->Clone();
+  h_muTrkHighPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkHighPt)->Clone();
 
   fChain->SetBranchStatus("*",0);
 

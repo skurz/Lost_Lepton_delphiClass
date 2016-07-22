@@ -99,13 +99,13 @@ static std::pair<double,double> EvalSF(TH2 *hist, Double_t xVal, Double_t yVal) 
 }
 
 static double GetSFUnc(TH2 *hist, Double_t xVal, Double_t yVal, bool addSys) {
-  // addSys: for muons, 1% systematic has to be added to total uncertainty
+  // addSys: for muons, 3% systematic has to be added to total uncertainty
 
   std::pair<double, double> SFandUnc = EvalSF(hist, xVal, yVal);
 
   double SF = 0.;
 
-  if(addSys) SF = std::max(std::abs(1-SFandUnc.first), std::sqrt(SFandUnc.second*SFandUnc.second + 0.01*SFandUnc.first*0.01*SFandUnc.first));
+  if(addSys) SF = std::max(std::abs(1-SFandUnc.first), std::sqrt(SFandUnc.second*SFandUnc.second + 0.03*SFandUnc.first*0.03*SFandUnc.first));
   else SF = std::max(std::abs(1-SFandUnc.first), SFandUnc.second);
 
   //std::cout << std::abs(1-hist->GetBinContent(nxBin, nyBin)) << " " << std::sqrt(hist->GetBinError(nxBin, nyBin)*hist->GetBinError(nxBin, nyBin) + 0.01*hist->GetBinContent(nxBin, nyBin)*0.01*hist->GetBinContent(nxBin, nyBin)) << " " << hist->GetBinError(nxBin, nyBin)<<std::endl;
@@ -115,6 +115,44 @@ static double GetSFUnc(TH2 *hist, Double_t xVal, Double_t yVal, bool addSys) {
 
 static double GetSF(TH2 *hist, Double_t xVal, Double_t yVal) {
   return EvalSF(hist, xVal, yVal).first;
+}
+
+static std::pair<double,double> EvalSF(TH1 *hist, Double_t xVal) {
+  // Dont use overflow bins!
+  if(xVal < hist->GetXaxis()->GetXmin() )
+    {
+      //std::cout<<"SF: Warning xVal: "<<xVal<<" is smaller than minimum of histo: "<<hist->GetName()<<std::endl;
+      xVal= hist->GetXaxis()->GetXmin()+0.01;
+    }
+  else if(xVal > hist->GetXaxis()->GetXmax() )
+    {
+      //std::cout<<"SF: Warning xVal: "<<xVal<<" is bigger than maximum of histo: "<<hist->GetName()<<" which is: "<<hist->GetXaxis()->GetXmax()<<std::endl;
+      xVal= hist->GetXaxis()->GetXmax()-0.01;
+    }
+  
+  int nxBin = hist->GetXaxis()->FindBin(xVal);
+
+  if(nxBin > hist->GetNbinsX()) std::cout<<"SF: Problem in getting Efficiencies!"<<std::endl;
+  if(nxBin > hist->GetNbinsX()) nxBin = hist->GetNbinsX();
+
+  return std::make_pair(hist->GetBinContent(nxBin), hist->GetBinError(nxBin));
+}
+
+static double GetSFUnc(TH1 *hist, Double_t xVal, bool addSys) {
+  // addSys: for muons, 1% systematic has to be added to total uncertainty
+
+  std::pair<double, double> SFandUnc = EvalSF(hist, xVal);
+
+  double SF = 0.;
+
+  if(addSys) SF = std::max(std::abs(1-SFandUnc.first), std::sqrt(SFandUnc.second*SFandUnc.second + 0.01*SFandUnc.first*0.01*SFandUnc.first));
+  else SF = std::max(std::abs(1-SFandUnc.first), SFandUnc.second);
+
+  return SF;
+}
+
+static double GetSF(TH1 *hist, Double_t xVal) {
+  return EvalSF(hist, xVal).first;
 }
 
 static double GetAccSF(std::vector<TH2D*> hists, Int_t NJets, Double_t xVal, Double_t yVal) {

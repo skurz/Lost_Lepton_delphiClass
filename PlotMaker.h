@@ -379,8 +379,12 @@ void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // pre
 
 void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir){
   for(int i = 1; i<Bottom->GetNbinsX()+1; ++i){
+  	if(std::string(Top->GetName()).find(std::string("Up")) != std::string::npos && Top->GetBinContent(i)/Bottom->GetBinContent(i)<0) std::cout << Top->GetName() << "/" << Bottom->GetName() << ": " << (Top->GetBinContent(i)/Bottom->GetBinContent(i)) << std::endl;
+	if(std::string(Top->GetName()).find(std::string("Down")) != std::string::npos && Top->GetBinContent(i)/Bottom->GetBinContent(i)>0) std::cout << Top->GetName() << "/" << Bottom->GetName() << ": " << (Top->GetBinContent(i)/Bottom->GetBinContent(i)) << std::endl;
+    
     if(Bottom->GetBinContent(i)!=0) Top->SetBinContent(i, 1.+std::abs(Top->GetBinContent(i)/Bottom->GetBinContent(i)));
     else Top->SetBinContent(i, -999);
+
     //else Top->SetBinContent(i, 0);
     Top->SetBinError(i, 0);
   } 
