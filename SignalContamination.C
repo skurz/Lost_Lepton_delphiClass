@@ -25,8 +25,8 @@ void SignalContamination()
 {
 
   // General Settings
-  TString InputPath_Prediction("Prediction_Scan_T5qqqqVV_genMHT.root");
-  TString OutputPath_Prediction("LLContamination_T5qqqqVV_genMHT_Jul20.root");
+  TString InputPath_Prediction("Prediction_Scan_T5qqqqVV.root");
+  TString OutputPath_Prediction("LLContamination_T5qqqqVV_Jul23.root");
 
 
   // Scale all MC weights by this factor

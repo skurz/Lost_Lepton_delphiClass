@@ -21,6 +21,8 @@ void MakePrediction_Data()
 	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_MET_2016B.root");
 	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLm/tree_MET_2016C.root");	
 	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_MET_2016C.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLm/tree_MET_2016D.root");	
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_MET_2016D.root");
 
 	TProof *proof = NULL;
 

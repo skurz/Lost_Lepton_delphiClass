@@ -53,7 +53,7 @@ const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/t
 const bool useGenHTMHT = false;
 
 // PU
-const TString path_puHist("PU/PileupHistograms_0704.root");
+const TString path_puHist("PU/PileupHistograms_0721_63mb_pm5.root");
 // bTag corrections
 const string path_bTagCalib("btag/CSVv2_ichep.csv");
 const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
@@ -92,6 +92,10 @@ const TString path_muonTrk("SFs/general_tracks_and_early_general_tracks_corr_rat
 const TString hist_muonTrkHighPt("mutrksfptg10");
 const TString hist_muonTrkLowPt("mutrksfptl10");
 
+// Electron tracking inefficiency
+const TString path_elecTrk("SFs/egammaEffi.txt_SF2D.root");
+const TString hist_elecTrk("EGamma_SF2D");
+
 
 ////////////////////////
 //////// Usually don't have to be changed
@@ -103,13 +107,13 @@ const bool usePrelimSFs = false;
 // Those are the SFs you want! Read from root file
 const bool useSFs = true;
 // Apply corrections on ID/Iso based on SFs. Used to correct for systematic offsets
-const bool correctElectronID = false;
+const bool correctElectronID = true;
 const bool correctElectronIso = false;
-const bool correctMuonID = false;
+const bool correctMuonID = true;
 const bool correctMuonIso = false;
 
-// Correction for muon tracking inefficiency due to high luminosity (on muon ID efficiency)
-const bool doMuTrackingCorrection = true;
+// Correction for tracking inefficiency due to high luminosity (on muon ID efficiency)
+const bool doTrackingCorrection = true;
 
 // Flat uncertainties for acceptance efficiency. Just for testing
 const bool useFlatAccUnc = false;
@@ -257,6 +261,7 @@ class Prediction : public TSelector {
 
   TH1D * h_muTrkLowPtSF = 0;
   TH1D * h_muTrkHighPtSF = 0;
+  TH2F * h_elecTrkSF = 0;
 
 
   std::vector<std::pair<double, double>> xsecsT1T5;
@@ -897,6 +902,9 @@ void Prediction::Init(TTree *tree)
   TFile *muTrkSF_histFile = TFile::Open(path_muonTrk, "READ");
   h_muTrkLowPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkLowPt)->Clone();
   h_muTrkHighPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkHighPt)->Clone();
+
+  TFile *elecTrkSF_histFile = TFile::Open(path_elecTrk, "READ");
+  h_elecTrkSF = (TH2F*) elecTrkSF_histFile->Get(hist_elecTrk)->Clone();  
 
   if(runOnSignalMC){
     // ISR setup
