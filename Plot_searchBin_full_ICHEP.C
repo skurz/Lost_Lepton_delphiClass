@@ -182,8 +182,8 @@ void Plot_searchBin_full_ICHEP(string option="", int pull=0){ // string option="
   double MHT_x_max=1000.;
   double NJet_x_max=15.;
   double NBtag_x_max=4.;
-  double search_x_max=160.-0.5;
-  if(option.find("QCD")!=string::npos)search_x_max=208.-0.5;
+  double search_x_max=160.+0.5;
+  if(option.find("QCD")!=string::npos)search_x_max=208.+0.5;
   double search_x_min=1.-0.5;
 
   TDirectory *dPre = 0;
