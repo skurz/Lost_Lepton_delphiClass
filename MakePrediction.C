@@ -20,9 +20,12 @@ void MakePrediction()
   gSystem->Load("libPhysics.so");
   gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
   
-  TChain *Effchain = new TChain("tree");
+  TChain *Effchain = new TChain("TreeMaker2/PreSelection");
 
-  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_ZJetsToNuNu_HT-100to200.root");
+  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/data_v9/*.MET_*.root");
+  //Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_otherCS/QCD_*.root");
+
+/*  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_ZJetsToNuNu_HT-100to200.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLm/tree_ZJetsToNuNu_HT-100to200.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_ZJetsToNuNu_HT-200to400.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLm/tree_ZJetsToNuNu_HT-200to400.root");
@@ -69,7 +72,7 @@ void MakePrediction()
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLm/tree_QCD_HT-1500to2000.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_QCD_HT-2000toInf.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLm/tree_QCD_HT-2000toInf.root");
-/*
+*//*
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_WWTo1L1Nu2Q.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLm/tree_WWTo1L1Nu2Q.root");
   Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_WWTo2L2Nu.root");
@@ -109,7 +112,7 @@ void MakePrediction()
     Effchain->SetProof();     	
   }
 
-  Effchain->Process("Prediction.C++g", "Prediction_other.root"); //specify output path/file here
+  Effchain->Process("Prediction.C++g", "Prediction_data.root"); //specify output path/file here
   // No HT cut: Effchain->Process("Prediction.C++g", "outputFile.root");
   // HT cut: Effchain->Process("Prediction.C++g", "outputFile.root, genHTcut");
   // for Jacks Syntax (outputname based on input) use: Effchain->Process("Prediction.C++g", "*, genHTcut");

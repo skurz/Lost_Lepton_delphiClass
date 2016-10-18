@@ -24,8 +24,8 @@
 #endif
 
 void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder);
-void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir);
-void SetBinLabel(TH1D* hist);
+void SaveFraction(TH1D* Num, TH1D* Denom, TDirectory* dir, TString name = "", TString correlation = "");
+void SetBinLabel(TH1D* hist, TString name = "");
 void addUncertainties(TH1D* total, std::vector<TH1D*> uncertainties, bool upperUnc);
 void setBranchesExpectation(TTree *tree);
 void setBranchesPrediction(TTree *tree, bool isData=false);
@@ -51,15 +51,15 @@ UShort_t        ExpectationDiLep;
 UShort_t        ExpectationReductionIsoTrack;
 
 Float_t         MTW;
-UShort_t        selectedIDIsoMuonsNum;
-UShort_t        selectedIDIsoElectronsNum;
+UShort_t        MuonsNum;
+UShort_t        ElectronsNum;
 
-std::vector<TLorentzVector>* selectedIDIsoMuons=0;
-std::vector<TLorentzVector>* selectedIDIsoElectrons=0;
-std::vector<Float_t>* selectedIDIsoMuonsPTW=0;
-std::vector<Float_t>* selectedIDIsoElectronsPTW=0;
-std::vector<TLorentzVector> *GenMus=0;
-std::vector<TLorentzVector> *GenEls=0;
+std::vector<TLorentzVector>* Muons=0;
+std::vector<TLorentzVector>* Electrons=0;
+std::vector<Float_t>* MuonsPTW=0;
+std::vector<Float_t>* ElectronsPTW=0;
+std::vector<TLorentzVector> *GenMuons=0;
+std::vector<TLorentzVector> *GenElectrons=0;
 
 Float_t         totalWeightDiLep;
 Float_t         totalWeightDiLepIsoTrackReduced;
@@ -283,83 +283,42 @@ TH1D* totalPredElecAccStatDown_LL_MC_ = 0;
 TH1D* totalPropSysUp_LL_MC_ = 0;
 TH1D* totalPropSysDown_LL_MC_ = 0;
 
+// Add some of the uncertainties in quadrature (easier for integration)
+TH1D* totalPredDiLepContributionStatUp_LL_ = 0;
+TH1D* totalPredDiLepContributionStatDown_LL_ = 0;
+TH1D* totalPredDiLepContributionSysUp_LL_ = 0;
+TH1D* totalPredDiLepContributionSysDown_LL_ = 0;
+TH1D* totalPredLepRecoIsoStatUp_LL_ = 0;
+TH1D* totalPredLepRecoIsoStatDown_LL_ = 0;
+TH1D* totalPredLepAccStatUp_LL_ = 0;
+TH1D* totalPredLepAccStatDown_LL_ = 0;
+TH1D* totalPredLepAccSysUp_LL_ = 0;
+TH1D* totalPredLepAccSysDown_LL_ = 0;
+TH1D* totalPredLepAccQsquareSysUp_LL_ = 0;
+TH1D* totalPredLepAccQsquareSysDown_LL_ = 0;
 
+TH1D* totalPredDiLepContributionStatUp_LL_MC_ = 0;
+TH1D* totalPredDiLepContributionStatDown_LL_MC_ = 0;
+TH1D* totalPredDiLepContributionSysUp_LL_MC_ = 0;
+TH1D* totalPredDiLepContributionSysDown_LL_MC_ = 0;
+TH1D* totalPredLepRecoIsoStatUp_LL_MC_ = 0;
+TH1D* totalPredLepRecoIsoStatDown_LL_MC_ = 0;
+TH1D* totalPredLepAccStatUp_LL_MC_ = 0;
+TH1D* totalPredLepAccStatDown_LL_MC_ = 0;
+TH1D* totalPredLepAccSysUp_LL_MC_ = 0;
+TH1D* totalPredLepAccSysDown_LL_MC_ = 0;
+TH1D* totalPredLepAccQsquareSysUp_LL_MC_ = 0;
+TH1D* totalPredLepAccQsquareSysDown_LL_MC_ = 0;
 
-void SetBinLabel(TH1D* hist){
-  if(hist->GetNbinsX()==190){
-    // only BTags=0,1,2 for NJets=2
-    for(int nbi = 0; nbi<4; ++nbi){
-      for(int hti = 0; hti<10; ++hti){
-        int mhti =0;
-        if(hti >=0 && hti <=2) mhti = 0;
-        else if(hti >=3 && hti <=5) mhti = 1;
-        else if(hti >=6 && hti <=7) mhti = 2;
-        else mhti = 3;
-        char binlabel[100];
-        int bi = nbi * 10 + hti + 1;
-        //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", 0, nbi, mhti, hti, bi);
-        sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", 0, nbi, mhti, hti);
-        hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
-      }
-    }
+SearchBins* SearchBins_ = 0;
 
-    for(int nji = 1; nji<5; ++nji){
-      for(int nbi = 0; nbi<4; ++nbi){
-        for(int hti = 0; hti<10; ++hti){
-          int mhti =0;
-          if(hti >=0 && hti <=2) mhti = 0;
-          else if(hti >=3 && hti <=5) mhti = 1;
-          else if(hti >=6 && hti <=7) mhti = 2;
-          else mhti = 3;
-          char binlabel[100];
-          int bi = 30 + (nji-1) * 40 + nbi * 10 + hti + 1;
-          //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
-          sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
-          hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
-        }
-      }
-    }
+void SetBinLabel(TH1D* hist, TString name){
+  for(int bi = 1; bi < hist->GetNbinsX()+1; bi++){
+    if(name == "") hist->GetXaxis()->SetBinLabel(bi, SearchBins_->GetSearchBin(bi)->getString());
+    else hist->GetXaxis()->SetBinLabel(bi, name + TString("_") + SearchBins_->GetSearchBin(bi)->getString());
   }
 
-  if(hist->GetNbinsX()==160)
-  for(int nji = 0; nji<4; ++nji){
-    for(int nbi = 0; nbi<4; ++nbi){
-      for(int hti = 0; hti<10; ++hti){
-        int mhti =0;
-        if(hti >=0 && hti <=2) mhti = 0;
-        else if(hti >=3 && hti <=5) mhti = 1;
-        else if(hti >=6 && hti <=7) mhti = 2;
-        else mhti = 3;
-        char binlabel[100];
-        int bi = (nji) * 40 + nbi * 10 + hti + 1;
-        //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
-        sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti);
-        hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
-      }
-    }
-  }
-
-  if(hist->GetNbinsX()==208)
-  for(int nji = 0; nji<4; ++nji){
-    for(int nbi = 0; nbi<4; ++nbi){
-      for(int hti = 0; hti<13; ++hti){
-        int mhti =0;
-        if(hti >=0 && hti <=2) mhti = -1;
-        else if(hti >=3 && hti <=5) mhti = 0;
-        else if(hti >=6 && hti <=8) mhti = 1;
-        else if(hti >=9 && hti <=10) mhti = 2;
-        else mhti = 3;
-        char binlabel[100];
-        int bi = (nji) * 52 + nbi * 13 + hti + 1;
-        //sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d  %3d", nji, nbi, mhti, hti, bi);
-        if(mhti < 0)  sprintf(binlabel, "NJets%d-BTags%d-MHTC-HT%d", nji, nbi, hti);
-        else sprintf(binlabel, "NJets%d-BTags%d-MHT%d-HT%d", nji, nbi, mhti, hti-3);
-        hist -> GetXaxis() -> SetBinLabel(bi, binlabel);
-      }
-    }
-  }
-  
-  if(hist->GetNbinsX()==190 || hist->GetNbinsX()==160 || hist->GetNbinsX()==208) hist -> GetXaxis() -> LabelsOption("v");
+  hist -> GetXaxis() -> LabelsOption("v");
 }
 
 void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // prediction durch expectation
@@ -377,22 +336,94 @@ void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // pre
   Closure->Write();
 }
 
-void SaveFraction(TH1D* Top, TH1D* Bottom, TDirectory* dir){
-  for(int i = 1; i<Bottom->GetNbinsX()+1; ++i){
-  	if(std::string(Top->GetName()).find(std::string("Up")) != std::string::npos && Top->GetBinContent(i)/Bottom->GetBinContent(i)<0) std::cout << Top->GetName() << "/" << Bottom->GetName() << ": " << (Top->GetBinContent(i)/Bottom->GetBinContent(i)) << std::endl;
-	if(std::string(Top->GetName()).find(std::string("Down")) != std::string::npos && Top->GetBinContent(i)/Bottom->GetBinContent(i)>0) std::cout << Top->GetName() << "/" << Bottom->GetName() << ": " << (Top->GetBinContent(i)/Bottom->GetBinContent(i)) << std::endl;
+void SaveFraction(TH1D* Num, TH1D* Denom, TDirectory* dir, TString name, TString correlation){
+  for(int i = 1; i<Denom->GetNbinsX()+1; ++i){
+  	if(std::string(Num->GetName()).find(std::string("Up")) != std::string::npos && Num->GetBinContent(i)/Denom->GetBinContent(i)<0) std::cout << Num->GetName() << "/" << Denom->GetName() << ": " << (Num->GetBinContent(i)/Denom->GetBinContent(i)) << std::endl;
+    if(std::string(Num->GetName()).find(std::string("Down")) != std::string::npos && Num->GetBinContent(i)/Denom->GetBinContent(i)>0) std::cout << Num->GetName() << "/" << Denom->GetName() << ": " << (Num->GetBinContent(i)/Denom->GetBinContent(i)) << std::endl;
     
-    if(Bottom->GetBinContent(i)!=0) Top->SetBinContent(i, 1.+Top->GetBinContent(i)/Bottom->GetBinContent(i));
-    else Top->SetBinContent(i, -999);
+    if(Denom->GetBinContent(i)!=0) Num->SetBinContent(i, 1.+Num->GetBinContent(i)/Denom->GetBinContent(i));
+    else Num->SetBinContent(i, 1);
 
-    //else Top->SetBinContent(i, 0);
-    Top->SetBinError(i, 0);
+    Num->SetBinError(i, 0);
   } 
 
-  SetBinLabel(Top);
+  if(correlation == "")  SetBinLabel(Num, name);
+  else{
+    // Efficiency parametrized in NJets only (1D) or NJets and HT (HT bin overlap so treat them correlated in any case)
+    if(correlation == TString("NJets")){
+      for(int bi = 1; bi<Num->GetNbinsX()+1; ++bi){
+        std::vector<int> idx = SearchBins_->GetSearchBin(bi)->getIdx();
+        Num->GetXaxis()->SetBinLabel(bi, name + TString::Format("_NJets%d", idx.at(0)));
+      }
+    // Efficiency parametrized in NJets and MHT
+    }else if(correlation == TString("NJetsMHT") || correlation == TString("MHTNJets")){
+      for(int bi = 1; bi<Num->GetNbinsX()+1; ++bi){
+        std::vector<int> idx = SearchBins_->GetSearchBin(bi)->getIdx();
+        Num->GetXaxis()->SetBinLabel(bi, name + TString::Format("_NJets%d_MHT%d", idx.at(0), idx.at(2)));
+      }
+    // All bins correlated (not parametrized as a function of search bins)
+    }else if(correlation == TString("ptAct") || correlation == TString("ActPt")){
+      for(int bi = 1; bi<Num->GetNbinsX()+1; ++bi){
+        Num->GetXaxis()->SetBinLabel(bi, name);
+      }
+    // Used for e.g. the isolated Tracks Veto. Please note that some bins are combined!!!
+    }else if(correlation == TString("NJetsHTMHTCombined") || correlation == TString("HTMHTNJetsCombined")){
+      for(int bi = 1; bi<Num->GetNbinsX()+1; ++bi){
+        std::vector<int> idx = SearchBins_->GetSearchBin(bi)->getIdx();
+        // combine NJets=2,3-4 and NJets=7-8.9+
+        int nj = idx.at(0);
+        switch(nj){
+          // NJets = 2, 3-4
+          case 0:
+          case 1:
+            nj = 0;
+            break;
+          // NJets = 5-6
+          case 2:
+            nj = 1;
+            break;
+          // NJets = 7-8, 9+
+          default:
+            nj=2;
+            break;
+        }
+        Num->GetXaxis()->SetBinLabel(bi, name + TString::Format("_NJets%d_MHT%d_HT%d", nj, idx.at(2), idx.at(3)));
+      }
+      //  Used for e.g. the lepton acceptance. Please note that some bins are combined!!!
+    }else if(correlation == TString("NJetsBTagsHTMHTCombined") || correlation == TString("HTMHTNJetsBTagsCombined")){
+      for(int bi = 1; bi<Num->GetNbinsX()+1; ++bi){
+        std::vector<int> idx = SearchBins_->GetSearchBin(bi)->getIdx();
+        // combine all BTags for NJets=2; BTags=1,2+ for NJets=7-8 and all BTags for NJets=9+
+        // BTags 2,3+ are always combined
+        int nb = idx.at(1);
+        switch(idx.at(0)){
+          // NJets = 2
+          case 0:
+            nb = 0;
+            break;
+          // NJets = 3-4, 5-6
+          case 1:
+          case 2:
+            if(nb == 3) nb = 2;
+            break;
+          // NJets = 7-8
+          case 3:
+            if(nb >= 2) nb = 1;
+            break;
+          // NJets = 9+
+          default:
+            nb = 0;
+            break;
+        }
+        Num->GetXaxis()->SetBinLabel(bi, name + TString::Format("_NJets%d_BTags%d_MHT%d_HT%d", idx.at(0), nb, idx.at(2), idx.at(3)));
+      }
+    }else{
+      std::cout<<"No valid correlation model for "<<Num->GetName()<<std::endl;
+    }
+  }
 
   dir->cd();
-  Top->Write();
+  Num->Write();
 }
 
 void addUncertainties(TH1D* total, std::vector<TH1D*> uncertainties, bool upperUnc){
@@ -427,10 +458,10 @@ void setBranchesExpectation(TTree* tree){
   tree->SetBranchAddress("Bin",&Bin);
   tree->SetBranchStatus("BinQCD",1);
   tree->SetBranchAddress("BinQCD",&BinQCD);
-  tree->SetBranchStatus("GenMus",1);
-  tree->SetBranchAddress("GenMus",&GenMus);
-  tree->SetBranchStatus("GenEls",1);
-  tree->SetBranchAddress("GenEls",&GenEls);
+  //tree->SetBranchStatus("GenMuons",1);
+  //tree->SetBranchAddress("GenMuons",&GenMuons);
+  //tree->SetBranchStatus("GenElectrons",1);
+  //tree->SetBranchAddress("GenElectrons",&GenElectrons);
 
   tree->SetBranchStatus("Expectation",1);
   tree->SetBranchAddress("Expectation",&Expectation);
@@ -462,18 +493,18 @@ void setBranchesPrediction(TTree *tree, bool isData){
   tree->SetBranchAddress("Weight",&Weight);
   tree->SetBranchStatus("MTW",1);
   tree->SetBranchAddress("MTW",&MTW);
-  tree->SetBranchStatus("selectedIDIsoMuonsNum",1);
-  tree->SetBranchAddress("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum);
-  tree->SetBranchStatus("selectedIDIsoMuons",1);
-  tree->SetBranchAddress("selectedIDIsoMuons",&selectedIDIsoMuons);
-  tree->SetBranchStatus("selectedIDIsoElectronsNum",1);
-  tree->SetBranchAddress("selectedIDIsoElectronsNum",&selectedIDIsoElectronsNum);
-  tree->SetBranchStatus("selectedIDIsoElectrons",1);
-  tree->SetBranchAddress("selectedIDIsoElectrons",&selectedIDIsoElectrons);
-  tree->SetBranchStatus("selectedIDIsoMuonsPTW",1);
-  tree->SetBranchAddress("selectedIDIsoMuonsPTW",&selectedIDIsoMuonsPTW);
-  tree->SetBranchStatus("selectedIDIsoElectronsPTW",1);
-  tree->SetBranchAddress("selectedIDIsoElectronsPTW",&selectedIDIsoElectronsPTW);
+  tree->SetBranchStatus("MuonsNum",1);
+  tree->SetBranchAddress("MuonsNum",&MuonsNum);
+  tree->SetBranchStatus("Muons",1);
+  tree->SetBranchAddress("Muons",&Muons);
+  tree->SetBranchStatus("ElectronsNum",1);
+  tree->SetBranchAddress("ElectronsNum",&ElectronsNum);
+  tree->SetBranchStatus("Electrons",1);
+  tree->SetBranchAddress("Electrons",&Electrons);
+  tree->SetBranchStatus("MuonsPTW",1);
+  tree->SetBranchAddress("MuonsPTW",&MuonsPTW);
+  tree->SetBranchStatus("ElectronsPTW",1);
+  tree->SetBranchAddress("ElectronsPTW",&ElectronsPTW);
 
   tree->SetBranchStatus("totalWeightDiLep",1);
   tree->SetBranchAddress("totalWeightDiLep",&totalWeightDiLep);

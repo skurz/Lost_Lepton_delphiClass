@@ -212,24 +212,27 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("Weight", &Weight);
   tPrediction_->Branch("MET",&MET);
   tPrediction_->Branch("METPhi",&METPhi);
-  tPrediction_->Branch("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum_);
-  tPrediction_->Branch("selectedIDIsoMuonsPt",&selectedIDIsoMuonsPt_);
-  tPrediction_->Branch("selectedIDIsoMuonsEta",&selectedIDIsoMuonsEta_);
-  tPrediction_->Branch("selectedIDIsoMuons", "std::vector<TLorentzVector>", &selectedIDIsoMuons, 32000, 0);
-  tPrediction_->Branch("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity);
-  tPrediction_->Branch("selectedIDIsoMuonsPTW", &selectedIDIsoMuonsPTW);
-  //  tPrediction_->Branch("selectedIDIsoMuonsCDTT", &selectedIDIsoMuonsCDTT);
-//  tPrediction_->Branch("selectedIDIsoMuonsRelPTJet", &selectedIDIsoMuonsRelPTJet);
-//  tPrediction_->Branch("selectedIDIsoMuonsDeltaRJet", &selectedIDIsoMuonsDeltaRJet);
-  tPrediction_->Branch("selectedIDIsoElectronsNum",&selectedIDIsoElectronsNum_);
-  tPrediction_->Branch("selectedIDIsoElectrons", "std::vector<TLorentzVector>", &selectedIDIsoElectrons, 32000, 0);
-  tPrediction_->Branch("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity);
-  tPrediction_->Branch("selectedIDIsoElectronsPTW", &selectedIDIsoElectronsPTW);
-  tPrediction_->Branch("selectedIDIsoElectronsPt",&selectedIDIsoElectronsPt_);
-  tPrediction_->Branch("selectedIDIsoElectronsEta",&selectedIDIsoElectronsEta_);
-  //  tPrediction_->Branch("selectedIDIsoElectronsCDTT", &selectedIDIsoElectronsCDTT);
-//  tPrediction_->Branch("selectedIDIsoElectronsRelPTJet", &selectedIDIsoElectronsRelPTJet);
-//  tPrediction_->Branch("selectedIDIsoElectronsDeltaRJet", &selectedIDIsoElectronsDeltaRJet);
+  tPrediction_->Branch("MuonsNum",&MuonsNum_);
+  tPrediction_->Branch("MuonsPt",&MuonsPt_);
+  tPrediction_->Branch("MuonsEta",&MuonsEta_);
+  tPrediction_->Branch("Muons", "std::vector<TLorentzVector>", &Muons, 32000, 0);
+  tPrediction_->Branch("Muons_MT2Activity", &Muons_MT2Activity);
+  tPrediction_->Branch("MuonsPTW", &MuonsPTW);
+  //  tPrediction_->Branch("MuonsCDTT", &MuonsCDTT);
+//  tPrediction_->Branch("MuonsRelPTJet", &MuonsRelPTJet);
+//  tPrediction_->Branch("MuonsDeltaRJet", &MuonsDeltaRJet);
+  tPrediction_->Branch("ElectronsNum",&ElectronsNum_);
+  tPrediction_->Branch("Electrons", "std::vector<TLorentzVector>", &Electrons, 32000, 0);
+  tPrediction_->Branch("Electrons_MT2Activity", &Electrons_MT2Activity);
+  tPrediction_->Branch("ElectronsPTW", &ElectronsPTW);
+  tPrediction_->Branch("ElectronsPt",&ElectronsPt_);
+  tPrediction_->Branch("ElectronsEta",&ElectronsEta_);
+  tPrediction_->Branch("Muons_tightID", &Muons_tightID);
+  tPrediction_->Branch("Electrons_mediumID", &Electrons_mediumID);
+  tPrediction_->Branch("Electrons_tightID", &Electrons_tightID);
+  //  tPrediction_->Branch("ElectronsCDTT", &ElectronsCDTT);
+//  tPrediction_->Branch("ElectronsRelPTJet", &ElectronsRelPTJet);
+//  tPrediction_->Branch("ElectronsDeltaRJet", &ElectronsDeltaRJet);
   tPrediction_->Branch("MTW",&mtw);
   tPrediction_->Branch("muMTWEff",&muMTWEff_);
   tPrediction_->Branch("mtwCorrectedWeight",&mtwCorrectedWeight_);
@@ -271,13 +274,24 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("muDiLepEffMTWAppliedEff",&muDiLepEffMTWAppliedEff_);
   tPrediction_->Branch("elecDiLepEffMTWAppliedEff",&elecDiLepEffMTWAppliedEff_);
   tPrediction_->Branch("totalWeightDiLep",&totalWeightDiLep_);
-  //tPrediction_->Branch("HTJetsMask", &HTJetsMask);
+  //tPrediction_->Branch("Jets_HTMask", &Jets_HTMask);
   if(!runOnData){
     //tPrediction_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
     tPrediction_->Branch("bTagProb", &bTagProb);
     tPrediction_->Branch("madHT", &madHT);
     tPrediction_->Branch("w_pu", &w_pu);
-    tPrediction_->Branch("Weight_bTagCorr", &Weight_bTagCorr);
+    //tPrediction_->Branch("Weight_bTagCorr", &Weight_bTagCorr);
+    tPrediction_->Branch("recoSF", &recoSF);
+    tPrediction_->Branch("isoSF", &isoSF);
+    tPrediction_->Branch("trackingSF", &trackingSF);
+    tPrediction_->Branch("WeightCorr", &WeightCorr);
+    tPrediction_->Branch("WeightTrackingCorr", &WeightTrackingCorr);
+    if(topPTreweight){
+      tPrediction_->Branch("GenMuons", "std::vector<TLorentzVector>", &GenMuons, 32000, 0);
+      tPrediction_->Branch("GenElectrons", "std::vector<TLorentzVector>", &GenElectrons, 32000, 0);
+      tPrediction_->Branch("topPtSF", &topPtSF);
+      tPrediction_->Branch("topPt", &topPt);
+    }
   }
   if(runOnSignalMC){
     tPrediction_->Branch("SusyLSPMass", &SusyLSPMass);
@@ -288,75 +302,77 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
     tPrediction_->Branch("nEvtsTotal", &nEvtsTotal);
   }
 
-  tPrediction_->Branch("isoTrackStatUp", &isoTrackStatUp);
-  tPrediction_->Branch("isoTrackStatDown", &isoTrackStatDown);
-  tPrediction_->Branch("muIsoTrackStatUp", &muIsoTrackStatUp);
-  tPrediction_->Branch("muIsoTrackStatDown", &muIsoTrackStatDown);
-  tPrediction_->Branch("elecIsoTrackStatUp", &elecIsoTrackStatUp);
-  tPrediction_->Branch("elecIsoTrackStatDown", &elecIsoTrackStatDown);
-  tPrediction_->Branch("pionIsoTrackStatUp", &pionIsoTrackStatUp);
-  tPrediction_->Branch("pionIsoTrackStatDown", &pionIsoTrackStatDown);
-  tPrediction_->Branch("MTWStatUp", &MTWStatUp);
-  tPrediction_->Branch("MTWStatDown", &MTWStatDown);
-  tPrediction_->Branch("purityStatUp", &purityStatUp);
-  tPrediction_->Branch("purityStatDown", &purityStatDown);
-  tPrediction_->Branch("singleLepPurityStatUp", &singleLepPurityStatUp);
-  tPrediction_->Branch("singleLepPurityStatDown", &singleLepPurityStatDown);
-  tPrediction_->Branch("diLepFoundStatUp", &diLepFoundStatUp);
-  tPrediction_->Branch("diLepFoundStatDown", &diLepFoundStatDown);
-  tPrediction_->Branch("muIsoStatUp", &muIsoStatUp);
-  tPrediction_->Branch("muIsoStatDown", &muIsoStatDown);
-  tPrediction_->Branch("muRecoStatUp", &muRecoStatUp);
-  tPrediction_->Branch("muRecoStatDown", &muRecoStatDown);
-  tPrediction_->Branch("muAccStatUp", &muAccStatUp);
-  tPrediction_->Branch("muAccStatDown", &muAccStatDown);
-  tPrediction_->Branch("elecIsoStatUp", &elecIsoStatUp);
-  tPrediction_->Branch("elecIsoStatDown", &elecIsoStatDown);
-  tPrediction_->Branch("elecRecoStatUp", &elecRecoStatUp);
-  tPrediction_->Branch("elecRecoStatDown", &elecRecoStatDown);
-  tPrediction_->Branch("elecAccStatUp", &elecAccStatUp);
-  tPrediction_->Branch("elecAccStatDown", &elecAccStatDown);
-  
-  tPrediction_->Branch("isoTrackSysUp", &isoTrackSysUp);
-  tPrediction_->Branch("isoTrackSysDown", &isoTrackSysDown);
-  tPrediction_->Branch("muIsoTrackSysUp", &muIsoTrackSysUp);
-  tPrediction_->Branch("muIsoTrackSysDown", &muIsoTrackSysDown);
-  tPrediction_->Branch("elecIsoTrackSysUp", &elecIsoTrackSysUp);
-  tPrediction_->Branch("elecIsoTrackSysDown", &elecIsoTrackSysDown);
-  tPrediction_->Branch("pionIsoTrackSysUp", &pionIsoTrackSysUp);
-  tPrediction_->Branch("pionIsoTrackSysDown", &pionIsoTrackSysDown);
-  tPrediction_->Branch("MTWSysUp", &MTWSysUp);
-  tPrediction_->Branch("MTWSysDown", &MTWSysDown);
-  tPrediction_->Branch("puritySysUp", &puritySysUp);
-  tPrediction_->Branch("puritySysDown", &puritySysDown);
-  tPrediction_->Branch("singleLepPuritySysUp", &singleLepPuritySysUp);
-  tPrediction_->Branch("singleLepPuritySysDown", &singleLepPuritySysDown);
-  tPrediction_->Branch("diLepFoundSysUp", &diLepFoundSysUp);
-  tPrediction_->Branch("diLepFoundSysDown", &diLepFoundSysDown);
-  tPrediction_->Branch("muIsoSysUp", &muIsoSysUp);
-  tPrediction_->Branch("muIsoSysDown", &muIsoSysDown);
-  tPrediction_->Branch("muRecoSysUp", &muRecoSysUp);
-  tPrediction_->Branch("muRecoSysDown", &muRecoSysDown);
-  tPrediction_->Branch("muAccSysUp", &muAccSysUp);
-  tPrediction_->Branch("muAccSysDown", &muAccSysDown);
-  tPrediction_->Branch("muAccQsquareSysUp", &muAccQsquareSysUp);
-  tPrediction_->Branch("muAccQsquareSysDown", &muAccQsquareSysDown);
-  tPrediction_->Branch("elecIsoSysUp", &elecIsoSysUp);
-  tPrediction_->Branch("elecIsoSysDown", &elecIsoSysDown);
-  tPrediction_->Branch("elecRecoSysUp", &elecRecoSysUp);
-  tPrediction_->Branch("elecRecoSysDown", &elecRecoSysDown);
-  tPrediction_->Branch("elecAccSysUp", &elecAccSysUp);
-  tPrediction_->Branch("elecAccSysDown", &elecAccSysDown);
-  tPrediction_->Branch("elecAccQsquareSysUp", &elecAccQsquareSysUp);
-  tPrediction_->Branch("elecAccQsquareSysDown", &elecAccQsquareSysDown);
+  if(!fillEventSeperateBTags){
+    tPrediction_->Branch("isoTrackStatUp", &isoTrackStatUp);
+    tPrediction_->Branch("isoTrackStatDown", &isoTrackStatDown);
+    tPrediction_->Branch("muIsoTrackStatUp", &muIsoTrackStatUp);
+    tPrediction_->Branch("muIsoTrackStatDown", &muIsoTrackStatDown);
+    tPrediction_->Branch("elecIsoTrackStatUp", &elecIsoTrackStatUp);
+    tPrediction_->Branch("elecIsoTrackStatDown", &elecIsoTrackStatDown);
+    tPrediction_->Branch("pionIsoTrackStatUp", &pionIsoTrackStatUp);
+    tPrediction_->Branch("pionIsoTrackStatDown", &pionIsoTrackStatDown);
+    tPrediction_->Branch("MTWStatUp", &MTWStatUp);
+    tPrediction_->Branch("MTWStatDown", &MTWStatDown);
+    tPrediction_->Branch("purityStatUp", &purityStatUp);
+    tPrediction_->Branch("purityStatDown", &purityStatDown);
+    tPrediction_->Branch("singleLepPurityStatUp", &singleLepPurityStatUp);
+    tPrediction_->Branch("singleLepPurityStatDown", &singleLepPurityStatDown);
+    tPrediction_->Branch("diLepFoundStatUp", &diLepFoundStatUp);
+    tPrediction_->Branch("diLepFoundStatDown", &diLepFoundStatDown);
+    tPrediction_->Branch("muIsoStatUp", &muIsoStatUp);
+    tPrediction_->Branch("muIsoStatDown", &muIsoStatDown);
+    tPrediction_->Branch("muRecoStatUp", &muRecoStatUp);
+    tPrediction_->Branch("muRecoStatDown", &muRecoStatDown);
+    tPrediction_->Branch("muAccStatUp", &muAccStatUp);
+    tPrediction_->Branch("muAccStatDown", &muAccStatDown);
+    tPrediction_->Branch("elecIsoStatUp", &elecIsoStatUp);
+    tPrediction_->Branch("elecIsoStatDown", &elecIsoStatDown);
+    tPrediction_->Branch("elecRecoStatUp", &elecRecoStatUp);
+    tPrediction_->Branch("elecRecoStatDown", &elecRecoStatDown);
+    tPrediction_->Branch("elecAccStatUp", &elecAccStatUp);
+    tPrediction_->Branch("elecAccStatDown", &elecAccStatDown);
+    
+    tPrediction_->Branch("isoTrackSysUp", &isoTrackSysUp);
+    tPrediction_->Branch("isoTrackSysDown", &isoTrackSysDown);
+    tPrediction_->Branch("muIsoTrackSysUp", &muIsoTrackSysUp);
+    tPrediction_->Branch("muIsoTrackSysDown", &muIsoTrackSysDown);
+    tPrediction_->Branch("elecIsoTrackSysUp", &elecIsoTrackSysUp);
+    tPrediction_->Branch("elecIsoTrackSysDown", &elecIsoTrackSysDown);
+    tPrediction_->Branch("pionIsoTrackSysUp", &pionIsoTrackSysUp);
+    tPrediction_->Branch("pionIsoTrackSysDown", &pionIsoTrackSysDown);
+    tPrediction_->Branch("MTWSysUp", &MTWSysUp);
+    tPrediction_->Branch("MTWSysDown", &MTWSysDown);
+    tPrediction_->Branch("puritySysUp", &puritySysUp);
+    tPrediction_->Branch("puritySysDown", &puritySysDown);
+    tPrediction_->Branch("singleLepPuritySysUp", &singleLepPuritySysUp);
+    tPrediction_->Branch("singleLepPuritySysDown", &singleLepPuritySysDown);
+    tPrediction_->Branch("diLepFoundSysUp", &diLepFoundSysUp);
+    tPrediction_->Branch("diLepFoundSysDown", &diLepFoundSysDown);
+    tPrediction_->Branch("muIsoSysUp", &muIsoSysUp);
+    tPrediction_->Branch("muIsoSysDown", &muIsoSysDown);
+    tPrediction_->Branch("muRecoSysUp", &muRecoSysUp);
+    tPrediction_->Branch("muRecoSysDown", &muRecoSysDown);
+    tPrediction_->Branch("muAccSysUp", &muAccSysUp);
+    tPrediction_->Branch("muAccSysDown", &muAccSysDown);
+    tPrediction_->Branch("muAccQsquareSysUp", &muAccQsquareSysUp);
+    tPrediction_->Branch("muAccQsquareSysDown", &muAccQsquareSysDown);
+    tPrediction_->Branch("elecIsoSysUp", &elecIsoSysUp);
+    tPrediction_->Branch("elecIsoSysDown", &elecIsoSysDown);
+    tPrediction_->Branch("elecRecoSysUp", &elecRecoSysUp);
+    tPrediction_->Branch("elecRecoSysDown", &elecRecoSysDown);
+    tPrediction_->Branch("elecAccSysUp", &elecAccSysUp);
+    tPrediction_->Branch("elecAccSysDown", &elecAccSysDown);
+    tPrediction_->Branch("elecAccQsquareSysUp", &elecAccQsquareSysUp);
+    tPrediction_->Branch("elecAccQsquareSysDown", &elecAccQsquareSysDown);
 
-  tPrediction_->Branch("totalStatUp", &totalStatUp);
-  tPrediction_->Branch("totalSysUp", &totalSysUp);
-  tPrediction_->Branch("totalUncUp", &totalUncUp);
+    tPrediction_->Branch("totalStatUp", &totalStatUp);
+    tPrediction_->Branch("totalSysUp", &totalSysUp);
+    tPrediction_->Branch("totalUncUp", &totalUncUp);
 
-  tPrediction_->Branch("totalStatDown", &totalStatDown);
-  tPrediction_->Branch("totalSysDown", &totalSysDown);
-  tPrediction_->Branch("totalUncDown", &totalUncDown);
+    tPrediction_->Branch("totalStatDown", &totalStatDown);
+    tPrediction_->Branch("totalSysDown", &totalSysDown);
+    tPrediction_->Branch("totalUncDown", &totalUncDown);
+  }
 
   GetOutputList()->Add(tPrediction_);
   SearchBins_ = new SearchBins(false); // 72 searchbins
@@ -390,19 +406,19 @@ Bool_t Prediction::Process(Long64_t entry)
 
   isoTracksNum= isoElectronTracksNum + isoMuonTracksNum + isoPionTracksNum;
 
-  selectedIDMuonsNum_ = selectedIDMuons->size();
-  selectedIDIsoMuonsNum_ = selectedIDIsoMuons->size();
-  selectedIDElectronsNum_ = selectedIDElectrons->size();
-  selectedIDIsoElectronsNum_ = selectedIDIsoElectrons->size();
+  //MuonsNoIsoNum_ = MuonsNoIso->size();
+  MuonsNum_ = Muons->size();
+  //ElectronsNoIsoNum_ = ElectronsNoIso->size();
+  ElectronsNum_ = Electrons->size();
 
-  if((selectedIDIsoMuonsNum_+selectedIDIsoElectronsNum_) !=1) return kTRUE;
+  if((MuonsNum_+ElectronsNum_) !=1) return kTRUE;
 
 
   // HTMHT Triggers
   //if(useTrigger) if(!TriggerPass->at(29) && !TriggerPass->at(30)) return kTRUE;
 
   // Signal triggers
-  if(useTrigger) if(!TriggerPass->at(40) && !TriggerPass->at(44)) return kTRUE;
+  if(useTrigger) if(!TriggerPass->at(41) && !TriggerPass->at(42) &&!TriggerPass->at(43) && !TriggerPass->at(45) && !TriggerPass->at(46) && !TriggerPass->at(47)) return kTRUE;
 
   // Single lepton triggers (IsoVVVL)
   //if(useTrigger) if(!TriggerPass->at(5) && !TriggerPass->at(20)) return kTRUE;
@@ -411,6 +427,41 @@ Bool_t Prediction::Process(Long64_t entry)
   BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
 
   if(Bin_ > 900 && BinQCD_ > 900) return kTRUE;
+
+  if(topPTreweight){
+    if(GenParticles->size() != GenParticles_PdgId->size()){
+      std::cout << "Cannot do top-pT reweighting!"<< std::endl; 
+    }else{
+      for(unsigned iGen = 0; iGen < GenParticles->size(); iGen++){
+        if(std::abs(GenParticles_PdgId->at(iGen)) == 6){
+          topPt.push_back(GenParticles->at(iGen).Pt());
+        }
+      }
+      
+      // https://twiki.cern.ch/twiki/bin/viewauth/CMS/TopPtReweighting#Example
+      if(topPt.size() == 2){
+        // dilept
+        if(GenElectrons->size() + GenMuons->size() == 2){
+          topPtSF = std::sqrt(std::exp(0.148-0.00129*(topPt.at(0) < 400. ? topPt.at(0) : 400.))*std::exp(0.148-0.00129*(topPt.at(1) < 400. ? topPt.at(1) : 400.)));
+        // singlelept
+        }else if(GenElectrons->size() + GenMuons->size() == 1){
+          topPtSF = std::sqrt(std::exp(0.159-0.00141*(topPt.at(0) < 400. ? topPt.at(0) : 400.))*std::exp(0.159-0.00141*(topPt.at(1) < 400. ? topPt.at(1) : 400.)));
+        //had
+        }else{
+          // Usually non-promt (in hadTau evts): use average SF
+          topPtSF = std::sqrt(std::exp(0.156-0.00137*(topPt.at(0) < 400. ? topPt.at(0) : 400.))*std::exp(0.156-0.00137*(topPt.at(1) < 400. ? topPt.at(1) : 400.)));
+          //std::cout << "Cannot do top-pT reweighting! No leptonic top found."<< std::endl; 
+        }
+      }else{
+        topPtSF = -1;
+        std::cout << "Cannot do top-pT reweighting! More/Less than 2 tops found."<< std::endl; 
+      }
+
+    }
+
+    // Normalization tested on SingleLept and DiLept samples (varies from ~98.9x-99.0x)
+        topPtSF /= 0.99;
+  }
 
   if(!runOnData){
     TString currentTree = TString(fChain->GetCurrentFile()->GetName());
@@ -438,7 +489,7 @@ Bool_t Prediction::Process(Long64_t entry)
           isrcorr = 0;
         }
         isrcorr = new ISRCorrector();
-		isrcorr->SetWeights(h_isr,h_njetsisr);
+		    isrcorr->SetWeights(h_isr,h_njetsisr);
       }
 
       if(doBTagCorr){
@@ -500,14 +551,14 @@ Bool_t Prediction::Process(Long64_t entry)
     }   
 
     if(doISRcorr){
-    // not recommended for Jamboree
       w_isr = isrcorr->GetCorrection(NJetsISR);
       Weight *= w_isr;
     }
 
-    if(doBTagCorr) bTagProb = btagcorr->GetCorrections(Jets,Jets_hadronFlavor,HTJetsMask);
+    if(doBTagCorr) bTagProb = btagcorr->GetCorrections(Jets,Jets_hadronFlavor,Jets_HTMask);
     else bTagProb = {0, 0, 0, 0};
-    if(!runOnData) bTagCorr_cut = btagcorr->GetSimpleCorrection(Jets,Jets_hadronFlavor,HTJetsMask,Jets_bDiscriminatorCSV);
+    // Simple bTag corrections don't work that way
+    //if(!runOnData) bTagCorr_cut = btagcorr->GetSimpleCorrection(Jets,Jets_hadronFlavor,Jets_HTMask,Jets_bDiscriminatorCSV);
   }
 
   if(runOnData) Weight = 1.;
@@ -530,24 +581,24 @@ Bool_t Prediction::Process(Long64_t entry)
     Weight *= w_pu;
   }
 
-  if(!runOnData){
-    if(bTagCorr_cut < 0 || bTagCorr_cut > 10 || std::isnan(bTagCorr_cut)) Weight_bTagCorr = 0.; 
-    else Weight_bTagCorr = Weight * bTagCorr_cut;
-  }
+  //if(!runOnData){
+  //  if(bTagCorr_cut < 0 || bTagCorr_cut > 10 || std::isnan(bTagCorr_cut)) Weight_bTagCorr = 1.; 
+  //  else Weight_bTagCorr = Weight * bTagCorr_cut;
+  //}
     // fill PTW values for extrapolation
-  for (UShort_t ii=0; ii < selectedIDIsoMuonsNum_; ii++){
-    selectedIDIsoMuonsPTW.push_back(PTWCalculator(MHT,MHTPhi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi()));
-    //    selectedIDIsoMuonsCDTT.push_back(GetCosDTT(MHT,MHTPhi, selectedIDIsoMuons->at(ii).Pt(), selectedIDIsoMuons->at(ii).Phi()));
+  for (UShort_t ii=0; ii < MuonsNum_; ii++){
+    MuonsPTW.push_back(PTWCalculator(MHT,MHTPhi, Muons->at(ii).Pt(), Muons->at(ii).Phi()));
+    //    MuonsCDTT.push_back(GetCosDTT(MHT,MHTPhi, Muons->at(ii).Pt(), Muons->at(ii).Phi()));
   }
-  for (UShort_t ii=0; ii < selectedIDIsoElectronsNum_; ii++){
-    selectedIDIsoElectronsPTW.push_back(PTWCalculator(MHT,MHTPhi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi()));
-    //    selectedIDIsoElectronsCDTT.push_back(GetCosDTT(MHT,MHTPhi, selectedIDIsoElectrons->at(ii).Pt(), selectedIDIsoElectrons->at(ii).Phi()));
+  for (UShort_t ii=0; ii < ElectronsNum_; ii++){
+    ElectronsPTW.push_back(PTWCalculator(MHT,MHTPhi, Electrons->at(ii).Pt(), Electrons->at(ii).Phi()));
+    //    ElectronsCDTT.push_back(GetCosDTT(MHT,MHTPhi, Electrons->at(ii).Pt(), Electrons->at(ii).Phi()));
   }
 
 
   double PTW(0.);
-  if (selectedIDIsoMuonsNum_==1) PTW=selectedIDIsoMuonsPTW[0];
-  else if (selectedIDIsoElectronsNum_==1) PTW=selectedIDIsoElectronsPTW[0];
+  if (MuonsNum_==1) PTW=MuonsPTW[0];
+  else if (ElectronsNum_==1) PTW=ElectronsPTW[0];
   ptw_bins = GetPTWBin(Bin_, PTW, HT);
 
   // get IsoTrack Effs
@@ -578,16 +629,17 @@ Bool_t Prediction::Process(Long64_t entry)
   expectationReductionPionIsoTrackEff_ = expectationReductionPionIsoTrackEffVec_.eff;
 
 
-  if(selectedIDIsoMuonsNum_==1 && selectedIDIsoElectronsNum_==0)
+  if(MuonsNum_==1 && ElectronsNum_==0)
     {
       // cout << "Single muon event...";
-      mtw =  MTWCalculator(MET,METPhi, selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Phi(), scaleMet);
-      selectedIDIsoMuonsPt_ = selectedIDIsoMuons->at(0).Pt();
-      selectedIDIsoMuonsEta_ = selectedIDIsoMuons->at(0).Eta();
+      mtw =  Muons_MTW->at(0);
+      //mtw =  MTWCalculator(MET,METPhi, Muons->at(0).Pt(), Muons->at(0).Phi(), scaleMet);
+      MuonsPt_ = Muons->at(0).Pt();
+      MuonsEta_ = Muons->at(0).Eta();
 
-    //  std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Phi());
-    //  selectedIDIsoMuonsDeltaRJet.push_back(DeltaR_relPT.first);
-    //  selectedIDIsoMuonsRelPTJet.push_back(DeltaR_relPT.second);
+    //  std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(Muons->at(0).Pt(), Muons->at(0).Eta(), Muons->at(0).Phi());
+    //  MuonsDeltaRJet.push_back(DeltaR_relPT.first);
+    //  MuonsRelPTJet.push_back(DeltaR_relPT.second);
 
       // get Efficiencies
       muPurityCorrectionVec_ =  MuPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
@@ -595,14 +647,14 @@ Bool_t Prediction::Process(Long64_t entry)
       muDiLepContributionMTWAppliedEffVec_ = MuDiLepContributionMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
       muDiLepEffMTWAppliedEffVec_ = MuDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);      
 
-      muIsoEffVec_ = MuIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
-      //muRecoEffVec_ = MuRecoPTEta_->GetEff(selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), useAsymmErrors);
-      muRecoEffVec_ = MuRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
+      muIsoEffVec_ = MuIsoActivityPT_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
+      //muRecoEffVec_ = MuRecoPTEta_->GetEff(Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()), useAsymmErrors);
+      muRecoEffVec_ = MuRecoActivityPT_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
       //muAccEffVec_ = MuAccHTNJets_->GetEff(HT, NJets, useAsymmErrors);
 
       if(BTags==0){
         if(NJets<6.5){
-          if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+          if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags0_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags0_->GetEff(HT,MHT, useAsymmErrors);
           else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags0_->GetEff(HT,MHT, useAsymmErrors);
@@ -617,7 +669,7 @@ Bool_t Prediction::Process(Long64_t entry)
         }
 
         if(NJets<6.5){
-          if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+          if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags0_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags0_->GetEff(HT,MHT, useAsymmErrors);
           else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags0_->GetEff(HT,MHT, useAsymmErrors);
@@ -631,8 +683,8 @@ Bool_t Prediction::Process(Long64_t entry)
           else elecAccEffVec_ = ElecAccHTMHT_NJets9Inf_->GetEff(HT,MHT, useAsymmErrors);
         }
       }else if(BTags==1){
-          if(NJets<6.5){
-          if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags1_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<6.5){
+          if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags1_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags1_->GetEff(HT,MHT, useAsymmErrors);
           else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags1_->GetEff(HT,MHT, useAsymmErrors);
@@ -647,7 +699,7 @@ Bool_t Prediction::Process(Long64_t entry)
         }
 
         if(NJets<6.5){
-          if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags1_->GetEff(HT,MHT, useAsymmErrors);
+          if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags1_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags1_->GetEff(HT,MHT, useAsymmErrors);
           else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags1_->GetEff(HT,MHT, useAsymmErrors);
@@ -662,7 +714,7 @@ Bool_t Prediction::Process(Long64_t entry)
         }
       }else{
           if(NJets<6.5){
-          if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
+          if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
           else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
@@ -677,7 +729,7 @@ Bool_t Prediction::Process(Long64_t entry)
         }
 
         if(NJets<6.5){
-          if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
+          if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
           else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
@@ -692,9 +744,9 @@ Bool_t Prediction::Process(Long64_t entry)
         }
       }
 
-      //elecRecoEffVec_ = ElecRecoPTEta_->GetEff(selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), useAsymmErrors);
-      elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
-      elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(selectedIDIsoMuons_MT2Activity->at(0), selectedIDIsoMuons->at(0).Pt(), useAsymmErrors);
+      //elecRecoEffVec_ = ElecRecoPTEta_->GetEff(Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()), useAsymmErrors);
+      elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
+      elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
 
       //for compatibility
       muPurityCorrection_ = muPurityCorrectionVec_.eff;
@@ -708,16 +760,27 @@ Bool_t Prediction::Process(Long64_t entry)
       elecRecoEff_ = elecRecoEffVec_.eff;
       elecIsoEff_ = elecIsoEffVec_.eff;
 
-      if(!runOnStandardModelMC && correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
-      if(!runOnStandardModelMC && correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
-      if(!runOnStandardModelMC && correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
-      if(!runOnStandardModelMC && correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
 
       if(!runOnStandardModelMC && doTrackingCorrection){
-        if(selectedIDIsoMuons->at(0).Pt() > 10) muRecoEff_ *= GetSF(h_muTrkHighPtSF, selectedIDIsoMuons->at(0).Eta());
-        else muRecoEff_ *= GetSF(h_muTrkLowPtSF, selectedIDIsoMuons->at(0).Eta());
-        elecRecoEff_ *= GetSF(h_elecTrkSF, selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Pt());
+        if(Muons->at(0).Pt() > 10) muRecoEff_ *= GetSF(h_muTrkHighPtSF, Muons->at(0).Eta());
+        else muRecoEff_ *= GetSF(h_muTrkLowPtSF, Muons->at(0).Eta());
+        elecRecoEff_ *= GetSF(h_elecTrkSF, Muons->at(0).Eta(), Muons->at(0).Pt());
       }
+
+      if(runOnStandardModelMC){
+      	isoSF = GetSF(h_muIsoSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
+      	recoSF = GetSF(h_muIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
+      	trackingSF = GetSF(h_muTrkHighPtSF, Muons->at(0).Eta());
+      }
+
+      if(muIsoEff_ > 1) muIsoEff_=1;
+      if(muRecoEff_ > 1) muRecoEff_=1;
+      if(elecRecoEff_ > 1) elecRecoEff_=1;
+      if(elecIsoEff_ > 1) elecIsoEff_=1;
 
       // calculate Weights
       // muCS >99% purity
@@ -886,29 +949,29 @@ Bool_t Prediction::Process(Long64_t entry)
       diLepFoundSysUp = w1 * (w2 * (w3a+w3b) + (1-muDiLepContributionMTWAppliedEff_) * (1-diLepFoundMin)/diLepFoundMin) - wGes;
 
       double muIsoMax = muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_);
-      if(usePrelimSFs) muIsoMax = muIsoEff_ *(1 + 0.01 * getMuonIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
+      if(usePrelimSFs) muIsoMax = muIsoEff_ *(1 + 0.01 * getMuonIsoSF(Muons->at(0).Pt(), Muons->at(0).Eta(), Muons_MT2Activity->at(0)));
       // add 1% systematic to uncertainty (set bool to true)
-      if(useSFs) muIsoMax = muIsoEff_ *(1 + GetSFUnc(h_muIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), 0.014));
+      if(useSFs) muIsoMax = muIsoEff_ *(1 + GetSFUnc(h_muIsoSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()), 0.014));
       if(muIsoMax > 1) muIsoMax = 1;
       muIsoSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoMax*muRecoEff_*muAccEff_) * (1-muIsoMax*muRecoEff_*muAccEff_ +w3b) + w4) - wGes;
       double muIsoMin = muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_);
-      if(usePrelimSFs) muIsoMin = muIsoEff_ *(1 - 0.01 * getMuonIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
+      if(usePrelimSFs) muIsoMin = muIsoEff_ *(1 - 0.01 * getMuonIsoSF(Muons->at(0).Pt(), Muons->at(0).Eta(), Muons_MT2Activity->at(0)));
       // add 1% systematic to uncertainty (set bool to true)
-      if(useSFs) muIsoMin = muIsoEff_ *(1 - GetSFUnc(h_muIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), 0.014));
+      if(useSFs) muIsoMin = muIsoEff_ *(1 - GetSFUnc(h_muIsoSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()), 0.014));
       muIsoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoMin*muRecoEff_*muAccEff_) * (1-muIsoMin*muRecoEff_*muAccEff_ +w3b) + w4) - wGes;
 
       double muRecoMax = muRecoEff_ *(1 + 0.01 * MuRecoUncertaintyUp_);
-      if(usePrelimSFs) muRecoMax = muRecoEff_ *(1 + 0.01 * getMuonIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
+      if(usePrelimSFs) muRecoMax = muRecoEff_ *(1 + 0.01 * getMuonIDSF(Muons->at(0).Pt(), Muons->at(0).Eta()));
       // add 1% systematic to uncertainty (set bool to true)
-      if(useSFs && !doTrackingCorrection) muRecoMax = muRecoEff_ *(1 + GetSFUnc(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), 0.014));
-      if(useSFs && doTrackingCorrection) muRecoMax = muRecoEff_ *(1 + GetSFUnc(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), 0.014) + GetSFUnc(h_muTrkHighPtSF, selectedIDIsoMuons->at(0).Eta(), 0.01));
+      if(useSFs && !doTrackingCorrection) muRecoMax = muRecoEff_ *(1 + GetSFUnc(h_muIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()), 0.014));
+      if(useSFs && doTrackingCorrection) muRecoMax = muRecoEff_ *(1 + GetSFUnc(h_muIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()), 0.014) + GetSFUnc(h_muTrkHighPtSF, Muons->at(0).Eta(), 0.01));
       if(muRecoMax > 1) muRecoMax = 1;
       muRecoSysDown = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoMax*muAccEff_) * (1-muIsoEff_*muRecoMax*muAccEff_ +w3b) + w4) - wGes;
       double muRecoMin = muRecoEff_ *(1 - 0.01 * MuRecoUncertaintyDown_);
-      if(usePrelimSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * getMuonIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
+      if(usePrelimSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * getMuonIDSF(Muons->at(0).Pt(), Muons->at(0).Eta()));
       // add 1% systematic to uncertainty (set bool to true)
-      if(useSFs && !doTrackingCorrection) muRecoMin = muRecoEff_ *(1 - GetSFUnc(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), 0.014));
-      if(useSFs && doTrackingCorrection) muRecoMin = muRecoEff_ *(1 - GetSFUnc(h_muIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta()), 0.014) - GetSFUnc(h_muTrkHighPtSF, selectedIDIsoMuons->at(0).Eta(), 0.01));
+      if(useSFs && !doTrackingCorrection) muRecoMin = muRecoEff_ *(1 - GetSFUnc(h_muIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()), 0.014));
+      if(useSFs && doTrackingCorrection) muRecoMin = muRecoEff_ *(1 - GetSFUnc(h_muIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()), 0.014) - GetSFUnc(h_muTrkHighPtSF, Muons->at(0).Eta(), 0.01));
       muRecoSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoMin*muAccEff_) * (1-muIsoEff_*muRecoMin*muAccEff_ +w3b) + w4) - wGes;
 
       double muAccMax, muAccMin;       
@@ -944,30 +1007,30 @@ Bool_t Prediction::Process(Long64_t entry)
       muAccQsquareSysUp = w1 * (muDiLepContributionMTWAppliedEff_ * 1/(muIsoEff_*muRecoEff_*muAccQsquareMin) * (1-muIsoEff_*muRecoEff_*muAccQsquareMin +w3b) + w4) - wGes;
       
       double elecIsoMax = elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_);
-      if(usePrelimSFs) elecIsoMax = elecIsoEff_ *(1 + 0.01 * getElecIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
-      if(useSFs) elecIsoMax = elecIsoEff_ *(1 + GetSFUnc(h_elecIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())));
+      if(usePrelimSFs) elecIsoMax = elecIsoEff_ *(1 + 0.01 * getElecIsoSF(Muons->at(0).Pt(), Muons->at(0).Eta(), Muons_MT2Activity->at(0)));
+      if(useSFs) elecIsoMax = elecIsoEff_ *(1 + GetSFUnc(h_elecIsoSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())));
       if(elecIsoMax > 1) elecIsoMax = 1;
       elecIsoSysDown = w1 * (w2 * (w3a + 1-elecIsoMax*elecRecoEff_*elecAccEff_) + w4) - wGes;
       double elecIsoMin = elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_);
-      if(usePrelimSFs) elecIsoMin = elecIsoEff_ *(1 - 0.01 * getElecIsoSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons_MT2Activity->at(0)));
-      if(useSFs) elecIsoMin = elecIsoEff_ *(1 - GetSFUnc(h_elecIsoSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())));
+      if(usePrelimSFs) elecIsoMin = elecIsoEff_ *(1 - 0.01 * getElecIsoSF(Muons->at(0).Pt(), Muons->at(0).Eta(), Muons_MT2Activity->at(0)));
+      if(useSFs) elecIsoMin = elecIsoEff_ *(1 - GetSFUnc(h_elecIsoSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())));
       elecIsoSysUp = w1 * (w2 * (w3a + 1-elecIsoMin*elecRecoEff_*elecAccEff_) + w4) - wGes;
 
       double elecRecoMax = elecRecoEff_*(1 + 0.01 * ElecRecoUncertaintyUp_);
-      if(usePrelimSFs) elecRecoMax = elecRecoEff_ *(1 + 0.01 * getElecIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
-      if(useSFs && !doTrackingCorrection) elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())));
+      if(usePrelimSFs) elecRecoMax = elecRecoEff_ *(1 + 0.01 * getElecIDSF(Muons->at(0).Pt(), Muons->at(0).Eta()));
+      if(useSFs && !doTrackingCorrection) elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())));
       if(useSFs && doTrackingCorrection){
-        if(selectedIDIsoMuons->at(0).Pt() > 20) elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Pt()));
-        else elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Pt(), 0.03));
+        if(Muons->at(0).Pt() > 20) elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, Muons->at(0).Eta(), Muons->at(0).Pt()));
+        else elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, Muons->at(0).Eta(), Muons->at(0).Pt(), 0.03));
       }
       if(elecRecoMax > 1) elecRecoMax = 1;
       elecRecoSysDown = w1 * (w2 * (w3a + 1-elecIsoEff_*elecRecoMax*elecAccEff_) + w4) - wGes;
       double elecRecoMin = elecRecoEff_*(1 - 0.01 * ElecRecoUncertaintyDown_);
-      if(usePrelimSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * getElecIDSF(selectedIDIsoMuons->at(0).Pt(), selectedIDIsoMuons->at(0).Eta()));
-      if(useSFs && !doTrackingCorrection) elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())));
+      if(usePrelimSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * getElecIDSF(Muons->at(0).Pt(), Muons->at(0).Eta()));
+      if(useSFs && !doTrackingCorrection) elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())));
       if(useSFs && doTrackingCorrection){
-        if(selectedIDIsoMuons->at(0).Pt() > 20) elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Pt()));
-        else elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, selectedIDIsoMuons->at(0).Pt(), std::abs(selectedIDIsoMuons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, selectedIDIsoMuons->at(0).Eta(), selectedIDIsoMuons->at(0).Pt(), 0.03));
+        if(Muons->at(0).Pt() > 20) elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, Muons->at(0).Eta(), Muons->at(0).Pt()));
+        else elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, Muons->at(0).Eta(), Muons->at(0).Pt(), 0.03));
       }
       elecRecoSysUp = w1 * (w2 * (w3a + 1-elecIsoEff_*elecRecoMin*elecAccEff_) + w4) - wGes;
 
@@ -1016,7 +1079,7 @@ Bool_t Prediction::Process(Long64_t entry)
       // Calculate weights if they do depend on the number of BTags:
       // BTags == 0
       if(NJets<6.5){
-        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags0_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags0_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags0_->GetEff(HT,MHT, useAsymmErrors);
@@ -1031,7 +1094,7 @@ Bool_t Prediction::Process(Long64_t entry)
       }
 
       if(NJets<6.5){
-        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags0_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags0_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags0_->GetEff(HT,MHT, useAsymmErrors);
@@ -1056,12 +1119,12 @@ Bool_t Prediction::Process(Long64_t entry)
 
       // BTags == 1
       if(NJets<6.5){
-        //if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        //if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         //else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else muAccEffVec_ = MuAccHTMHT_NJets6_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
-        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags1_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags1_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags1_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags1_->GetEff(HT,MHT, useAsymmErrors);
@@ -1076,12 +1139,12 @@ Bool_t Prediction::Process(Long64_t entry)
       } 
 
       if(NJets<6.5){
-        //if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        //if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         //else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else elecAccEffVec_ = ElecAccHTMHT_NJets6_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
-        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags1_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags1_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags1_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags1_->GetEff(HT,MHT, useAsymmErrors);
@@ -1106,12 +1169,12 @@ Bool_t Prediction::Process(Long64_t entry)
 
       // BTags == 2
       if(NJets<6.5){
-        //if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        //if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         //else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else muAccEffVec_ = MuAccHTMHT_NJets6_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
-        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
@@ -1126,12 +1189,12 @@ Bool_t Prediction::Process(Long64_t entry)
       } 
 
       if(NJets<6.5){
-        //if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        //if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         //else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else elecAccEffVec_ = ElecAccHTMHT_NJets6_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
-        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
@@ -1156,12 +1219,12 @@ Bool_t Prediction::Process(Long64_t entry)
 
       // BTags >= 3
       if(NJets<6.5){
-        //if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        //if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         //else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else muAccEffVec_ = MuAccHTMHT_NJets6_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
-        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
@@ -1176,12 +1239,12 @@ Bool_t Prediction::Process(Long64_t entry)
       } 
 
       if(NJets<6.5){
-        //if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
+        //if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         //else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
         //else elecAccEffVec_ = ElecAccHTMHT_NJets6_BTags1Inf_->GetEff(HT,MHT, useAsymmErrors);
-        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
@@ -1205,17 +1268,18 @@ Bool_t Prediction::Process(Long64_t entry)
       totalWeight_BTags_noIsoTrack_.push_back(Weight * 1/muMTWEff_ * (w2 * (w3a+w3b) + w4));
 
     } 
-  else if(selectedIDIsoMuonsNum_==0 && selectedIDIsoElectronsNum_==1)
+  else if(MuonsNum_==0 && ElectronsNum_==1)
     {
       // cout << "Single electron event...";
       // cout << "get MTW...";
-      mtw =  MTWCalculator(MET,METPhi, selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Phi(), scaleMet);
-      selectedIDIsoElectronsPt_ = selectedIDIsoElectrons->at(0).Pt();
-      selectedIDIsoElectronsEta_ = selectedIDIsoElectrons->at(0).Eta();
+      mtw =  Electrons_MTW->at(0);
+      //mtw =  MTWCalculator(MET,METPhi, Electrons->at(0).Pt(), Electrons->at(0).Phi(), scaleMet);
+      ElectronsPt_ = Electrons->at(0).Pt();
+      ElectronsEta_ = Electrons->at(0).Eta();
 
-    //  std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Phi());
-    //  selectedIDIsoElectronsDeltaRJet.push_back(DeltaR_relPT.first);
-    //  selectedIDIsoElectronsRelPTJet.push_back(DeltaR_relPT.second);
+    //  std::pair<double, double> DeltaR_relPT = minDeltaRLepJet(Electrons->at(0).Pt(), Electrons->at(0).Eta(), Electrons->at(0).Phi());
+    //  ElectronsDeltaRJet.push_back(DeltaR_relPT.first);
+    //  ElectronsRelPTJet.push_back(DeltaR_relPT.second);
 
       // get Efficiencies
       elecPurityCorrectionVec_ =  ElecPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
@@ -1224,13 +1288,13 @@ Bool_t Prediction::Process(Long64_t entry)
       elecDiLepEffMTWAppliedEffVec_ = ElecDiLepEffMTWAppliedNJets_->GetEff(NJets, useAsymmErrors);
 
       // cout << "get isolation efficiency...";
-      //elecRecoEffVec_ = ElecRecoPTEta_->GetEff(selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), useAsymmErrors);
-      elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
-      elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
+      //elecRecoEffVec_ = ElecRecoPTEta_->GetEff(Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()), useAsymmErrors);
+      elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
+      elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
 
       if(BTags==0){
         if(NJets<6.5){
-          if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+          if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags0_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags0_->GetEff(HT,MHT, useAsymmErrors);
           else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags0_->GetEff(HT,MHT, useAsymmErrors);
@@ -1245,7 +1309,7 @@ Bool_t Prediction::Process(Long64_t entry)
         }
 
         if(NJets<6.5){
-          if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+          if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags0_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags0_->GetEff(HT,MHT, useAsymmErrors);
           else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags0_->GetEff(HT,MHT, useAsymmErrors);
@@ -1260,7 +1324,7 @@ Bool_t Prediction::Process(Long64_t entry)
         }
       }else if(BTags==1){
           if(NJets<6.5){
-          if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags1_->GetEff(HT,MHT, useAsymmErrors);
+          if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags1_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags1_->GetEff(HT,MHT, useAsymmErrors);
           else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags1_->GetEff(HT,MHT, useAsymmErrors);
@@ -1275,7 +1339,7 @@ Bool_t Prediction::Process(Long64_t entry)
         }
 
         if(NJets<6.5){
-          if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags1_->GetEff(HT,MHT, useAsymmErrors);
+          if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags1_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags1_->GetEff(HT,MHT, useAsymmErrors);
           else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags1_->GetEff(HT,MHT, useAsymmErrors);
@@ -1290,7 +1354,7 @@ Bool_t Prediction::Process(Long64_t entry)
         }
       }else{
           if(NJets<6.5){
-          if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
+          if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
           else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
@@ -1305,7 +1369,7 @@ Bool_t Prediction::Process(Long64_t entry)
         }
 
         if(NJets<6.5){
-          if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
+          if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
           else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
           else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
@@ -1320,9 +1384,9 @@ Bool_t Prediction::Process(Long64_t entry)
         }    
       }
 
-      muIsoEffVec_ = MuIsoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
-      //muRecoEffVec_ = MuRecoPTEta_->GetEff(selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), useAsymmErrors);
-      muRecoEffVec_ = MuRecoActivityPT_->GetEff(selectedIDIsoElectrons_MT2Activity->at(0), selectedIDIsoElectrons->at(0).Pt(), useAsymmErrors);
+      muIsoEffVec_ = MuIsoActivityPT_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
+      //muRecoEffVec_ = MuRecoPTEta_->GetEff(Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()), useAsymmErrors);
+      muRecoEffVec_ = MuRecoActivityPT_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
       
       //for compatibility
       elecPurityCorrection_ = elecPurityCorrectionVec_.eff;
@@ -1336,16 +1400,27 @@ Bool_t Prediction::Process(Long64_t entry)
       muRecoEff_ = muRecoEffVec_.eff;
       muIsoEff_ = muIsoEffVec_.eff;
 
-      if(!runOnStandardModelMC && correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
-      if(!runOnStandardModelMC && correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
-      if(!runOnStandardModelMC && correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
-      if(!runOnStandardModelMC && correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
+      if(!runOnStandardModelMC && correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
 
       if(!runOnStandardModelMC && doTrackingCorrection){
-        if(selectedIDIsoElectrons->at(0).Pt() > 10) muRecoEff_ *= GetSF(h_muTrkHighPtSF, selectedIDIsoElectrons->at(0).Eta());
-        else muRecoEff_ *= GetSF(h_muTrkLowPtSF, selectedIDIsoElectrons->at(0).Eta());
-        elecRecoEff_ *= GetSF(h_elecTrkSF, selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Pt());
+        if(Electrons->at(0).Pt() > 10) muRecoEff_ *= GetSF(h_muTrkHighPtSF, Electrons->at(0).Eta());
+        else muRecoEff_ *= GetSF(h_muTrkLowPtSF, Electrons->at(0).Eta());
+        elecRecoEff_ *= GetSF(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt());
       }
+
+      if(runOnStandardModelMC){
+      	isoSF = GetSF(h_elecIsoSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
+      	recoSF = GetSF(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
+      	trackingSF = GetSF(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt());
+      }
+
+      if(muIsoEff_ > 1) muIsoEff_=1;
+      if(muRecoEff_ > 1) muRecoEff_=1;
+      if(elecRecoEff_ > 1) elecRecoEff_=1;
+      if(elecIsoEff_ > 1) elecIsoEff_=1;
 
       // calculate Weights
       // cout << "calculate weights...";
@@ -1509,30 +1584,30 @@ Bool_t Prediction::Process(Long64_t entry)
       diLepFoundSysUp = w1 * (w2 * (w3a+w3b) + (1-elecDiLepContributionMTWAppliedEff_) * (1-diLepFoundMin)/diLepFoundMin) - wGes;
 
       double elecIsoMax = elecIsoEff_ *(1 + 0.01 * ElecIsoUncertaintyUp_);
-      if(usePrelimSFs) elecIsoMax = elecIsoEff_ *(1 + 0.01 * getElecIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
-      if(useSFs) elecIsoMax = elecIsoEff_ *(1 + GetSFUnc(h_elecIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())));
+      if(usePrelimSFs) elecIsoMax = elecIsoEff_ *(1 + 0.01 * getElecIsoSF(Electrons->at(0).Pt(), Electrons->at(0).Eta(), Electrons_MT2Activity->at(0)));
+      if(useSFs) elecIsoMax = elecIsoEff_ *(1 + GetSFUnc(h_elecIsoSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())));
       if(elecIsoMax > 1) elecIsoMax = 1;
       elecIsoSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoMax*elecRecoEff_*elecAccEff_) * (1-elecIsoMax*elecRecoEff_*elecAccEff_ +w3b) + w4) - wGes;
       double elecIsoMin = elecIsoEff_ *(1 - 0.01 * ElecIsoUncertaintyDown_);
-      if(usePrelimSFs) elecIsoMin = elecIsoEff_ *(1 - 0.01 * getElecIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
-      if(useSFs) elecIsoMin = elecIsoEff_ *(1 - GetSFUnc(h_elecIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())));
+      if(usePrelimSFs) elecIsoMin = elecIsoEff_ *(1 - 0.01 * getElecIsoSF(Electrons->at(0).Pt(), Electrons->at(0).Eta(), Electrons_MT2Activity->at(0)));
+      if(useSFs) elecIsoMin = elecIsoEff_ *(1 - GetSFUnc(h_elecIsoSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())));
       elecIsoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoMin*elecRecoEff_*elecAccEff_) * (1-elecIsoMin*elecRecoEff_*elecAccEff_ +w3b) + w4) - wGes;
 
       double elecRecoMax = elecRecoEff_ *(1 + 0.01 * ElecRecoUncertaintyUp_);
-      if(usePrelimSFs) elecRecoMax = elecRecoEff_ *(1 + 0.01 * getElecIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
-      if(useSFs && !doTrackingCorrection) elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())));
+      if(usePrelimSFs) elecRecoMax = elecRecoEff_ *(1 + 0.01 * getElecIDSF(Electrons->at(0).Pt(), Electrons->at(0).Eta()));
+      if(useSFs && !doTrackingCorrection) elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())));
       if(useSFs && doTrackingCorrection){
-        if(selectedIDIsoElectrons->at(0).Pt() > 20) elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Pt()));
-        else elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Pt(), 0.03));
+        if(Electrons->at(0).Pt() > 20) elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt()));
+        else elecRecoMax = elecRecoEff_ *(1 + GetSFUnc(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt(), 0.03));
       }
       if(elecRecoMax > 1) elecRecoMax = 1;
       elecRecoSysDown = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoMax*elecAccEff_) * (1-elecIsoEff_*elecRecoMax*elecAccEff_ +w3b) + w4) - wGes;
       double elecRecoMin = elecRecoEff_ *(1 - 0.01 * ElecRecoUncertaintyDown_);
-      if(usePrelimSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * getElecIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
-      if(useSFs && !doTrackingCorrection) elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())));
+      if(usePrelimSFs) elecRecoMin = elecRecoEff_ *(1 - 0.01 * getElecIDSF(Electrons->at(0).Pt(), Electrons->at(0).Eta()));
+      if(useSFs && !doTrackingCorrection) elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())));
       if(useSFs && doTrackingCorrection){
-        if(selectedIDIsoElectrons->at(0).Pt() > 20) elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Pt()));
-        else elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons->at(0).Pt(), 0.03));
+        if(Electrons->at(0).Pt() > 20) elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt()));
+        else elecRecoMin = elecRecoEff_ *(1 - GetSFUnc(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt(), 0.03));
       }
       elecRecoSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoMin*elecAccEff_) * (1-elecIsoEff_*elecRecoMin*elecAccEff_ +w3b) + w4) - wGes;
 
@@ -1569,25 +1644,25 @@ Bool_t Prediction::Process(Long64_t entry)
       elecAccQsquareSysUp = w1 * (elecDiLepContributionMTWAppliedEff_ * 1/(elecIsoEff_*elecRecoEff_*elecAccQsquareMin) * (1-elecIsoEff_*elecRecoEff_*elecAccQsquareMin +w3b) + w4) - wGes;
       
       double muIsoMax = muIsoEff_ *(1 + 0.01 * MuIsoUncertaintyUp_);
-      if(usePrelimSFs) muIsoMax = muIsoEff_ *(1 + 0.01 * getMuonIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
-      if(useSFs) muIsoMax = muIsoEff_ *(1 + GetSFUnc(h_muIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), 0.014));
+      if(usePrelimSFs) muIsoMax = muIsoEff_ *(1 + 0.01 * getMuonIsoSF(Electrons->at(0).Pt(), Electrons->at(0).Eta(), Electrons_MT2Activity->at(0)));
+      if(useSFs) muIsoMax = muIsoEff_ *(1 + GetSFUnc(h_muIsoSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()), 0.014));
       if(muIsoMax > 1) muIsoMax = 1;
       muIsoSysDown = w1 * (w2 * (w3a + 1-muIsoMax*muRecoEff_*muAccEff_) + w4) - wGes;
       double muIsoMin = muIsoEff_ *(1 - 0.01 * MuIsoUncertaintyDown_);
-      if(usePrelimSFs) muIsoMin = muIsoEff_ *(1 - 0.01 * getMuonIsoSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta(), selectedIDIsoElectrons_MT2Activity->at(0)));
-      if(useSFs) muIsoMin = muIsoEff_ *(1 - GetSFUnc(h_muIsoSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), 0.014));
+      if(usePrelimSFs) muIsoMin = muIsoEff_ *(1 - 0.01 * getMuonIsoSF(Electrons->at(0).Pt(), Electrons->at(0).Eta(), Electrons_MT2Activity->at(0)));
+      if(useSFs) muIsoMin = muIsoEff_ *(1 - GetSFUnc(h_muIsoSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()), 0.014));
       muIsoSysUp = w1 * (w2 * (w3a + 1-muIsoMin*muRecoEff_*muAccEff_) + w4) - wGes;
 
       double muRecoMax = muRecoEff_*(1 + 0.01 * MuRecoUncertaintyUp_);
-      if(usePrelimSFs) muRecoMax = muRecoEff_ *(1 + 0.01 * getMuonIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
-      if(useSFs && !doTrackingCorrection) muRecoMax = muRecoEff_ *(1 + GetSFUnc(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), 0.014));
-      if(useSFs && doTrackingCorrection) muRecoMax = muRecoEff_ *(1 + GetSFUnc(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), 0.014) + GetSFUnc(h_muTrkHighPtSF, selectedIDIsoElectrons->at(0).Eta(), 0.01));
+      if(usePrelimSFs) muRecoMax = muRecoEff_ *(1 + 0.01 * getMuonIDSF(Electrons->at(0).Pt(), Electrons->at(0).Eta()));
+      if(useSFs && !doTrackingCorrection) muRecoMax = muRecoEff_ *(1 + GetSFUnc(h_muIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()), 0.014));
+      if(useSFs && doTrackingCorrection) muRecoMax = muRecoEff_ *(1 + GetSFUnc(h_muIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()), 0.014) + GetSFUnc(h_muTrkHighPtSF, Electrons->at(0).Eta(), 0.01));
       if(muRecoMax > 1) muRecoMax = 1;
       muRecoSysDown = w1 * (w2 * (w3a + 1-muIsoEff_*muRecoMax*muAccEff_) + w4) - wGes;
       double muRecoMin = muRecoEff_*(1 - 0.01 * MuRecoUncertaintyDown_);
-      if(usePrelimSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * getMuonIDSF(selectedIDIsoElectrons->at(0).Pt(), selectedIDIsoElectrons->at(0).Eta()));
-      if(useSFs && !doTrackingCorrection) muRecoMin = muRecoEff_ *(1 - GetSFUnc(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), 0.014));
-      if(useSFs && doTrackingCorrection) muRecoMin = muRecoEff_ *(1 - GetSFUnc(h_muIDSF, selectedIDIsoElectrons->at(0).Pt(), std::abs(selectedIDIsoElectrons->at(0).Eta()), 0.014) - GetSFUnc(h_muTrkHighPtSF, selectedIDIsoElectrons->at(0).Eta(), 0.01));
+      if(usePrelimSFs) muRecoMin = muRecoEff_ *(1 - 0.01 * getMuonIDSF(Electrons->at(0).Pt(), Electrons->at(0).Eta()));
+      if(useSFs && !doTrackingCorrection) muRecoMin = muRecoEff_ *(1 - GetSFUnc(h_muIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()), 0.014));
+      if(useSFs && doTrackingCorrection) muRecoMin = muRecoEff_ *(1 - GetSFUnc(h_muIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()), 0.014) - GetSFUnc(h_muTrkHighPtSF, Electrons->at(0).Eta(), 0.01));
       muRecoSysUp = w1 * (w2 * (w3a + 1-muIsoEff_*muRecoMin*muAccEff_) + w4) - wGes;
 
       double muAccMax, muAccMin;       
@@ -1634,7 +1709,7 @@ Bool_t Prediction::Process(Long64_t entry)
       // Calculate weights if they do depend on the number of BTags:
       // BTags == 0
       if(NJets<6.5){
-        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags0_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags0_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags0_->GetEff(HT,MHT, useAsymmErrors);
@@ -1649,7 +1724,7 @@ Bool_t Prediction::Process(Long64_t entry)
       }
 
       if(NJets<6.5){
-        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags0_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags0_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags0_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags0_->GetEff(HT,MHT, useAsymmErrors);
@@ -1674,7 +1749,7 @@ Bool_t Prediction::Process(Long64_t entry)
 
       // BTags == 1
       if(NJets<6.5){
-        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags1_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags1_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags1_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags1_->GetEff(HT,MHT, useAsymmErrors);
@@ -1689,7 +1764,7 @@ Bool_t Prediction::Process(Long64_t entry)
       } 
 
       if(NJets<6.5){
-        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags1_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags1_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags1_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags1_->GetEff(HT,MHT, useAsymmErrors);
@@ -1714,7 +1789,7 @@ Bool_t Prediction::Process(Long64_t entry)
 
       // BTags == 2
       if(NJets<6.5){
-        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
@@ -1729,7 +1804,7 @@ Bool_t Prediction::Process(Long64_t entry)
       } 
 
       if(NJets<6.5){
-        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
@@ -1754,7 +1829,7 @@ Bool_t Prediction::Process(Long64_t entry)
 
       // BTags >= 3
       if(NJets<6.5){
-        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) muAccEffVec_ = MuAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) muAccEffVec_ = MuAccHTMHT_NJets3_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) muAccEffVec_ = MuAccHTMHT_NJets4_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) muAccEffVec_ = MuAccHTMHT_NJets5_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
@@ -1769,7 +1844,7 @@ Bool_t Prediction::Process(Long64_t entry)
       } 
 
       if(NJets<6.5){
-        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
+        if(NJets<2.5) elecAccEffVec_ = ElecAccHTMHT_NJets2_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<3.5) elecAccEffVec_ = ElecAccHTMHT_NJets3_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if(NJets<4.5) elecAccEffVec_ = ElecAccHTMHT_NJets4_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
         else if (NJets < 5.5) elecAccEffVec_ = ElecAccHTMHT_NJets5_BTags2Inf_->GetEff(HT,MHT, useAsymmErrors);
@@ -1793,6 +1868,31 @@ Bool_t Prediction::Process(Long64_t entry)
       totalWeight_BTags_noIsoTrack_.push_back(Weight * elecPurityCorrection_ * 1/elecMTWEff_ * (w2 * (w3a+w3b) + w4));
 
     }
+
+    WeightTrackingCorr = Weight * isoSF * recoSF * trackingSF;
+
+    if(fillEventSeperateBTags){
+      for(int i = 0; i < (NJets == 2 ? 3 : 4); i++){
+        Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,i);
+        BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,i);
+        BTags = i;
+
+        double storeWeight = Weight;
+        WeightCorr = Weight * bTagProb.at(i) * isoSF * recoSF * trackingSF;
+        Weight *= bTagProb.at(i);
+        if(topPTreweight && topPtSF > 0) WeightCorr *= topPtSF;
+
+        tPrediction_->Fill();
+
+        Weight = storeWeight;
+      }
+      return kTRUE;
+    }
+
+    // Simple bTag corrections don't work that way
+    //WeightCorr = Weight_bTagCorr * isoSF * recoSF * trackingSF;
+    WeightCorr = 0;
+    if(topPTreweight && topPtSF > 0) WeightCorr *= topPtSF;
 
   tPrediction_->Fill();
   return kTRUE;
@@ -1877,24 +1977,25 @@ void Prediction::resetValues()
   totalWeightDiLepIsoTrackReduced_=0.;
 
   // DeltaR/RelPt
-  selectedIDIsoMuonsDeltaRJet.clear();
-  selectedIDIsoMuonsRelPTJet.clear(); 
-  selectedIDIsoElectronsDeltaRJet.clear();
-  selectedIDIsoElectronsRelPTJet.clear();
+  MuonsDeltaRJet.clear();
+  MuonsRelPTJet.clear(); 
+  ElectronsDeltaRJet.clear();
+  ElectronsRelPTJet.clear();
 
-  selectedIDIsoMuonsPTW.clear();
-  selectedIDIsoMuonsPt_=0.;
-  selectedIDIsoMuonsEta_=0.;
-  //  selectedIDIsoMuonsCDTT.clear();
-  selectedIDIsoElectronsPTW.clear();
-  selectedIDIsoElectronsPt_=0.;
-  selectedIDIsoElectronsEta_=0.;
-  //  selectedIDIsoElectronsCDTT.clear();
+  MuonsPTW.clear();
+  MuonsPt_=0.;
+  MuonsEta_=0.;
+  //  MuonsCDTT.clear();
+  ElectronsPTW.clear();
+  ElectronsPt_=0.;
+  ElectronsEta_=0.;
+  //  ElectronsCDTT.clear();
 
   ptw_bins.clear();
 
   totalWeight_BTags_.clear();
   totalWeight_BTags_noIsoTrack_.clear();
+  topPt.clear();
 }
 
 bool Prediction::FiltersPass()

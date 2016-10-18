@@ -146,12 +146,12 @@ effVec TH1Eff::GetEff(double xValue, bool asymm)
   	double errDown_ = 0;  	
 
   	if(xValue < RatioTH1D_->GetXaxis()->GetXmin()){
-	    std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<RatioTH1D_->GetName()<<std::endl;
+	    //std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<RatioTH1D_->GetName()<<std::endl;
 	    xValue= RatioTH1D_->GetXaxis()->GetXmin()+0.01;
 	    //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
 	}
 	else if(xValue > RatioTH1D_->GetXaxis()->GetXmax()){
-	    std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<RatioTH1D_->GetName()<<" which is: "<<RatioTH1D_->GetXaxis()->GetXmax();
+	    //std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<RatioTH1D_->GetName()<<" which is: "<<RatioTH1D_->GetXaxis()->GetXmax();
 	    xValue= RatioTH1D_->GetXaxis()->GetXmax()-0.01;
 	    //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
 	}
@@ -355,26 +355,26 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
 
   if(xValue < RatioTH2D_->GetXaxis()->GetXmin() )
   {
-    std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<RatioTH2D_->GetName()<<std::endl;
+    //std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<RatioTH2D_->GetName()<<std::endl;
     xValue= RatioTH2D_->GetXaxis()->GetXmin()+0.01;
     //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
   }
   else if(xValue > RatioTH2D_->GetXaxis()->GetXmax() )
   {
-    std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<RatioTH2D_->GetName()<<" which is: "<<RatioTH2D_->GetXaxis()->GetXmax()<<std::endl;
+    //std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<RatioTH2D_->GetName()<<" which is: "<<RatioTH2D_->GetXaxis()->GetXmax()<<std::endl;
     xValue= RatioTH2D_->GetXaxis()->GetXmax()-0.01;
     //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
   }
   
   if(yValue < RatioTH2D_->GetYaxis()->GetXmin() )
   {
-    std::cout<<"Warning yValue: "<<yValue<<" is smaller than minimum of histo: "<<RatioTH2D_->GetName()<<std::endl;
+    //std::cout<<"Warning yValue: "<<yValue<<" is smaller than minimum of histo: "<<RatioTH2D_->GetName()<<std::endl;
     yValue= RatioTH2D_->GetYaxis()->GetXmin()+0.01;
     //std::cout<<" Setting yValue to: "<<yValue<<std::endl;
   }
   else if(yValue > RatioTH2D_->GetYaxis()->GetXmax() )
   {
-    std::cout<<"Warning yValue: "<<yValue<<" is bigger than maximum of histo: "<<RatioTH2D_->GetName()<<std::endl;
+    //std::cout<<"Warning yValue: "<<yValue<<" is bigger than maximum of histo: "<<RatioTH2D_->GetName()<<std::endl;
     yValue= RatioTH2D_->GetYaxis()->GetXmax()-0.01;
     //std::cout<<" Setting yValue to: "<<yValue<<std::endl;
   }
@@ -797,97 +797,3 @@ void TH2Deff::saveResults(TDirectory* MainDirectory)
 	sanityDir->cd();
 	RefTH2D_->Write();
 }
-
-
-SearchBinEventCount::SearchBinEventCount(const char* name)
-{
-	fullTH1D_ = new 	TH1D(name, name, bins_.size(),0,bins_.size()+1);
-	fullTH1D_->Sumw2();
-	name_=name;
-/*	splitAfter_=18;
-	unsigned int plotsNumber= bins_.size()/splitAfter_;
-	// 	std::cout<<"Efficiency::Efficiency plotsNumber="<<plotsNumber<<" number of bins: "<<bins_.size()<<std::endl;
-	if(plotsNumber * splitAfter_<bins_.size() )
-	{
-		
-		plotsNumber++;
-		for(unsigned int i=0; i < plotsNumber;i++)
-		{
-			
-			TString temp2 (Form ("_%d",(int)i+1));
-			TString temp1 = name;
-			temp1+=temp2;
-			temp2 = name + temp2;
-			const char* name1=temp1;
-			const char* title1=temp2;
-			
-			if(i+1==plotsNumber)
-			{
-				// 				std::cout<<"titlelast["<<i<<"]: "<<temp1<<std::endl;
-				unsigned int tempBins = bins_.size() - plotsNumber * splitAfter_;
-				splitTH1D_.push_back( new TH1D (name1,title1,tempBins,0,tempBins+1) );
-				splitTH1D_[i]->Sumw2();
-				continue;
-			}
-			// 			std::cout<<"title["<<i<<"]: "<<temp1<<std::endl;
-			splitTH1D_.push_back( new TH1D (name1,title1,splitAfter_,0,splitAfter_+1) );
-			splitTH1D_[i]->Sumw2();
-		}
-	}
-	else
-	{
-		for(unsigned int i=0; i < plotsNumber;i++)
-		{
-			
-			TString temp2 (Form ("_%d",(int)i+1));
-			TString temp1 = name;
-			temp1+=temp2;
-
-			const char* name1=temp1;
-			TH1D* tempeff2 = new  TH1D (name1,name1,splitAfter_,0,splitAfter_+1);
-			splitTH1D_.push_back( tempeff2 );
-			splitTH1D_[i]->Sumw2();
-		}
-	}
-*/}
-
-
-void SearchBinEventCount::Fill(double HT, double MHT, int NJets, int BTags, double Weight)
-{
-	double bin = GetBinNumber(HT,MHT,NJets,BTags);
-	
-	if(bin<bins_.size()+2) 
-	{
-		fullTH1D_->Fill(bin-0.01, Weight);
-	/*	unsigned int splitHist=0;
-		// 	std::cout<<"bin before split: "<<bin<<std::endl;
-		for(int ii=0;bin>splitAfter_;ii++)
-		{
-			splitHist++;
-			bin = bin-splitAfter_;
-		}
-		// 		if(splitHist==3)std::cout<<"BinForSplit: "<<bin<<" with splitHistNumber "<<splitHist<<" and TH1DSearchBinsSplit_.size(): "<<TH1DSearchBinsSplit_.size()<<std::endl;
-		
-		splitTH1D_[splitHist]->Fill(bin-0.1, Weight);
-	*/}
-}
-void SearchBinEventCount::saveResults(TDirectory* MainDirectory)
-{
-	MainDirectory->mkdir(name_);
-	// 	std::cout<<"name: "<<name_<<std::endl;
-	TDirectory *dir = (TDirectory*)MainDirectory->Get(name_);
-	dir->cd();
-	fullTH1D_->Write();
-/*	for(unsigned int i=0; i<splitTH1D_.size();i++) 
-	{
-		TString temp2 (Form ("_%d",(int)i+1));
-		TString temp1 = name_;
-		temp1+=temp2;
-		temp2 = name_ + temp2;
-		const char* name1=temp1;
-		const char* title1=temp2;
-		splitTH1D_[i]->SetTitle(title1);
-		splitTH1D_[i]->SetName(name1);
-		splitTH1D_[i]->Write();
-	}
-*/}

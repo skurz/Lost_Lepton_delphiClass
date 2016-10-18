@@ -2,27 +2,62 @@
 #include <iostream>
 #include <vector>
 #include <utility>
+#include <TROOT.h>
+
 
 class Bin
 {
 public:
 	Bin(){}
-	Bin(double HTmin, double HTmax, double MHTmin, double MHTmax, int NJetsmin, int NJetsmax, int BTagsmin, int BTagsmax)
+	Bin(int HTIdx, double HTmin, double HTmax, int MHTIdx, double MHTmin, double MHTmax, int NJetsIdx, int NJetsmin, int NJetsmax, int BTagsIdx, int BTagsmin, int BTagsmax)
 	{
+		HTIdx_=HTIdx;
 		HTmin_=HTmin;
 		HTmax_=HTmax;
+		MHTIdx_=MHTIdx;
 		MHTmin_=MHTmin;
 		MHTmax_=MHTmax;
+		NJetsIdx_=NJetsIdx;
 		NJetsmin_=NJetsmin;
 		NJetsmax_=NJetsmax;
+		BTagsIdx_=BTagsIdx;
 		BTagsmin_=BTagsmin;
 		BTagsmax_=BTagsmax;
 	}
+	~Bin(){}
+
+	double getHTmin(){return HTmin_;}
+	double getHTmax(){return HTmax_;}
+	double getMHTmin(){return MHTmin_;}
+	double getMHTmax(){return MHTmax_;}
+	int getNJetsmin(){return NJetsmin_;}
+	int getNJetsmax(){return NJetsmax_;}
+	int getBTagsmin(){return BTagsmin_;}
+	int getBTagsmax(){return BTagsmax_;}
+
+	// return string according to assigned bin numbering scheme (e.g. NJets0_BTags1_HT2_MHT3)
+	TString getString();
+	std::vector<int> getIdx();
+private:
 	double HTmin_, HTmax_, MHTmin_, MHTmax_;
 	int NJetsmin_, NJetsmax_, BTagsmin_, BTagsmax_;
-	~Bin(){}
-private:
+	// Indixes in the bin numbering scheme. QCD control bins have negative values!
+	int NJetsIdx_, BTagsIdx_, HTIdx_, MHTIdx_;
 };
+
+TString Bin::getString(){
+	if(MHTIdx_ >= 0) return TString::Format("NJets%d_BTags%d_MHT%d_HT%d", NJetsIdx_, BTagsIdx_, MHTIdx_, HTIdx_);
+	else return TString::Format("NJets%d_BTags%d_MHTC_HTC%d", NJetsIdx_, BTagsIdx_, (-HTIdx_));
+}
+
+std::vector<int> Bin::getIdx(){
+	std::vector<int> v;
+	v.push_back(NJetsIdx_);
+	v.push_back(BTagsIdx_);
+	v.push_back(MHTIdx_);
+	v.push_back(HTIdx_);
+	return v;
+}
 
 class SearchBins
 {
@@ -35,15 +70,17 @@ public:
   Bin* GetSearchBin(int i);
   
   ~SearchBins(){}
-protected:
+private:
   std::vector<Bin> bins_;
   std::vector<int> usedBin_;
 
-  std::vector<std::pair<double, double>> HT_bins;
-  std::vector<std::pair<double, double>> MHT_bins;
-  std::vector<std::pair<int, int>> NJets_bins;
-  std::vector<std::pair<int, int>> BTags_bins_NJets3Inf;
-  std::vector<std::pair<int, int>> BTags_bins_NJets2;
+  std::vector<std::pair<std::pair<double, double>, int>> HT_bins_NJets26;
+  std::vector<std::pair<std::pair<double, double>, int>> MHT_bins_NJets26;
+  std::vector<std::pair<std::pair<double, double>, int>> HT_bins_NJets7Inf;
+  std::vector<std::pair<std::pair<double, double>, int>> MHT_bins_NJets7Inf;
+  std::vector<std::pair<std::pair<int, int>, int>> NJets_bins;
+  std::vector<std::pair<std::pair<int, int>, int>> BTags_bins_NJets3Inf;
+  std::vector<std::pair<std::pair<int, int>, int>> BTags_bins_NJets2;
 
   Long64_t nSkipped = 0;
 };
@@ -51,135 +88,126 @@ protected:
 
 SearchBins::SearchBins(bool useQCDbinning)
 {
-	if(!useQCDbinning){
-		// 10(+3) HTMHT bins
-		// Increased HT and MHT to 300
+	// Add QCD control bins
+	// Assign negatice indixes for QCD HTMHT bins
+	if(useQCDbinning){
 		// [HT range]
-		// QCD Control bins
-		//HT_bins.push_back(std::make_pair(300, 500));
-		//HT_bins.push_back(std::make_pair(500, 1000));
-		//HT_bins.push_back(std::make_pair(1000, 99999));
-		// Search Bins
-		HT_bins.push_back(std::make_pair(300, 500));
-		HT_bins.push_back(std::make_pair(500, 1000));
-		HT_bins.push_back(std::make_pair(1000, 99999));
-		HT_bins.push_back(std::make_pair(350, 500));
-		HT_bins.push_back(std::make_pair(500, 1000));
-		HT_bins.push_back(std::make_pair(1000, 99999));
-		HT_bins.push_back(std::make_pair(500, 1000));
-		HT_bins.push_back(std::make_pair(1000, 99999));
-		HT_bins.push_back(std::make_pair(750, 1500));
-		HT_bins.push_back(std::make_pair(1500, 99999));
+		HT_bins_NJets26.push_back(std::make_pair(std::make_pair(300, 500), -1));
+		HT_bins_NJets26.push_back(std::make_pair(std::make_pair(500, 1000), -2));
+		HT_bins_NJets26.push_back(std::make_pair(std::make_pair(1000, 99999), -3));
 
 		// [MHT range]
-		// QCD Control bins
-		//MHT_bins.push_back(std::make_pair(250, 300));
-		//MHT_bins.push_back(std::make_pair(250, 300));
-		//MHT_bins.push_back(std::make_pair(250, 300));
-		// Search Bins
-		MHT_bins.push_back(std::make_pair(300, 350));
-		MHT_bins.push_back(std::make_pair(300, 350));
-		MHT_bins.push_back(std::make_pair(300, 350));
-		MHT_bins.push_back(std::make_pair(350, 500));
-		MHT_bins.push_back(std::make_pair(350, 500));
-		MHT_bins.push_back(std::make_pair(350, 500));
-		MHT_bins.push_back(std::make_pair(500, 750));
-		MHT_bins.push_back(std::make_pair(500, 750));
-		MHT_bins.push_back(std::make_pair(750, 99999));
-		MHT_bins.push_back(std::make_pair(750, 99999));
+		MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(250, 300), -1));
+		MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(250, 300), -1));
+		MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(250, 300), -1));
 
-		// NJets
-		//NJets_bins.push_back(std::make_pair(2, 2));
-		NJets_bins.push_back(std::make_pair(3, 4));
-		NJets_bins.push_back(std::make_pair(5, 6));
-		NJets_bins.push_back(std::make_pair(7, 8));
-		NJets_bins.push_back(std::make_pair(9, 999));
-
-		// BTags (different for NJets==2)
-		BTags_bins_NJets3Inf.push_back(std::make_pair(0, 0));
-		BTags_bins_NJets3Inf.push_back(std::make_pair(1, 1));
-		BTags_bins_NJets3Inf.push_back(std::make_pair(2, 2));
-		BTags_bins_NJets3Inf.push_back(std::make_pair(3, 99));
-
-		BTags_bins_NJets2.push_back(std::make_pair(0, 0));
-		BTags_bins_NJets2.push_back(std::make_pair(1, 1));
-		BTags_bins_NJets2.push_back(std::make_pair(2, 99));
-	}else{
-		// 10(+3) HTMHT bins
-		// Increased HT and MHT to 300
 		// [HT range]
-		// QCD Control bins
-		HT_bins.push_back(std::make_pair(300, 500));
-		HT_bins.push_back(std::make_pair(500, 1000));
-		HT_bins.push_back(std::make_pair(1000, 99999));
-		// Search Bins
-		HT_bins.push_back(std::make_pair(300, 500));
-		HT_bins.push_back(std::make_pair(500, 1000));
-		HT_bins.push_back(std::make_pair(1000, 99999));
-		HT_bins.push_back(std::make_pair(350, 500));
-		HT_bins.push_back(std::make_pair(500, 1000));
-		HT_bins.push_back(std::make_pair(1000, 99999));
-		HT_bins.push_back(std::make_pair(500, 1000));
-		HT_bins.push_back(std::make_pair(1000, 99999));
-		HT_bins.push_back(std::make_pair(750, 1500));
-		HT_bins.push_back(std::make_pair(1500, 99999));
+		HT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(500, 1000), -2));
+		HT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(1000, 99999), -3));
 
 		// [MHT range]
-		// QCD Control bins
-		MHT_bins.push_back(std::make_pair(250, 300));
-		MHT_bins.push_back(std::make_pair(250, 300));
-		MHT_bins.push_back(std::make_pair(250, 300));
-		// Search Bins
-		MHT_bins.push_back(std::make_pair(300, 350));
-		MHT_bins.push_back(std::make_pair(300, 350));
-		MHT_bins.push_back(std::make_pair(300, 350));
-		MHT_bins.push_back(std::make_pair(350, 500));
-		MHT_bins.push_back(std::make_pair(350, 500));
-		MHT_bins.push_back(std::make_pair(350, 500));
-		MHT_bins.push_back(std::make_pair(500, 750));
-		MHT_bins.push_back(std::make_pair(500, 750));
-		MHT_bins.push_back(std::make_pair(750, 99999));
-		MHT_bins.push_back(std::make_pair(750, 99999));
-
-		// NJets
-		//NJets_bins.push_back(std::make_pair(2, 2));
-		NJets_bins.push_back(std::make_pair(3, 4));
-		NJets_bins.push_back(std::make_pair(5, 6));
-		NJets_bins.push_back(std::make_pair(7, 8));
-		NJets_bins.push_back(std::make_pair(9, 999));
-
-		// BTags (different for NJets==2)
-		BTags_bins_NJets3Inf.push_back(std::make_pair(0, 0));
-		BTags_bins_NJets3Inf.push_back(std::make_pair(1, 1));
-		BTags_bins_NJets3Inf.push_back(std::make_pair(2, 2));
-		BTags_bins_NJets3Inf.push_back(std::make_pair(3, 99));
-
-		BTags_bins_NJets2.push_back(std::make_pair(0, 0));
-		BTags_bins_NJets2.push_back(std::make_pair(1, 1));
-		BTags_bins_NJets2.push_back(std::make_pair(2, 99));
-
+		MHT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(250, 300), -1));
+		MHT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(250, 300), -1));
 	}
 
-	if(HT_bins.size() != MHT_bins.size())	std::cout << "SearchBins.h: No valid definition of HTMHT bins!" << std::endl;
+	// Standard Search Bin Definition
+	// 10 HTMHT bins
+	// [HT range]
+	// Search Bins
+	HT_bins_NJets26.push_back(std::make_pair(std::make_pair(300, 500), 0));
+	HT_bins_NJets26.push_back(std::make_pair(std::make_pair(500, 1000), 1));
+	HT_bins_NJets26.push_back(std::make_pair(std::make_pair(1000, 99999), 2));
+	HT_bins_NJets26.push_back(std::make_pair(std::make_pair(350, 500), 3));
+	HT_bins_NJets26.push_back(std::make_pair(std::make_pair(500, 1000), 4));
+	HT_bins_NJets26.push_back(std::make_pair(std::make_pair(1000, 99999), 5));
+	HT_bins_NJets26.push_back(std::make_pair(std::make_pair(500, 1000), 6));
+	HT_bins_NJets26.push_back(std::make_pair(std::make_pair(1000, 99999), 7));
+	HT_bins_NJets26.push_back(std::make_pair(std::make_pair(750, 1500), 8));
+	HT_bins_NJets26.push_back(std::make_pair(std::make_pair(1500, 99999), 9));
 
+	// [MHT range]
+	MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(300, 350), 0));
+	MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(300, 350), 0));
+	MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(300, 350), 0));
+	MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(350, 500), 1));
+	MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(350, 500), 1));
+	MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(350, 500), 1));
+	MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(500, 750), 2));
+	MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(500, 750), 2));
+	MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(750, 99999), 3));
+	MHT_bins_NJets26.push_back(std::make_pair(std::make_pair(750, 99999) ,3));
+
+	// [HT range]
+	HT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(500, 1000), 1));
+	HT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(1000, 99999), 2));
+	HT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(500, 1000), 4));
+	HT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(1000, 99999), 5));
+	HT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(500, 1000), 6));
+	HT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(1000, 99999), 7));
+	HT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(750, 1500), 8));
+	HT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(1500, 99999), 9));
+
+	// [MHT range]
+	MHT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(300, 350), 0));
+	MHT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(300, 350), 0));
+	MHT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(350, 500), 1));
+	MHT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(350, 500), 1));
+	MHT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(500, 750), 2));
+	MHT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(500, 750), 2));
+	MHT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(750, 99999), 3));
+	MHT_bins_NJets7Inf.push_back(std::make_pair(std::make_pair(750, 99999), 3));
+
+	// NJets
+	NJets_bins.push_back(std::make_pair(std::make_pair(2, 2), 0));
+	NJets_bins.push_back(std::make_pair(std::make_pair(3, 4), 1));
+	NJets_bins.push_back(std::make_pair(std::make_pair(5, 6), 2));
+	NJets_bins.push_back(std::make_pair(std::make_pair(7, 8), 3));
+	NJets_bins.push_back(std::make_pair(std::make_pair(9, 999), 4));
+
+	// BTags (different for NJets==2)
+	BTags_bins_NJets3Inf.push_back(std::make_pair(std::make_pair(0, 0), 0));
+	BTags_bins_NJets3Inf.push_back(std::make_pair(std::make_pair(1, 1), 1));
+	BTags_bins_NJets3Inf.push_back(std::make_pair(std::make_pair(2, 2), 2));
+	BTags_bins_NJets3Inf.push_back(std::make_pair(std::make_pair(3, 99), 3));
+
+	BTags_bins_NJets2.push_back(std::make_pair(std::make_pair(0, 0), 0));
+	BTags_bins_NJets2.push_back(std::make_pair(std::make_pair(1, 1), 1));
+	BTags_bins_NJets2.push_back(std::make_pair(std::make_pair(2, 99), 2));
+	
+
+	if(HT_bins_NJets26.size() != MHT_bins_NJets26.size())	std::cout << "SearchBins.h: No valid definition of HTMHT bins!" << std::endl;
+	if(HT_bins_NJets7Inf.size() != MHT_bins_NJets7Inf.size())	std::cout << "SearchBins.h: No valid definition of HTMHT bins!" << std::endl;
+
+	// Create bins and push back
 	for(unsigned i_NJets = 0; i_NJets < NJets_bins.size(); ++i_NJets){
-		// distinguish between BTag multiplicities
-		if(NJets_bins[i_NJets].second == 2){
+		// NJets=2 (skip highest BTags bin)
+		if(NJets_bins[i_NJets].first.second == 2){
 			for(unsigned i_bTags = 0; i_bTags < BTags_bins_NJets2.size(); ++i_bTags){
-				for(unsigned i_HTMHT = 0; i_HTMHT < HT_bins.size(); ++i_HTMHT){
-					bins_.push_back(Bin(HT_bins[i_HTMHT].first, HT_bins[i_HTMHT].second,
-										MHT_bins[i_HTMHT].first, MHT_bins[i_HTMHT].second,
-										NJets_bins[i_NJets].first, NJets_bins[i_NJets].second,
-										BTags_bins_NJets2[i_bTags].first, BTags_bins_NJets2[i_bTags].second));
+				for(unsigned i_HTMHT = 0; i_HTMHT < HT_bins_NJets26.size(); ++i_HTMHT){
+					bins_.push_back(Bin(HT_bins_NJets26[i_HTMHT].second,	HT_bins_NJets26[i_HTMHT].first.first,	HT_bins_NJets26[i_HTMHT].first.second,
+										MHT_bins_NJets26[i_HTMHT].second,	MHT_bins_NJets26[i_HTMHT].first.first,	MHT_bins_NJets26[i_HTMHT].first.second,
+										NJets_bins[i_NJets].second,			NJets_bins[i_NJets].first.first,		NJets_bins[i_NJets].first.second,
+										BTags_bins_NJets2[i_bTags].second,	BTags_bins_NJets2[i_bTags].first.first, BTags_bins_NJets2[i_bTags].first.second));
 				}
 			}
+		// NJets=3-6 (standard)
+		}else if(NJets_bins[i_NJets].first.second <= 6){
+			for(unsigned i_bTags = 0; i_bTags < BTags_bins_NJets3Inf.size(); ++i_bTags){
+				for(unsigned i_HTMHT = 0; i_HTMHT < HT_bins_NJets26.size(); ++i_HTMHT){
+					bins_.push_back(Bin(HT_bins_NJets26[i_HTMHT].second,			HT_bins_NJets26[i_HTMHT].first.first,		HT_bins_NJets26[i_HTMHT].first.second,
+										MHT_bins_NJets26[i_HTMHT].second,			MHT_bins_NJets26[i_HTMHT].first.first,		MHT_bins_NJets26[i_HTMHT].first.second,
+										NJets_bins[i_NJets].second,					NJets_bins[i_NJets].first.first,			NJets_bins[i_NJets].first.second,
+										BTags_bins_NJets3Inf[i_bTags].second, 		BTags_bins_NJets3Inf[i_bTags].first.first,	BTags_bins_NJets3Inf[i_bTags].first.second));
+				}
+			}
+		// NJets=7-Inf (skip lowest HT bins)
 		}else{
 			for(unsigned i_bTags = 0; i_bTags < BTags_bins_NJets3Inf.size(); ++i_bTags){
-				for(unsigned i_HTMHT = 0; i_HTMHT < HT_bins.size(); ++i_HTMHT){
-					bins_.push_back(Bin(HT_bins[i_HTMHT].first, HT_bins[i_HTMHT].second,
-										MHT_bins[i_HTMHT].first, MHT_bins[i_HTMHT].second,
-										NJets_bins[i_NJets].first, NJets_bins[i_NJets].second,
-										BTags_bins_NJets3Inf[i_bTags].first, BTags_bins_NJets3Inf[i_bTags].second));
+				for(unsigned i_HTMHT = 0; i_HTMHT < HT_bins_NJets7Inf.size(); ++i_HTMHT){
+					bins_.push_back(Bin(HT_bins_NJets7Inf[i_HTMHT].second,			HT_bins_NJets7Inf[i_HTMHT].first.first,		HT_bins_NJets7Inf[i_HTMHT].first.second,
+										MHT_bins_NJets7Inf[i_HTMHT].second,			MHT_bins_NJets7Inf[i_HTMHT].first.first,	MHT_bins_NJets7Inf[i_HTMHT].first.second,
+										NJets_bins[i_NJets].second,					NJets_bins[i_NJets].first.first,			NJets_bins[i_NJets].first.second,
+										BTags_bins_NJets3Inf[i_bTags].second,		BTags_bins_NJets3Inf[i_bTags].first.first,	BTags_bins_NJets3Inf[i_bTags].first.second));
 				}
 			}
 		}
@@ -195,7 +223,8 @@ SearchBins::SearchBins(bool useQCDbinning)
 }
 
 Bin* SearchBins::GetSearchBin(int i){
-	return &(bins_.at(i));
+	if(i>(int)bins_.size()) std::cout<<"You are trying to access a bin that does not exist!"<<std::endl;
+	return &(bins_.at(i-1));
 }
 
 unsigned int SearchBins::GetBinNumber(double HT, double MHT, int NJets, int BTags)
@@ -204,14 +233,14 @@ unsigned int SearchBins::GetBinNumber(double HT, double MHT, int NJets, int BTag
   int match =-1;
   for(unsigned int i=0; i<bins_.size();i++)
   {
-	  if(HT>=bins_[i].HTmin_ && 
-	      HT<bins_[i].HTmax_ &&
-	      MHT>=bins_[i].MHTmin_ && 
-	      MHT<bins_[i].MHTmax_ &&
-	      NJets+0.1> bins_[i].NJetsmin_ && 
-	      NJets-0.1< bins_[i].NJetsmax_ &&
-	      BTags+0.1> bins_[i].BTagsmin_ && 
-	      BTags-0.1< bins_[i].BTagsmax_){
+	  if(HT>=bins_[i].getHTmin() && 
+	      HT<bins_[i].getHTmax() &&
+	      MHT>=bins_[i].getMHTmin() && 
+	      MHT<bins_[i].getMHTmax() &&
+	      NJets+0.1> bins_[i].getNJetsmin() && 
+	      NJets-0.1< bins_[i].getNJetsmax() &&
+	      BTags+0.1> bins_[i].getBTagsmin() && 
+	      BTags-0.1< bins_[i].getBTagsmax()){
 		      	result=i;
 		      	match++;
 		      	usedBin_[i]=usedBin_[i]+1;

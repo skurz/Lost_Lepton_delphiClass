@@ -46,9 +46,9 @@ void Closure(string InputPath_Expectation="Expectation.root",
   Double_t scaleFactorWeight = 2262;  //in units of [pb]
 
   // Begin of Code
-  int nSearchBinsTotal = 190;
+  int nSearchBinsTotal = 174;
   if(doQCDbinning){
-    nSearchBinsTotal = 190;
+    nSearchBinsTotal = 223;
   }
 
   gSystem->Load("libPhysics.so");
@@ -88,13 +88,13 @@ void Closure(string InputPath_Expectation="Expectation.root",
   UShort_t        ExpectationReductionIsoTrack;
 
   Float_t         MTW;
-  UShort_t        selectedIDIsoMuonsNum;
-  UShort_t        selectedIDIsoElectronsNum;
+  UShort_t        MuonsNum;
+  UShort_t        ElectronsNum;
 
-  std::vector<TLorentzVector>* selectedIDIsoMuons=0;
-  std::vector<TLorentzVector>* selectedIDIsoElectrons=0;
-  std::vector<TLorentzVector> *GenMus=0;
-  std::vector<TLorentzVector> *GenEls=0;
+  std::vector<TLorentzVector>* Muons=0;
+  std::vector<TLorentzVector>* Electrons=0;
+  std::vector<TLorentzVector> *GenMuons=0;
+  std::vector<TLorentzVector> *GenElectrons=0;
   
   Float_t         totalWeightDiLep;
   Float_t         totalWeightDiLepIsoTrackReduced;
@@ -310,10 +310,10 @@ void Closure(string InputPath_Expectation="Expectation.root",
   LostLeptonExpectation->SetBranchAddress("Bin",&Bin);
   LostLeptonExpectation->SetBranchStatus("BinQCD",1);
   LostLeptonExpectation->SetBranchAddress("BinQCD",&BinQCD);
-  LostLeptonExpectation->SetBranchStatus("GenMus",1);
-  LostLeptonExpectation->SetBranchAddress("GenMus",&GenMus);
-  LostLeptonExpectation->SetBranchStatus("GenEls",1);
-  LostLeptonExpectation->SetBranchAddress("GenEls",&GenEls);  
+  LostLeptonExpectation->SetBranchStatus("GenMuons",1);
+  LostLeptonExpectation->SetBranchAddress("GenMuons",&GenMuons);
+  LostLeptonExpectation->SetBranchStatus("GenElectrons",1);
+  LostLeptonExpectation->SetBranchAddress("GenElectrons",&GenElectrons);  
   LostLeptonExpectation->SetBranchStatus("Expectation",1);
   LostLeptonExpectation->SetBranchAddress("Expectation",&Expectation);
   LostLeptonExpectation->SetBranchStatus("ExpectationReductionIsoTrack",1);
@@ -376,9 +376,9 @@ void Closure(string InputPath_Expectation="Expectation.root",
         scaledWeight = Weight * scaleFactorWeight;
       }
 
-      if(GenMus->size()==1 && GenEls->size()==0){
+      if(GenMuons->size()==1 && GenElectrons->size()==0){
         totalMuons_->Fill(Bin_bTags.at(i), scaledWeight);
-      }else if(GenMus->size()==0 && GenEls->size()==1){
+      }else if(GenMuons->size()==0 && GenElectrons->size()==1){
         totalElectrons_->Fill(Bin_bTags.at(i), scaledWeight);
       }
 
@@ -490,14 +490,14 @@ void Closure(string InputPath_Expectation="Expectation.root",
   LostLeptonPrediction->SetBranchAddress("bTagProb",&bTagProb);
   LostLeptonPrediction->SetBranchStatus("MTW",1);
   LostLeptonPrediction->SetBranchAddress("MTW",&MTW);
-  LostLeptonPrediction->SetBranchStatus("selectedIDIsoMuonsNum",1);
-  LostLeptonPrediction->SetBranchAddress("selectedIDIsoMuonsNum",&selectedIDIsoMuonsNum);
-  LostLeptonPrediction->SetBranchStatus("selectedIDIsoMuons",1);
-  LostLeptonPrediction->SetBranchAddress("selectedIDIsoMuons",&selectedIDIsoMuons);
-  LostLeptonPrediction->SetBranchStatus("selectedIDIsoElectronsNum",1);
-  LostLeptonPrediction->SetBranchAddress("selectedIDIsoElectronsNum",&selectedIDIsoElectronsNum);
-  LostLeptonPrediction->SetBranchStatus("selectedIDIsoElectrons",1);
-  LostLeptonPrediction->SetBranchAddress("selectedIDIsoElectrons",&selectedIDIsoElectrons);
+  LostLeptonPrediction->SetBranchStatus("MuonsNum",1);
+  LostLeptonPrediction->SetBranchAddress("MuonsNum",&MuonsNum);
+  LostLeptonPrediction->SetBranchStatus("Muons",1);
+  LostLeptonPrediction->SetBranchAddress("Muons",&Muons);
+  LostLeptonPrediction->SetBranchStatus("ElectronsNum",1);
+  LostLeptonPrediction->SetBranchAddress("ElectronsNum",&ElectronsNum);
+  LostLeptonPrediction->SetBranchStatus("Electrons",1);
+  LostLeptonPrediction->SetBranchAddress("Electrons",&Electrons);
   LostLeptonPrediction->SetBranchStatus("totalWeightDiLep",1);
   LostLeptonPrediction->SetBranchAddress("totalWeightDiLep",&totalWeightDiLep);
   LostLeptonPrediction->SetBranchStatus("totalWeightDiLepIsoTrackReduced",1);
@@ -543,7 +543,7 @@ void Closure(string InputPath_Expectation="Expectation.root",
 
     if(SearchBin > 900) continue;
     if(MTW>100) continue;
-    if(selectedIDIsoMuonsNum+selectedIDIsoElectronsNum!=1) continue;
+    if(MuonsNum+ElectronsNum!=1) continue;
 
 
     for(int i = 0; i < 4; i++){
@@ -571,7 +571,7 @@ void Closure(string InputPath_Expectation="Expectation.root",
           scaleFactorWeightBtagProb = scaleFactorWeight;
           scaledWeight = Weight * scaleFactorWeight;
         }
-/*
+
         totalPrediction_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);        
         totalPreIsoTrack+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2;
         totalPreIsoTrackError+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2*totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2;       
@@ -584,8 +584,8 @@ void Closure(string InputPath_Expectation="Expectation.root",
         totalPrediction_MHT_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         totalPrediction_NJets_->Fill(NJets, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         totalPrediction_BTags_->Fill(i, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-*/
-        if(i==0){
+
+/*        if(i==0){
           totalPrediction_->Fill(Bin_bTags.at(i), totalWeight_BTags0*scaleFactorWeightBtagProb/2);
           totalPreIsoTrack+=totalWeight_BTags0*scaleFactorWeightBtagProb/2;
           totalPreIsoTrackError+=totalWeight_BTags0*scaleFactorWeightBtagProb/2*totalWeight_BTags0*scaleFactorWeightBtagProb/2;
@@ -612,8 +612,8 @@ void Closure(string InputPath_Expectation="Expectation.root",
           totalPrediction_NJets_->Fill(NJets, totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
           totalPrediction_BTags_->Fill(i, totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
         }
-
-          if(selectedIDIsoMuonsNum == 1){
+*/
+          if(MuonsNum == 1){
             totalPredictionMu_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb);
             totalPredictionMuWoIso_->Fill(Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb);
 
@@ -668,7 +668,7 @@ void Closure(string InputPath_Expectation="Expectation.root",
             totalPreMuElecReco+=elecRecoWeight*scaleFactorWeightBtagProb;
             totalPreMuElecIso+=elecIsoWeight*scaleFactorWeightBtagProb;
 
-          }if(selectedIDIsoElectronsNum == 1){
+          }if(ElectronsNum == 1){
             totalPredictionElec_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb);
             totalPredictionElecWoIso_->Fill(Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb);
 

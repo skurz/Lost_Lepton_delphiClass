@@ -47,10 +47,17 @@ const bool runOnSignalMC = false;  //<-check------------------------
 // Only needed if running on full nTuples not on Skims (bTag reweighting)
 // Does not matter for Data
 const bool runOnNtuples = false;
-const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v9/SLe/tree_");
+const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v10/SLe/tree_");
 
 // Useful for T2tt corridor studies
 const bool useGenHTMHT = false;
+
+// Do top-pt reweightung
+const bool topPTreweight = false;
+
+// Fill event seperately to the tree for each bTag multiplicity (size x4!). Mainly useful for plotting
+// Not fully implemented yet! Only working for CS not for prediction!
+const bool fillEventSeperateBTags = false;
 
 // PU
 const TString path_puHist("PU/PileupHistograms_0721_63mb_pm5.root");
@@ -138,8 +145,9 @@ const bool useGenInfoToMatchCSMuonToGen_=0; // changed 20 Nov from 1 to 0
 const double maxDeltaRGenToRecoIsoMuon_=0.3;
 const double maxDiffPtGenToRecoIsoMuon_=0.3;
 const double minHT_=300;
+//const double minHT_=250;
 const double minMHT_=250;
-const double minNJets_=2.5;
+const double minNJets_=1.5;
 const double deltaPhi1_=0.5;
 const double deltaPhi2_=0.5;
 const double deltaPhi3_=0.3;
@@ -282,6 +290,14 @@ class Prediction : public TSelector {
   std::vector<double> bTagProb;
   Double_t        Weight_bTagCorr;
   Double_t        bTagCorr_cut;
+  Double_t		  recoSF;
+  Double_t		  isoSF;
+  Double_t		  trackingSF;
+  Double_t      WeightCorr;
+  Double_t      WeightTrackingCorr;
+  Double_t		  topPtSF;
+  std::vector<double> topPt;
+
 
   EventListFilter *evtListFilter = 0;
 
@@ -306,10 +322,10 @@ class Prediction : public TSelector {
 
   Int_t           isoTracksNum;
   UShort_t JetsNum_;
-  UShort_t selectedIDMuonsNum_, selectedIDIsoMuonsNum_;
-  UShort_t selectedIDElectronsNum_, selectedIDIsoElectronsNum_;
-  Float_t selectedIDIsoMuonsPt_, selectedIDIsoMuonsEta_;
-  Float_t selectedIDIsoElectronsPt_, selectedIDIsoElectronsEta_;
+  UShort_t MuonsNoIsoNum_, MuonsNum_;
+  UShort_t ElectronsNoIsoNum_, ElectronsNum_;
+  Float_t MuonsPt_, MuonsEta_;
+  Float_t ElectronsPt_, ElectronsEta_;
   Float_t mtw;
   Float_t muPurityCorrection_;
   Float_t muMTWEff_, elecMTWEff_, mtwCorrectedWeight_;
@@ -423,10 +439,10 @@ class Prediction : public TSelector {
   std::vector<Float_t> totalWeight_BTags_noIsoTrack_;
   Float_t muTotalWeightDiLep_, muTotalWeightDiLepIsoTrackReduced_;
   Float_t elecTotalWeightDiLep_, elecTotalWeightDiLepIsoTrackReduced_;
-  std::vector<Float_t> selectedIDIsoMuonsDeltaRJet, selectedIDIsoMuonsRelPTJet;
-  std::vector<Float_t> selectedIDIsoElectronsDeltaRJet, selectedIDIsoElectronsRelPTJet;
-  std::vector<Float_t>         selectedIDIsoMuonsPTW;
-  std::vector<Float_t>         selectedIDIsoElectronsPTW;
+  std::vector<Float_t> MuonsDeltaRJet, MuonsRelPTJet;
+  std::vector<Float_t> ElectronsDeltaRJet, ElectronsRelPTJet;
+  std::vector<Float_t>         MuonsPTW;
+  std::vector<Float_t>         ElectronsPTW;
 
   std::vector<int> ptw_bins;
   
@@ -609,9 +625,8 @@ class Prediction : public TSelector {
   Int_t           EcalDeadCellTriggerPrimitiveFilter;
   Int_t           eeBadScFilter;
   //Bool_t           eeBadSc4Filter;
-  std::vector<TLorentzVector> *Electrons=0;
-  std::vector<TLorentzVector> *GenEls=0;
-  std::vector<TLorentzVector> *GenMus=0;
+  std::vector<TLorentzVector> *GenElectrons=0;
+  std::vector<TLorentzVector> *GenMuons=0;
   Int_t          HBHENoiseFilter;
   Int_t          HBHEIsoNoiseFilter;
   Double_t        HT;
@@ -625,19 +640,18 @@ class Prediction : public TSelector {
   std::vector<double>     *Jets_muonEnergyFraction=0;
   std::vector<double>     *Jets_bDiscriminatorCSV=0;
   std::vector<int>     *Jets_hadronFlavor=0;
-  std::vector<bool>    *HTJetsMask=0;
+  std::vector<bool>    *Jets_HTMask=0;
   Double_t        METPhi;
   Double_t        MET;
   Double_t        PFCaloMETRatio;
   Double_t        MHT;
   Double_t        MHTPhi;
-  std::vector<TLorentzVector> *Muons=0;
   Int_t           NJets;
   Int_t           NVtx;
-  std::vector<TLorentzVector> *selectedIDElectrons=0;
-  std::vector<TLorentzVector> *selectedIDIsoElectrons=0;
-  std::vector<TLorentzVector> *selectedIDIsoMuons=0;
-  std::vector<TLorentzVector> *selectedIDMuons=0;
+  std::vector<TLorentzVector> *ElectronsNoIso=0;
+  std::vector<TLorentzVector> *Electrons=0;
+  std::vector<TLorentzVector> *Muons=0;
+  std::vector<TLorentzVector> *MuonsNoIso=0;
   std::vector<string>  *TriggerNames=0;
   std::vector<int>    *TriggerPass=0;
   std::vector<int>     *TriggerPrescales=0;
@@ -647,11 +661,20 @@ class Prediction : public TSelector {
   Double_t        SusyLSPMass;
   Double_t        SusyMotherMass;
   Double_t        TrueNumInteractions;
-  std::vector<double>  *selectedIDElectrons_MT2Activity=0;
-  std::vector<double>  *selectedIDIsoElectrons_MT2Activity=0;
-  std::vector<double>  *selectedIDMuons_MT2Activity=0;
-  std::vector<double>  *selectedIDIsoMuons_MT2Activity=0;
+  std::vector<double>  *ElectronsNoIso_MT2Activity=0;
+  std::vector<double>  *Electrons_MT2Activity=0;
+  std::vector<double>  *MuonsNoIso_MT2Activity=0;
+  std::vector<double>  *Muons_MT2Activity=0;
   Int_t           NJetsISR;
+  vector<TLorentzVector> *GenParticles = 0;
+  vector<int>     *GenParticles_PdgId = 0;
+  std::vector<double>  *Muons_MTW=0;
+  std::vector<double>  *Electrons_MTW=0;
+  vector<bool>    *Muons_tightID=0;
+  vector<bool>    *Electrons_mediumID=0;
+  vector<bool>    *Electrons_tightID=0;
+
+
 
   // List of branches
   TBranch        *b_RunNum=0;   //!
@@ -669,7 +692,8 @@ class Prediction : public TSelector {
   TBranch        *b_EcalDeadCellTriggerPrimitiveFilter=0;   //!
   TBranch        *b_eeBadScFilter=0;   //!
   //TBranch        *b_eeBadSc4Filter=0;   //!
-  TBranch        *b_Electrons=0;   //!
+  TBranch        *b_GenElectrons=0;   //!
+  TBranch        *b_GenMuons=0;   //!
   TBranch        *b_HBHENoiseFilter=0;   //!
   TBranch        *b_HBHEIsoNoiseFilter=0;   //!
   TBranch        *b_HT=0;   //!
@@ -683,19 +707,18 @@ class Prediction : public TSelector {
   TBranch        *b_Jets_muonEnergyFraction=0;   //!
   TBranch        *b_Jets_bDiscriminatorCSV=0;   //!
   TBranch        *b_Jets_hadronFlavor=0;   //!
-  TBranch        *b_HTJetsMask=0;   //!
+  TBranch        *b_Jets_HTMask=0;   //!
   TBranch        *b_METPhi=0;   //!
   TBranch        *b_MET=0;   //!
   TBranch        *b_PFCaloMETRatio=0;   //!
   TBranch        *b_MHT=0;   //!
   TBranch        *b_MHTPhi=0;   //!
-  TBranch        *b_Muons=0;   //!
   TBranch        *b_NJets=0;   //!
   TBranch        *b_NVtx=0;   //!
-  TBranch        *b_selectedIDElectrons=0;   //!
-  TBranch        *b_selectedIDIsoElectrons=0;   //!
-  TBranch        *b_selectedIDIsoMuons=0;   //!
-  TBranch        *b_selectedIDMuons=0;   //!
+  TBranch        *b_ElectronsNoIso=0;   //!
+  TBranch        *b_Electrons=0;   //!
+  TBranch        *b_Muons=0;   //!
+  TBranch        *b_MuonsNoIso=0;   //!
   TBranch        *b_TriggerNames=0;   //!
   TBranch        *b_TriggerPass=0;   //!
   TBranch        *b_TriggerPrescales=0;   //!
@@ -705,11 +728,19 @@ class Prediction : public TSelector {
   TBranch        *b_SusyLSPMass=0;
   TBranch        *b_SusyMotherMass=0;
   TBranch        *b_TrueNumInteractions=0;
-  TBranch        *b_selectedIDElectrons_MT2Activity=0;   //!
-  TBranch        *b_selectedIDIsoElectrons_MT2Activity=0;   //!
-  TBranch        *b_selectedIDIsoMuons_MT2Activity=0;   //!
-  TBranch        *b_selectedIDMuons_MT2Activity=0;   //!
+  TBranch        *b_ElectronsNoIso_MT2Activity=0;   //!
+  TBranch        *b_Electrons_MT2Activity=0;   //!
+  TBranch        *b_Muons_MT2Activity=0;   //!
+  TBranch        *b_MuonsNoIso_MT2Activity=0;   //!
   TBranch        *b_NJetsISR=0;
+  TBranch        *b_GenParticles=0;
+  TBranch        *b_GenParticles_PdgId=0;
+  TBranch        *b_Muons_MTW=0;
+  TBranch        *b_Electrons_MTW=0;
+  TBranch        *b_Muons_tightID=0;   //!
+  TBranch        *b_Electrons_mediumID=0;   //!
+  TBranch        *b_Electrons_tightID=0;   //!
+
 
   
  Prediction(TTree * /*tree*/ =0) : fChain(0) { }
@@ -763,7 +794,7 @@ void Prediction::Init(TTree *tree)
   // Apply trigger
   if(runOnData) useTrigger = true;
   // Apply weights if trigger not simulated
-  if(runOnStandardModelMC) useTriggerEffWeight = false;
+  //if(runOnStandardModelMC) useTriggerEffWeight = true; // not derived yet
   if(runOnSignalMC && !useGenHTMHT) useTriggerEffWeight = true;
   // Do PU reweighting. true for signal scan
   if(runOnSignalMC) doPUreweighting = true;
@@ -949,7 +980,7 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("isoPionTracks", 1);
   fChain->SetBranchStatus("JetID", 1);
   fChain->SetBranchStatus("Jets", 1);
-  fChain->SetBranchStatus("HTJetsMask", 1);
+  fChain->SetBranchStatus("Jets_HTMask", 1);
   fChain->SetBranchStatus("METPhi", 1);
   fChain->SetBranchStatus("MET", 1);
   fChain->SetBranchStatus("PFCaloMETRatio", 1);
@@ -958,15 +989,22 @@ void Prediction::Init(TTree *tree)
   fChain->SetBranchStatus("Muons", 1);
   fChain->SetBranchStatus("NJets", 1);
   fChain->SetBranchStatus("NVtx", 1);
-  fChain->SetBranchStatus("selectedIDElectrons", 1);
+  fChain->SetBranchStatus("ElectronsNoIso", 1);
   fChain->SetBranchStatus("Electrons", 1);
   fChain->SetBranchStatus("Muons", 1);
-  fChain->SetBranchStatus("selectedIDMuons", 1);
+  fChain->SetBranchStatus("MuonsNoIso", 1);
   fChain->SetBranchStatus("TriggerNames", 1);
   fChain->SetBranchStatus("TriggerPass", 1);
   fChain->SetBranchStatus("TriggerPrescales", 1);
   fChain->SetBranchStatus("Jets_muonEnergyFraction", 1);
   fChain->SetBranchStatus("Jets_bDiscriminatorCSV", 1);
+  if(topPTreweight){
+    fChain->SetBranchStatus("GenParticles", 1);
+    fChain->SetBranchStatus("GenParticles_PdgId", 1);
+    fChain->SetBranchStatus("GenElectrons", 1);
+    fChain->SetBranchStatus("GenMuons", 1);
+  }  
+  
 
   if(!runOnData){
     fChain->SetBranchStatus("Weight", 1);
@@ -985,10 +1023,15 @@ void Prediction::Init(TTree *tree)
   //  fChain->SetBranchStatus("GenMHT", 1);
   //}
 
-  fChain->SetBranchStatus("selectedIDElectrons_MT2Activity",1);
-  fChain->SetBranchStatus("selectedIDIsoElectrons_MT2Activity", 1);
-  fChain->SetBranchStatus("selectedIDIsoMuons_MT2Activity",1);
-  fChain->SetBranchStatus("selectedIDMuons_MT2Activity", 1);
+  fChain->SetBranchStatus("ElectronsNoIso_MT2Activity",1);
+  fChain->SetBranchStatus("Electrons_MT2Activity", 1);
+  fChain->SetBranchStatus("Muons_MT2Activity",1);
+  fChain->SetBranchStatus("MuonsNoIso_MT2Activity", 1);
+  fChain->SetBranchStatus("Muons_MTW", 1);
+  fChain->SetBranchStatus("Electrons_MTW", 1);
+  fChain->SetBranchStatus("Muons_tightID", 1);
+  fChain->SetBranchStatus("Electrons_mediumID", 1);
+  fChain->SetBranchStatus("Electrons_tightID", 1);
 
   fChain->SetBranchAddress("RunNum", &RunNum, &b_RunNum);
   fChain->SetBranchAddress("LumiBlockNum", &LumiBlockNum, &b_LumiBlockNum);
@@ -1011,31 +1054,35 @@ void Prediction::Init(TTree *tree)
       fChain->SetBranchAddress("BadPFMuonFilter", &BadPFMuonFilter, &b_BadPFMuonFilter);
     }
   }
-  fChain->SetBranchAddress("Electrons", &Electrons, &b_Electrons);
   fChain->SetBranchAddress("HT", &HT, &b_HT);
   fChain->SetBranchAddress("isoElectronTracks", &isoElectronTracksNum, &b_isoElectronTracksNum);
   fChain->SetBranchAddress("isoMuonTracks", &isoMuonTracksNum, &b_isoMuonTracksNum);
   fChain->SetBranchAddress("isoPionTracks", &isoPionTracksNum, &b_isoPionTracksNum);
   fChain->SetBranchAddress("JetID", &JetID, &b_JetID);
   fChain->SetBranchAddress("Jets", &Jets, &b_Jets);
-  fChain->SetBranchAddress("HTJetsMask", &HTJetsMask, &b_HTJetsMask);
+  fChain->SetBranchAddress("Jets_HTMask", &Jets_HTMask, &b_Jets_HTMask);
   fChain->SetBranchAddress("METPhi", &METPhi, &b_METPhi);
   fChain->SetBranchAddress("MET", &MET, &b_MET);
   fChain->SetBranchAddress("PFCaloMETRatio", &PFCaloMETRatio, &b_PFCaloMETRatio);
   fChain->SetBranchAddress("MHT", &MHT, &b_MHT);
   fChain->SetBranchAddress("MHTPhi", &MHTPhi, &b_MHTPhi);
-  fChain->SetBranchAddress("Muons", &Muons, &b_Muons);
   fChain->SetBranchAddress("NJets", &NJets, &b_NJets);
   fChain->SetBranchAddress("NVtx", &NVtx, &b_NVtx);
-  fChain->SetBranchAddress("selectedIDElectrons", &selectedIDElectrons, &b_selectedIDElectrons);
-  fChain->SetBranchAddress("Electrons", &selectedIDIsoElectrons, &b_selectedIDIsoElectrons);
-  fChain->SetBranchAddress("Muons", &selectedIDIsoMuons, &b_selectedIDIsoMuons);
-  fChain->SetBranchAddress("selectedIDMuons", &selectedIDMuons, &b_selectedIDMuons);
+  fChain->SetBranchAddress("ElectronsNoIso", &ElectronsNoIso, &b_ElectronsNoIso);
+  fChain->SetBranchAddress("Electrons", &Electrons, &b_Electrons);
+  fChain->SetBranchAddress("Muons", &Muons, &b_Muons);
+  fChain->SetBranchAddress("MuonsNoIso", &MuonsNoIso, &b_MuonsNoIso);
   fChain->SetBranchAddress("TriggerNames", &TriggerNames, &b_TriggerNames);
   fChain->SetBranchAddress("TriggerPass", &TriggerPass, &b_TriggerPass);
   fChain->SetBranchAddress("TriggerPrescales", &TriggerPrescales, &b_TriggerPrescales);
   fChain->SetBranchAddress("Jets_muonEnergyFraction", &Jets_muonEnergyFraction, &b_Jets_muonEnergyFraction);
   fChain->SetBranchAddress("Jets_bDiscriminatorCSV", &Jets_bDiscriminatorCSV, &b_Jets_bDiscriminatorCSV);
+  if(topPTreweight){
+    fChain->SetBranchAddress("GenParticles", &GenParticles, &b_GenParticles);
+    fChain->SetBranchAddress("GenParticles_PdgId", &GenParticles_PdgId, &b_GenParticles_PdgId);
+    fChain->SetBranchAddress("GenElectrons", &GenElectrons, &b_GenElectrons);
+    fChain->SetBranchAddress("GenMuons", &GenMuons, &b_GenMuons);
+  }  
   if(!runOnData){
     fChain->SetBranchAddress("Weight", &Weight, &b_Weight);
     fChain->SetBranchAddress("Jets_hadronFlavor", &Jets_hadronFlavor, &b_Jets_hadronFlavor);
@@ -1053,10 +1100,15 @@ void Prediction::Init(TTree *tree)
   //  fChain->SetBranchAddress("GenMHT", &GenMHT, &b_GenMHT);
   //}
 
-  fChain->SetBranchAddress("selectedIDElectrons_MT2Activity", &selectedIDElectrons_MT2Activity, &b_selectedIDElectrons_MT2Activity);
-  fChain->SetBranchAddress("selectedIDIsoElectrons_MT2Activity", &selectedIDIsoElectrons_MT2Activity, &b_selectedIDIsoElectrons_MT2Activity);
-  fChain->SetBranchAddress("selectedIDIsoMuons_MT2Activity", &selectedIDIsoMuons_MT2Activity, &b_selectedIDIsoMuons_MT2Activity);
-  fChain->SetBranchAddress("selectedIDMuons_MT2Activity", &selectedIDMuons_MT2Activity, &b_selectedIDMuons_MT2Activity);
+  fChain->SetBranchAddress("ElectronsNoIso_MT2Activity", &ElectronsNoIso_MT2Activity, &b_ElectronsNoIso_MT2Activity);
+  fChain->SetBranchAddress("Electrons_MT2Activity", &Electrons_MT2Activity, &b_Electrons_MT2Activity);
+  fChain->SetBranchAddress("Muons_MT2Activity", &Muons_MT2Activity, &b_Muons_MT2Activity);
+  fChain->SetBranchAddress("MuonsNoIso_MT2Activity", &MuonsNoIso_MT2Activity, &b_MuonsNoIso_MT2Activity);
+  fChain->SetBranchAddress("Muons_MTW", &Muons_MTW, &b_Muons_MTW);
+  fChain->SetBranchAddress("Electrons_MTW", &Electrons_MTW, &b_Electrons_MTW);
+  fChain->SetBranchAddress("Muons_tightID", &Muons_tightID, &b_Muons_tightID);
+  fChain->SetBranchAddress("Electrons_mediumID", &Electrons_mediumID, &b_Electrons_mediumID);
+  fChain->SetBranchAddress("Electrons_tightID", &Electrons_tightID, &b_Electrons_tightID);
 }
 
 

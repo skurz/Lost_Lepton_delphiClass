@@ -22,7 +22,7 @@ using std::vector;
 // -> run code
 // pod-server stop
 
-void run_ApplyBaseline_script(std::string outName, std::string inFiles)
+void run_topPt_script(std::string outName, std::string inFiles)
 {
   TProof *proof = TProof::Open("lite://", "workers=20"); //"pod://"  "workers=10"
   //TProof *proof = TProof::Open("pod://"); //"pod://"  "workers=10"
@@ -35,8 +35,8 @@ void run_ApplyBaseline_script(std::string outName, std::string inFiles)
 
   Effchain->SetProof();
 
-  Effchain->Add(TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v10/")+TString(inFiles));
+  Effchain->Add(TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9/")+TString(inFiles));
  
-  Effchain->Process("ApplyBaseline.C++g", TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v10_baseline/")+TString(outName)+TString(".root"));
+  Effchain->Process("topPt.C++g", TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v9_topPt/")+TString(outName)+TString(".root"));
 
 }

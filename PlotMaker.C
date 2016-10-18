@@ -4,7 +4,7 @@
 using std::string;
 
 void initHistograms(Int_t nBins);
-void saveHistograms(TFile* tf);
+void saveHistograms(TFile* tf, bool combinedUnc = false);
 
 void PlotMaker(string InputPath_Expectation="Expectation.root",
 	string InputPath_Efficiencies="Efficiencies.root",
@@ -32,11 +32,14 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	const bool useMCForDataTree = false;	// NOT IMPLEMENTED
 
 	// Scale all MC weights by this factor
-	const Double_t scaleFactorWeight = 12875;  // 3998 2585 813  //in units of [pb] //<-check------------------------
+	const Double_t scaleFactorWeight = 24480;  // 3998 2585 813  //in units of [pb] //<-check------------------------
+
+	// Add some of the uncertainties in quadrature (if same correlation and similar shape)
+	const bool doCombinedUnc = false;
 
 
 	// Init
- 	SearchBins * const SearchBins_ = new SearchBins(doQCDbinning);
+ 	SearchBins_ = new SearchBins(doQCDbinning);
 	const int nSearchBinsTotal = SearchBins_->GetNbins();
 
 	initHistograms(nSearchBinsTotal);
@@ -120,7 +123,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 
 	    if(SearchBin > 900) continue;
 	    if(MTW>100)continue;
-	    if(selectedIDIsoMuonsNum+selectedIDIsoElectronsNum!=1)continue;
+	    if(MuonsNum+ElectronsNum!=1)continue;
 
 	    int nLoops = 4;
 	    if(!doBtagProbabilities){
@@ -270,7 +273,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 		    
 		    if(SearchBin > 900) continue;
 		    if(MTW>100)continue;
-		    if(selectedIDIsoMuonsNum+selectedIDIsoElectronsNum!=1)continue;
+		    if(MuonsNum+ElectronsNum!=1)continue;
 
 		    double scaleFactorWeightData = 1.;
 		    if(InputPath_Prediction_Data == InputPath_Prediction) scaleFactorWeightData = scaleFactorWeight;
@@ -371,7 +374,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 
 
 	TFile *LLoutputFile = new TFile(OutputPath_Prediction.c_str(),"RECREATE");
-	saveHistograms(LLoutputFile);
+	saveHistograms(LLoutputFile, doCombinedUnc);
 	LLoutputFile->Close();
 
 
@@ -379,7 +382,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 
 
 
-void saveHistograms(TFile* tf){
+void saveHistograms(TFile* tf, bool combinedUnc){
 	tf->cd();
 	tf->mkdir("Closure");
 	TDirectory *dClosure = (TDirectory*)tf->Get("Closure");
@@ -424,9 +427,9 @@ void saveHistograms(TFile* tf){
 		//std::cout<<i<<": "<<ClosureTest->GetBinContent(i)<<"-"<<ClosureTest->GetBinError(i)<<std::endl;
 		totalPredNonClosureDown_LL_->SetBinContent(i, 1.-min(1., max(abs(ClosureTest->GetBinContent(i)-1.), ClosureTest->GetBinError(i))));
 	}
-	SetBinLabel(totalPredNonClosureUp_LL_);
+	SetBinLabel(totalPredNonClosureUp_LL_, "llp_nonClosure");
 	totalPredNonClosureUp_LL_->Write();
-	SetBinLabel(totalPredNonClosureDown_LL_);
+	SetBinLabel(totalPredNonClosureDown_LL_, "llp_nonClosure");
 	totalPredNonClosureDown_LL_->Write();
 
 	SetBinLabel(totalCS_LL_);
@@ -499,67 +502,150 @@ void saveHistograms(TFile* tf){
 
 	addUncertainties(totalPropSysDown_LL_, allUncDown_LL_, false);
   
-	SaveFraction(totalPredIsoTrackSysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredIsoTrackSysDown_LL_, totalPred_LL_, dPreData);
-	/*  SaveFraction(totalPredMuIsoTrackSysUp_LL_, totalPred_LL_, dPreData);
+  	/*
+	  SaveFraction(totalPredMuIsoTrackSysUp_LL_, totalPred_LL_, dPreData);
 	  SaveFraction(totalPredMuIsoTrackSysDown_LL_, totalPred_LL_, dPreData);
 	  SaveFraction(totalPredElecIsoTrackSysUp_LL_, totalPred_LL_, dPreData);
 	  SaveFraction(totalPredElecIsoTrackSysDown_LL_, totalPred_LL_, dPreData);
 	  SaveFraction(totalPredPionIsoTrackSysUp_LL_, totalPred_LL_, dPreData);
 	  SaveFraction(totalPredPionIsoTrackSysDown_LL_, totalPred_LL_, dPreData);
-	*/  SaveFraction(totalPredMTWSysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMTWSysDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredPuritySysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredPuritySysDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredSingleLepPuritySysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredSingleLepPuritySysDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredDiLepFoundSysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredDiLepFoundSysDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuIsoSysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuIsoSysDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuRecoSysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuRecoSysDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuAccSysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuAccSysDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuAccQsquareSysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuAccQsquareSysDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecIsoSysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecIsoSysDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecRecoSysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecRecoSysDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecAccSysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecAccSysDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecAccQsquareSysUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecAccQsquareSysDown_LL_, totalPred_LL_, dPreData);
+	*/
+	SaveFraction(totalPredIsoTrackSysUp_LL_, totalPred_LL_, dPreData, "llp_isoTrackSys", "HTMHTNJetsCombined");
+	SaveFraction(totalPredIsoTrackSysDown_LL_, totalPred_LL_, dPreData, "llp_isoTrackSys", "HTMHTNJetsCombined");
+	SaveFraction(totalPredMTWSysUp_LL_, totalPred_LL_, dPreData, "llp_mtwSys", "NJets");
+	SaveFraction(totalPredMTWSysDown_LL_, totalPred_LL_, dPreData, "llp_mtwSys", "NJets");
+	SaveFraction(totalPredPuritySysUp_LL_, totalPred_LL_, dPreData, "llp_puritySys", "MHTNJets");
+	SaveFraction(totalPredPuritySysDown_LL_, totalPred_LL_, dPreData, "llp_puritySys", "MHTNJets");
 
-	SaveFraction(totalPredIsoTrackStatUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredIsoTrackStatDown_LL_, totalPred_LL_, dPreData);
-	/*  SaveFraction(totalPredMuIsoTrackStatUp_LL_, totalPred_LL_, dPreData);
+	SaveFraction(totalPredMuIsoSysUp_LL_, totalPred_LL_, dPreData, "llp_muIsoSys", "ptAct");
+	SaveFraction(totalPredMuIsoSysDown_LL_, totalPred_LL_, dPreData, "llp_muIsoSys", "ptAct");
+	SaveFraction(totalPredMuRecoSysUp_LL_, totalPred_LL_, dPreData, "llp_muRecoSys", "ptAct");
+	SaveFraction(totalPredMuRecoSysDown_LL_, totalPred_LL_, dPreData, "llp_muRecoSys", "ptAct");
+
+	SaveFraction(totalPredElecIsoSysUp_LL_, totalPred_LL_, dPreData, "llp_elecIsoSys", "ptAct");
+	SaveFraction(totalPredElecIsoSysDown_LL_, totalPred_LL_, dPreData, "llp_elecIsoSys", "ptAct");
+	SaveFraction(totalPredElecRecoSysUp_LL_, totalPred_LL_, dPreData, "llp_elecRecoSys", "ptAct");
+	SaveFraction(totalPredElecRecoSysDown_LL_, totalPred_LL_, dPreData, "llp_elecRecoSys", "ptAct");
+	
+	/*
+	  SaveFraction(totalPredMuIsoTrackStatUp_LL_, totalPred_LL_, dPreData);
 	  SaveFraction(totalPredMuIsoTrackStatDown_LL_, totalPred_LL_, dPreData);
 	  SaveFraction(totalPredElecIsoTrackStatUp_LL_, totalPred_LL_, dPreData);
 	  SaveFraction(totalPredElecIsoTrackStatDown_LL_, totalPred_LL_, dPreData);
 	  SaveFraction(totalPredPionIsoTrackStatUp_LL_, totalPred_LL_, dPreData);
 	  SaveFraction(totalPredPionIsoTrackStatDown_LL_, totalPred_LL_, dPreData);
-	*/  SaveFraction(totalPredMTWStatUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMTWStatDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredPurityStatUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredPurityStatDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredSingleLepPurityStatUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredSingleLepPurityStatDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredDiLepFoundStatUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredDiLepFoundStatDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuIsoStatUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuIsoStatDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuRecoStatUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuRecoStatDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuAccStatUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredMuAccStatDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecIsoStatUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecIsoStatDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecRecoStatUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecRecoStatDown_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecAccStatUp_LL_, totalPred_LL_, dPreData);
-	SaveFraction(totalPredElecAccStatDown_LL_, totalPred_LL_, dPreData);
+	*/
+	SaveFraction(totalPredIsoTrackStatUp_LL_, totalPred_LL_, dPreData, "llp_isoTrackStat", "HTMHTNJetsCombined");
+	SaveFraction(totalPredIsoTrackStatDown_LL_, totalPred_LL_, dPreData, "llp_isoTrackStat", "HTMHTNJetsCombined");
+	SaveFraction(totalPredMTWStatUp_LL_, totalPred_LL_, dPreData, "llp_mtwStat", "NJets");
+	SaveFraction(totalPredMTWStatDown_LL_, totalPred_LL_, dPreData, "llp_mtwStat", "NJets");
+	SaveFraction(totalPredPurityStatUp_LL_, totalPred_LL_, dPreData, "llp_purityStat", "MHTNJets");
+	SaveFraction(totalPredPurityStatDown_LL_, totalPred_LL_, dPreData, "llp_purityStat", "MHTNJets");
+
+	if(!combinedUnc){
+		SaveFraction(totalPredSingleLepPuritySysUp_LL_, totalPred_LL_, dPreData, "llp_singleLepPuritySys", "NJets");
+		SaveFraction(totalPredSingleLepPuritySysDown_LL_, totalPred_LL_, dPreData, "llp_singleLepPuritySys", "NJets");
+		SaveFraction(totalPredDiLepFoundSysUp_LL_, totalPred_LL_, dPreData, "llp_diLepFoundSys", "NJets");
+		SaveFraction(totalPredDiLepFoundSysDown_LL_, totalPred_LL_, dPreData, "llp_diLepFoundSys", "NJets");
+
+		SaveFraction(totalPredMuAccSysUp_LL_, totalPred_LL_, dPreData, "llp_muAccSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredMuAccSysDown_LL_, totalPred_LL_, dPreData, "llp_muAccSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredMuAccQsquareSysUp_LL_, totalPred_LL_, dPreData, "llp_muAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredMuAccQsquareSysDown_LL_, totalPred_LL_, dPreData, "llp_muAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecAccSysUp_LL_, totalPred_LL_, dPreData, "llp_elecAccSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecAccSysDown_LL_, totalPred_LL_, dPreData, "llp_elecAccSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecAccQsquareSysUp_LL_, totalPred_LL_, dPreData, "llp_elecAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecAccQsquareSysDown_LL_, totalPred_LL_, dPreData, "llp_elecAccQsquareSys", "HTMHTNJetsBTagsCombined");
+
+		SaveFraction(totalPredSingleLepPurityStatUp_LL_, totalPred_LL_, dPreData, "llp_singleLepPurityStat", "NJets");
+		SaveFraction(totalPredSingleLepPurityStatDown_LL_, totalPred_LL_, dPreData, "llp_singleLepPurityStat", "NJets");
+		SaveFraction(totalPredDiLepFoundStatUp_LL_, totalPred_LL_, dPreData, "llp_diLepFoundStat", "NJets");
+		SaveFraction(totalPredDiLepFoundStatDown_LL_, totalPred_LL_, dPreData, "llp_diLepFoundStat", "NJets");
+
+		SaveFraction(totalPredMuIsoStatUp_LL_, totalPred_LL_, dPreData, "llp_muIsoStat", "ptAct");
+		SaveFraction(totalPredMuIsoStatDown_LL_, totalPred_LL_, dPreData, "llp_muIsoStat", "ptAct");
+		SaveFraction(totalPredMuRecoStatUp_LL_, totalPred_LL_, dPreData, "llp_muRecoStat", "ptAct");
+		SaveFraction(totalPredMuRecoStatDown_LL_, totalPred_LL_, dPreData, "llp_muRecoStat", "ptAct");
+		SaveFraction(totalPredMuAccStatUp_LL_, totalPred_LL_, dPreData, "llp_muAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredMuAccStatDown_LL_, totalPred_LL_, dPreData, "llp_muAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecIsoStatUp_LL_, totalPred_LL_, dPreData, "llp_elecIsoStat", "ptAct");
+		SaveFraction(totalPredElecIsoStatDown_LL_, totalPred_LL_, dPreData, "llp_elecIsoStat", "ptAct");
+		SaveFraction(totalPredElecRecoStatUp_LL_, totalPred_LL_, dPreData, "llp_elecRecoStat", "ptAct");
+		SaveFraction(totalPredElecRecoStatDown_LL_, totalPred_LL_, dPreData, "llp_elecRecoStat", "ptAct");
+		SaveFraction(totalPredElecAccStatUp_LL_, totalPred_LL_, dPreData, "llp_elecAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecAccStatDown_LL_, totalPred_LL_, dPreData, "llp_elecAccStat", "HTMHTNJetsBTagsCombined");
+	}else{
+		std::vector<TH1D*> diLepContributionSysUp_LL_;
+		diLepContributionSysUp_LL_.push_back(totalPredSingleLepPuritySysUp_LL_);
+		diLepContributionSysUp_LL_.push_back(totalPredDiLepFoundSysUp_LL_);
+		addUncertainties(totalPredDiLepContributionSysUp_LL_, diLepContributionSysUp_LL_, true);
+		SaveFraction(totalPredDiLepContributionSysUp_LL_, totalPred_LL_, dPreData, "llp_diLepContribSys", "NJets");
+		std::vector<TH1D*> diLepContributionSysDown_LL_;
+		diLepContributionSysDown_LL_.push_back(totalPredSingleLepPuritySysDown_LL_);
+		diLepContributionSysDown_LL_.push_back(totalPredDiLepFoundSysDown_LL_);
+		addUncertainties(totalPredDiLepContributionSysDown_LL_, diLepContributionSysDown_LL_, false);
+		SaveFraction(totalPredDiLepContributionSysDown_LL_, totalPred_LL_, dPreData, "llp_diLepContribSys", "NJets");
+
+		std::vector<TH1D*> lepAccSysUp_LL_;
+		lepAccSysUp_LL_.push_back(totalPredMuAccSysUp_LL_);
+		lepAccSysUp_LL_.push_back(totalPredElecAccSysUp_LL_);
+		addUncertainties(totalPredLepAccSysUp_LL_, lepAccSysUp_LL_, true);
+		SaveFraction(totalPredLepAccSysUp_LL_, totalPred_LL_, dPreData, "llp_lepAccSys", "HTMHTNJetsBTagsCombined");
+		std::vector<TH1D*> lepAccSysDown_LL_;
+		lepAccSysDown_LL_.push_back(totalPredMuAccSysDown_LL_);
+		lepAccSysDown_LL_.push_back(totalPredElecAccSysDown_LL_);
+		addUncertainties(totalPredLepAccSysDown_LL_, lepAccSysDown_LL_, false);
+		SaveFraction(totalPredLepAccSysDown_LL_, totalPred_LL_, dPreData, "llp_lepAccSys", "HTMHTNJetsBTagsCombined");
+
+		std::vector<TH1D*> lepAccQsquareSysUp_LL_;
+		lepAccQsquareSysUp_LL_.push_back(totalPredMuAccQsquareSysUp_LL_);
+		lepAccQsquareSysUp_LL_.push_back(totalPredElecAccQsquareSysUp_LL_);
+		addUncertainties(totalPredLepAccQsquareSysUp_LL_, lepAccQsquareSysUp_LL_, true);
+		SaveFraction(totalPredLepAccQsquareSysUp_LL_, totalPred_LL_, dPreData, "llp_lepAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		std::vector<TH1D*> lepAccQsquareSysDown_LL_;
+		lepAccQsquareSysDown_LL_.push_back(totalPredMuAccQsquareSysDown_LL_);
+		lepAccQsquareSysDown_LL_.push_back(totalPredElecAccQsquareSysDown_LL_);
+		addUncertainties(totalPredLepAccQsquareSysDown_LL_, lepAccQsquareSysDown_LL_, false);
+		SaveFraction(totalPredLepAccQsquareSysDown_LL_, totalPred_LL_, dPreData, "llp_lepAccQsquareSys", "HTMHTNJetsBTagsCombined");
+
+
+		std::vector<TH1D*> diLepContributionStatUp_LL_;
+		diLepContributionStatUp_LL_.push_back(totalPredSingleLepPurityStatUp_LL_);
+		diLepContributionStatUp_LL_.push_back(totalPredDiLepFoundStatUp_LL_);
+		addUncertainties(totalPredDiLepContributionStatUp_LL_, diLepContributionStatUp_LL_, true);
+		SaveFraction(totalPredDiLepContributionStatUp_LL_, totalPred_LL_, dPreData, "llp_diLepContribStat", "NJets");
+		std::vector<TH1D*> diLepContributionStatDown_LL_;
+		diLepContributionStatDown_LL_.push_back(totalPredSingleLepPurityStatDown_LL_);
+		diLepContributionStatDown_LL_.push_back(totalPredDiLepFoundStatDown_LL_);
+		addUncertainties(totalPredDiLepContributionStatDown_LL_, diLepContributionStatDown_LL_, false);
+		SaveFraction(totalPredDiLepContributionStatDown_LL_, totalPred_LL_, dPreData, "llp_diLepContribStat", "NJets");
+
+		std::vector<TH1D*> lepRecoIsoStatUp_LL_;
+		lepRecoIsoStatUp_LL_.push_back(totalPredMuIsoStatUp_LL_);
+		lepRecoIsoStatUp_LL_.push_back(totalPredMuRecoStatUp_LL_);
+		lepRecoIsoStatUp_LL_.push_back(totalPredElecIsoStatUp_LL_);
+		lepRecoIsoStatUp_LL_.push_back(totalPredElecRecoStatUp_LL_);
+		addUncertainties(totalPredLepRecoIsoStatUp_LL_, lepRecoIsoStatUp_LL_, true);
+		SaveFraction(totalPredLepRecoIsoStatUp_LL_, totalPred_LL_, dPreData, "llp_lepRecoIsoStat", "ptAct");
+		std::vector<TH1D*> lepRecoIsoStatDown_LL_;
+		lepRecoIsoStatDown_LL_.push_back(totalPredMuIsoStatDown_LL_);
+		lepRecoIsoStatDown_LL_.push_back(totalPredMuRecoStatDown_LL_);
+		lepRecoIsoStatDown_LL_.push_back(totalPredElecIsoStatDown_LL_);
+		lepRecoIsoStatDown_LL_.push_back(totalPredElecRecoStatDown_LL_);
+		addUncertainties(totalPredLepRecoIsoStatDown_LL_, lepRecoIsoStatDown_LL_, false);
+		SaveFraction(totalPredLepRecoIsoStatDown_LL_, totalPred_LL_, dPreData, "llp_lepRecoIsoStat", "ptAct");
+
+		std::vector<TH1D*> lepAccStatUp_LL_;
+		lepAccStatUp_LL_.push_back(totalPredMuAccStatUp_LL_);
+		lepAccStatUp_LL_.push_back(totalPredElecAccStatUp_LL_);
+		addUncertainties(totalPredLepAccStatUp_LL_, lepAccStatUp_LL_, true);
+		SaveFraction(totalPredLepAccStatUp_LL_, totalPred_LL_, dPreData, "llp_lepAccStat", "HTMHTNJetsBTagsCombined");
+		std::vector<TH1D*> lepAccStatDown_LL_;
+		lepAccStatDown_LL_.push_back(totalPredMuAccStatDown_LL_);
+		lepAccStatDown_LL_.push_back(totalPredElecAccStatDown_LL_);
+		addUncertainties(totalPredLepAccStatDown_LL_, lepAccStatDown_LL_, false);
+		SaveFraction(totalPredLepAccStatDown_LL_, totalPred_LL_, dPreData, "llp_lepAccStat", "HTMHTNJetsBTagsCombined");
+	}
 
 
 	tf->cd();
@@ -576,9 +662,9 @@ void saveHistograms(TFile* tf){
 	    totalPredNonClosureUp_LL_MC_->SetBinContent(i, 1.+min(1., max(abs(ClosureTest->GetBinContent(i)-1.), ClosureTest->GetBinError(i))));
 	    totalPredNonClosureDown_LL_MC_->SetBinContent(i, 1.-min(1., max(abs(ClosureTest->GetBinContent(i)-1.), ClosureTest->GetBinError(i))));
 	}
-	SetBinLabel(totalPredNonClosureUp_LL_MC_);
+	SetBinLabel(totalPredNonClosureUp_LL_MC_, "llp_mc_nonClosure");
 	totalPredNonClosureUp_LL_MC_->Write();
-	SetBinLabel(totalPredNonClosureDown_LL_MC_);
+	SetBinLabel(totalPredNonClosureDown_LL_MC_, "llp_mc_nonClosure");
 	totalPredNonClosureDown_LL_MC_->Write();
 
 	SetBinLabel(totalCS_LL_MC_);
@@ -673,68 +759,150 @@ void saveHistograms(TFile* tf){
 
 	addUncertainties(totalPropSysDown_LL_MC_, allUncDown_LL_MC_, false);
 
-
-	SaveFraction(totalPredIsoTrackSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredIsoTrackSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	/*  SaveFraction(totalPredMuIsoTrackSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
+	/*
+	  SaveFraction(totalPredMuIsoTrackSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredMuIsoTrackSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredElecIsoTrackSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredElecIsoTrackSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredPionIsoTrackSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredPionIsoTrackSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	*/  SaveFraction(totalPredMTWSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMTWSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredPuritySysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredPuritySysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredSingleLepPuritySysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredSingleLepPuritySysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredDiLepFoundSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredDiLepFoundSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuIsoSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuIsoSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuRecoSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuRecoSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuAccSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuAccSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuAccQsquareSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuAccQsquareSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecIsoSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecIsoSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecRecoSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecRecoSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecAccSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecAccSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecAccQsquareSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecAccQsquareSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
+	*/
+	SaveFraction(totalPredIsoTrackSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_isoTrackSys", "HTMHTNJetsCombined");
+	SaveFraction(totalPredIsoTrackSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_isoTrackSys", "HTMHTNJetsCombined");
+	SaveFraction(totalPredMTWSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_mtwSys", "NJets");
+	SaveFraction(totalPredMTWSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_mtwSys", "NJets");
+	SaveFraction(totalPredPuritySysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_puritySys", "MHTNJets");
+	SaveFraction(totalPredPuritySysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_puritySys", "MHTNJets");
 
-	SaveFraction(totalPredIsoTrackStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredIsoTrackStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	/*  SaveFraction(totalPredMuIsoTrackStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
+	SaveFraction(totalPredMuIsoSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muIsoSys", "ptAct");
+	SaveFraction(totalPredMuIsoSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muIsoSys", "ptAct");
+	SaveFraction(totalPredMuRecoSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muRecoSys", "ptAct");
+	SaveFraction(totalPredMuRecoSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muRecoSys", "ptAct");
+
+	SaveFraction(totalPredElecIsoSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecIsoSys", "ptAct");
+	SaveFraction(totalPredElecIsoSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecIsoSys", "ptAct");
+	SaveFraction(totalPredElecRecoSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecRecoSys", "ptAct");
+	SaveFraction(totalPredElecRecoSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecRecoSys", "ptAct");
+	
+	/*
+	  SaveFraction(totalPredMuIsoTrackStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredMuIsoTrackStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredElecIsoTrackStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredElecIsoTrackStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredPionIsoTrackStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredPionIsoTrackStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	*/  SaveFraction(totalPredMTWStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMTWStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredPurityStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredPurityStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredSingleLepPurityStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredSingleLepPurityStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredDiLepFoundStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredDiLepFoundStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuIsoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuIsoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuRecoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuRecoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuAccStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredMuAccStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecIsoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecIsoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecRecoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecRecoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecAccStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
-	SaveFraction(totalPredElecAccStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
+	*/
+	SaveFraction(totalPredIsoTrackStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_isoTrackStat", "HTMHTNJetsCombined");
+	SaveFraction(totalPredIsoTrackStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_isoTrackStat", "HTMHTNJetsCombined");
+	SaveFraction(totalPredMTWStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_mtwStat", "NJets");
+	SaveFraction(totalPredMTWStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_mtwStat", "NJets");
+	SaveFraction(totalPredPurityStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_purityStat", "MHTNJets");
+	SaveFraction(totalPredPurityStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_purityStat", "MHTNJets");
+
+	if(!combinedUnc){
+		SaveFraction(totalPredSingleLepPuritySysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPuritySys", "NJets");
+		SaveFraction(totalPredSingleLepPuritySysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPuritySys", "NJets");
+		SaveFraction(totalPredDiLepFoundSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepFoundSys", "NJets");
+		SaveFraction(totalPredDiLepFoundSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepFoundSys", "NJets");
+
+		SaveFraction(totalPredMuAccSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredMuAccSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredMuAccQsquareSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredMuAccQsquareSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecAccSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecAccSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecAccQsquareSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecAccQsquareSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccQsquareSys", "HTMHTNJetsBTagsCombined");
+
+		SaveFraction(totalPredSingleLepPurityStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPurityStat", "NJets");
+		SaveFraction(totalPredSingleLepPurityStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPurityStat", "NJets");
+		SaveFraction(totalPredDiLepFoundStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepFoundStat", "NJets");
+		SaveFraction(totalPredDiLepFoundStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepFoundStat", "NJets");
+
+		SaveFraction(totalPredMuIsoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muIsoStat", "ptAct");
+		SaveFraction(totalPredMuIsoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muIsoStat", "ptAct");
+		SaveFraction(totalPredMuRecoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muRecoStat", "ptAct");
+		SaveFraction(totalPredMuRecoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muRecoStat", "ptAct");
+		SaveFraction(totalPredMuAccStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredMuAccStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecIsoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecIsoStat", "ptAct");
+		SaveFraction(totalPredElecIsoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecIsoStat", "ptAct");
+		SaveFraction(totalPredElecRecoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecRecoStat", "ptAct");
+		SaveFraction(totalPredElecRecoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecRecoStat", "ptAct");
+		SaveFraction(totalPredElecAccStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecAccStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccStat", "HTMHTNJetsBTagsCombined");
+	}else{
+		std::vector<TH1D*> diLepContributionSysUp_LL_MC_;
+		diLepContributionSysUp_LL_MC_.push_back(totalPredSingleLepPuritySysUp_LL_MC_);
+		diLepContributionSysUp_LL_MC_.push_back(totalPredDiLepFoundSysUp_LL_MC_);
+		addUncertainties(totalPredDiLepContributionSysUp_LL_MC_, diLepContributionSysUp_LL_MC_, true);
+		SaveFraction(totalPredDiLepContributionSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepContribSys", "NJets");
+		std::vector<TH1D*> diLepContributionSysDown_LL_MC_;
+		diLepContributionSysDown_LL_MC_.push_back(totalPredSingleLepPuritySysDown_LL_MC_);
+		diLepContributionSysDown_LL_MC_.push_back(totalPredDiLepFoundSysDown_LL_MC_);
+		addUncertainties(totalPredDiLepContributionSysDown_LL_MC_, diLepContributionSysDown_LL_MC_, false);
+		SaveFraction(totalPredDiLepContributionSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepContribSys", "NJets");
+
+		std::vector<TH1D*> lepAccSysUp_LL_MC_;
+		lepAccSysUp_LL_MC_.push_back(totalPredMuAccSysUp_LL_MC_);
+		lepAccSysUp_LL_MC_.push_back(totalPredElecAccSysUp_LL_MC_);
+		addUncertainties(totalPredLepAccSysUp_LL_MC_, lepAccSysUp_LL_MC_, true);
+		SaveFraction(totalPredLepAccSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccSys", "HTMHTNJetsBTagsCombined");
+		std::vector<TH1D*> lepAccSysDown_LL_MC_;
+		lepAccSysDown_LL_MC_.push_back(totalPredMuAccSysDown_LL_MC_);
+		lepAccSysDown_LL_MC_.push_back(totalPredElecAccSysDown_LL_MC_);
+		addUncertainties(totalPredLepAccSysDown_LL_MC_, lepAccSysDown_LL_MC_, false);
+		SaveFraction(totalPredLepAccSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccSys", "HTMHTNJetsBTagsCombined");
+
+		std::vector<TH1D*> lepAccQsquareSysUp_LL_MC_;
+		lepAccQsquareSysUp_LL_MC_.push_back(totalPredMuAccQsquareSysUp_LL_MC_);
+		lepAccQsquareSysUp_LL_MC_.push_back(totalPredElecAccQsquareSysUp_LL_MC_);
+		addUncertainties(totalPredLepAccQsquareSysUp_LL_MC_, lepAccQsquareSysUp_LL_MC_, true);
+		SaveFraction(totalPredLepAccQsquareSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		std::vector<TH1D*> lepAccQsquareSysDown_LL_MC_;
+		lepAccQsquareSysDown_LL_MC_.push_back(totalPredMuAccQsquareSysDown_LL_MC_);
+		lepAccQsquareSysDown_LL_MC_.push_back(totalPredElecAccQsquareSysDown_LL_MC_);
+		addUncertainties(totalPredLepAccQsquareSysDown_LL_MC_, lepAccQsquareSysDown_LL_MC_, false);
+		SaveFraction(totalPredLepAccQsquareSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccQsquareSys", "HTMHTNJetsBTagsCombined");
+
+
+		std::vector<TH1D*> diLepContributionStatUp_LL_MC_;
+		diLepContributionStatUp_LL_MC_.push_back(totalPredSingleLepPurityStatUp_LL_MC_);
+		diLepContributionStatUp_LL_MC_.push_back(totalPredDiLepFoundStatUp_LL_MC_);
+		addUncertainties(totalPredDiLepContributionStatUp_LL_MC_, diLepContributionStatUp_LL_MC_, true);
+		SaveFraction(totalPredDiLepContributionStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepContribStat", "NJets");
+		std::vector<TH1D*> diLepContributionStatDown_LL_MC_;
+		diLepContributionStatDown_LL_MC_.push_back(totalPredSingleLepPurityStatDown_LL_MC_);
+		diLepContributionStatDown_LL_MC_.push_back(totalPredDiLepFoundStatDown_LL_MC_);
+		addUncertainties(totalPredDiLepContributionStatDown_LL_MC_, diLepContributionStatDown_LL_MC_, false);
+		SaveFraction(totalPredDiLepContributionStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepContribStat", "NJets");
+
+		std::vector<TH1D*> lepRecoIsoStatUp_LL_MC_;
+		lepRecoIsoStatUp_LL_MC_.push_back(totalPredMuIsoStatUp_LL_MC_);
+		lepRecoIsoStatUp_LL_MC_.push_back(totalPredMuRecoStatUp_LL_MC_);
+		lepRecoIsoStatUp_LL_MC_.push_back(totalPredElecIsoStatUp_LL_MC_);
+		lepRecoIsoStatUp_LL_MC_.push_back(totalPredElecRecoStatUp_LL_MC_);
+		addUncertainties(totalPredLepRecoIsoStatUp_LL_MC_, lepRecoIsoStatUp_LL_MC_, true);
+		SaveFraction(totalPredLepRecoIsoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepRecoIsoStat", "ptAct");
+		std::vector<TH1D*> lepRecoIsoStatDown_LL_MC_;
+		lepRecoIsoStatDown_LL_MC_.push_back(totalPredMuIsoStatDown_LL_MC_);
+		lepRecoIsoStatDown_LL_MC_.push_back(totalPredMuRecoStatDown_LL_MC_);
+		lepRecoIsoStatDown_LL_MC_.push_back(totalPredElecIsoStatDown_LL_MC_);
+		lepRecoIsoStatDown_LL_MC_.push_back(totalPredElecRecoStatDown_LL_MC_);
+		addUncertainties(totalPredLepRecoIsoStatDown_LL_MC_, lepRecoIsoStatDown_LL_MC_, false);
+		SaveFraction(totalPredLepRecoIsoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepRecoIsoStat", "ptAct");
+
+		std::vector<TH1D*> lepAccStatUp_LL_MC_;
+		lepAccStatUp_LL_MC_.push_back(totalPredMuAccStatUp_LL_MC_);
+		lepAccStatUp_LL_MC_.push_back(totalPredElecAccStatUp_LL_MC_);
+		addUncertainties(totalPredLepAccStatUp_LL_MC_, lepAccStatUp_LL_MC_, true);
+		SaveFraction(totalPredLepAccStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccStat", "HTMHTNJetsBTagsCombined");
+		std::vector<TH1D*> lepAccStatDown_LL_MC_;
+		lepAccStatDown_LL_MC_.push_back(totalPredMuAccStatDown_LL_MC_);
+		lepAccStatDown_LL_MC_.push_back(totalPredElecAccStatDown_LL_MC_);
+		addUncertainties(totalPredLepAccStatDown_LL_MC_, lepAccStatDown_LL_MC_, false);
+		SaveFraction(totalPredLepAccStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccStat", "HTMHTNJetsBTagsCombined");
+	}
 
 
 	tf->cd();
@@ -845,6 +1013,19 @@ void initHistograms(Int_t nBins){
 	totalPropSysUp_LL_ = new TH1D("totalPropSysUp_LL","totalPropSysUp_LL", nBins, 0.5, nBins+0.5);
 	totalPropSysDown_LL_ = new TH1D("totalPropSysDown_LL","totalPropSysDown_LL", nBins, 0.5, nBins+0.5);
 
+	totalPredDiLepContributionStatUp_LL_ = new TH1D("totalPredDiLepContributionStatUp_LL", "totalPredDiLepContributionStatUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredDiLepContributionStatDown_LL_ = new TH1D("totalPredDiLepContributionStatDown_LL", "totalPredDiLepContributionStatDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredDiLepContributionSysUp_LL_ = new TH1D("totalPredDiLepContributionSysUp_LL", "totalPredDiLepContributionSysUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredDiLepContributionSysDown_LL_ = new TH1D("totalPredDiLepContributionSysDown_LL", "totalPredDiLepContributionSysDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredLepRecoIsoStatUp_LL_ = new TH1D("totalPredLepRecoIsoStatUp_LL", "totalPredLepRecoIsoStatUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredLepRecoIsoStatDown_LL_ = new TH1D("totalPredLepRecoIsoStatDown_LL", "totalPredLepRecoIsoStatDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredLepAccStatUp_LL_ = new TH1D("totalPredLepAccStatUp_LL", "totalPredLepAccStatUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredLepAccStatDown_LL_ = new TH1D("totalPredLepAccStatDown_LL", "totalPredLepAccStatDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredLepAccSysUp_LL_ = new TH1D("totalPredLepAccSysUp_LL", "totalPredLepAccSysUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredLepAccSysDown_LL_ = new TH1D("totalPredLepAccSysDown_LL", "totalPredLepAccSysDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredLepAccQsquareSysUp_LL_ = new TH1D("totalPredLepAccQsquareSysUp_LL", "totalPredLepAccQsquareSysUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredLepAccQsquareSysDown_LL_ = new TH1D("totalPredLepAccQsquareSysDown_LL", "totalPredLepAccQsquareSysDown_LL", nBins, 0.5, nBins+0.5);
+
 	totalPredIsoTrackSysUp_LL_MC_ = new TH1D("totalPredIsoTrackSysUp_LL_MC","totalPredIsoTrackSysUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredIsoTrackSysDown_LL_MC_ = new TH1D("totalPredIsoTrackSysDown_LL_MC","totalPredIsoTrackSysDown_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredMuIsoTrackSysUp_LL_MC_ = new TH1D("totalPredMuIsoTrackSysUp_LL_MC","totalPredMuIsoTrackSysUp_LL_MC", nBins, 0.5, nBins+0.5);
@@ -911,4 +1092,17 @@ void initHistograms(Int_t nBins){
 
 	totalPropSysUp_LL_MC_ = new TH1D("totalPropSysUp_LL_MC","totalPropSysUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPropSysDown_LL_MC_ = new TH1D("totalPropSysDown_LL_MC","totalPropSysDown_LL_MC", nBins, 0.5, nBins+0.5);
+
+	totalPredDiLepContributionStatUp_LL_MC_ = new TH1D("totalPredDiLepContributionStatUp_LL_MC", "totalPredDiLepContributionStatUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredDiLepContributionStatDown_LL_MC_ = new TH1D("totalPredDiLepContributionStatDown_LL_MC", "totalPredDiLepContributionStatDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredDiLepContributionSysUp_LL_MC_ = new TH1D("totalPredDiLepContributionSysUp_LL_MC", "totalPredDiLepContributionSysUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredDiLepContributionSysDown_LL_MC_ = new TH1D("totalPredDiLepContributionSysDown_LL_MC", "totalPredDiLepContributionSysDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredLepRecoIsoStatUp_LL_MC_ = new TH1D("totalPredLepRecoIsoStatUp_LL_MC", "totalPredLepRecoIsoStatUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredLepRecoIsoStatDown_LL_MC_ = new TH1D("totalPredLepRecoIsoStatDown_LL_MC", "totalPredLepRecoIsoStatDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredLepAccStatUp_LL_MC_ = new TH1D("totalPredLepAccStatUp_LL_MC", "totalPredLepAccStatUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredLepAccStatDown_LL_MC_ = new TH1D("totalPredLepAccStatDown_LL_MC", "totalPredLepAccStatDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredLepAccSysUp_LL_MC_ = new TH1D("totalPredLepAccSysUp_LL_MC", "totalPredLepAccSysUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredLepAccSysDown_LL_MC_ = new TH1D("totalPredLepAccSysDown_LL_MC", "totalPredLepAccSysDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredLepAccQsquareSysUp_LL_MC_ = new TH1D("totalPredLepAccQsquareSysUp_LL_MC", "totalPredLepAccQsquareSysUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredLepAccQsquareSysDown_LL_MC_ = new TH1D("totalPredLepAccQsquareSysDown_LL_MC", "totalPredLepAccQsquareSysDown_LL_MC", nBins, 0.5, nBins+0.5);
 }

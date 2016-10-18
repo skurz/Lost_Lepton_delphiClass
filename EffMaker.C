@@ -87,12 +87,12 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuAccMHTNJetsB0_ = new TH2Eff("MuAccMHTNJetsB0","MuAccMHTNJetsB0",twoDMHT_-1,TwoDMHT_, twoDNJets_-1, TwoDNJets_);
   MuAccMHTNJetsB1_Inf_ = new TH2Eff("MuAccMHTNJetsB1_Inf","MuAccMHTNJetsB1_Inf",twoDMHT_-1,TwoDMHT_, twoDNJets_-1, TwoDNJets_);
   MuAccHTMHT_NJetsLow_ = new TH2Eff("MuAccHTMHT_NJetsLow","MuAccHTMHT_NJetsLow",twoDHT_-1,TwoDHT_, twoDMHT_-1,TwoDMHT_);
-  MuAccHTMHT_NJets2_ = new TH2Eff("MuAccHTMHT_NJets2","MuAccHTMHT_NJets2",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets3_ = new TH2Eff("MuAccHTMHT_NJets3","MuAccHTMHT_NJets3",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets4_ = new TH2Eff("MuAccHTMHT_NJets4","MuAccHTMHT_NJets4",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets5_ = new TH2Eff("MuAccHTMHT_NJets5","MuAccHTMHT_NJets5",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets6_ = new TH2Eff("MuAccHTMHT_NJets6","MuAccHTMHT_NJets6",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  MuAccHTMHT_NJets78_ = new TH2Eff("MuAccHTMHT_NJets78","MuAccHTMHT_NJets78",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+  MuAccHTMHT_NJets2_ = new TH2Eff("MuAccHTMHT_NJets2","MuAccHTMHT_NJets2",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  MuAccHTMHT_NJets3_ = new TH2Eff("MuAccHTMHT_NJets3","MuAccHTMHT_NJets3",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  MuAccHTMHT_NJets4_ = new TH2Eff("MuAccHTMHT_NJets4","MuAccHTMHT_NJets4",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  MuAccHTMHT_NJets5_ = new TH2Eff("MuAccHTMHT_NJets5","MuAccHTMHT_NJets5",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  MuAccHTMHT_NJets6_ = new TH2Eff("MuAccHTMHT_NJets6","MuAccHTMHT_NJets6",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  MuAccHTMHT_NJets78_ = new TH2Eff("MuAccHTMHT_NJets78","MuAccHTMHT_NJets78",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
   MuAccHTMHT_NJets9Inf_ = new TH2Eff("MuAccHTMHT_NJets9Inf","MuAccHTMHT_NJets9Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
   MuAccHTMHT_NJetsHigh_ = new TH2Eff("MuAccHTMHT_NJetsHigh"," MuAccHTMHT_NJetsHigh",twoDHT_-1,TwoDHT_, twoDMHT_-1,TwoDMHT_);
   MuAccHTMHTB0_ = new TH2Eff("MuAccHTMHTB0","MuAccHTMHTB0",twoDHT_-1,TwoDHT_, twoDMHT_-1,TwoDMHT_);
@@ -150,12 +150,12 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecAccMHTNJetsB0_ = new TH2Eff("ElecAccMHTNJetsB0","ElecAccMHTNJetsB0",twoDMHT_-1,TwoDMHT_, twoDNJets_-1, TwoDNJets_);
   ElecAccMHTNJetsB1_Inf_ = new TH2Eff("ElecAccMHTNJetsB1_Inf","ElecAccMHTNJetsB1_Inf",twoDMHT_-1,TwoDMHT_, twoDNJets_-1, TwoDNJets_);
   ElecAccHTMHT_NJetsLow_ = new TH2Eff("ElecAccHTMHT_NJetsLow","ElecAccHTMHT_NJetsLow",twoDHT_-1,TwoDHT_, twoDMHT_-1,TwoDMHT_);
-  ElecAccHTMHT_NJets2_ = new TH2Eff("ElecAccHTMHT_NJets2","ElecAccHTMHT_NJets2",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets3_ = new TH2Eff("ElecAccHTMHT_NJets3","ElecAccHTMHT_NJets3",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets4_ = new TH2Eff("ElecAccHTMHT_NJets4","ElecAccHTMHT_NJets4",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets5_ = new TH2Eff("ElecAccHTMHT_NJets5","ElecAccHTMHT_NJets5",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets6_ = new TH2Eff("ElecAccHTMHT_NJets6","ElecAccHTMHT_NJets6",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-  ElecAccHTMHT_NJets78_ = new TH2Eff("ElecAccHTMHT_NJets78","ElecAccHTMHT_NJets78",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+  ElecAccHTMHT_NJets2_ = new TH2Eff("ElecAccHTMHT_NJets2","ElecAccHTMHT_NJets2",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  ElecAccHTMHT_NJets3_ = new TH2Eff("ElecAccHTMHT_NJets3","ElecAccHTMHT_NJets3",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  ElecAccHTMHT_NJets4_ = new TH2Eff("ElecAccHTMHT_NJets4","ElecAccHTMHT_NJets4",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  ElecAccHTMHT_NJets5_ = new TH2Eff("ElecAccHTMHT_NJets5","ElecAccHTMHT_NJets5",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  ElecAccHTMHT_NJets6_ = new TH2Eff("ElecAccHTMHT_NJets6","ElecAccHTMHT_NJets6",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
+  ElecAccHTMHT_NJets78_ = new TH2Eff("ElecAccHTMHT_NJets78","ElecAccHTMHT_NJets78",threeDHT_-1,ThreeDHT_, threeDMHT_fine_-1,ThreeDMHT_fine_);
   ElecAccHTMHT_NJets9Inf_ = new TH2Eff("ElecAccHTMHT_NJets9Inf","ElecAccHTMHT_NJets9Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
   ElecAccHTMHT_NJetsHigh_ = new TH2Eff("ElecAccHTMHT_NJetsHigh"," ElecAccHTMHT_NJetsHigh",twoDHT_-1,TwoDHT_, twoDMHT_-1,TwoDMHT_);
   ElecAccHTMHTB0_ = new TH2Eff("ElecAccHTMHTB0","ElecAccHTMHTB0",twoDHT_-1,TwoDHT_, twoDMHT_-1,TwoDMHT_);
@@ -525,15 +525,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       double WeightBTagProb;
 
         if(doBtagProbabilities){
-          if(NJets > 2){
-            WeightBTagProb = Weight * bTagProb->at(i);
-          }else{
-            if(i < 2){
-              WeightBTagProb = Weight * bTagProb->at(i);
-            }else{
-              WeightBTagProb = Weight * (bTagProb->at(i)+bTagProb->at(i+1));
-            }
-          }
+          WeightBTagProb = Weight * bTagProb->at(i);
         }else{
           WeightBTagProb = Weight;
         }
@@ -577,54 +569,54 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecPurityMHTNJet_->Fill(MHT,NJets,WeightBTagProb,false);
   }
 
-  if(selectedIDIsoMuonsNum==1 && selectedIDIsoElectronsNum==0){
+  if(MuonsNum==1 && ElectronsNum==0){
       //cout << "muon event" << endl;
-      if(selectedIDIsoMuonsPromptMatched->at(0)==1){
+      if(MuonsPromptMatched->at(0)==1){
           // cout << "PromptMatched" << endl;
           //1D
           MuPurityOldBTag_->Fill(BTags,WeightBTagProb,true);
           MuPurityOldNJets_->Fill(NJets,WeightBTagProb,true);
           MuPurityOldHT_->Fill(HT,WeightBTagProb,true);
           MuPurityOldMHT_->Fill(MHT,WeightBTagProb,true);
-          MuPurityOldPT_->Fill(selectedIDIsoMuons->at(0).Pt(),WeightBTagProb,true);
-          MuPurityOldActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),WeightBTagProb,true);
+          MuPurityOldPT_->Fill(Muons->at(0).Pt(),WeightBTagProb,true);
+          MuPurityOldActivity_->Fill(Muons_MT2Activity->at(0),WeightBTagProb,true);
           //2D
           MuonPurityOldMHTNJet_->Fill(MHT,NJets,WeightBTagProb,true);
       }
-      if(selectedIDIsoMuonsPromptMatched->at(0)==0){
+      if(MuonsPromptMatched->at(0)==0){
           //1D
           MuPurityOldBTag_->Fill(BTags,WeightBTagProb,false);
           MuPurityOldNJets_->Fill(NJets,WeightBTagProb,false);
           MuPurityOldHT_->Fill(HT,WeightBTagProb,false);
           MuPurityOldMHT_->Fill(MHT,WeightBTagProb,false);
-          MuPurityOldPT_->Fill(selectedIDIsoMuons->at(0).Pt(),WeightBTagProb,false);
-          MuPurityOldActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),WeightBTagProb,false);
+          MuPurityOldPT_->Fill(Muons->at(0).Pt(),WeightBTagProb,false);
+          MuPurityOldActivity_->Fill(Muons_MT2Activity->at(0),WeightBTagProb,false);
           //2D
           MuonPurityOldMHTNJet_->Fill(MHT,NJets,WeightBTagProb,false);
       }
   }
 
   // single elec control sample
-  if(selectedIDIsoMuonsNum==0 && selectedIDIsoElectronsNum==1){
-      if(selectedIDIsoElectronsPromptMatched->at(0)==1){
+  if(MuonsNum==0 && ElectronsNum==1){
+      if(ElectronsPromptMatched->at(0)==1){
           //1D
           ElecPurityOldBTag_->Fill(BTags,WeightBTagProb,true);
           ElecPurityOldNJets_->Fill(NJets,WeightBTagProb,true);
           ElecPurityOldHT_->Fill(HT,WeightBTagProb,true);
           ElecPurityOldMHT_->Fill(MHT,WeightBTagProb,true);
-          ElecPurityOldPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),WeightBTagProb,true);
-          ElecPurityOldActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),WeightBTagProb,true);
+          ElecPurityOldPT_->Fill(Electrons->at(0).Pt(),WeightBTagProb,true);
+          ElecPurityOldActivity_->Fill(Electrons_MT2Activity->at(0),WeightBTagProb,true);
           //2D
           ElecPurityOldMHTNJet_->Fill(MHT,NJets,WeightBTagProb,true);
       }
-      if(selectedIDIsoElectronsPromptMatched->at(0)==0){
+      if(ElectronsPromptMatched->at(0)==0){
           //1D
           ElecPurityOldBTag_->Fill(BTags,WeightBTagProb,false);
           ElecPurityOldNJets_->Fill(NJets,WeightBTagProb,false);
           ElecPurityOldHT_->Fill(HT,WeightBTagProb,false);
           ElecPurityOldMHT_->Fill(MHT,WeightBTagProb,false);
-          ElecPurityOldPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),WeightBTagProb,false);
-          ElecPurityOldActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),WeightBTagProb,false);
+          ElecPurityOldPT_->Fill(Electrons->at(0).Pt(),WeightBTagProb,false);
+          ElecPurityOldActivity_->Fill(Electrons_MT2Activity->at(0),WeightBTagProb,false);
           //2D
           ElecPurityOldMHTNJet_->Fill(MHT,NJets,WeightBTagProb,false);
       }
@@ -639,8 +631,8 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuAccHT_->Fill(HT,WeightBTagProb,true);
       MuAccMHT_->Fill(MHT,WeightBTagProb,true);
       MuAccDTT_->Fill(cosDTT,WeightBTagProb,true);
-      MuAccPT_->Fill(GenMus->at(0).Pt(),WeightBTagProb,true);
-      MuAccActivity_->Fill(GenMu_MT2Activity->at(0),WeightBTagProb,true);
+      MuAccPT_->Fill(GenMuons->at(0).Pt(),WeightBTagProb,true);
+      MuAccActivity_->Fill(GenMuons_MT2Activity->at(0),WeightBTagProb,true);
       //2D
       MuAccHTNJets_->Fill(HT,NJets,WeightBTagProb,true);
       MuAccMHTNJets_->Fill(MHT,NJets,WeightBTagProb,true);
@@ -717,8 +709,8 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuAccHT_->Fill(HT,WeightBTagProb,false);
       MuAccMHT_->Fill(MHT,WeightBTagProb,false);
       MuAccDTT_->Fill(cosDTT,WeightBTagProb,false);
-      MuAccPT_->Fill(GenMus->at(0).Pt(),WeightBTagProb,false);
-      MuAccActivity_->Fill(GenMu_MT2Activity->at(0),WeightBTagProb,false);
+      MuAccPT_->Fill(GenMuons->at(0).Pt(),WeightBTagProb,false);
+      MuAccActivity_->Fill(GenMuons_MT2Activity->at(0),WeightBTagProb,false);
       //2D
       MuAccHTNJets_->Fill(HT,NJets,WeightBTagProb,false);
       MuAccMHTNJets_->Fill(MHT,NJets,WeightBTagProb,false);
@@ -796,8 +788,8 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecAccHT_->Fill(HT,WeightBTagProb,true);
       ElecAccMHT_->Fill(MHT,WeightBTagProb,true);
       ElecAccDTT_->Fill(cosDTT,WeightBTagProb,true);
-      ElecAccPT_->Fill(GenEls->at(0).Pt(),WeightBTagProb,true);
-      ElecAccActivity_->Fill(GenElec_MT2Activity->at(0),WeightBTagProb,true);
+      ElecAccPT_->Fill(GenElectrons->at(0).Pt(),WeightBTagProb,true);
+      ElecAccActivity_->Fill(GenElectrons_MT2Activity->at(0),WeightBTagProb,true);
       //2D
       ElecAccHTNJets_->Fill(HT,NJets,WeightBTagProb,true);
       ElecAccMHTNJets_->Fill(MHT,NJets,WeightBTagProb,true);
@@ -874,8 +866,8 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecAccHT_->Fill(HT,WeightBTagProb,false);
       ElecAccMHT_->Fill(MHT,WeightBTagProb,false);
       ElecAccDTT_->Fill(cosDTT,WeightBTagProb,false);
-      ElecAccPT_->Fill(GenEls->at(0).Pt(),WeightBTagProb,false);
-      ElecAccActivity_->Fill(GenElec_MT2Activity->at(0),WeightBTagProb,false);
+      ElecAccPT_->Fill(GenElectrons->at(0).Pt(),WeightBTagProb,false);
+      ElecAccActivity_->Fill(GenElectrons_MT2Activity->at(0),WeightBTagProb,false);
       //2D
       ElecAccHTNJets_->Fill(HT,NJets,WeightBTagProb,false);
       ElecAccMHTNJets_->Fill(MHT,NJets,WeightBTagProb,false);
@@ -953,14 +945,14 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuRecoNJets_->Fill(NJets,WeightBTagProb,true);
       MuRecoHT_->Fill(HT,WeightBTagProb,true);
       MuRecoMHT_->Fill(MHT,WeightBTagProb,true);
-      MuRecoPT_->Fill(GenMus->at(0).Pt(),WeightBTagProb,true);
-      MuRecoActivity_->Fill(GenMu_MT2Activity->at(0),WeightBTagProb,true);
+      MuRecoPT_->Fill(GenMuons->at(0).Pt(),WeightBTagProb,true);
+      MuRecoActivity_->Fill(GenMuons_MT2Activity->at(0),WeightBTagProb,true);
       //MuRecoRelPTJet_->Fill(GenMuRelPTJet->at(0),WeightBTagProb,true);
       //MuRecoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),WeightBTagProb,true);
       //2D
-      MuRecoActivityPT_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),WeightBTagProb,true);
+      MuRecoActivityPT_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
       //MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,true);
-      MuRecoPTEta_->Fill(GenMus->at(0).Pt(),std::abs(GenMus->at(0).Eta()),WeightBTagProb,true);
+      MuRecoPTEta_->Fill(GenMuons->at(0).Pt(),std::abs(GenMuons->at(0).Eta()),WeightBTagProb,true);
   }
 
   if(muReco==0){
@@ -969,14 +961,14 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuRecoNJets_->Fill(NJets,WeightBTagProb,false);
       MuRecoHT_->Fill(HT,WeightBTagProb,false);
       MuRecoMHT_->Fill(MHT,WeightBTagProb,false);
-      MuRecoPT_->Fill(GenMus->at(0).Pt(),WeightBTagProb,false);
-      MuRecoActivity_->Fill(GenMu_MT2Activity->at(0),WeightBTagProb,false);
+      MuRecoPT_->Fill(GenMuons->at(0).Pt(),WeightBTagProb,false);
+      MuRecoActivity_->Fill(GenMuons_MT2Activity->at(0),WeightBTagProb,false);
       //MuRecoRelPTJet_->Fill(GenMuRelPTJet->at(0),WeightBTagProb,false);
       //MuRecoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),WeightBTagProb,false);
       //2D
-      MuRecoActivityPT_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),WeightBTagProb,false);
+      MuRecoActivityPT_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
       //MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,false);
-      MuRecoPTEta_->Fill(GenMus->at(0).Pt(),std::abs(GenMus->at(0).Eta()),WeightBTagProb,false);
+      MuRecoPTEta_->Fill(GenMuons->at(0).Pt(),std::abs(GenMuons->at(0).Eta()),WeightBTagProb,false);
   }
   
   // single elecon control sample
@@ -986,14 +978,14 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecRecoNJets_->Fill(NJets,WeightBTagProb,true);
       ElecRecoHT_->Fill(HT,WeightBTagProb,true);
       ElecRecoMHT_->Fill(MHT,WeightBTagProb,true);
-      ElecRecoPT_->Fill(GenEls->at(0).Pt(),WeightBTagProb,true);
-      ElecRecoActivity_->Fill(GenElec_MT2Activity->at(0),WeightBTagProb,true);
+      ElecRecoPT_->Fill(GenElectrons->at(0).Pt(),WeightBTagProb,true);
+      ElecRecoActivity_->Fill(GenElectrons_MT2Activity->at(0),WeightBTagProb,true);
       //ElecRecoRelPTJet_->Fill(GenElecRelPTJet->at(0),WeightBTagProb,true);
       //ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),WeightBTagProb,true);
       //2D
-      ElecRecoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),WeightBTagProb,true);
+      ElecRecoActivityPT_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
       //ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,true);
-      ElecRecoPTEta_->Fill(GenEls->at(0).Pt(),std::abs(GenEls->at(0).Eta()),WeightBTagProb,true);
+      ElecRecoPTEta_->Fill(GenElectrons->at(0).Pt(),std::abs(GenElectrons->at(0).Eta()),WeightBTagProb,true);
   }
 
   if(elecReco==0){
@@ -1002,14 +994,14 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecRecoNJets_->Fill(NJets,WeightBTagProb,false);
       ElecRecoHT_->Fill(HT,WeightBTagProb,false);
       ElecRecoMHT_->Fill(MHT,WeightBTagProb,false);
-      ElecRecoPT_->Fill(GenEls->at(0).Pt(),WeightBTagProb,false);
-      ElecRecoActivity_->Fill(GenElec_MT2Activity->at(0),WeightBTagProb,false);
+      ElecRecoPT_->Fill(GenElectrons->at(0).Pt(),WeightBTagProb,false);
+      ElecRecoActivity_->Fill(GenElectrons_MT2Activity->at(0),WeightBTagProb,false);
       //ElecRecoRelPTJet_->Fill(GenElecRelPTJet->at(0),WeightBTagProb,false);
       //ElecRecoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),WeightBTagProb,false);
       //2D
-      ElecRecoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),WeightBTagProb,false);
+      ElecRecoActivityPT_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
       //ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,false);
-      ElecRecoPTEta_->Fill(GenEls->at(0).Pt(),std::abs(GenEls->at(0).Eta()),WeightBTagProb,false);
+      ElecRecoPTEta_->Fill(GenElectrons->at(0).Pt(),std::abs(GenElectrons->at(0).Eta()),WeightBTagProb,false);
   }
   
   // isolation
@@ -1020,12 +1012,12 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuIsoNJets_->Fill(NJets,WeightBTagProb,true);
       MuIsoHT_->Fill(HT,WeightBTagProb,true);
       MuIsoMHT_->Fill(MHT,WeightBTagProb,true);
-      MuIsoPT_->Fill(GenMus->at(0).Pt(),WeightBTagProb,true);
-      MuIsoActivity_->Fill(GenMu_MT2Activity->at(0),WeightBTagProb,true);
+      MuIsoPT_->Fill(GenMuons->at(0).Pt(),WeightBTagProb,true);
+      MuIsoActivity_->Fill(GenMuons_MT2Activity->at(0),WeightBTagProb,true);
       //MuIsoRelPTJet_->Fill(GenMuRelPTJet->at(0),WeightBTagProb,true);
       //MuIsoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),WeightBTagProb,true);
       //2D
-      MuIsoActivityPT_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),WeightBTagProb,true);
+      MuIsoActivityPT_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
       //MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,true);
   }
 
@@ -1035,12 +1027,12 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuIsoNJets_->Fill(NJets,WeightBTagProb,false);
       MuIsoHT_->Fill(HT,WeightBTagProb,false);
       MuIsoMHT_->Fill(MHT,WeightBTagProb,false);
-      MuIsoPT_->Fill(GenMus->at(0).Pt(),WeightBTagProb,false);
-      MuIsoActivity_->Fill(GenMu_MT2Activity->at(0),WeightBTagProb,false);
+      MuIsoPT_->Fill(GenMuons->at(0).Pt(),WeightBTagProb,false);
+      MuIsoActivity_->Fill(GenMuons_MT2Activity->at(0),WeightBTagProb,false);
       //MuIsoRelPTJet_->Fill(GenMuRelPTJet->at(0),WeightBTagProb,false);
       //MuIsoDeltaRJet_->Fill(GenMuDeltaRJet->at(0),WeightBTagProb,false);
       //2D
-      MuIsoActivityPT_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),WeightBTagProb,false);
+      MuIsoActivityPT_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
       //MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,false);
   }
   
@@ -1051,12 +1043,12 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecIsoNJets_->Fill(NJets,WeightBTagProb,true);
       ElecIsoHT_->Fill(HT,WeightBTagProb,true);
       ElecIsoMHT_->Fill(MHT,WeightBTagProb,true);
-      ElecIsoPT_->Fill(GenEls->at(0).Pt(),WeightBTagProb,true);
-      ElecIsoActivity_->Fill(GenElec_MT2Activity->at(0),WeightBTagProb,true);
+      ElecIsoPT_->Fill(GenElectrons->at(0).Pt(),WeightBTagProb,true);
+      ElecIsoActivity_->Fill(GenElectrons_MT2Activity->at(0),WeightBTagProb,true);
       //ElecIsoRelPTJet_->Fill(GenElecRelPTJet->at(0),WeightBTagProb,true);
       //ElecIsoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),WeightBTagProb,true);
       //2D
-      ElecIsoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),WeightBTagProb,true);
+      ElecIsoActivityPT_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
       //ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,true);
   }
 
@@ -1066,12 +1058,12 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecIsoNJets_->Fill(NJets,WeightBTagProb,false);
       ElecIsoHT_->Fill(HT,WeightBTagProb,false);
       ElecIsoMHT_->Fill(MHT,WeightBTagProb,false);
-      ElecIsoPT_->Fill(GenEls->at(0).Pt(),WeightBTagProb,false);
-      ElecIsoActivity_->Fill(GenElec_MT2Activity->at(0),WeightBTagProb,false);
+      ElecIsoPT_->Fill(GenElectrons->at(0).Pt(),WeightBTagProb,false);
+      ElecIsoActivity_->Fill(GenElectrons_MT2Activity->at(0),WeightBTagProb,false);
       //ElecIsoRelPTJet_->Fill(GenElecRelPTJet->at(0),WeightBTagProb,false);
       //ElecIsoDeltaRJet_->Fill(GenElecDeltaRJet->at(0),WeightBTagProb,false);
       //2D
-      ElecIsoActivityPT_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),WeightBTagProb,false);
+      ElecIsoActivityPT_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
       //ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,false);
   }
 
@@ -1083,9 +1075,9 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuMTWNJets_->Fill(NJets,WeightBTagProb,true);
       MuMTWHT_->Fill(HT,WeightBTagProb,true);
       MuMTWMHT_->Fill(MHT,WeightBTagProb,true);
-      MuMTWPT_->Fill(selectedIDIsoMuons->at(0).Pt(),WeightBTagProb,true);
-      MuMTWActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),WeightBTagProb,true);
-      MuMTWPTActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),selectedIDIsoMuons->at(0).Pt(),WeightBTagProb,true);
+      MuMTWPT_->Fill(Muons->at(0).Pt(),WeightBTagProb,true);
+      MuMTWActivity_->Fill(Muons_MT2Activity->at(0),WeightBTagProb,true);
+      MuMTWPTActivity_->Fill(Muons_MT2Activity->at(0),Muons->at(0).Pt(),WeightBTagProb,true);
       MuMTWHTNJets_->Fill(HT, NJets, WeightBTagProb, true);
       MuMTWMHTNJets_->Fill(MHT, NJets, WeightBTagProb, true);
       MuMTWHTMHT_->Fill(HT, MHT, WeightBTagProb, true);
@@ -1097,9 +1089,9 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuMTWNJets_->Fill(NJets,WeightBTagProb,false);
       MuMTWHT_->Fill(HT,WeightBTagProb,false);
       MuMTWMHT_->Fill(MHT,WeightBTagProb,false);
-      MuMTWPT_->Fill(selectedIDIsoMuons->at(0).Pt(),WeightBTagProb,false);
-      MuMTWActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),WeightBTagProb,false);
-      MuMTWPTActivity_->Fill(selectedIDIsoMuons_MT2Activity->at(0),selectedIDIsoMuons->at(0).Pt(),WeightBTagProb,false);
+      MuMTWPT_->Fill(Muons->at(0).Pt(),WeightBTagProb,false);
+      MuMTWActivity_->Fill(Muons_MT2Activity->at(0),WeightBTagProb,false);
+      MuMTWPTActivity_->Fill(Muons_MT2Activity->at(0),Muons->at(0).Pt(),WeightBTagProb,false);
       MuMTWHTNJets_->Fill(HT, NJets, WeightBTagProb, false);
       MuMTWMHTNJets_->Fill(MHT, NJets, WeightBTagProb, false);
       MuMTWHTMHT_->Fill(HT, MHT, WeightBTagProb, false);
@@ -1112,9 +1104,9 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecMTWNJets_->Fill(NJets,WeightBTagProb,true);
       ElecMTWHT_->Fill(HT,WeightBTagProb,true);
       ElecMTWMHT_->Fill(MHT,WeightBTagProb,true);
-      ElecMTWPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),WeightBTagProb,true);
-      ElecMTWActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),WeightBTagProb,true);
-      ElecMTWPTActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),selectedIDIsoElectrons->at(0).Pt(),WeightBTagProb,true);
+      ElecMTWPT_->Fill(Electrons->at(0).Pt(),WeightBTagProb,true);
+      ElecMTWActivity_->Fill(Electrons_MT2Activity->at(0),WeightBTagProb,true);
+      ElecMTWPTActivity_->Fill(Electrons_MT2Activity->at(0),Electrons->at(0).Pt(),WeightBTagProb,true);
       ElecMTWHTNJets_->Fill(HT, NJets, WeightBTagProb, true);
       ElecMTWMHTNJets_->Fill(MHT, NJets, WeightBTagProb, true);
       ElecMTWHTMHT_->Fill(HT, MHT, WeightBTagProb, true);
@@ -1126,9 +1118,9 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecMTWNJets_->Fill(NJets,WeightBTagProb,false);
       ElecMTWHT_->Fill(HT,WeightBTagProb,false);
       ElecMTWMHT_->Fill(MHT,WeightBTagProb,false);
-      ElecMTWPT_->Fill(selectedIDIsoElectrons->at(0).Pt(),WeightBTagProb,false);
-      ElecMTWActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),WeightBTagProb,false);
-      ElecMTWPTActivity_->Fill(selectedIDIsoElectrons_MT2Activity->at(0),selectedIDIsoElectrons->at(0).Pt(),WeightBTagProb,false);
+      ElecMTWPT_->Fill(Electrons->at(0).Pt(),WeightBTagProb,false);
+      ElecMTWActivity_->Fill(Electrons_MT2Activity->at(0),WeightBTagProb,false);
+      ElecMTWPTActivity_->Fill(Electrons_MT2Activity->at(0),Electrons->at(0).Pt(),WeightBTagProb,false);
       ElecMTWHTNJets_->Fill(HT, NJets, WeightBTagProb, false);
       ElecMTWMHTNJets_->Fill(MHT, NJets, WeightBTagProb, false);
       ElecMTWHTMHT_->Fill(HT, MHT, WeightBTagProb, false);
@@ -1295,18 +1287,18 @@ Bool_t EffMaker::Process(Long64_t entry)
       ExpectationReductionIsoTrackHTEff_->Fill(HT,WeightBTagProb,false);
       ExpectationReductionIsoTrackMHTEff_->Fill(MHT,WeightBTagProb,false);
 
-      if(GenMuNum>0){
+      if(GenMuonsNum>0){
           //  cout << "Muon event" << endl;
-          ExpectationReductionIsoTrackPTEff_->Fill(GenMus->at(0).Pt(),WeightBTagProb,false);
-          ExpectationReductionIsoTrackActivityEff_->Fill(GenMu_MT2Activity->at(0),WeightBTagProb,false);
-      }else if(GenElecNum>0){
+          ExpectationReductionIsoTrackPTEff_->Fill(GenMuons->at(0).Pt(),WeightBTagProb,false);
+          ExpectationReductionIsoTrackActivityEff_->Fill(GenMuons_MT2Activity->at(0),WeightBTagProb,false);
+      }else if(GenElectronsNum>0){
           // cout << "Electron event" << endl;
-          ExpectationReductionIsoTrackPTEff_->Fill(GenEls->at(0).Pt(),WeightBTagProb,false);
-          ExpectationReductionIsoTrackActivityEff_->Fill(GenElec_MT2Activity->at(0),WeightBTagProb,false);
-      }else if(GenTauNum>0){
+          ExpectationReductionIsoTrackPTEff_->Fill(GenElectrons->at(0).Pt(),WeightBTagProb,false);
+          ExpectationReductionIsoTrackActivityEff_->Fill(GenElectrons_MT2Activity->at(0),WeightBTagProb,false);
+      }else if(GenTausNum>0){
           // cout << "Tau event" << endl;
           ExpectationReductionIsoTrackPTEff_->Fill(GenTaus->at(0).Pt(),WeightBTagProb,false);
-          ExpectationReductionIsoTrackActivityEff_->Fill(GenTau_MT2Activity->at(0),WeightBTagProb,false);
+          ExpectationReductionIsoTrackActivityEff_->Fill(GenTaus_MT2Activity->at(0),WeightBTagProb,false);
       }else std::cout<<"No gen lepton found to fail..."<<std::endl;
 
       //2D
@@ -1332,12 +1324,12 @@ Bool_t EffMaker::Process(Long64_t entry)
         else IsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_->Fill(HT,MHT,WeightBTagProb,false);
       }
 
-      if(GenMuNum>0){
-          IsoTrackReductionPTActivity_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),WeightBTagProb,false);
-      }else if(GenElecNum>0){
-          IsoTrackReductionPTActivity_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),WeightBTagProb,false);
-      }else if(GenTauNum>0){
-          IsoTrackReductionPTActivity_->Fill(GenTau_MT2Activity->at(0),GenTaus->at(0).Pt(),WeightBTagProb,false);
+      if(GenMuonsNum>0){
+          IsoTrackReductionPTActivity_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
+      }else if(GenElectronsNum>0){
+          IsoTrackReductionPTActivity_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
+      }else if(GenTausNum>0){
+          IsoTrackReductionPTActivity_->Fill(GenTaus_MT2Activity->at(0),GenTaus->at(0).Pt(),WeightBTagProb,false);
       }
   }
   
@@ -1348,15 +1340,15 @@ Bool_t EffMaker::Process(Long64_t entry)
       ExpectationReductionIsoTrackHTEff_->Fill(HT,WeightBTagProb,true);
       ExpectationReductionIsoTrackMHTEff_->Fill(MHT,WeightBTagProb,true);
 
-      if(isoMuonTracksNum>0 && GenMuNum>0){
-          ExpectationReductionIsoTrackPTEff_->Fill(GenMus->at(0).Pt(),WeightBTagProb,true);
-          ExpectationReductionIsoTrackActivityEff_->Fill(GenMu_MT2Activity->at(0),WeightBTagProb,true);
-      }else if(isoElectronTracksNum>0 && GenElecNum>0){
-          ExpectationReductionIsoTrackPTEff_->Fill(GenEls->at(0).Pt(),WeightBTagProb,true);
-          ExpectationReductionIsoTrackActivityEff_->Fill(GenElec_MT2Activity->at(0),WeightBTagProb,true);
-      }else if(isoPionTracksNum>0 && GenTauNum>0){
+      if(isoMuonTracksNum>0 && GenMuonsNum>0){
+          ExpectationReductionIsoTrackPTEff_->Fill(GenMuons->at(0).Pt(),WeightBTagProb,true);
+          ExpectationReductionIsoTrackActivityEff_->Fill(GenMuons_MT2Activity->at(0),WeightBTagProb,true);
+      }else if(isoElectronTracksNum>0 && GenElectronsNum>0){
+          ExpectationReductionIsoTrackPTEff_->Fill(GenElectrons->at(0).Pt(),WeightBTagProb,true);
+          ExpectationReductionIsoTrackActivityEff_->Fill(GenElectrons_MT2Activity->at(0),WeightBTagProb,true);
+      }else if(isoPionTracksNum>0 && GenTausNum>0){
           ExpectationReductionIsoTrackPTEff_->Fill(GenTaus->at(0).Pt(),WeightBTagProb,true);
-          ExpectationReductionIsoTrackActivityEff_->Fill(GenTau_MT2Activity->at(0),WeightBTagProb,true);
+          ExpectationReductionIsoTrackActivityEff_->Fill(GenTaus_MT2Activity->at(0),WeightBTagProb,true);
     }
 
     //2D
@@ -1382,12 +1374,12 @@ Bool_t EffMaker::Process(Long64_t entry)
     else IsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_->Fill(HT,MHT,WeightBTagProb,true);
   }
 
-    if(isoMuonTracksNum>0 && GenMuNum>0){
-        IsoTrackReductionPTActivity_->Fill(GenMu_MT2Activity->at(0),GenMus->at(0).Pt(),WeightBTagProb,true);
-    }else if(isoElectronTracksNum>0 && GenElecNum>0){
-        IsoTrackReductionPTActivity_->Fill(GenElec_MT2Activity->at(0),GenEls->at(0).Pt(),WeightBTagProb,true);
-    }else if(isoPionTracksNum>0 && GenTauNum>0){
-        IsoTrackReductionPTActivity_->Fill(GenTau_MT2Activity->at(0),GenTaus->at(0).Pt(),WeightBTagProb,true);
+    if(isoMuonTracksNum>0 && GenMuonsNum>0){
+        IsoTrackReductionPTActivity_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
+    }else if(isoElectronTracksNum>0 && GenElectronsNum>0){
+        IsoTrackReductionPTActivity_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
+    }else if(isoPionTracksNum>0 && GenTausNum>0){
+        IsoTrackReductionPTActivity_->Fill(GenTaus_MT2Activity->at(0),GenTaus->at(0).Pt(),WeightBTagProb,true);
     }
   }
 
@@ -1605,9 +1597,9 @@ Bool_t EffMaker::Process(Long64_t entry)
   //  printf("INJ/INB/IHT = %d/%d/%d\n", INJ, INB, IHT);
   if (INJ>=0&&INB>=0&&IHT>=0) {
     if (Expectation==1) {
-      if (GenMuNum==1&&GenElecNum==0) {          
+      if (GenMuonsNum==1&&GenElectronsNum==0) {          
         if (ExpectationReductionIsoTrack==0) {
-    double PTW = sqrt( (GenMus->at(0).Px()+MHT*cos(MHTPhi))*(GenMus->at(0).Px()+MHT*cos(MHTPhi)) +  (GenMus->at(0).Py()+MHT*sin(MHTPhi))*(GenMus->at(0).Py()+MHT*sin(MHTPhi)) );
+    double PTW = sqrt( (GenMuons->at(0).Px()+MHT*cos(MHTPhi))*(GenMuons->at(0).Px()+MHT*cos(MHTPhi)) +  (GenMuons->at(0).Py()+MHT*sin(MHTPhi))*(GenMuons->at(0).Py()+MHT*sin(MHTPhi)) );
     if (HT>500&&HT<1200) LostMuRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
     if (HT>1200) LostMuRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
     if (HT>800) LostMuRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
@@ -1616,9 +1608,9 @@ Bool_t EffMaker::Process(Long64_t entry)
     if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
         }
       }
-      else if (GenMuNum==0&&GenElecNum==1) {
+      else if (GenMuonsNum==0&&GenElectronsNum==1) {
         if (ExpectationReductionIsoTrack==0) {        
-    double PTW = sqrt( (GenEls->at(0).Px()+MHT*cos(MHTPhi))*(GenEls->at(0).Px()+MHT*cos(MHTPhi)) +  (GenEls->at(0).Py()+MHT*sin(MHTPhi))*(GenEls->at(0).Py()+MHT*sin(MHTPhi)) );
+    double PTW = sqrt( (GenElectrons->at(0).Px()+MHT*cos(MHTPhi))*(GenElectrons->at(0).Px()+MHT*cos(MHTPhi)) +  (GenElectrons->at(0).Py()+MHT*sin(MHTPhi))*(GenElectrons->at(0).Py()+MHT*sin(MHTPhi)) );
     if (HT>500&&HT<1200) LostElecRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
     if (HT>1200) LostElecRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
     if (HT>800) LostElecRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
@@ -1629,13 +1621,13 @@ Bool_t EffMaker::Process(Long64_t entry)
       } // 1-electron events
       // what do we want to do with di/multi-lepton events?
       // commented out below: take sum of all leptons and MHT
-      // else if (GenMuNum+GenElecNum>1) { 
+      // else if (GenMuonsNum+GenElectronsNum>1) { 
       //   std::vector<TLorentzVector> GenLeps;
-      //   for (unsigned int imu(0); imu<GenMuNum; imu++) {
-      //  GenLeps.push_back(GenMus->at(imu));
+      //   for (unsigned int imu(0); imu<GenMuonsNum; imu++) {
+      //  GenLeps.push_back(GenMuons->at(imu));
       //   }
-      //   for (unsigned int iel(0); iel<GenElecNum; iel++) {
-      //  GenLeps.push_back(GenEls->at(iel));
+      //   for (unsigned int iel(0); iel<GenElectronsNum; iel++) {
+      //  GenLeps.push_back(GenElectrons->at(iel));
       //   }
       //   double PXW(MHT*cos(MHTPhi)), PYW(MHT*sin(MHTPhi));
       //   for (unsigned int ilep(0); ilep<GenLeps.size(); ilep++) {
@@ -2021,14 +2013,14 @@ void EffMaker::Terminate()
   MuIsoTrackReductionMHTNJets_->SaveEff("#mu iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   MuIsoTrackReductionBTagNJets_->SaveEff("#mu iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
   MuIsoTrackReductionPTActivity_->SaveEff("#mu iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true); 
-  MuIsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("#mu iso track expec. reduction N_{Jets}=3-4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("#mu iso track expec. reduction N_{Jets}=2-4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   MuIsoTrackReductionHTMHT_NJetsLow_->SaveEff("#mu iso track expec. reduction N_{Jets}=5-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   MuIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("#mu iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
 
-  MuIsoTrackReductionHTMHT_NJetsVeryLow_BTags0_->SaveEff("#mu iso track expec. reduction N_{Jets}=3-4, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJetsVeryLow_BTags0_->SaveEff("#mu iso track expec. reduction N_{Jets}=2-4, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   MuIsoTrackReductionHTMHT_NJetsLow_BTags0_->SaveEff("#mu iso track expec. reduction N_{Jets}=5-6, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   MuIsoTrackReductionHTMHT_NJetsHigh_BTags0_->SaveEff("#mu iso track expec. reduction N_{Jets}#geq7, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_->SaveEff("#mu iso track expec. reduction N_{Jets}=3-4, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_->SaveEff("#mu iso track expec. reduction N_{Jets}=2-4, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   MuIsoTrackReductionHTMHT_NJetsLow_BTags1Inf_->SaveEff("#mu iso track expec. reduction N_{Jets}=5-6, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   MuIsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_->SaveEff("#mu iso track expec. reduction N_{Jets}#geq7, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
 
@@ -2045,14 +2037,14 @@ void EffMaker::Terminate()
   ElecIsoTrackReductionMHTNJets_->SaveEff("e iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   ElecIsoTrackReductionBTagNJets_->SaveEff("e iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
   ElecIsoTrackReductionPTActivity_->SaveEff("e iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true); 
-  ElecIsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("e iso track expec. reduction N_{Jets}=3-4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("e iso track expec. reduction N_{Jets}=2-4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   ElecIsoTrackReductionHTMHT_NJetsLow_->SaveEff("e iso track expec. reduction N_{Jets}=5-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   ElecIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("e iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
 
-  ElecIsoTrackReductionHTMHT_NJetsVeryLow_BTags0_->SaveEff("e iso track expec. reduction N_{Jets}=3-4, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJetsVeryLow_BTags0_->SaveEff("e iso track expec. reduction N_{Jets}=2-4, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   ElecIsoTrackReductionHTMHT_NJetsLow_BTags0_->SaveEff("e iso track expec. reduction N_{Jets}=5-6, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   ElecIsoTrackReductionHTMHT_NJetsHigh_BTags0_->SaveEff("e iso track expec. reduction N_{Jets}#geq7, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_->SaveEff("e iso track expec. reduction N_{Jets}=3-4, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_->SaveEff("e iso track expec. reduction N_{Jets}=2-4, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   ElecIsoTrackReductionHTMHT_NJetsLow_BTags1Inf_->SaveEff("e iso track expec. reduction N_{Jets}=5-6, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   ElecIsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_->SaveEff("e iso track expec. reduction N_{Jets}#geq7, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   
@@ -2069,14 +2061,14 @@ void EffMaker::Terminate()
   PionIsoTrackReductionMHTNJets_->SaveEff("#pi iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
   PionIsoTrackReductionBTagNJets_->SaveEff("#pi iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
   PionIsoTrackReductionPTActivity_->SaveEff("#pi iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true);
-  PionIsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("#pi iso track expec. reduction N_{Jets}=3-4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJetsVeryLow_->SaveEff("#pi iso track expec. reduction N_{Jets}=2-4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   PionIsoTrackReductionHTMHT_NJetsLow_->SaveEff("#pi iso track expec. reduction N_{Jets}=5-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   PionIsoTrackReductionHTMHT_NJetsHigh_->SaveEff("#pi iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
 
-  PionIsoTrackReductionHTMHT_NJetsVeryLow_BTags0_->SaveEff("#pi iso track expec. reduction N_{Jets}=3-4, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJetsVeryLow_BTags0_->SaveEff("#pi iso track expec. reduction N_{Jets}=2-4, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   PionIsoTrackReductionHTMHT_NJetsLow_BTags0_->SaveEff("#pi iso track expec. reduction N_{Jets}=5-6, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   PionIsoTrackReductionHTMHT_NJetsHigh_BTags0_->SaveEff("#pi iso track expec. reduction N_{Jets}#geq7, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_->SaveEff("#pi iso track expec. reduction N_{Jets}=3-4, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_->SaveEff("#pi iso track expec. reduction N_{Jets}=2-4, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   PionIsoTrackReductionHTMHT_NJetsLow_BTags1Inf_->SaveEff("#pi iso track expec. reduction N_{Jets}=5-6, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
   PionIsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_->SaveEff("#pi iso track expec. reduction N_{Jets}#geq7, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
 
