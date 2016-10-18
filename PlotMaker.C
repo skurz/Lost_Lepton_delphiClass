@@ -422,6 +422,11 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	SetBinLabel(totalPred_LL_);
 	totalPred_LL_->Write();
 
+	for(int i = 0; i<=totalPredControlStat_LL_->GetNbinsX()+1; ++i){
+		totalPredControlStat_LL_->SetBinContent(i, totalPred_LL_->GetBinError(i));
+	}
+	SaveFraction(totalPredControlStat_LL_, totalPred_LL_, dPreData, "llp_ControlStat");
+
 	for(int i = 0; i<=ClosureTest->GetNbinsX()+1; ++i){
 		totalPredNonClosureUp_LL_->SetBinContent(i, 1.+min(1., max(abs(ClosureTest->GetBinContent(i)-1.), ClosureTest->GetBinError(i))));
 		//std::cout<<i<<": "<<ClosureTest->GetBinContent(i)<<"-"<<ClosureTest->GetBinError(i)<<std::endl;
@@ -436,15 +441,6 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	totalCS_LL_->Write();
 	SetBinLabel(nEvtsCS_LL_);
 	nEvtsCS_LL_->Write();
-
-	SetBinLabel(avgWeight_LL_);
-	avgWeight_LL_->Write();
-
-	TH1D* PredOverCS_LL_ = (TH1D*) totalPred_LL_->Clone("PredOverCS_LL");
-	PredOverCS_LL_->Divide(totalCS_LL_);
-	PredOverCS_LL_->SetTitle("Prediction / CS (=0L/1L)");
-	PredOverCS_LL_->Write();
-
   
 	std::vector<TH1D*> allUncUp_LL_;
 	allUncUp_LL_.push_back(totalPredIsoTrackSysUp_LL_);
@@ -655,6 +651,12 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 
 	SetBinLabel(totalPred_LL_MC_);
 	totalPred_LL_MC_->Write();
+
+	for(int i = 0; i<=totalPredControlStat_LL_MC_->GetNbinsX()+1; ++i){
+		totalPredControlStat_LL_MC_->SetBinContent(i, totalPred_LL_MC_->GetBinError(i));
+	}
+	SaveFraction(totalPredControlStat_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_ControlStat");
+
 	SetBinLabel(totalPred_woIsoTrack_LL_MC_);
 	totalPred_woIsoTrack_LL_MC_->Write();
 
@@ -672,8 +674,27 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	SetBinLabel(nEvtsCS_LL_MC_);
 	nEvtsCS_LL_MC_->Write();
 
-	SetBinLabel(avgWeight_LL_MC_);
+
+	tf->cd();
+	tf->mkdir("AvgWeight_MC");
+	TDirectory *dAvgWeight = (TDirectory*)tf->Get("AvgWeight_MC");
+	dAvgWeight->cd();
+
+	SetBinLabel(avgWeight_LL_);
+	avgWeight_LL_->Write();
+
+	TH1D* PredOverCS_LL_ = (TH1D*) totalPred_LL_->Clone("PredOverCS_LL");
+	PredOverCS_LL_->Divide(totalCS_LL_);
+	PredOverCS_LL_->SetTitle("Prediction / CS (=0L/1L)");
+	//Fix for bins where negative sum of events
+	for(int i = 1; i < PredOverCS_LL_->GetNbinsX(); i++){
+		PredOverCS_LL_->SetBinContent(i, abs(PredOverCS_LL_->GetBinContent(i)));
+	}
+	SetBinLabel(PredOverCS_LL_);
+	PredOverCS_LL_->Write();
+
 	// Fill empty bins with avg. of remaining HTMHT bins
+	SetBinLabel(avgWeight_LL_MC_);
 	for(int i = 1; i < avgWeight_LL_MC_->GetNbinsX(); i++){
 		if(avgWeight_LL_MC_->GetBinContent(i) <= 0.01){
 			for(int j = 0; j < avgWeight_LL_MC_->GetNbinsX(); j++){
@@ -687,11 +708,6 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	}
 	avgWeight_LL_MC_->Write();
 
-	tf->cd();
-	tf->mkdir("AvgWeight_MC");
-	TDirectory *dAvgWeight = (TDirectory*)tf->Get("AvgWeight_MC");
-	dAvgWeight->cd();
-
 	TH1D* PredOverCS_LL_MC_ = (TH1D*) totalPred_LL_MC_->Clone("PredOverCS_LL_MC");
 	PredOverCS_LL_MC_->Divide(totalCS_LL_MC_);
 	PredOverCS_LL_MC_->SetTitle("Prediction / CS (=0L/1L)");
@@ -701,6 +717,23 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	}
 	SetBinLabel(PredOverCS_LL_MC_);
 	PredOverCS_LL_MC_->Write();
+
+
+	dPreData->cd();
+	// Combine 0L/1L histograms for integration: use ratio from data and fill empty bins with ratio from MC
+	TH1D* avgWeight_0L1L_ = (TH1D*) totalPred_LL_->Clone("avgWeight_0L1L");
+	avgWeight_0L1L_->SetTitle("Prediction / CS (=0L/1L)");
+	for(int i = 1; i < avgWeight_0L1L_->GetNbinsX(); i++){
+		if(avgWeight_LL_->GetBinContent(i)!=0){
+			avgWeight_0L1L_->SetBinContent(i, avgWeight_LL_->GetBinContent(i));
+			avgWeight_0L1L_->SetBinError(i, avgWeight_LL_->GetBinError(i));
+		}else{
+			avgWeight_0L1L_->SetBinContent(i, avgWeight_LL_MC_->GetBinContent(i));
+			avgWeight_0L1L_->SetBinError(i, avgWeight_LL_MC_->GetBinError(i));
+		}
+	}
+	SetBinLabel(avgWeight_0L1L_);
+	avgWeight_0L1L_->Write();
 
 
 	std::vector<TH1D*> allUncUp_LL_MC_;
@@ -760,7 +793,7 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	addUncertainties(totalPropSysDown_LL_MC_, allUncDown_LL_MC_, false);
 
 	/*
-	  SaveFraction(totalPredMuIsoTrackSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
+	  SaveFraction(totalPredMuIsoTrackSysUp_LL_MC_, totalPred_LL_MC_, dPreDataMC);
 	  SaveFraction(totalPredMuIsoTrackSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredElecIsoTrackSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredElecIsoTrackSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
@@ -936,11 +969,13 @@ void initHistograms(Int_t nBins){
   	nEvtsExp_LL_ = new TH1D("nEvtsExp_LL","nEvtsExp_LL", nBins, 0.5, nBins+0.5);
 
  	totalPred_LL_ = new TH1D("totalPred_LL","totalPred_LL", nBins, 0.5, nBins+0.5);
+ 	totalPredControlStat_LL_ = new TH1D("totalPredControlStat_LL","totalPredControlStat_LL", nBins, 0.5, nBins+0.5);
  	totalCS_LL_ = new TH1D("totalCS_LL","totalCS_LL", nBins, 0.5, nBins+0.5);
 	nEvtsCS_LL_ = new TH1D("nEvtsCS_LL","nEvtsCS_LL", nBins, 0.5, nBins+0.5);
 	avgWeight_LL_ = new TProfile("avgWeight_LL","avgWeight_LL", nBins, 0.5, nBins+0.5);
 
 	totalPred_LL_MC_ = new TH1D("totalPred_LL_MC","totalPred_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredControlStat_LL_MC_ = new TH1D("totalPredControlStat_LL_MC","totalPredControlStat_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPred_woIsoTrack_LL_MC_ = new TH1D("totalPred_woIsoTrack_LL_MC","totalPred_woIsoTrack_LL_MC", nBins, 0.5, nBins+0.5);
  	totalCS_LL_MC_ = new TH1D("totalCS_LL_MC","totalCS_LL_MC", nBins, 0.5, nBins+0.5);
 	nEvtsCS_LL_MC_ = new TH1D("nEvtsCS_LL_MC","nEvtsCS_LL_MC", nBins, 0.5, nBins+0.5);

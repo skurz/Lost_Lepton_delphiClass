@@ -139,11 +139,13 @@ TH1D* totalExp_woIsoTrack_LL_ = 0;
 TH1D* nEvtsExp_LL_ = 0;
 
 TH1D* totalPred_LL_ = 0;
+TH1D* totalPredControlStat_LL_ = 0;
 TH1D* totalCS_LL_ = 0;
 TH1D* nEvtsCS_LL_ = 0;
 TProfile* avgWeight_LL_ = 0;
 
 TH1D* totalPred_LL_MC_ = 0;
+TH1D* totalPredControlStat_LL_MC_ = 0;
 TH1D* totalPred_woIsoTrack_LL_MC_ = 0;
 TH1D* totalCS_LL_MC_ = 0;
 TH1D* nEvtsCS_LL_MC_ = 0;
