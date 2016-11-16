@@ -46,8 +46,8 @@ const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims (bTag reweighting)
 // Does not matter for Data
-const bool runOnNtuples = false;
-const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v10/SLe/tree_");
+const bool runOnNtuples = true;
+const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v11/SLe/tree_");
 
 // Useful for T2tt corridor studies
 const bool useGenHTMHT = false;
@@ -153,11 +153,6 @@ const double deltaPhi2_=0.5;
 const double deltaPhi3_=0.3;
 const double deltaPhi4_=0.3;
 const double minDeltaPhiN_=4.0;
-
-const UShort_t NJetsLow_=2;
-const UShort_t NJetsMedium_=5;
-const UShort_t NJetsMedium2_=7;
-const UShort_t NJetsHigh_=8;
 
 // Directly use TAP efficiencies: NOT IMPLEMENTED!
 const bool UseTagAndProbeEffIso_=false; // warning overriges all other choices for isolation efficiency
@@ -319,6 +314,7 @@ class Prediction : public TSelector {
 
   SearchBins *SearchBins_;
   SearchBins *SearchBinsQCD_;
+  SearchBins *SearchBinsEff_;
 
   Int_t           isoTracksNum;
   UShort_t JetsNum_;
@@ -342,6 +338,7 @@ class Prediction : public TSelector {
   Float_t muDiLepEffMTWAppliedEff_, elecDiLepEffMTWAppliedEff_;
   Float_t expectationReductionIsoTrackEff_;
   Float_t expectationReductionMuIsoTrackEff_,expectationReductionElecIsoTrackEff_,expectationReductionPionIsoTrackEff_, expectationReductionIsoTrackEffCombined_;
+  Float_t diLepLostWeight_;
 
   // Uncertainties
   Float_t isoTrackStatUp;
@@ -457,15 +454,44 @@ class Prediction : public TSelector {
   TH1 *MuWeightPerBin_[108];
   TH1 *ElecWeightPerBin_[108];
   TH1 *CombinedWeightPerBin_[108];
+
+  //NEW
+  TH1Eff *MuAccSearchBins_;
+  TH1Eff *ElecAccSearchBins_;
+  TH1Eff *MuMTWSearchBins_;
+  TH1Eff *ElecMTWSearchBins_;
+  TH1Eff *IsoTrackVetoSearchBins_;
+  TH1Eff *MuIsoTrackVetoSearchBins_;
+  TH1Eff *ElecIsoTrackVetoSearchBins_;
+  TH1Eff *PionIsoTrackVetoSearchBins_;
+  TH1Eff *MuDiLepContributionSearchBins_;
+  TH1Eff *ElecDiLepContributionSearchBins_;
   
   // Effiecineices
   TH2Eff *MuMTWPTActivity_;
   TH1Eff *MuMTWNJets_;
   TH2Eff *MuMTWHTNJets_;
   TH2Eff *MuMTWMHTNJets_;
+  TH2Eff *MuMTWHTMHT_;
+  TH2Eff *MuMTWHTMHT_NJets24_;
+  TH2Eff *MuMTWHTMHT_NJets56_;
+  TH2Eff *MuMTWHTMHT_NJets7Inf_;
+  TH1Eff *MuMTWPT_;
+  TH2Eff *MuMTWHTMHT_NJets2_;
+  TH2Eff *MuMTWHTMHT_NJets3_;
+  TH2Eff *MuMTWHTMHT_NJets4_;
+  TH2Eff *MuMTWHTMHT_NJets5_;
+  TH2Eff *MuMTWHTMHT_NJets6_;
+  TH2Eff *MuMTWHTMHT_NJets78_;
+  TH2Eff *MuMTWHTMHT_NJets9Inf_;
+
 
   TH1Eff *MuDiLepContributionMTWAppliedNJets_;
   TH2Eff *MuDiLepContributionMTWAppliedMHTNJets_;
+  TH2Eff *MuDiLepContributionMTWAppliedNJetsBTags_;
+  TH1Eff *MuDiLepEffMTWAppliedNJets_;
+  TH2Eff *MuDiLepEffMTWAppliedNJetsBTags_;
+
   TH2Eff *MuIsoActivityPT_;
   TH2Eff *MuIsoRelPTDeltaRJet_;
   TH2Eff *MuRecoActivityPT_;
@@ -474,13 +500,12 @@ class Prediction : public TSelector {
   TH2Eff *MuAccMHTNJets_;
   TH2Eff *MuAccHTNJets_;
   TH2Eff *MuAccHTMHT_;
-
-  TH1Eff *MuDiLepEffMTWAppliedNJets_;
   TH2Eff *MuPurityMHTNJets_; 
+  TH2Eff *MuPurityHTMHT_; 
 
   TH2Eff *MuAccMHTNJetsB0_;
   TH2Eff *MuAccMHTNJetsB1_Inf_;
-  TH2Eff *MuAccHTMHT_NJetsLow_;
+  TH2Eff *MuAccHTMHT_NJets26_;
   TH2Eff *MuAccHTMHT_NJets2_;
   TH2Eff *MuAccHTMHT_NJets3_;
   TH2Eff *MuAccHTMHT_NJets4_;
@@ -488,7 +513,7 @@ class Prediction : public TSelector {
   TH2Eff *MuAccHTMHT_NJets6_;
   TH2Eff *MuAccHTMHT_NJets78_;
   TH2Eff *MuAccHTMHT_NJets9Inf_;
-  TH2Eff *MuAccHTMHT_NJetsHigh_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_;
   TH2Eff *MuAccHTMHTB0_;
   TH2Eff *MuAccHTMHTB1_Inf_;
 
@@ -499,7 +524,7 @@ class Prediction : public TSelector {
   TH2Eff *MuAccHTMHT_NJets6_BTags0_;
   TH2Eff *MuAccHTMHT_NJets78_BTags0_;
   TH2Eff *MuAccHTMHT_NJets9Inf_BTags0_;
-  TH2Eff *MuAccHTMHT_NJetsHigh_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_BTags0_;
   TH2Eff *MuAccHTMHT_NJets2_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJets3_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJets4_BTags1Inf_;
@@ -507,7 +532,7 @@ class Prediction : public TSelector {
   TH2Eff *MuAccHTMHT_NJets6_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJets78_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJets9Inf_BTags1Inf_;
-  TH2Eff *MuAccHTMHT_NJetsHigh_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJets2_BTags1_;
   TH2Eff *MuAccHTMHT_NJets3_BTags1_;
   TH2Eff *MuAccHTMHT_NJets4_BTags1_;
@@ -515,7 +540,7 @@ class Prediction : public TSelector {
   TH2Eff *MuAccHTMHT_NJets6_BTags1_;
   TH2Eff *MuAccHTMHT_NJets78_BTags1_;
   TH2Eff *MuAccHTMHT_NJets9Inf_BTags1_;
-  TH2Eff *MuAccHTMHT_NJetsHigh_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_BTags1_;
   TH2Eff *MuAccHTMHT_NJets2_BTags2Inf_;
   TH2Eff *MuAccHTMHT_NJets3_BTags2Inf_;
   TH2Eff *MuAccHTMHT_NJets4_BTags2Inf_;
@@ -523,7 +548,21 @@ class Prediction : public TSelector {
   TH2Eff *MuAccHTMHT_NJets6_BTags2Inf_;
   TH2Eff *MuAccHTMHT_NJets78_BTags2Inf_;
   TH2Eff *MuAccHTMHT_NJets9Inf_BTags2Inf_;
-  TH2Eff *MuAccHTMHT_NJetsHigh_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets3_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets4_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets5_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets6_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets78_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets3_BTags3Inf_;
+  TH2Eff *MuAccHTMHT_NJets4_BTags3Inf_;
+  TH2Eff *MuAccHTMHT_NJets5_BTags3Inf_;
+  TH2Eff *MuAccHTMHT_NJets6_BTags3Inf_;
+  TH2Eff *MuAccHTMHT_NJets78_BTags3Inf_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_BTags3Inf_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_BTags3Inf_;
 
   
   TH2Eff *ElecIsoActivityPT_;
@@ -536,16 +575,32 @@ class Prediction : public TSelector {
   TH2Eff *ElecAccHTMHT_;
 
   TH2Eff *ElecPurityMHTNJets_;
+  TH2Eff *ElecPurityHTMHT_; 
+  TH2Eff *ElecMTWPTActivity_;
   TH1Eff *ElecMTWNJets_;
   TH2Eff *ElecMTWHTNJets_;
   TH2Eff *ElecMTWMHTNJets_;
+  TH2Eff *ElecMTWHTMHT_;
+  TH2Eff *ElecMTWHTMHT_NJets24_;
+  TH2Eff *ElecMTWHTMHT_NJets56_;
+  TH2Eff *ElecMTWHTMHT_NJets7Inf_;
+  TH1Eff *ElecMTWPT_;
+  TH2Eff *ElecMTWHTMHT_NJets2_;
+  TH2Eff *ElecMTWHTMHT_NJets3_;
+  TH2Eff *ElecMTWHTMHT_NJets4_;
+  TH2Eff *ElecMTWHTMHT_NJets5_;
+  TH2Eff *ElecMTWHTMHT_NJets6_;
+  TH2Eff *ElecMTWHTMHT_NJets78_;
+  TH2Eff *ElecMTWHTMHT_NJets9Inf_;
 
 
   TH1Eff *ElecDiLepContributionMTWAppliedNJets_;
   TH2Eff *ElecDiLepContributionMTWAppliedMHTNJets_;
+  TH2Eff *ElecDiLepContributionMTWAppliedNJetsBTags_;
   TH1Eff *ElecDiLepEffMTWAppliedNJets_;
+  TH2Eff *ElecDiLepEffMTWAppliedNJetsBTags_;
 
-  TH2Eff *ElecAccHTMHT_NJetsLow_;
+  TH2Eff *ElecAccHTMHT_NJets26_;
   TH2Eff *ElecAccHTMHT_NJets2_;
   TH2Eff *ElecAccHTMHT_NJets3_;
   TH2Eff *ElecAccHTMHT_NJets4_;
@@ -553,7 +608,7 @@ class Prediction : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets6_;
   TH2Eff *ElecAccHTMHT_NJets78_;
   TH2Eff *ElecAccHTMHT_NJets9Inf_;
-  TH2Eff *ElecAccHTMHT_NJetsHigh_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_;
   TH2Eff *ElecAccMHTNJetsB0_;
   TH2Eff *ElecAccMHTNJetsB1_Inf_; 
   TH2Eff *ElecAccHTMHTB0_;
@@ -566,7 +621,7 @@ class Prediction : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets6_BTags0_;
   TH2Eff *ElecAccHTMHT_NJets78_BTags0_;
   TH2Eff *ElecAccHTMHT_NJets9Inf_BTags0_;
-  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_BTags0_;
   TH2Eff *ElecAccHTMHT_NJets2_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJets3_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJets4_BTags1Inf_;
@@ -574,7 +629,7 @@ class Prediction : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets6_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJets78_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJets9Inf_BTags1Inf_;
-  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJets2_BTags1_;
   TH2Eff *ElecAccHTMHT_NJets3_BTags1_;
   TH2Eff *ElecAccHTMHT_NJets4_BTags1_;
@@ -582,7 +637,7 @@ class Prediction : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets6_BTags1_;
   TH2Eff *ElecAccHTMHT_NJets78_BTags1_;
   TH2Eff *ElecAccHTMHT_NJets9Inf_BTags1_;
-  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_BTags1_;
   TH2Eff *ElecAccHTMHT_NJets2_BTags2Inf_;
   TH2Eff *ElecAccHTMHT_NJets3_BTags2Inf_;
   TH2Eff *ElecAccHTMHT_NJets4_BTags2Inf_;
@@ -590,23 +645,45 @@ class Prediction : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets6_BTags2Inf_;
   TH2Eff *ElecAccHTMHT_NJets78_BTags2Inf_;
   TH2Eff *ElecAccHTMHT_NJets9Inf_BTags2Inf_;
-  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets3_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets4_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets5_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets6_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets78_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets3_BTags3Inf_;
+  TH2Eff *ElecAccHTMHT_NJets4_BTags3Inf_;
+  TH2Eff *ElecAccHTMHT_NJets5_BTags3Inf_;
+  TH2Eff *ElecAccHTMHT_NJets6_BTags3Inf_;
+  TH2Eff *ElecAccHTMHT_NJets78_BTags3Inf_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_BTags3Inf_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_BTags3Inf_;
   
   // expectation reduction by the isolated track veto
   TH1Eff *ExpectationReductionIsoTrackNJetsEff_;
   TH2Eff *ExpectationReductionIsoTrackBTagsNJetsEff_;
   TH2Eff *ExpectationReductionIsoTrackHTNJetsEff_;
   TH2Eff *ExpectationReductionIsoTrackMHTNJetsEff_;
-  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJetsVeryLowEff_;
-  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJetsLowEff_;
+  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets24Eff_;
+  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets56Eff_;
+  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets2Eff_;
+  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets3Eff_;
   TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets4Eff_;
   TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets5Eff_;
   TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets6Eff_;
-  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJetsHighEff_;
+  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets7InfEff_;
   TH2Eff *ExpectationReductionMuIsoTrackBTagsNJetsEff_, *ExpectationReductionElecIsoTrackBTagsNJetsEff_, *ExpectationReductionPionIsoTrackBTagsNJetsEff_;
-  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJetsVeryLowEff_, *ExpectationReductionElecIsoTrackHTMHT_NJetsVeryLowEff_, *ExpectationReductionPionIsoTrackHTMHT_NJetsVeryLowEff_;
-  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJetsLowEff_, *ExpectationReductionElecIsoTrackHTMHT_NJetsLowEff_, *ExpectationReductionPionIsoTrackHTMHT_NJetsLowEff_;
-  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJetsHighEff_, *ExpectationReductionElecIsoTrackHTMHT_NJetsHighEff_, *ExpectationReductionPionIsoTrackHTMHT_NJetsHighEff_;
+  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets24Eff_, *ExpectationReductionElecIsoTrackHTMHT_NJets24Eff_, *ExpectationReductionPionIsoTrackHTMHT_NJets24Eff_;
+  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets56Eff_, *ExpectationReductionElecIsoTrackHTMHT_NJets56Eff_, *ExpectationReductionPionIsoTrackHTMHT_NJets56Eff_;
+  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets7InfEff_, *ExpectationReductionElecIsoTrackHTMHT_NJets7InfEff_, *ExpectationReductionPionIsoTrackHTMHT_NJets7InfEff_;
+  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets2Eff_, *ExpectationReductionElecIsoTrackHTMHT_NJets2Eff_, *ExpectationReductionPionIsoTrackHTMHT_NJets2Eff_;
+  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets3Eff_, *ExpectationReductionElecIsoTrackHTMHT_NJets3Eff_, *ExpectationReductionPionIsoTrackHTMHT_NJets3Eff_;
+  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets4Eff_, *ExpectationReductionElecIsoTrackHTMHT_NJets4Eff_, *ExpectationReductionPionIsoTrackHTMHT_NJets4Eff_;
+  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets5Eff_, *ExpectationReductionElecIsoTrackHTMHT_NJets5Eff_, *ExpectationReductionPionIsoTrackHTMHT_NJets5Eff_;
+  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets6Eff_, *ExpectationReductionElecIsoTrackHTMHT_NJets6Eff_, *ExpectationReductionPionIsoTrackHTMHT_NJets6Eff_;
+
 
   
   // Declaration of leaf types

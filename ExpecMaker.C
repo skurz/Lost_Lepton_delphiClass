@@ -135,6 +135,7 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
     tExpectation_->Branch("GenTaus_LeadRecoTrkd3", &GenTaus_LeadRecoTrkd3);
     tExpectation_->Branch("GenTaus_LeadRecoTrkIso", &GenTaus_LeadRecoTrkIso);
     tExpectation_->Branch("GenTaus_LeadTrk", "std::vector<TLorentzVector>", &GenTaus_LeadTrk, 32000, 0);
+    tExpectation_->Branch("GenTaus_NProngs", &GenTaus_NProngs);
     tExpectation_->Branch("GenTaus_Nu", "std::vector<TLorentzVector>", &GenTaus_Nu, 32000, 0);
   }
     
@@ -168,6 +169,8 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 
   resetValues();
   fChain->GetTree()->GetEntry(entry);
+
+//  if(entry % 3 != 0) return kTRUE;
 
   // genLevel HTcut
   if(HTgen_cut > 0.01) if(madHT > HTgen_cut) return kTRUE;

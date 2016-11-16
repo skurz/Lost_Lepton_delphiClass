@@ -49,19 +49,23 @@ const int oneDDeltaR_=8;
 double OneDDeltaR_[oneDDeltaR_]={0, 0.2 ,0.3, 0.5 ,0.7 ,1.0 , 1.8, 5.0};
 const int oneDPTRel_=7;
 double OneDPTRel_[oneDPTRel_]={0, 0.2 ,0.4 ,0.6 ,0.8 ,1.0 , 10.0};
-const int oneDPT_=12;
-double OneDPT_[oneDPT_]={10,12,15,20,30,40,50,60,70,90,100,10000};
+const int oneDPT_=24;
+double OneDPT_[oneDPT_]={10,11,12,13.5,15,17.5,20,25,30,40,50,60,70,80,90,100,120,140,170,200,250,300,400,10000};
 const int oneDActivity_=11;
 double OneDActivity_[oneDActivity_]={0, 0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.4, 0.6, 1., 100.};
-const int oneDEta_=7;
-double OneDEta_[oneDEta_]={0., 0.5, 1., 1.442, 1.566, 2., 2.52};
+const int oneDEtaElec_=6;
+double OneDEtaElec_[oneDEtaElec_]={0., 0.8, 1.442, 1.566, 2.0, 2.52};
+const int oneDEtaMu_=5;
+double OneDEtaMu_[oneDEtaMu_]={0., 0.9, 1.2, 2.1, 2.52};
 const int oneDDTT_ = 11;
 double OneDDTT_ [oneDDTT_] = {0.0,0.6,0.8,0.9,0.92,0.94,0.96,0.97,0.98,0.99,1.0};
 
-const int twoDHT_=6;
-double TwoDHT_[twoDHT_] = {250,500,750,1000,1500,10000};
-const int twoDMHT_=5;
-double TwoDMHT_[twoDMHT_] = {250,350,500,750,10000};
+const int twoDHT_=4;
+double TwoDHT_[twoDHT_] = {250,500,1000,10000};
+const int twoDMHT_=4;
+double TwoDMHT_[twoDMHT_] = {250,350,500,10000};
+const int twoDMHT_fine_=5;
+double TwoDMHT_fine_[twoDMHT_fine_] = {250,300,350,500,10000};
 const int twoDNJets_=8;
 double TwoDNJets_[twoDNJets_] = {1.5,2.5,3.5,4.5,5.5,6.5,8.5,21.5};
 const int twoDBJets_=5;
@@ -70,21 +74,41 @@ const int twoDDeltaR_=8;
 double TwoDDeltaR_[twoDDeltaR_]={0, 0.2 ,0.3, 0.5 ,0.7 ,1.0 , 1.8, 5.0};
 const int twoDPTRel_=7;
 double TwoDPTRel_[twoDPTRel_]={0, 0.2 ,0.4 ,0.6 ,0.8 ,1.0 , 10.0};
-const int twoDPT_=12;
-double TwoDPT_[twoDPT_]={10,12,15,20,30,40,50,60,70,90,100,10000};
-const int twoDActivity_=11;
-double TwoDActivity_[twoDActivity_]={0, 0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.4, 0.6, 1., 100.};
+const int twoDPT_=15;
+double TwoDPT_[twoDPT_]={10,11,12,13,14,15,16,20,30,40,50,60,80,100,10000};
+const int twoDActivity_=12;
+double TwoDActivity_[twoDActivity_]={0, 0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.4, 0.6, 1., 2., 100.};
 const int twoDEta_=7;
-double TwoDEta_[twoDEta_]={0., 0.5, 1., 1.442, 1.566, 2., 2.52};
+double TwoDEta_[twoDEta_]={0., 0.5, 1., 1.4, 1.6, 2., 2.52};
+//const int twoDEtaElec_=6;
+//double TwoDEtaElec_[twoDEtaElec_]={0., 0.8, 1.44, 1.57, 2.0, 2.52};
+//const int twoDEtaMu_=5;
+//double TwoDEtaMu_[twoDEtaMu_]={0., 0.9, 1.2, 2.1, 2.52};
+const int twoDEtaElec_=10;
+double TwoDEtaElec_[twoDEtaElec_]={0., 0.4, 0.8, 1.1, 1.44, 1.57, 1.8, 2.0, 2.2, 2.52};
+const int twoDEtaMu_=9;
+double TwoDEtaMu_[twoDEtaMu_]={0., 0.45, 0.9, 1.2, 1.5, 1.7, 2.0, 2.2, 2.52};
+const int twoDHT_bin_=5;
+double TwoDHT_bin_[twoDHT_bin_] = {300,500,750,1500,10000}; // 1500
+const int twoDMHT_bin_=6;
+double TwoDMHT_bin_[twoDMHT_bin_] = {250,300,350,500,750,10000};
 
-//const int threeDHT_=6;
-//double ThreeDHT_[threeDHT_] = {250,350,500,750,1000,10000};
+const int threeDHT_fine_=4;
+double ThreeDHT_fine_[threeDHT_fine_] = {300,500,750,10000};
 const int threeDHT_=4;
 double ThreeDHT_[threeDHT_] = {300,500,1000,10000};
+const int threeDHT_coarse_=3;
+double ThreeDHT_coarse_[threeDHT_coarse_] = {300,500,10000};
+const int threeDHT_bin_=4;
+double ThreeDHT_bin_[threeDHT_bin_] = {300,500,750,10000}; // 1500
 const int threeDMHT_=4;
 double ThreeDMHT_[threeDMHT_] = {250,350,500,10000};
 const int threeDMHT_fine_=5;
 double ThreeDMHT_fine_[threeDMHT_fine_] = {250,300,350,500,10000};
+const int threeDMHT_coarse_=6;
+double ThreeDMHT_coarse_[threeDMHT_coarse_] = {250,300,350,500,750,10000};
+const int threeDMHT_bin_=6;
+double ThreeDMHT_bin_[threeDMHT_bin_] = {250,300,350,500,750,10000};
 
 
 class EffMaker : public TSelector {
@@ -93,8 +117,27 @@ class EffMaker : public TSelector {
   TTree          *fChain;
 
   TString fileName;
+  SearchBins* SearchBins_ = 0;
 
-  
+  // NEW
+  TH1Eff *MuAccSearchBins_;
+  TH1Eff *ElecAccSearchBins_;
+
+  TH1Eff *MuIsoTrackVetoSearchBins_;
+  TH1Eff *ElecIsoTrackVetoSearchBins_;
+  TH1Eff *PionIsoTrackVetoSearchBins_;
+  TH1Eff *IsoTrackVetoSearchBins_;
+
+  TH1Eff *MuMTWSearchBins_;
+  TH1Eff *ElecMTWSearchBins_;
+
+  TH1Eff *MuPuritySearchBins_;
+  TH1Eff *ElecPuritySearchBins_;
+
+  TH1Eff *MuDiLepContributionSearchBins_;
+  TH1Eff *ElecDiLepContributionSearchBins_;
+
+
   //purity
   //mu
   //1D
@@ -105,7 +148,10 @@ class EffMaker : public TSelector {
   TH1Eff *MuPurityPT_;
   TH1Eff *MuPurityActivity_;
   //2D
+  TH2Eff *MuonPurityHTMHT_;
   TH2Eff *MuonPurityMHTNJet_;
+  TH2Eff *MuonPurityNJetsBTags_;
+  TH2Eff *MuonPurityMHTBTags_;
   
   //elec
   //1D
@@ -116,7 +162,10 @@ class EffMaker : public TSelector {
   TH1Eff *ElecPurityPT_;
   TH1Eff *ElecPurityActivity_;
   //2D
+  TH2Eff *ElecPurityHTMHT_;
   TH2Eff *ElecPurityMHTNJet_;
+  TH2Eff *ElecPurityNJetsBTags_;
+  TH2Eff *ElecPurityMHTBTags_;
   
   // x-check of purity
   
@@ -158,7 +207,7 @@ class EffMaker : public TSelector {
   TH2Eff *MuAccBTagNJets_;
   TH2Eff *MuAccMHTNJetsB0_;
   TH2Eff *MuAccMHTNJetsB1_Inf_;
-  TH2Eff *MuAccHTMHT_NJetsLow_;
+  TH2Eff *MuAccHTMHT_NJets26_;
   TH2Eff *MuAccHTMHT_NJets2_;
   TH2Eff *MuAccHTMHT_NJets3_;
   TH2Eff *MuAccHTMHT_NJets4_;
@@ -166,7 +215,7 @@ class EffMaker : public TSelector {
   TH2Eff *MuAccHTMHT_NJets6_;
   TH2Eff *MuAccHTMHT_NJets78_;
   TH2Eff *MuAccHTMHT_NJets9Inf_;
-  TH2Eff *MuAccHTMHT_NJetsHigh_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_;
   TH2Eff *MuAccHTMHTB0_;
   TH2Eff *MuAccHTMHTB1_Inf_;
   TH2Eff *MuAccHTDTT_NJets2_;
@@ -184,7 +233,7 @@ class EffMaker : public TSelector {
   TH2Eff *MuAccHTMHT_NJets6_BTags0_;
   TH2Eff *MuAccHTMHT_NJets78_BTags0_;
   TH2Eff *MuAccHTMHT_NJets9Inf_BTags0_;
-  TH2Eff *MuAccHTMHT_NJetsHigh_BTags0_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_BTags0_;
   TH2Eff *MuAccHTMHT_NJets2_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJets3_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJets4_BTags1Inf_;
@@ -192,7 +241,7 @@ class EffMaker : public TSelector {
   TH2Eff *MuAccHTMHT_NJets6_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJets78_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJets9Inf_BTags1Inf_;
-  TH2Eff *MuAccHTMHT_NJetsHigh_BTags1Inf_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_BTags1Inf_;
   TH2Eff *MuAccHTMHT_NJets2_BTags1_;
   TH2Eff *MuAccHTMHT_NJets3_BTags1_;
   TH2Eff *MuAccHTMHT_NJets4_BTags1_;
@@ -200,7 +249,7 @@ class EffMaker : public TSelector {
   TH2Eff *MuAccHTMHT_NJets6_BTags1_;
   TH2Eff *MuAccHTMHT_NJets78_BTags1_;
   TH2Eff *MuAccHTMHT_NJets9Inf_BTags1_;
-  TH2Eff *MuAccHTMHT_NJetsHigh_BTags1_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_BTags1_;
   TH2Eff *MuAccHTMHT_NJets2_BTags2Inf_;
   TH2Eff *MuAccHTMHT_NJets3_BTags2Inf_;
   TH2Eff *MuAccHTMHT_NJets4_BTags2Inf_;
@@ -208,7 +257,21 @@ class EffMaker : public TSelector {
   TH2Eff *MuAccHTMHT_NJets6_BTags2Inf_;
   TH2Eff *MuAccHTMHT_NJets78_BTags2Inf_;
   TH2Eff *MuAccHTMHT_NJets9Inf_BTags2Inf_;
-  TH2Eff *MuAccHTMHT_NJetsHigh_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_BTags2Inf_;
+  TH2Eff *MuAccHTMHT_NJets3_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets4_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets5_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets6_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets78_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_BTags2_;
+  TH2Eff *MuAccHTMHT_NJets3_BTags3Inf_;
+  TH2Eff *MuAccHTMHT_NJets4_BTags3Inf_;
+  TH2Eff *MuAccHTMHT_NJets5_BTags3Inf_;
+  TH2Eff *MuAccHTMHT_NJets6_BTags3Inf_;
+  TH2Eff *MuAccHTMHT_NJets78_BTags3Inf_;
+  TH2Eff *MuAccHTMHT_NJets9Inf_BTags3Inf_;
+  TH2Eff *MuAccHTMHT_NJets7Inf_BTags3Inf_;
   
   // elec
   //1D
@@ -226,7 +289,7 @@ class EffMaker : public TSelector {
   TH2Eff *ElecAccBTagNJets_;
   TH2Eff *ElecAccMHTNJetsB0_;
   TH2Eff *ElecAccMHTNJetsB1_Inf_;
-  TH2Eff *ElecAccHTMHT_NJetsLow_;
+  TH2Eff *ElecAccHTMHT_NJets26_;
   TH2Eff *ElecAccHTMHT_NJets2_;
   TH2Eff *ElecAccHTMHT_NJets3_;
   TH2Eff *ElecAccHTMHT_NJets4_;
@@ -234,7 +297,7 @@ class EffMaker : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets6_;
   TH2Eff *ElecAccHTMHT_NJets78_;
   TH2Eff *ElecAccHTMHT_NJets9Inf_;
-  TH2Eff *ElecAccHTMHT_NJetsHigh_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_;
   TH2Eff *ElecAccHTMHTB0_;
   TH2Eff *ElecAccHTMHTB1_Inf_;
   TH2Eff *ElecAccHTDTT_NJets2_;
@@ -252,7 +315,7 @@ class EffMaker : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets6_BTags0_;
   TH2Eff *ElecAccHTMHT_NJets78_BTags0_;
   TH2Eff *ElecAccHTMHT_NJets9Inf_BTags0_;
-  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags0_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_BTags0_;
   TH2Eff *ElecAccHTMHT_NJets2_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJets3_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJets4_BTags1Inf_;
@@ -260,7 +323,7 @@ class EffMaker : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets6_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJets78_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJets9Inf_BTags1Inf_;
-  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags1Inf_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_BTags1Inf_;
   TH2Eff *ElecAccHTMHT_NJets2_BTags1_;
   TH2Eff *ElecAccHTMHT_NJets3_BTags1_;
   TH2Eff *ElecAccHTMHT_NJets4_BTags1_;
@@ -268,7 +331,7 @@ class EffMaker : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets6_BTags1_;
   TH2Eff *ElecAccHTMHT_NJets78_BTags1_;
   TH2Eff *ElecAccHTMHT_NJets9Inf_BTags1_;
-  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags1_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_BTags1_;
   TH2Eff *ElecAccHTMHT_NJets2_BTags2Inf_;
   TH2Eff *ElecAccHTMHT_NJets3_BTags2Inf_;
   TH2Eff *ElecAccHTMHT_NJets4_BTags2Inf_;
@@ -276,7 +339,21 @@ class EffMaker : public TSelector {
   TH2Eff *ElecAccHTMHT_NJets6_BTags2Inf_;
   TH2Eff *ElecAccHTMHT_NJets78_BTags2Inf_;
   TH2Eff *ElecAccHTMHT_NJets9Inf_BTags2Inf_;
-  TH2Eff *ElecAccHTMHT_NJetsHigh_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_BTags2Inf_;
+  TH2Eff *ElecAccHTMHT_NJets3_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets4_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets5_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets6_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets78_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_BTags2_;
+  TH2Eff *ElecAccHTMHT_NJets3_BTags3Inf_;
+  TH2Eff *ElecAccHTMHT_NJets4_BTags3Inf_;
+  TH2Eff *ElecAccHTMHT_NJets5_BTags3Inf_;
+  TH2Eff *ElecAccHTMHT_NJets6_BTags3Inf_;
+  TH2Eff *ElecAccHTMHT_NJets78_BTags3Inf_;
+  TH2Eff *ElecAccHTMHT_NJets9Inf_BTags3Inf_;
+  TH2Eff *ElecAccHTMHT_NJets7Inf_BTags3Inf_;
   
 
   // Reco 
@@ -356,6 +433,16 @@ class EffMaker : public TSelector {
   TH2Eff *MuMTWHTNJets_;
   TH2Eff *MuMTWMHTNJets_;
   TH2Eff *MuMTWHTMHT_;
+  TH2Eff *MuMTWHTMHT_NJets24_;
+  TH2Eff *MuMTWHTMHT_NJets56_;
+  TH2Eff *MuMTWHTMHT_NJets7Inf_;
+  TH2Eff *MuMTWHTMHT_NJets2_;
+  TH2Eff *MuMTWHTMHT_NJets3_;
+  TH2Eff *MuMTWHTMHT_NJets4_;
+  TH2Eff *MuMTWHTMHT_NJets5_;
+  TH2Eff *MuMTWHTMHT_NJets6_;
+  TH2Eff *MuMTWHTMHT_NJets78_;
+  TH2Eff *MuMTWHTMHT_NJets9Inf_;
 
   
   // elec
@@ -371,6 +458,16 @@ class EffMaker : public TSelector {
   TH2Eff *ElecMTWHTNJets_;
   TH2Eff *ElecMTWMHTNJets_;
   TH2Eff *ElecMTWHTMHT_;
+  TH2Eff *ElecMTWHTMHT_NJets24_;
+  TH2Eff *ElecMTWHTMHT_NJets56_;
+  TH2Eff *ElecMTWHTMHT_NJets7Inf_;
+  TH2Eff *ElecMTWHTMHT_NJets2_;
+  TH2Eff *ElecMTWHTMHT_NJets3_;
+  TH2Eff *ElecMTWHTMHT_NJets4_;
+  TH2Eff *ElecMTWHTMHT_NJets5_;
+  TH2Eff *ElecMTWHTMHT_NJets6_;
+  TH2Eff *ElecMTWHTMHT_NJets78_;
+  TH2Eff *ElecMTWHTMHT_NJets9Inf_;
 
   
   
@@ -403,6 +500,8 @@ class EffMaker : public TSelector {
   TH1Eff *MuDiLepMTWMHT_;
   TH1Eff *MuDiLepMTWPT_;
   TH1Eff *MuDiLepMTWActivity_;
+  TH2Eff *MuDiLepMTWNJetsBTags_;
+
   
   // elec
   //1D
@@ -411,7 +510,9 @@ class EffMaker : public TSelector {
   TH1Eff *ElecDiLepMTWHT_;
   TH1Eff *ElecDiLepMTWMHT_;
   TH1Eff *ElecDiLepMTWPT_;
-  TH1Eff *ElecDiLepMTWActivity_;  
+  TH1Eff *ElecDiLepMTWActivity_;
+  TH2Eff *ElecDiLepMTWNJetsBTags_;
+
   
   // mu 
   //1D
@@ -445,6 +546,7 @@ class EffMaker : public TSelector {
   TH1Eff *MuDiLepContributionMTWHT_;
   TH1Eff *MuDiLepContributionMTWMHT_;
   TH2Eff *MuDiLepContributionMTWMHTNJets_;
+  TH2Eff *MuDiLepContributionMTWNJetsBTags_;
   
   // elec
   //1D
@@ -453,6 +555,7 @@ class EffMaker : public TSelector {
   TH1Eff *ElecDiLepContributionMTWHT_;
   TH1Eff *ElecDiLepContributionMTWMHT_;
   TH2Eff *ElecDiLepContributionMTWMHTNJets_;
+  TH2Eff *ElecDiLepContributionMTWNJetsBTags_;
   
 
   // single isolated track from mu or electron
@@ -466,23 +569,25 @@ class EffMaker : public TSelector {
   // 2D
   TH2Eff *IsoTrackReductionHTNJets_; 
   TH2Eff *IsoTrackReductionMHTNJets_;
-  TH2Eff *IsoTrackReductionHTMHT_NJetsVeryLow_;
-  TH2Eff *IsoTrackReductionHTMHT_NJetsLow_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets24_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets56_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets7Inf_;
   TH2Eff *IsoTrackReductionHTMHT_NJets2_;
   TH2Eff *IsoTrackReductionHTMHT_NJets3_;
   TH2Eff *IsoTrackReductionHTMHT_NJets4_;
   TH2Eff *IsoTrackReductionHTMHT_NJets5_;
   TH2Eff *IsoTrackReductionHTMHT_NJets6_;
-  TH2Eff *IsoTrackReductionHTMHT_NJetsHigh_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets78_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets9Inf_;
   TH2Eff *IsoTrackReductionBTagNJets_;
   TH2Eff *IsoTrackReductionPTActivity_;
 
-  TH2Eff *IsoTrackReductionHTMHT_NJetsVeryLow_BTags0_;
-  TH2Eff *IsoTrackReductionHTMHT_NJetsLow_BTags0_;
-  TH2Eff *IsoTrackReductionHTMHT_NJetsHigh_BTags0_;
-  TH2Eff *IsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_;
-  TH2Eff *IsoTrackReductionHTMHT_NJetsLow_BTags1Inf_;
-  TH2Eff *IsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets24_BTags0_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets56_BTags0_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets7Inf_BTags0_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets24_BTags1Inf_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets56_BTags1Inf_;
+  TH2Eff *IsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_;
 
   // mu iso tracks
   TH1Eff *ExpectationReductionMuIsoTrackBTagEff_;
@@ -496,16 +601,23 @@ class EffMaker : public TSelector {
   TH2Eff *MuIsoTrackReductionMHTNJets_;
   TH2Eff *MuIsoTrackReductionBTagNJets_;
   TH2Eff *MuIsoTrackReductionPTActivity_;
-  TH2Eff *MuIsoTrackReductionHTMHT_NJetsVeryLow_;
-  TH2Eff *MuIsoTrackReductionHTMHT_NJetsLow_;
-  TH2Eff *MuIsoTrackReductionHTMHT_NJetsHigh_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets24_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets56_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets7Inf_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets2_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets3_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets4_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets5_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets6_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets78_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets9Inf_;
 
-  TH2Eff *MuIsoTrackReductionHTMHT_NJetsVeryLow_BTags0_;
-  TH2Eff *MuIsoTrackReductionHTMHT_NJetsLow_BTags0_;
-  TH2Eff *MuIsoTrackReductionHTMHT_NJetsHigh_BTags0_;
-  TH2Eff *MuIsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_;
-  TH2Eff *MuIsoTrackReductionHTMHT_NJetsLow_BTags1Inf_;
-  TH2Eff *MuIsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets24_BTags0_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets56_BTags0_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets7Inf_BTags0_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets24_BTags1Inf_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets56_BTags1Inf_;
+  TH2Eff *MuIsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_;
   
   //elec iso tracks
   TH1Eff *ExpectationReductionElecIsoTrackBTagEff_;
@@ -519,16 +631,23 @@ class EffMaker : public TSelector {
   TH2Eff *ElecIsoTrackReductionMHTNJets_;
   TH2Eff *ElecIsoTrackReductionBTagNJets_;
   TH2Eff *ElecIsoTrackReductionPTActivity_;
-  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsVeryLow_;
-  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsLow_;
-  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsHigh_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets24_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets56_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets7Inf_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets2_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets3_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets4_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets5_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets6_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets78_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets9Inf_;
 
-  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsVeryLow_BTags0_;
-  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsLow_BTags0_;
-  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsHigh_BTags0_;
-  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_;
-  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsLow_BTags1Inf_;
-  TH2Eff *ElecIsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets24_BTags0_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets56_BTags0_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets7Inf_BTags0_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets24_BTags1Inf_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets56_BTags1Inf_;
+  TH2Eff *ElecIsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_;
   
   //pion iso tracks
   TH1Eff *ExpectationReductionPionIsoTrackBTagEff_;
@@ -538,20 +657,27 @@ class EffMaker : public TSelector {
   TH1Eff *ExpectationReductionPionIsoTrackPTEff_;
   TH1Eff *ExpectationReductionPionIsoTrackActivityEff_;
 
-  TH2Eff *PionIsoTrackReductionHTMHT_NJetsVeryLow_BTags0_;
-  TH2Eff *PionIsoTrackReductionHTMHT_NJetsLow_BTags0_;
-  TH2Eff *PionIsoTrackReductionHTMHT_NJetsHigh_BTags0_;
-  TH2Eff *PionIsoTrackReductionHTMHT_NJetsVeryLow_BTags1Inf_;
-  TH2Eff *PionIsoTrackReductionHTMHT_NJetsLow_BTags1Inf_;
-  TH2Eff *PionIsoTrackReductionHTMHT_NJetsHigh_BTags1Inf_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets24_BTags0_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets56_BTags0_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets7Inf_BTags0_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets24_BTags1Inf_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets56_BTags1Inf_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_;
   //2D
   TH2Eff *PionIsoTrackReductionHTNJets_; 
   TH2Eff *PionIsoTrackReductionMHTNJets_;
   TH2Eff *PionIsoTrackReductionBTagNJets_;
   TH2Eff *PionIsoTrackReductionPTActivity_;
-  TH2Eff *PionIsoTrackReductionHTMHT_NJetsVeryLow_;
-  TH2Eff *PionIsoTrackReductionHTMHT_NJetsLow_;
-  TH2Eff *PionIsoTrackReductionHTMHT_NJetsHigh_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets24_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets56_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets7Inf_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets2_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets3_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets4_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets5_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets6_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets78_;
+  TH2Eff *PionIsoTrackReductionHTMHT_NJets9Inf_;
 
   // MHT/PTW PDFs
   // NJ X NB, merged HT bins

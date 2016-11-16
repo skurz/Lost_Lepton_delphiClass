@@ -32,7 +32,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	const bool useMCForDataTree = false;	// NOT IMPLEMENTED
 
 	// Scale all MC weights by this factor
-	const Double_t scaleFactorWeight = 24480;  // 3998 2585 813  //in units of [pb] //<-check------------------------
+	const Double_t scaleFactorWeight = 24480*3;  // 3998 2585 813  //in units of [pb] //<-check------------------------
 
 	// Add some of the uncertainties in quadrature (if same correlation and similar shape)
 	const bool doCombinedUnc = false;
@@ -59,8 +59,8 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	std::cout<<"Loop on Expectation"<<std::endl;
 
   	Long64_t nentries = LostLeptonExpectation->GetEntries();
-  	for (Long64_t i=0; i<nentries;i++) {
-  		LostLeptonExpectation->GetEntry(i);
+  	for (Long64_t ie=0; ie<nentries;ie++) {
+  		LostLeptonExpectation->GetEntry(ie);
 
 	    if(doQCDbinning) SearchBin = BinQCD;
 	    else SearchBin = Bin;
@@ -115,8 +115,8 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	std::cout<<"Loop on Prediction (MC)"<<std::endl;
 
 	nentries = LostLeptonPrediction->GetEntries();
- 	for (Long64_t i=0; i<nentries;i++) {
- 		LostLeptonPrediction->GetEntry(i);
+ 	for (Long64_t ie=0; ie<nentries;ie++) {
+ 		LostLeptonPrediction->GetEntry(ie);
 
 	    if(doQCDbinning) SearchBin = BinQCD;
 	    else SearchBin = Bin;
@@ -265,8 +265,8 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 		std::cout<<"Loop on Prediction (Data)"<<std::endl;
 		
 		nentries = LostLeptonPredictionData->GetEntries();
-	  	for (Long64_t i=0; i<nentries;i++) {
-		    LostLeptonPredictionData->GetEntry(i);
+	  	for (Long64_t ie=0; ie<nentries;ie++) {
+		    LostLeptonPredictionData->GetEntry(ie);
 
 		    if(doQCDbinning) SearchBin = BinQCD;
 		    else SearchBin = Bin;
@@ -723,7 +723,7 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	// Combine 0L/1L histograms for integration: use ratio from data and fill empty bins with ratio from MC
 	TH1D* avgWeight_0L1L_ = (TH1D*) totalPred_LL_->Clone("avgWeight_0L1L");
 	avgWeight_0L1L_->SetTitle("Prediction / CS (=0L/1L)");
-	for(int i = 1; i < avgWeight_0L1L_->GetNbinsX(); i++){
+	for(int i = 1; i < avgWeight_0L1L_->GetNbinsX()+1; i++){
 		if(avgWeight_LL_->GetBinContent(i)!=0){
 			avgWeight_0L1L_->SetBinContent(i, avgWeight_LL_->GetBinContent(i));
 			avgWeight_0L1L_->SetBinError(i, avgWeight_LL_->GetBinError(i));

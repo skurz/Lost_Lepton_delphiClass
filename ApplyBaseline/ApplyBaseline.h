@@ -117,6 +117,7 @@ public :
    vector<double>  *GenTaus_LeadRecoTrkIso;
    vector<TLorentzVector> *GenTaus_LeadTrk;
    vector<double>  *GenTaus_MT2Activity;
+   vector<int>     *GenTaus_NProngs;
    vector<TLorentzVector> *GenTaus_Nu;
    Int_t           globalTightHalo2016Filter;
    Int_t           HBHEIsoNoiseFilter;
@@ -149,6 +150,9 @@ public :
    vector<bool>    *Jets_ISRMask;
    vector<double>  *Jets_jecFactor;
    vector<double>  *Jets_jecUnc;
+   vector<double>  *Jets_jerFactor;
+   vector<double>  *Jets_jerFactorDown;
+   vector<double>  *Jets_jerFactorUp;
    vector<bool>    *Jets_LeptonMask;
    vector<bool>    *Jets_MHTMask;
    vector<double>  *Jets_muonEnergyFraction;
@@ -368,6 +372,7 @@ public :
    TBranch        *b_GenTaus_LeadRecoTrkIso;   //!
    TBranch        *b_GenTaus_LeadTrk;   //!
    TBranch        *b_GenTaus_MT2Activity;   //!
+   TBranch        *b_GenTaus_NProngs;   //!
    TBranch        *b_GenTaus_Nu;   //!
    TBranch        *b_globalTightHalo2016Filter;   //!
    TBranch        *b_HBHEIsoNoiseFilter;   //!
@@ -400,6 +405,9 @@ public :
    TBranch        *b_Jets_ISRMask;   //!
    TBranch        *b_Jets_jecFactor;   //!
    TBranch        *b_Jets_jecUnc;   //!
+   TBranch        *b_Jets_jerFactor;   //!
+   TBranch        *b_Jets_jerFactorDown;   //!
+   TBranch        *b_Jets_jerFactorUp;   //!
    TBranch        *b_Jets_LeptonMask;   //!
    TBranch        *b_Jets_MHTMask;   //!
    TBranch        *b_Jets_muonEnergyFraction;   //!
@@ -606,6 +614,7 @@ void ApplyBaseline::Init(TTree *tree)
    GenTaus_LeadRecoTrkIso = 0;
    GenTaus_LeadTrk = 0;
    GenTaus_MT2Activity = 0;
+   GenTaus_NProngs = 0;
    GenTaus_Nu = 0;
    Jets = 0;
    Jets_bDiscriminatorCSV = 0;
@@ -621,6 +630,9 @@ void ApplyBaseline::Init(TTree *tree)
    Jets_ISRMask = 0;
    Jets_jecFactor = 0;
    Jets_jecUnc = 0;
+   Jets_jerFactor = 0;
+   Jets_jerFactorDown = 0;
+   Jets_jerFactorUp = 0;
    Jets_LeptonMask = 0;
    Jets_MHTMask = 0;
    Jets_muonEnergyFraction = 0;
@@ -810,6 +822,7 @@ void ApplyBaseline::Init(TTree *tree)
    fChain->SetBranchStatus("GenTaus_LeadRecoTrkIso", 1);
    fChain->SetBranchStatus("GenTaus_LeadTrk", 1);
    fChain->SetBranchStatus("GenTaus_MT2Activity", 1);
+   fChain->SetBranchStatus("GenTaus_NProngs", 1);
    fChain->SetBranchStatus("GenTaus_Nu", 1);
    fChain->SetBranchStatus("globalTightHalo2016Filter", 1);
    fChain->SetBranchStatus("HBHEIsoNoiseFilter", 1);
@@ -842,6 +855,9 @@ void ApplyBaseline::Init(TTree *tree)
    fChain->SetBranchStatus("Jets_ISRMask", 1);
    fChain->SetBranchStatus("Jets_jecFactor", 1);
    fChain->SetBranchStatus("Jets_jecUnc", 1);
+   fChain->SetBranchStatus("Jets_jerFactor", 1);
+   fChain->SetBranchStatus("Jets_jerFactorDown", 1);
+   fChain->SetBranchStatus("Jets_jerFactorUp", 1);
    fChain->SetBranchStatus("Jets_LeptonMask", 1);
    fChain->SetBranchStatus("Jets_MHTMask", 1);
    fChain->SetBranchStatus("Jets_muonEnergyFraction", 1);
@@ -1060,6 +1076,7 @@ void ApplyBaseline::Init(TTree *tree)
    fChain->SetBranchAddress("GenTaus_LeadRecoTrkIso", &GenTaus_LeadRecoTrkIso, &b_GenTaus_LeadRecoTrkIso);
    fChain->SetBranchAddress("GenTaus_LeadTrk", &GenTaus_LeadTrk, &b_GenTaus_LeadTrk);
    fChain->SetBranchAddress("GenTaus_MT2Activity", &GenTaus_MT2Activity, &b_GenTaus_MT2Activity);
+   fChain->SetBranchAddress("GenTaus_NProngs", &GenTaus_NProngs, &b_GenTaus_NProngs);
    fChain->SetBranchAddress("GenTaus_Nu", &GenTaus_Nu, &b_GenTaus_Nu);
    fChain->SetBranchAddress("globalTightHalo2016Filter", &globalTightHalo2016Filter, &b_globalTightHalo2016Filter);
    fChain->SetBranchAddress("HBHEIsoNoiseFilter", &HBHEIsoNoiseFilter, &b_HBHEIsoNoiseFilter);
@@ -1092,6 +1109,9 @@ void ApplyBaseline::Init(TTree *tree)
    fChain->SetBranchAddress("Jets_ISRMask", &Jets_ISRMask, &b_Jets_ISRMask);
    fChain->SetBranchAddress("Jets_jecFactor", &Jets_jecFactor, &b_Jets_jecFactor);
    fChain->SetBranchAddress("Jets_jecUnc", &Jets_jecUnc, &b_Jets_jecUnc);
+   fChain->SetBranchAddress("Jets_jerFactor", &Jets_jerFactor, &b_Jets_jerFactor);
+   fChain->SetBranchAddress("Jets_jerFactorDown", &Jets_jerFactorDown, &b_Jets_jerFactorDown);
+   fChain->SetBranchAddress("Jets_jerFactorUp", &Jets_jerFactorUp, &b_Jets_jerFactorUp);
    fChain->SetBranchAddress("Jets_LeptonMask", &Jets_LeptonMask, &b_Jets_LeptonMask);
    fChain->SetBranchAddress("Jets_MHTMask", &Jets_MHTMask, &b_Jets_MHTMask);
    fChain->SetBranchAddress("Jets_muonEnergyFraction", &Jets_muonEnergyFraction, &b_Jets_muonEnergyFraction);

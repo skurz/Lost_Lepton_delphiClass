@@ -35,8 +35,8 @@ void run_ApplyBaseline_script(std::string outName, std::string inFiles)
 
   Effchain->SetProof();
 
-  Effchain->Add(TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v10/")+TString(inFiles));
+  Effchain->Add(TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v11/")+TString(inFiles));
  
-  Effchain->Process("ApplyBaseline.C++g", TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v10_baseline/")+TString(outName)+TString(".root"));
+  Effchain->Process("ApplyBaseline.C++g", TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v11_baseline/")+TString(outName)+TString(".root"));
 
 }

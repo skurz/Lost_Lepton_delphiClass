@@ -83,7 +83,7 @@ const int scaleMet = 0;
 const bool applyFilters_=true;
 
 // bTag corrections
-const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v10/SLe/tree_");
+const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v11/SLe/tree_");
 const string path_bTagCalib("btag/CSVv2_ichep.csv");
 const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
 
@@ -336,6 +336,7 @@ public :
   vector<double>  *GenTaus_LeadRecoTrkd3=0;
   vector<double>  *GenTaus_LeadRecoTrkIso=0;
   vector<TLorentzVector> *GenTaus_LeadTrk=0;
+  vector<int>     *GenTaus_NProngs=0;
   vector<TLorentzVector> *GenTaus_Nu=0;
 
 
@@ -437,6 +438,7 @@ public :
   TBranch        *b_GenTaus_LeadRecoTrkd3=0;
   TBranch        *b_GenTaus_LeadRecoTrkIso=0;
   TBranch        *b_GenTaus_LeadTrk=0;
+  TBranch        *b_GenTaus_NProngs;   //!
   TBranch        *b_GenTaus_Nu=0;
 
 
@@ -632,6 +634,7 @@ void ExpecMaker::Init(TTree *tree)
     fChain->SetBranchStatus("GenTaus_LeadRecoTrkd3", 1);
     fChain->SetBranchStatus("GenTaus_LeadRecoTrkIso", 1);
     fChain->SetBranchStatus("GenTaus_LeadTrk", 1);
+    fChain->SetBranchStatus("GenTaus_NProngs", 1);
     fChain->SetBranchStatus("GenTaus_Nu", 1);
   }
 
@@ -733,6 +736,7 @@ void ExpecMaker::Init(TTree *tree)
     fChain->SetBranchAddress("GenTaus_LeadRecoTrkd3", &GenTaus_LeadRecoTrkd3, &b_GenTaus_LeadRecoTrkd3);
     fChain->SetBranchAddress("GenTaus_LeadRecoTrkIso", &GenTaus_LeadRecoTrkIso, &b_GenTaus_LeadRecoTrkIso);
     fChain->SetBranchAddress("GenTaus_LeadTrk", &GenTaus_LeadTrk, &b_GenTaus_LeadTrk);
+    fChain->SetBranchAddress("GenTaus_NProngs", &GenTaus_NProngs, &b_GenTaus_NProngs);
     fChain->SetBranchAddress("GenTaus_Nu", &GenTaus_Nu, &b_GenTaus_Nu);
   }
 

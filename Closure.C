@@ -99,10 +99,8 @@ void Closure(string InputPath_Expectation="Expectation.root",
   Float_t         totalWeightDiLep;
   Float_t         totalWeightDiLepIsoTrackReduced;
   Float_t         totalWeightDiLepIsoTrackReducedCombined;
-  Float_t         totalWeight_BTags0;
-  Float_t         totalWeight_BTags1Inf;
-  Float_t         totalWeight_BTags0_noIsoTrack;
-  Float_t         totalWeight_BTags1Inf_noIsoTrack;
+  std::vector<Float_t>*         totalWeight_BTags=0;
+  std::vector<Float_t>*         totalWeight_BTags_noIsoTrack=0;
 
   Float_t         muTotalWeightDiLepIsoTrackReduced;
   Float_t         elecTotalWeightDiLepIsoTrackReduced;
@@ -114,6 +112,8 @@ void Closure(string InputPath_Expectation="Expectation.root",
   Float_t         elecAccWeight;
   Float_t         elecRecoWeight;
   Float_t         elecIsoWeight;
+
+  Float_t         diLepLostWeight;
 
   double totalExp=0, totalPre=0;
   double totalExpError=0, totalPreError=0;
@@ -143,24 +143,128 @@ void Closure(string InputPath_Expectation="Expectation.root",
   
   TH1D* totalExpectation_ = new TH1D("TotalLostLeptonExpectation", "TotalLostLeptonExpectation", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalExpectationWoIso_ = new TH1D("TotalExpectationWoIso", "TotalExpectationWoIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1D* totalExpectationDiLep_ = new TH1D("TotalExpectationDiLep", "TotalExpectationDiLep", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TH1D* totalExpectation_HT_ = new TH1D("totalExpectation_HT","totalExpectation_HT", 20, 300., 2300.);
-  TH1D* totalExpectation_MHT_ = new TH1D("totalExpectation_MHT","totalExpectation_MHT", 12, 250., 1200.);
-  TH1D* totalExpectation_NJets_ = new TH1D("totalExpectation_NJets","totalExpectation_NJets", 9, 1.5, 10.5);
+  // Equal dist:
+  // HT:  0, 300., 2300.
+  // MHT: 20, 250., 1250.
+  // Search bins:
+  // HT: nHTbins = 4 HTbins={300., 500., 1000., 2500.} fine: HTbins={300., 500., 750., 1000., 1500., 2500.}
+  // MHT: nMHTbins = 6 MHTbins={250., 300., 350., 500., 750., 1250.}
+  const int nHTbins = 6-1;
+  const double HTbins[] = {300., 500., 750., 1000., 1500., 2500.};
+  const int nMHTbins = 6-1;
+  const double MHTbins[] = {250., 300., 350., 500., 750., 1250.};
+  const int nNJetsbins = 6-1;
+  const double NJetsbins[] = {1.5, 2.5, 4.5, 6.5, 8.5, 20.};
+  TH1D* totalExpectation_HT_ = new TH1D("totalExpectation_HT","totalExpectation_HT", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_ = new TH1D("totalExpectation_MHT","totalExpectation_MHT", nMHTbins, MHTbins);
+  TH1D* totalExpectation_NJets_ = new TH1D("totalExpectation_NJets","totalExpectation_NJets", nNJetsbins, NJetsbins);
   TH1D* totalExpectation_BTags_ = new TH1D("totalExpectation_BTags","totalExpectation_BTags", 7, -0.5, 6.5);
+
+  TH1D* totalExpectation_HT_NJets2_ = new TH1D("totalExpectation_HT_NJets2","totalExpectation_HT_NJets2", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets2_ = new TH1D("totalExpectation_MHT_NJets2","totalExpectation_MHT_NJets2", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets2_BTags0_ = new TH1D("totalExpectation_HT_NJets2_BTags0","totalExpectation_HT_NJets2_BTags0", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets2_BTags0_ = new TH1D("totalExpectation_MHT_NJets2_BTags0","totalExpectation_MHT_NJets2_BTags0", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets2_BTags1_ = new TH1D("totalExpectation_HT_NJets2_BTags1","totalExpectation_HT_NJets2_BTags1", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets2_BTags1_ = new TH1D("totalExpectation_MHT_NJets2_BTags1","totalExpectation_MHT_NJets2_BTags1", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets2_BTags2Inf_ = new TH1D("totalExpectation_HT_NJets2_BTags2Inf","totalExpectation_HT_NJets2_BTags2Inf", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets2_BTags2Inf_ = new TH1D("totalExpectation_MHT_NJets2_BTags2Inf","totalExpectation_MHT_NJets2_BTags2Inf", nMHTbins, MHTbins);
+
+  TH1D* totalExpectation_HT_NJets34_ = new TH1D("totalExpectation_HT_NJets34","totalExpectation_HT_NJets34", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets34_ = new TH1D("totalExpectation_MHT_NJets34","totalExpectation_MHT_NJets34", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets34_BTags0_ = new TH1D("totalExpectation_HT_NJets34_BTags0","totalExpectation_HT_NJets34_BTags0", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets34_BTags0_ = new TH1D("totalExpectation_MHT_NJets34_BTags0","totalExpectation_MHT_NJets34_BTags0", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets34_BTags1_ = new TH1D("totalExpectation_HT_NJets34_BTags1","totalExpectation_HT_NJets34_BTags1", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets34_BTags1_ = new TH1D("totalExpectation_MHT_NJets34_BTags1","totalExpectation_MHT_NJets34_BTags1", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets34_BTags2Inf_ = new TH1D("totalExpectation_HT_NJets34_BTags2Inf","totalExpectation_HT_NJets34_BTags2Inf", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets34_BTags2Inf_ = new TH1D("totalExpectation_MHT_NJets34_BTags2Inf","totalExpectation_MHT_NJets34_BTags2Inf", nMHTbins, MHTbins);
+
+  TH1D* totalExpectation_HT_NJets56_ = new TH1D("totalExpectation_HT_NJets56","totalExpectation_HT_NJets56", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets56_ = new TH1D("totalExpectation_MHT_NJets56","totalExpectation_MHT_NJets56", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets56_BTags0_ = new TH1D("totalExpectation_HT_NJets56_BTags0","totalExpectation_HT_NJets56_BTags0", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets56_BTags0_ = new TH1D("totalExpectation_MHT_NJets56_BTags0","totalExpectation_MHT_NJets56_BTags0", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets56_BTags1_ = new TH1D("totalExpectation_HT_NJets56_BTags1","totalExpectation_HT_NJets56_BTags1", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets56_BTags1_ = new TH1D("totalExpectation_MHT_NJets56_BTags1","totalExpectation_MHT_NJets56_BTags1", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets56_BTags2Inf_ = new TH1D("totalExpectation_HT_NJets56_BTags2Inf","totalExpectation_HT_NJets56_BTags2Inf", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets56_BTags2Inf_ = new TH1D("totalExpectation_MHT_NJets56_BTags2Inf","totalExpectation_MHT_NJets56_BTags2Inf", nMHTbins, MHTbins);
+
+  TH1D* totalExpectation_HT_NJets78_ = new TH1D("totalExpectation_HT_NJets78","totalExpectation_HT_NJets78", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets78_ = new TH1D("totalExpectation_MHT_NJets78","totalExpectation_MHT_NJets78", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets78_BTags0_ = new TH1D("totalExpectation_HT_NJets78_BTags0","totalExpectation_HT_NJets78_BTags0", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets78_BTags0_ = new TH1D("totalExpectation_MHT_NJets78_BTags0","totalExpectation_MHT_NJets78_BTags0", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets78_BTags1_ = new TH1D("totalExpectation_HT_NJets78_BTags1","totalExpectation_HT_NJets78_BTags1", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets78_BTags1_ = new TH1D("totalExpectation_MHT_NJets78_BTags1","totalExpectation_MHT_NJets78_BTags1", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets78_BTags2Inf_ = new TH1D("totalExpectation_HT_NJets78_BTags2Inf","totalExpectation_HT_NJets78_BTags2Inf", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets78_BTags2Inf_ = new TH1D("totalExpectation_MHT_NJets78_BTags2Inf","totalExpectation_MHT_NJets78_BTags2Inf", nMHTbins, MHTbins);
+
+  TH1D* totalExpectation_HT_NJets9Inf_ = new TH1D("totalExpectation_HT_NJets9Inf","totalExpectation_HT_NJets9Inf", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets9Inf_ = new TH1D("totalExpectation_MHT_NJets9Inf","totalExpectation_MHT_NJets9Inf", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets9Inf_BTags0_ = new TH1D("totalExpectation_HT_NJets9Inf_BTags0","totalExpectation_HT_NJets9Inf_BTags0", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets9Inf_BTags0_ = new TH1D("totalExpectation_MHT_NJets9Inf_BTags0","totalExpectation_MHT_NJets9Inf_BTags0", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets9Inf_BTags1_ = new TH1D("totalExpectation_HT_NJets9Inf_BTags1","totalExpectation_HT_NJets9Inf_BTags1", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets9Inf_BTags1_ = new TH1D("totalExpectation_MHT_NJets9Inf_BTags1","totalExpectation_MHT_NJets9Inf_BTags1", nMHTbins, MHTbins);
+  TH1D* totalExpectation_HT_NJets9Inf_BTags2Inf_ = new TH1D("totalExpectation_HT_NJets9Inf_BTags2Inf","totalExpectation_HT_NJets9Inf_BTags2Inf", nHTbins, HTbins);
+  TH1D* totalExpectation_MHT_NJets9Inf_BTags2Inf_ = new TH1D("totalExpectation_MHT_NJets9Inf_BTags2Inf","totalExpectation_MHT_NJets9Inf_BTags2Inf", nMHTbins, MHTbins);
 
   TH1D* totalPrediction_ = new TH1D("TotalLostLeptonPrediction", "TotalLostLeptonPrediction", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPredictionWoIso_ = new TH1D("TotalLostLeptonPredictionWoIso", "TotalLostLeptonPredictionWoIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1D* totalPredictionDiLep_ = new TH1D("TotalLostLeptonPredictionDiLep", "TotalLostLeptonPredictionDiLep", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
   TH1D* totalPredictionMu_ = new TH1D("TotalLostLeptonPredictionMu", "TotalLostLeptonPredictionMu", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPredictionElec_ = new TH1D("TotalLostLeptonPredictionElec", "TotalLostLeptonPredictionElec", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPredictionMuWoIso_ = new TH1D("TotalLostLeptonPredictionMuWoIso", "TotalLostLeptonPredictionMuWoIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPredictionElecWoIso_ = new TH1D("TotalLostLeptonPredictionElecWoIso", "TotalLostLeptonPredictionElecWoIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
-  TH1D* totalPrediction_HT_ = new TH1D("totalPrediction_HT","totalPrediction_HT", 20, 300., 2300.);
-  TH1D* totalPrediction_MHT_ = new TH1D("totalPrediction_MHT","totalPrediction_MHT", 12, 250., 1200.);
-  TH1D* totalPrediction_NJets_ = new TH1D("totalPrediction_NJets","totalPrediction_NJets", 9, 1.5, 10.5);
+  TH1D* totalPrediction_HT_ = new TH1D("totalPrediction_HT","totalPrediction_HT", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_ = new TH1D("totalPrediction_MHT","totalPrediction_MHT", nMHTbins, MHTbins);
+  TH1D* totalPrediction_NJets_ = new TH1D("totalPrediction_NJets","totalPrediction_NJets", nNJetsbins, NJetsbins);
   TH1D* totalPrediction_BTags_ = new TH1D("totalPrediction_BTags","totalPrediction_BTags", 7, -0.5, 6.5);
+
+  TH1D* totalPrediction_HT_NJets2_ = new TH1D("totalPrediction_HT_NJets2","totalPrediction_HT_NJets2", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets2_ = new TH1D("totalPrediction_MHT_NJets2","totalPrediction_MHT_NJets2", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets2_BTags0_ = new TH1D("totalPrediction_HT_NJets2_BTags0","totalPrediction_HT_NJets2_BTags0", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets2_BTags0_ = new TH1D("totalPrediction_MHT_NJets2_BTags0","totalPrediction_MHT_NJets2_BTags0", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets2_BTags1_ = new TH1D("totalPrediction_HT_NJets2_BTags1","totalPrediction_HT_NJets2_BTags1", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets2_BTags1_ = new TH1D("totalPrediction_MHT_NJets2_BTags1","totalPrediction_MHT_NJets2_BTags1", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets2_BTags2Inf_ = new TH1D("totalPrediction_HT_NJets2_BTags2Inf","totalPrediction_HT_NJets2_BTags2Inf", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets2_BTags2Inf_ = new TH1D("totalPrediction_MHT_NJets2_BTags2Inf","totalPrediction_MHT_NJets2_BTags2Inf", nMHTbins, MHTbins);
+
+  TH1D* totalPrediction_HT_NJets34_ = new TH1D("totalPrediction_HT_NJets34","totalPrediction_HT_NJets34", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets34_ = new TH1D("totalPrediction_MHT_NJets34","totalPrediction_MHT_NJets34", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets34_BTags0_ = new TH1D("totalPrediction_HT_NJets34_BTags0","totalPrediction_HT_NJets34_BTags0", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets34_BTags0_ = new TH1D("totalPrediction_MHT_NJets34_BTags0","totalPrediction_MHT_NJets34_BTags0", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets34_BTags1_ = new TH1D("totalPrediction_HT_NJets34_BTags1","totalPrediction_HT_NJets34_BTags1", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets34_BTags1_ = new TH1D("totalPrediction_MHT_NJets34_BTags1","totalPrediction_MHT_NJets34_BTags1", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets34_BTags2Inf_ = new TH1D("totalPrediction_HT_NJets34_BTags2Inf","totalPrediction_HT_NJets34_BTags2Inf", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets34_BTags2Inf_ = new TH1D("totalPrediction_MHT_NJets34_BTags2Inf","totalPrediction_MHT_NJets34_BTags2Inf", nMHTbins, MHTbins);
+
+  TH1D* totalPrediction_HT_NJets56_ = new TH1D("totalPrediction_HT_NJets56","totalPrediction_HT_NJets56", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets56_ = new TH1D("totalPrediction_MHT_NJets56","totalPrediction_MHT_NJets56", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets56_BTags0_ = new TH1D("totalPrediction_HT_NJets56_BTags0","totalPrediction_HT_NJets56_BTags0", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets56_BTags0_ = new TH1D("totalPrediction_MHT_NJets56_BTags0","totalPrediction_MHT_NJets56_BTags0", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets56_BTags1_ = new TH1D("totalPrediction_HT_NJets56_BTags1","totalPrediction_HT_NJets56_BTags1", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets56_BTags1_ = new TH1D("totalPrediction_MHT_NJets56_BTags1","totalPrediction_MHT_NJets56_BTags1", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets56_BTags2Inf_ = new TH1D("totalPrediction_HT_NJets56_BTags2Inf","totalPrediction_HT_NJets56_BTags2Inf", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets56_BTags2Inf_ = new TH1D("totalPrediction_MHT_NJets56_BTags2Inf","totalPrediction_MHT_NJets56_BTags2Inf", nMHTbins, MHTbins);
+
+  TH1D* totalPrediction_HT_NJets78_ = new TH1D("totalPrediction_HT_NJets78","totalPrediction_HT_NJets78", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets78_ = new TH1D("totalPrediction_MHT_NJets78","totalPrediction_MHT_NJets78", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets78_BTags0_ = new TH1D("totalPrediction_HT_NJets78_BTags0","totalPrediction_HT_NJets78_BTags0", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets78_BTags0_ = new TH1D("totalPrediction_MHT_NJets78_BTags0","totalPrediction_MHT_NJets78_BTags0", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets78_BTags1_ = new TH1D("totalPrediction_HT_NJets78_BTags1","totalPrediction_HT_NJets78_BTags1", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets78_BTags1_ = new TH1D("totalPrediction_MHT_NJets78_BTags1","totalPrediction_MHT_NJets78_BTags1", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets78_BTags2Inf_ = new TH1D("totalPrediction_HT_NJets78_BTags2Inf","totalPrediction_HT_NJets78_BTags2Inf", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets78_BTags2Inf_ = new TH1D("totalPrediction_MHT_NJets78_BTags2Inf","totalPrediction_MHT_NJets78_BTags2Inf", nMHTbins, MHTbins);
+
+  TH1D* totalPrediction_HT_NJets9Inf_ = new TH1D("totalPrediction_HT_NJets9Inf","totalPrediction_HT_NJets9Inf", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets9Inf_ = new TH1D("totalPrediction_MHT_NJets9Inf","totalPrediction_MHT_NJets9Inf", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets9Inf_BTags0_ = new TH1D("totalPrediction_HT_NJets9Inf_BTags0","totalPrediction_HT_NJets9Inf_BTags0", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets9Inf_BTags0_ = new TH1D("totalPrediction_MHT_NJets9Inf_BTags0","totalPrediction_MHT_NJets9Inf_BTags0", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets9Inf_BTags1_ = new TH1D("totalPrediction_HT_NJets9Inf_BTags1","totalPrediction_HT_NJets9Inf_BTags1", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets9Inf_BTags1_ = new TH1D("totalPrediction_MHT_NJets9Inf_BTags1","totalPrediction_MHT_NJets9Inf_BTags1", nMHTbins, MHTbins);
+  TH1D* totalPrediction_HT_NJets9Inf_BTags2Inf_ = new TH1D("totalPrediction_HT_NJets9Inf_BTags2Inf","totalPrediction_HT_NJets9Inf_BTags2Inf", nHTbins, HTbins);
+  TH1D* totalPrediction_MHT_NJets9Inf_BTags2Inf_ = new TH1D("totalPrediction_MHT_NJets9Inf_BTags2Inf","totalPrediction_MHT_NJets9Inf_BTags2Inf", nMHTbins, MHTbins);
     
   // separted closure
   TH1D* totalExpectationMuAcc_ = new TH1D("TotalLostLeptonExpecationMuAcc", "TotalLostLeptonExpecationMuAcc", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
@@ -342,8 +446,8 @@ void Closure(string InputPath_Expectation="Expectation.root",
   Long64_t nentries = LostLeptonExpectation->GetEntries();  
 
   Long64_t nbytes = 0;
-  for (Long64_t i=0; i<nentries;i++) {
-    nbytes += LostLeptonExpectation->GetEntry(i);
+  for (Long64_t j=0; j<nentries;j++) {
+    nbytes += LostLeptonExpectation->GetEntry(j);
 
     if(doQCDbinning){
       SearchBin = BinQCD;
@@ -372,6 +476,7 @@ void Closure(string InputPath_Expectation="Expectation.root",
     for(int i = 0; i < nLoops; i++){
       if(doBtagProbabilities){
         scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
+        BTags = i;
       }else{
         scaledWeight = Weight * scaleFactorWeight;
       }
@@ -388,11 +493,14 @@ void Closure(string InputPath_Expectation="Expectation.root",
         totalExp+=scaledWeight;
         totalExpError+= scaledWeight*scaledWeight;
 
+        if(ExpectationDiLep == 1) totalExpectationDiLep_->Fill(Bin_bTags.at(i), scaledWeight);
+
         if(muAcc==0)
           {
           totalExpectationMuAcc_->Fill(Bin_bTags.at(i), scaledWeight);
           totalExpectationMuAccNJets_->Fill(NJets, scaledWeight);
-          totalExpectationMuAccBTag_->Fill(i, scaledWeight);
+          if(!doBtagProbabilities) totalExpectationMuAccBTag_->Fill(BTags, scaledWeight);
+          else totalExpectationMuAccBTag_->Fill(i, scaledWeight);
           totalExpectationMuAccHT_->Fill(HT, scaledWeight);
           totalExpectationMuAccMHT_->Fill(MHT, scaledWeight);
           totalExpMuAcc+=scaledWeight;
@@ -401,7 +509,8 @@ void Closure(string InputPath_Expectation="Expectation.root",
           {
           totalExpectationMuReco_->Fill(Bin_bTags.at(i), scaledWeight);
           totalExpectationMuRecoNJets_->Fill(NJets, scaledWeight);
-          totalExpectationMuRecoBTag_->Fill(i, scaledWeight);
+          if(!doBtagProbabilities) totalExpectationMuRecoBTag_->Fill(BTags, scaledWeight);
+          else totalExpectationMuRecoBTag_->Fill(i, scaledWeight);
           totalExpectationMuRecoHT_->Fill(HT, scaledWeight);
           totalExpectationMuRecoMHT_->Fill(MHT, scaledWeight);
           totalExpMuReco+=scaledWeight;
@@ -410,7 +519,8 @@ void Closure(string InputPath_Expectation="Expectation.root",
           {
           totalExpectationMuIso_->Fill(Bin_bTags.at(i), scaledWeight);
           totalExpectationMuIsoNJets_->Fill(NJets, scaledWeight);
-          totalExpectationMuIsoBTag_->Fill(i, scaledWeight);
+          if(!doBtagProbabilities) totalExpectationMuIsoBTag_->Fill(BTags, scaledWeight);
+          else totalExpectationMuIsoBTag_->Fill(i, scaledWeight);
           totalExpectationMuIsoHT_->Fill(HT, scaledWeight);
           totalExpectationMuIsoMHT_->Fill(MHT, scaledWeight);
           totalExpMuIso+=scaledWeight;
@@ -420,7 +530,8 @@ void Closure(string InputPath_Expectation="Expectation.root",
           {
           totalExpectationElecAcc_->Fill(Bin_bTags.at(i), scaledWeight);
           totalExpectationElecAccNJets_->Fill(NJets, scaledWeight);
-          totalExpectationElecAccBTag_->Fill(i, scaledWeight);
+          if(!doBtagProbabilities) totalExpectationElecAccBTag_->Fill(BTags, scaledWeight);
+          else totalExpectationElecAccBTag_->Fill(i, scaledWeight);
           totalExpectationElecAccHT_->Fill(HT, scaledWeight);
           totalExpectationElecAccMHT_->Fill(MHT, scaledWeight);
           totalExpElecAcc+=scaledWeight;
@@ -430,7 +541,8 @@ void Closure(string InputPath_Expectation="Expectation.root",
           {
           totalExpectationElecReco_->Fill(Bin_bTags.at(i), scaledWeight);
           totalExpectationElecRecoNJets_->Fill(NJets, scaledWeight);
-          totalExpectationElecRecoBTag_->Fill(i, scaledWeight);
+          if(!doBtagProbabilities) totalExpectationElecRecoBTag_->Fill(BTags, scaledWeight);
+          else totalExpectationElecRecoBTag_->Fill(i, scaledWeight);
           totalExpectationElecRecoHT_->Fill(HT, scaledWeight);
           totalExpectationElecRecoMHT_->Fill(MHT, scaledWeight);
           totalExpElecReco+=scaledWeight;
@@ -439,14 +551,15 @@ void Closure(string InputPath_Expectation="Expectation.root",
           {
           totalExpectationElecIso_->Fill(Bin_bTags.at(i), scaledWeight);
           totalExpectationElecIsoNJets_->Fill(NJets, scaledWeight);
-          totalExpectationElecIsoBTag_->Fill(i, scaledWeight);
+          if(!doBtagProbabilities) totalExpectationElecIsoBTag_->Fill(BTags, scaledWeight);
+          else totalExpectationElecIsoBTag_->Fill(i, scaledWeight);
           totalExpectationElecIsoHT_->Fill(HT, scaledWeight);
           totalExpectationElecIsoMHT_->Fill(MHT, scaledWeight);
           totalExpElecIso+=scaledWeight;
           }
       }
       if(Expectation==1 && ExpectationReductionIsoTrack==0)
-        {
+      {
         totalExpectation_->Fill(Bin_bTags.at(i), scaledWeight);
         totalExpIsoTrack+=scaledWeight;
         totalExpIsoTrackError+= scaledWeight*scaledWeight;
@@ -454,8 +567,79 @@ void Closure(string InputPath_Expectation="Expectation.root",
         totalExpectation_HT_->Fill(HT, scaledWeight);
         totalExpectation_MHT_->Fill(MHT, scaledWeight);
         totalExpectation_NJets_->Fill(NJets, scaledWeight);
-        totalExpectation_BTags_->Fill(i, scaledWeight);
-        }
+        if(!doBtagProbabilities) totalExpectation_BTags_->Fill(BTags, scaledWeight);
+        else totalExpectation_BTags_->Fill(i, scaledWeight);
+
+        int BTags_i = BTags;
+        if(doBtagProbabilities) BTags_i = i;
+
+        if(NJets < 2.5){
+          	totalExpectation_HT_NJets2_->Fill(HT, scaledWeight);
+            totalExpectation_MHT_NJets2_->Fill(MHT, scaledWeight);
+          	if(BTags_i < 0.5){
+          		totalExpectation_HT_NJets2_BTags0_->Fill(HT, scaledWeight);
+    			    totalExpectation_MHT_NJets2_BTags0_->Fill(MHT, scaledWeight);
+          	}else if(BTags_i < 1.5){
+          		totalExpectation_HT_NJets2_BTags1_->Fill(HT, scaledWeight);
+    			totalExpectation_MHT_NJets2_BTags1_->Fill(MHT, scaledWeight);
+          	}else{
+          		totalExpectation_HT_NJets2_BTags2Inf_->Fill(HT, scaledWeight);
+    			    totalExpectation_MHT_NJets2_BTags2Inf_->Fill(MHT, scaledWeight);
+          	}			
+    		}else if(NJets < 4.5){
+    			totalExpectation_HT_NJets34_->Fill(HT, scaledWeight);
+    			totalExpectation_MHT_NJets34_->Fill(MHT, scaledWeight);
+            	if(BTags_i < 0.5){
+            		totalExpectation_HT_NJets34_BTags0_->Fill(HT, scaledWeight);
+    				    totalExpectation_MHT_NJets34_BTags0_->Fill(MHT, scaledWeight);
+            	}else if(BTags_i < 1.5){
+            		totalExpectation_HT_NJets34_BTags1_->Fill(HT, scaledWeight);
+    				    totalExpectation_MHT_NJets34_BTags1_->Fill(MHT, scaledWeight);
+            	}else{
+            		totalExpectation_HT_NJets34_BTags2Inf_->Fill(HT, scaledWeight);
+    				    totalExpectation_MHT_NJets34_BTags2Inf_->Fill(MHT, scaledWeight);
+            	}	
+    		}else if(NJets < 6.5){
+    			totalExpectation_HT_NJets56_->Fill(HT, scaledWeight);
+    			totalExpectation_MHT_NJets56_->Fill(MHT, scaledWeight);
+            	if(BTags_i < 0.5){
+            		totalExpectation_HT_NJets56_BTags0_->Fill(HT, scaledWeight);
+    				    totalExpectation_MHT_NJets56_BTags0_->Fill(MHT, scaledWeight);
+            	}else if(BTags_i < 1.5){
+            		totalExpectation_HT_NJets56_BTags1_->Fill(HT, scaledWeight);
+    				    totalExpectation_MHT_NJets56_BTags1_->Fill(MHT, scaledWeight);
+            	}else{
+            		totalExpectation_HT_NJets56_BTags2Inf_->Fill(HT, scaledWeight);
+    				    totalExpectation_MHT_NJets56_BTags2Inf_->Fill(MHT, scaledWeight);
+            	}	
+    		}else if(NJets < 8.5){
+    			totalExpectation_HT_NJets78_->Fill(HT, scaledWeight);
+    			totalExpectation_MHT_NJets78_->Fill(MHT, scaledWeight);
+            	if(BTags_i < 0.5){
+            		totalExpectation_HT_NJets78_BTags0_->Fill(HT, scaledWeight);
+    				    totalExpectation_MHT_NJets78_BTags0_->Fill(MHT, scaledWeight);
+            	}else if(BTags_i < 1.5){
+            		totalExpectation_HT_NJets78_BTags1_->Fill(HT, scaledWeight);
+    				    totalExpectation_MHT_NJets78_BTags1_->Fill(MHT, scaledWeight);
+            	}else{
+            		totalExpectation_HT_NJets78_BTags2Inf_->Fill(HT, scaledWeight);
+    				    totalExpectation_MHT_NJets78_BTags2Inf_->Fill(MHT, scaledWeight);
+            	}	
+    		}else{
+    			   totalExpectation_HT_NJets9Inf_->Fill(HT, scaledWeight);
+    			   totalExpectation_MHT_NJets9Inf_->Fill(MHT, scaledWeight);
+            	if(BTags_i < 0.5){
+            		totalExpectation_HT_NJets9Inf_BTags0_->Fill(HT, scaledWeight);
+    				    totalExpectation_MHT_NJets9Inf_BTags0_->Fill(MHT, scaledWeight);
+            	}else if(BTags_i < 1.5){
+            		totalExpectation_HT_NJets9Inf_BTags1_->Fill(HT, scaledWeight);
+    				    totalExpectation_MHT_NJets9Inf_BTags1_->Fill(MHT, scaledWeight);
+            	}else{
+            		totalExpectation_HT_NJets9Inf_BTags2Inf_->Fill(HT, scaledWeight);
+    				    totalExpectation_MHT_NJets9Inf_BTags2Inf_->Fill(MHT, scaledWeight);
+            	}	
+    		}
+      }
     }
   }
 
@@ -500,22 +684,12 @@ void Closure(string InputPath_Expectation="Expectation.root",
   LostLeptonPrediction->SetBranchAddress("Electrons",&Electrons);
   LostLeptonPrediction->SetBranchStatus("totalWeightDiLep",1);
   LostLeptonPrediction->SetBranchAddress("totalWeightDiLep",&totalWeightDiLep);
-  LostLeptonPrediction->SetBranchStatus("totalWeightDiLepIsoTrackReduced",1);
-  LostLeptonPrediction->SetBranchAddress("totalWeightDiLepIsoTrackReduced",&totalWeightDiLepIsoTrackReduced);
   LostLeptonPrediction->SetBranchStatus("totalWeightDiLepIsoTrackReducedCombined",1);
   LostLeptonPrediction->SetBranchAddress("totalWeightDiLepIsoTrackReducedCombined",&totalWeightDiLepIsoTrackReducedCombined);
-  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags0",1);
-  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags0",&totalWeight_BTags0);
-  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags1Inf",1);
-  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags1Inf",&totalWeight_BTags1Inf);
-  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags0_noIsoTrack",1);
-  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags0_noIsoTrack",&totalWeight_BTags0_noIsoTrack);
-  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags1Inf_noIsoTrack",1);
-  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags1Inf_noIsoTrack",&totalWeight_BTags1Inf_noIsoTrack);
-  LostLeptonPrediction->SetBranchStatus("muTotalWeightDiLepIsoTrackReduced",1);
-  LostLeptonPrediction->SetBranchAddress("muTotalWeightDiLepIsoTrackReduced",&muTotalWeightDiLepIsoTrackReduced);
-  LostLeptonPrediction->SetBranchStatus("elecTotalWeightDiLepIsoTrackReduced",1);
-  LostLeptonPrediction->SetBranchAddress("elecTotalWeightDiLepIsoTrackReduced",&elecTotalWeightDiLepIsoTrackReduced);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags",1);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags",&totalWeight_BTags);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags_noIsoTrack",1);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags_noIsoTrack",&totalWeight_BTags_noIsoTrack);
   LostLeptonPrediction->SetBranchStatus("muIsoWeight",1);
   LostLeptonPrediction->SetBranchStatus("muRecoWeight",1);
   LostLeptonPrediction->SetBranchStatus("muAccWeight",1);
@@ -528,13 +702,15 @@ void Closure(string InputPath_Expectation="Expectation.root",
   LostLeptonPrediction->SetBranchAddress("elecAccWeight",&elecAccWeight);
   LostLeptonPrediction->SetBranchAddress("elecRecoWeight",&elecRecoWeight);
   LostLeptonPrediction->SetBranchAddress("elecIsoWeight",&elecIsoWeight);
+  LostLeptonPrediction->SetBranchStatus("diLepLostWeight",1);
+  LostLeptonPrediction->SetBranchAddress("diLepLostWeight",&diLepLostWeight);
 
   std::cout<<"Loop on Prediction (MC)"<<std::endl;
 
   nentries = LostLeptonPrediction->GetEntries();
   nbytes = 0;
-  for (Long64_t i=0; i<nentries;i++) {
-    nbytes += LostLeptonPrediction->GetEntry(i);
+  for (Long64_t j=0; j<nentries;j++) {
+    nbytes += LostLeptonPrediction->GetEntry(j);
 
     if(doQCDbinning){
       SearchBin = BinQCD;
@@ -561,58 +737,182 @@ void Closure(string InputPath_Expectation="Expectation.root",
       nLoops = 3;
     }
 
-      //fill event 4 times weighting with the btag probability
-      for(int i = 0; i < nLoops; i++){
-        double scaleFactorWeightBtagProb;
-        if(doBtagProbabilities){
-          scaleFactorWeightBtagProb = scaleFactorWeight * bTagProb->at(i);
-          scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
-        }else{
-          scaleFactorWeightBtagProb = scaleFactorWeight;
-          scaledWeight = Weight * scaleFactorWeight;
-        }
+	  //fill event 4 times weighting with the btag probability
+	  for(int i = 0; i < nLoops; i++){
+	    double scaleFactorWeightBtagProb;
+	    if(doBtagProbabilities){
+	      scaleFactorWeightBtagProb = scaleFactorWeight * bTagProb->at(i);
+	      scaledWeight = Weight * scaleFactorWeight * bTagProb->at(i);
+	    }else{
+	      scaleFactorWeightBtagProb = scaleFactorWeight;
+	      scaledWeight = Weight * scaleFactorWeight;
+	    }
 
+    if(!doBtagProbabilities){
         totalPrediction_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);        
         totalPreIsoTrack+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2;
         totalPreIsoTrackError+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2*totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2;       
 
         totalPredictionWoIso_->Fill(Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb/2);
         totalPre+=totalWeightDiLep*scaleFactorWeightBtagProb/2;
-        totalPreError+= totalWeightDiLep*scaleFactorWeightBtagProb/2*totalWeightDiLep*scaleFactorWeightBtagProb/2;         
+        totalPreError+= totalWeightDiLep*scaleFactorWeightBtagProb/2*totalWeightDiLep*scaleFactorWeightBtagProb/2;
+
+        totalPredictionDiLep_->Fill(Bin_bTags.at(i), diLepLostWeight*scaleFactorWeightBtagProb/2);             
             
         totalPrediction_HT_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         totalPrediction_MHT_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         totalPrediction_NJets_->Fill(NJets, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-        totalPrediction_BTags_->Fill(i, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        totalPrediction_BTags_->Fill(BTags, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
 
-/*        if(i==0){
-          totalPrediction_->Fill(Bin_bTags.at(i), totalWeight_BTags0*scaleFactorWeightBtagProb/2);
-          totalPreIsoTrack+=totalWeight_BTags0*scaleFactorWeightBtagProb/2;
-          totalPreIsoTrackError+=totalWeight_BTags0*scaleFactorWeightBtagProb/2*totalWeight_BTags0*scaleFactorWeightBtagProb/2;
+        if(NJets < 2.5){
+        	totalPrediction_HT_NJets2_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+			totalPrediction_MHT_NJets2_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	if(BTags < 0.5){
+        		totalPrediction_HT_NJets2_BTags0_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets2_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}else if(BTags < 1.5){
+        		totalPrediction_HT_NJets2_BTags1_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets2_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}else{
+        		totalPrediction_HT_NJets2_BTags2Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets2_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}			
+		}else if(NJets < 4.5){
+			totalPrediction_HT_NJets34_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+			totalPrediction_MHT_NJets34_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	if(BTags < 0.5){
+        		totalPrediction_HT_NJets34_BTags0_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets34_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}else if(BTags < 1.5){
+        		totalPrediction_HT_NJets34_BTags1_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets34_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}else{
+        		totalPrediction_HT_NJets34_BTags2Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets34_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}	
+		}else if(NJets < 6.5){
+			totalPrediction_HT_NJets56_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+			totalPrediction_MHT_NJets56_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	if(BTags < 0.5){
+        		totalPrediction_HT_NJets56_BTags0_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets56_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}else if(BTags < 1.5){
+        		totalPrediction_HT_NJets56_BTags1_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets56_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}else{
+        		totalPrediction_HT_NJets56_BTags2Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets56_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}	
+		}else if(NJets < 8.5){
+			totalPrediction_HT_NJets78_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+			totalPrediction_MHT_NJets78_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	if(BTags < 0.5){
+        		totalPrediction_HT_NJets78_BTags0_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets78_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}else if(BTags < 1.5){
+        		totalPrediction_HT_NJets78_BTags1_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets78_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}else{
+        		totalPrediction_HT_NJets78_BTags2Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets78_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}	
+		}else{
+			totalPrediction_HT_NJets9Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+			totalPrediction_MHT_NJets9Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	if(BTags < 0.5){
+        		totalPrediction_HT_NJets9Inf_BTags0_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets9Inf_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}else if(BTags < 1.5){
+        		totalPrediction_HT_NJets9Inf_BTags1_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets9Inf_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}else{
+        		totalPrediction_HT_NJets9Inf_BTags2Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPrediction_MHT_NJets9Inf_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+        	}	
+		}
+    }else{
+	      totalPrediction_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+	      totalPreIsoTrack+=totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2;
+	      totalPreIsoTrackError+=totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2*totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2;
 
-          totalPredictionWoIso_->Fill(Bin_bTags.at(i), totalWeight_BTags0_noIsoTrack*scaleFactorWeightBtagProb/2);
-          totalPre+=totalWeight_BTags0_noIsoTrack*scaleFactorWeightBtagProb/2;
-          totalPreError+= totalWeight_BTags0_noIsoTrack*scaleFactorWeightBtagProb/2*totalWeight_BTags0_noIsoTrack*scaleFactorWeightBtagProb/2;         
-              
-          totalPrediction_HT_->Fill(HT, totalWeight_BTags0*scaleFactorWeightBtagProb/2);
-          totalPrediction_MHT_->Fill(MHT, totalWeight_BTags0*scaleFactorWeightBtagProb/2);
-          totalPrediction_NJets_->Fill(NJets, totalWeight_BTags0*scaleFactorWeightBtagProb/2);
-          totalPrediction_BTags_->Fill(i, totalWeight_BTags0*scaleFactorWeightBtagProb/2);
-        }else{
-          totalPrediction_->Fill(Bin_bTags.at(i), totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
-          totalPreIsoTrack+=totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2;
-          totalPreIsoTrackError+=totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2*totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2;
+	      totalPredictionWoIso_->Fill(Bin_bTags.at(i), totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb/2);
+	      totalPre+=totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb/2;
+	      totalPreError+= totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb/2*totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb/2;
 
-          totalPredictionWoIso_->Fill(Bin_bTags.at(i), totalWeight_BTags1Inf_noIsoTrack*scaleFactorWeightBtagProb/2);
-          totalPre+=totalWeight_BTags1Inf_noIsoTrack*scaleFactorWeightBtagProb/2;
-          totalPreError+= totalWeight_BTags1Inf_noIsoTrack*scaleFactorWeightBtagProb/2*totalWeight_BTags1Inf_noIsoTrack*scaleFactorWeightBtagProb/2;         
-              
-          totalPrediction_HT_->Fill(HT, totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
-          totalPrediction_MHT_->Fill(MHT, totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
-          totalPrediction_NJets_->Fill(NJets, totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
-          totalPrediction_BTags_->Fill(i, totalWeight_BTags1Inf*scaleFactorWeightBtagProb/2);
-        }
-*/
+          totalPredictionDiLep_->Fill(Bin_bTags.at(i), diLepLostWeight*scaleFactorWeightBtagProb/2);     
+	          
+	      totalPrediction_HT_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+	      totalPrediction_MHT_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+	      totalPrediction_NJets_->Fill(NJets, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+	      totalPrediction_BTags_->Fill(i, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+
+	    if(NJets < 2.5){
+        	totalPrediction_HT_NJets2_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+			    totalPrediction_MHT_NJets2_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	if(i < 0.5){
+        		totalPrediction_HT_NJets2_BTags0_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets2_BTags0_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}else if(i < 1.5){
+        		totalPrediction_HT_NJets2_BTags1_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets2_BTags1_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}else{
+        		totalPrediction_HT_NJets2_BTags2Inf_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets2_BTags2Inf_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}			
+		}else if(NJets < 4.5){
+			   totalPrediction_HT_NJets34_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+			   totalPrediction_MHT_NJets34_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	if(i < 0.5){
+        		totalPrediction_HT_NJets34_BTags0_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets34_BTags0_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}else if(i < 1.5){
+        		totalPrediction_HT_NJets34_BTags1_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets34_BTags1_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}else{
+        		totalPrediction_HT_NJets34_BTags2Inf_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets34_BTags2Inf_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}	
+		}else if(NJets < 6.5){
+			   totalPrediction_HT_NJets56_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+			   totalPrediction_MHT_NJets56_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	if(i < 0.5){
+        		totalPrediction_HT_NJets56_BTags0_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets56_BTags0_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}else if(i < 1.5){
+        		totalPrediction_HT_NJets56_BTags1_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets56_BTags1_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}else{
+        		totalPrediction_HT_NJets56_BTags2Inf_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets56_BTags2Inf_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}	
+		}else if(NJets < 8.5){
+			   totalPrediction_HT_NJets78_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+			   totalPrediction_MHT_NJets78_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	if(i < 0.5){
+        		totalPrediction_HT_NJets78_BTags0_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets78_BTags0_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}else if(i < 1.5){
+        		totalPrediction_HT_NJets78_BTags1_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets78_BTags1_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}else{
+        		totalPrediction_HT_NJets78_BTags2Inf_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets78_BTags2Inf_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}	
+		}else{
+			   totalPrediction_HT_NJets9Inf_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+			   totalPrediction_MHT_NJets9Inf_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	if(i < 0.5){
+        		totalPrediction_HT_NJets9Inf_BTags0_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets9Inf_BTags0_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}else if(i < 1.5){
+        		totalPrediction_HT_NJets9Inf_BTags1_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets9Inf_BTags1_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}else{
+        		totalPrediction_HT_NJets9Inf_BTags2Inf_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets9Inf_BTags2Inf_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+        	}	
+		}
+	}
           if(MuonsNum == 1){
             totalPredictionMu_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb);
             totalPredictionMuWoIso_->Fill(Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb);
@@ -737,6 +1037,7 @@ void Closure(string InputPath_Expectation="Expectation.root",
   TDirectory *dExpectation = (TDirectory*)outPutFile->Get("Expectation");
   dExpectation->cd();
   totalExpectation_->Write();
+  totalExpectationDiLep_->Write();
   totalExpectation_HT_->Write();
   totalMuons_->Write();
   totalElectrons_->Write();
@@ -744,10 +1045,17 @@ void Closure(string InputPath_Expectation="Expectation.root",
   totalMuonElectronRatio->SetTitle("totalMuonElectronRatio");
   totalMuonElectronRatio->Divide(totalMuons_, totalElectrons_);
   totalMuonElectronRatio->Write();
+
+  TH1D* diLepFrac = (TH1D*) totalExpectation_->Clone("diLepFrac");
+  diLepFrac->SetName("diLepFrac");
+  diLepFrac->SetTitle("diLepFrac");
+  SaveClosure(diLepFrac, totalExpectationDiLep_, dExpectation);
+
   outPutFile->mkdir("Prediction");
   TDirectory *dPrediction = (TDirectory*)outPutFile->Get("Prediction");
   dPrediction->cd();
   totalPrediction_->Write();
+  totalPredictionDiLep_->Write();
   totalPredictionMu_->Write();
   totalPredictionElec_->Write();
   totalPrediction_HT_->Write();
@@ -763,10 +1071,58 @@ void Closure(string InputPath_Expectation="Expectation.root",
   SaveClosure(totalPredictionMuWoIso_, totalExpectationWoIso_, dClosures);
   SaveClosure(totalPredictionElecWoIso_, totalExpectationWoIso_, dClosures);
 
+  SaveClosure(totalPredictionDiLep_, totalExpectationDiLep_, dClosures);
+
   SaveClosure(totalPrediction_HT_, totalExpectation_HT_, dClosures);    
   SaveClosure(totalPrediction_MHT_, totalExpectation_MHT_, dClosures);    
   SaveClosure(totalPrediction_NJets_, totalExpectation_NJets_, dClosures);    
-  SaveClosure(totalPrediction_BTags_, totalExpectation_BTags_, dClosures);    
+  SaveClosure(totalPrediction_BTags_, totalExpectation_BTags_, dClosures);
+
+  SaveClosure(totalPrediction_HT_NJets2_, totalExpectation_HT_NJets2_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets2_, totalExpectation_MHT_NJets2_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets2_BTags0_, totalExpectation_HT_NJets2_BTags0_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets2_BTags0_, totalExpectation_MHT_NJets2_BTags0_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets2_BTags1_, totalExpectation_HT_NJets2_BTags1_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets2_BTags1_, totalExpectation_MHT_NJets2_BTags1_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets2_BTags2Inf_, totalExpectation_HT_NJets2_BTags2Inf_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets2_BTags2Inf_, totalExpectation_MHT_NJets2_BTags2Inf_, dClosures);
+
+  SaveClosure(totalPrediction_HT_NJets34_, totalExpectation_HT_NJets34_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets34_, totalExpectation_MHT_NJets34_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets34_BTags0_, totalExpectation_HT_NJets34_BTags0_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets34_BTags0_, totalExpectation_MHT_NJets34_BTags0_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets34_BTags1_, totalExpectation_HT_NJets34_BTags1_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets34_BTags1_, totalExpectation_MHT_NJets34_BTags1_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets34_BTags2Inf_, totalExpectation_HT_NJets34_BTags2Inf_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets34_BTags2Inf_, totalExpectation_MHT_NJets34_BTags2Inf_, dClosures);
+
+  SaveClosure(totalPrediction_HT_NJets56_, totalExpectation_HT_NJets56_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets56_, totalExpectation_MHT_NJets56_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets56_BTags0_, totalExpectation_HT_NJets56_BTags0_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets56_BTags0_, totalExpectation_MHT_NJets56_BTags0_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets56_BTags1_, totalExpectation_HT_NJets56_BTags1_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets56_BTags1_, totalExpectation_MHT_NJets56_BTags1_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets56_BTags2Inf_, totalExpectation_HT_NJets56_BTags2Inf_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets56_BTags2Inf_, totalExpectation_MHT_NJets56_BTags2Inf_, dClosures);
+
+  SaveClosure(totalPrediction_HT_NJets78_, totalExpectation_HT_NJets78_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets78_, totalExpectation_MHT_NJets78_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets78_BTags0_, totalExpectation_HT_NJets78_BTags0_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets78_BTags0_, totalExpectation_MHT_NJets78_BTags0_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets78_BTags1_, totalExpectation_HT_NJets78_BTags1_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets78_BTags1_, totalExpectation_MHT_NJets78_BTags1_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets78_BTags2Inf_, totalExpectation_HT_NJets78_BTags2Inf_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets78_BTags2Inf_, totalExpectation_MHT_NJets78_BTags2Inf_, dClosures);
+
+  SaveClosure(totalPrediction_HT_NJets9Inf_, totalExpectation_HT_NJets9Inf_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets9Inf_, totalExpectation_MHT_NJets9Inf_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets9Inf_BTags0_, totalExpectation_HT_NJets9Inf_BTags0_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets9Inf_BTags0_, totalExpectation_MHT_NJets9Inf_BTags0_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets9Inf_BTags1_, totalExpectation_HT_NJets9Inf_BTags1_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets9Inf_BTags1_, totalExpectation_MHT_NJets9Inf_BTags1_, dClosures);
+  SaveClosure(totalPrediction_HT_NJets9Inf_BTags2Inf_, totalExpectation_HT_NJets9Inf_BTags2Inf_, dClosures);
+  SaveClosure(totalPrediction_MHT_NJets9Inf_BTags2Inf_, totalExpectation_MHT_NJets9Inf_BTags2Inf_, dClosures);
+	
 
   outPutFile->cd();
   outPutFile->mkdir("Steps");
@@ -900,6 +1256,13 @@ void SaveClosure(TH1D* h1, TH1D* h2, TDirectory* Folder)
   title = h1->GetName();
   title+="_closure";
   Closure->SetName(title);
+  Closure->GetYaxis()->SetRangeUser(0., 2.);
+  double val1, err1, val2, err2;
+  val1 = h1->IntegralAndError(1, h1->GetNbinsX(), err1);
+  val2 = h2->IntegralAndError(1, h2->GetNbinsX(), err2);
+  std::cout<<title<<"="<<val2/val1<<"+-"<<val2/(val1*val1)*err1+1/val1*err2<<std::endl;
+  //std::cout<<h1->GetName()<<"="<<h1->Integral()<<std::endl;
+  //std::cout<<h2->GetName()<<"="<<h2->Integral()<<std::endl;
   if(Closure->GetNbinsX()==190) SetBinLabel(Closure);
   Folder->cd();
   Closure->Write();

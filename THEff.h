@@ -124,7 +124,8 @@ void TH1Eff::SaveEff(const char* title, TDirectory* MainDirectory, bool xlog, bo
 	  RatioTH1D_->GetXaxis()->SetRangeUser(0.001, 10*RatioTH1D_->GetBinLowEdge(RatioTH1D_->GetNbinsX()+1));
 	}
 	if (ylog) c1->SetLogy();
-	if(RatioTH1D_->GetXaxis()->GetBinCenter(RatioTH1D_->GetXaxis()->GetNbins()) > 100) c1->SetLogx();
+	if(RatioTH1D_->GetXaxis()->GetBinCenter(RatioTH1D_->GetXaxis()->GetNbins()) > 500) c1->SetLogx();
+	RatioTH1D_->GetYaxis()->SetRangeUser(0.001, 1.05);
 	RatioTH1D_->Draw("ColZ,Text,E");
 	c1->SaveAs("Efficiencies/"+name_+".pdf");
 	delete c1;
@@ -167,21 +168,21 @@ effVec TH1Eff::GetEff(double xValue, bool asymm)
 	errUp_ = RatioTH1D_->GetBinErrorUp(nxBin);
 	errDown_ = RatioTH1D_->GetBinErrorLow(nxBin);
 
-	if(result<0.01){
-		std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.01 for histo: "<<RatioTH1D_->GetName()<<std::endl;
-		result =0.01;
-		errUp_ = 0.99;
-		errDown_ = 0.01;
+	if(result<0.0001){
+		std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.0001 for histo: "<<RatioTH1D_->GetName()<<std::endl;
+		result =0.0001;
+		errUp_ = 0.0001;
+		errDown_ = 0.0001;
 	}
 	if(result>1){
 		std::cout<<"Warning efficiency is: "<<result<<" is bigger than 1 for histo: "<<RatioTH1D_->GetName()<<std::endl;
-		result =0.99;
+		result =0.999;
 	}
 
-	if(asymm && result>0.01){
+	if(asymm && result>0.0001){
 		// empty bins in the end/beginning of the th's are removed when creating a tgraph..
 	  	int nEmpty = 0;
-	  	while(RatioTH1D_->GetBinContent(nEmpty+1) < 0.01){
+	  	while(RatioTH1D_->GetBinContent(nEmpty+1) < 0.0001){
 	  		nEmpty++;
 	  		if(nEmpty > RatioTH1D_->GetXaxis()->GetNbins()) break;
 	  	}
@@ -191,7 +192,7 @@ effVec TH1Eff::GetEff(double xValue, bool asymm)
 		errUp_ = RatioTGraphAsymm_->GetErrorYhigh(nxBin-1);
 		errDown_ = RatioTGraphAsymm_->GetErrorYlow(nxBin-1);
 
-		if(std::abs(resultAsymm-result)>0.01) std::cout<<"Efficiencies of TGraph "<<name_<<" doesn't fit to THist!: "<<result<<"; "<<resultAsymm<<std::endl;
+		if(std::abs(resultAsymm-result)>0.0001) std::cout<<"Efficiencies of TGraph "<<name_<<" doesn't fit to THist!: "<<result<<"; "<<resultAsymm<<std::endl;
 		effVec effVec_ = {resultAsymm, errUp_, errDown_};
         return effVec_;
 	}
@@ -390,16 +391,16 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   errUp_ = RatioTH2D_->GetBinErrorUp(nxBin, nyBin);
   errDown_ = RatioTH2D_->GetBinErrorLow(nxBin, nyBin);
 
-  if(result<0.01)
+  if(result<0.0001)
   {
-    std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.01 for histo: "<<RatioTH2D_->GetName()<<std::endl;
+    std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.001 for histo: "<<RatioTH2D_->GetName()<<std::endl;
     int nValidBins = 0;
     double sum = 0;
     double sumUp = 0;
     double sumDown = 0;
 
     if(nxBin > 1){
-    	if(RatioTH2D_->GetBinContent(nxBin-1, nyBin) > 0.01){
+    	if(RatioTH2D_->GetBinContent(nxBin-1, nyBin) > 0.0001){
 	    	nValidBins++;
 	    	sum += RatioTH2D_->GetBinContent(nxBin-1, nyBin);
 	    	sumUp += RatioTH2D_->GetBinErrorUp(nxBin-1, nyBin);
@@ -407,7 +408,7 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
     	}
     }
     if(nyBin > 1){
-    	if(RatioTH2D_->GetBinContent(nxBin, nyBin-1) > 0.01){
+    	if(RatioTH2D_->GetBinContent(nxBin, nyBin-1) > 0.0001){
 	    	nValidBins++;
 	    	sum += RatioTH2D_->GetBinContent(nxBin, nyBin-1);
 	    	sumUp += RatioTH2D_->GetBinErrorUp(nxBin, nyBin-1);
@@ -415,7 +416,7 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
 	    }
     }
     if(nxBin < RatioTH2D_->GetNbinsX()){
-    	if(RatioTH2D_->GetBinContent(nxBin+1, nyBin) > 0.01){
+    	if(RatioTH2D_->GetBinContent(nxBin+1, nyBin) > 0.0001){
 	    	nValidBins++;
 	    	sum += RatioTH2D_->GetBinContent(nxBin+1, nyBin);
 	    	sumUp += RatioTH2D_->GetBinErrorUp(nxBin+1, nyBin);
@@ -423,7 +424,7 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
     	}
     }
     if(nyBin < RatioTH2D_->GetNbinsY()){
-    	if(RatioTH2D_->GetBinContent(nxBin, nyBin+1) > 0.01){
+    	if(RatioTH2D_->GetBinContent(nxBin, nyBin+1) > 0.0001){
 	    	nValidBins++;
 	    	sum += RatioTH2D_->GetBinContent(nxBin, nyBin+1);
 	    	sumUp += RatioTH2D_->GetBinErrorUp(nxBin, nyBin+1);
@@ -432,9 +433,9 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
     }
 
     effVec effVec_;
-    if(sum/double(nValidBins)<0.01){
-    	std::cout<<"Warning: efficiency still < 0.01!"<<std::endl;
-    	effVec_ = {0.01, 0.99, 0.01};
+    if(sum/double(nValidBins)<0.0001){
+    	std::cout<<"Warning: efficiency still < 0.001!"<<std::endl;
+    	effVec_ = {0.0001, 0.9999, 0.0001};
 	}else{
 		std::cout<<"Warning applying fix (avg. of surrounding bins): "<<sum/double(nValidBins)<<std::endl;
     	effVec_ = {sum/double(nValidBins), sumUp/double(nValidBins), sumDown/double(nValidBins)};
@@ -447,10 +448,10 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
     result =0.99;
   }
 
-  if(asymm && result>0.01){
+  if(asymm && result>0.0001){
   	// empty bins in the end/beginning of the th's are removed when creating a tgraph.. WORKAROUND:
   	int nEmpty = 0;
-  	while(RatioTH2D_->GetBinContent(nEmpty+1, nyBin) < 0.01){
+  	while(RatioTH2D_->GetBinContent(nEmpty+1, nyBin) < 0.0001){
   		nEmpty++;
   		if(nEmpty > RatioTH2D_->GetXaxis()->GetNbins()) break;
   	}
@@ -467,7 +468,7 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   	errUpAsymm_ = RatioTGraphAsymmVec_.at(nyBin-1)->GetErrorYhigh(nxBin-1-nEmpty);
 	errDownAsymm_ = RatioTGraphAsymmVec_.at(nyBin-1)->GetErrorYlow(nxBin-1-nEmpty);
 
-	if(std::abs(resultAsymm-result)>0.01){
+	if(std::abs(resultAsymm-result)>0.0001){
 		std::cout<<"Efficiencies of TGraph "<<name_<<" doens't fit to THist!: "<<result<<"; "<<resultAsymm<<std::endl;
 		effVec effVec_ = {result, errUp_, errDown_};
   		return effVec_;

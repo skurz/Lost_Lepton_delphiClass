@@ -115,6 +115,7 @@ void ApplyBaseline::SlaveBegin(TTree * /*tree*/)
    tOut->Branch("GenTaus_LeadRecoTrkIso", &GenTaus_LeadRecoTrkIso);
    tOut->Branch("GenTaus_LeadTrk", &GenTaus_LeadTrk);
    tOut->Branch("GenTaus_MT2Activity", &GenTaus_MT2Activity);
+   tOut->Branch("GenTaus_NProngs", &GenTaus_NProngs);
    tOut->Branch("GenTaus_Nu", &GenTaus_Nu);
    tOut->Branch("globalTightHalo2016Filter", &globalTightHalo2016Filter);
    tOut->Branch("HBHEIsoNoiseFilter", &HBHEIsoNoiseFilter);
@@ -147,6 +148,9 @@ void ApplyBaseline::SlaveBegin(TTree * /*tree*/)
    tOut->Branch("Jets_ISRMask", &Jets_ISRMask);
    tOut->Branch("Jets_jecFactor", &Jets_jecFactor);
    tOut->Branch("Jets_jecUnc", &Jets_jecUnc);
+   tOut->Branch("Jets_jerFactor", &Jets_jerFactor);
+   tOut->Branch("Jets_jerFactorDown", &Jets_jerFactorDown);
+   tOut->Branch("Jets_jerFactorUp", &Jets_jerFactorUp);
    tOut->Branch("Jets_LeptonMask", &Jets_LeptonMask);
    tOut->Branch("Jets_MHTMask", &Jets_MHTMask);
    tOut->Branch("Jets_muonEnergyFraction", &Jets_muonEnergyFraction);
@@ -290,7 +294,7 @@ Bool_t ApplyBaseline::Process(Long64_t entry)
 
    // if(DeltaPhi1 < 0.5 || DeltaPhi2 < 0.5 || DeltaPhi3 < 0.3 || DeltaPhi4 < 0.3)  return kTRUE;
 
-   //if(madHT > 600) return kTRUE;   
+   if(madHT > 600) return kTRUE;   
 
    //if(Muons->size() + Electrons->size() != 1)  return kTRUE;
 
