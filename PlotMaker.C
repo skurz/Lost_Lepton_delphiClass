@@ -32,7 +32,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	const bool useMCForDataTree = false;	// NOT IMPLEMENTED
 
 	// Scale all MC weights by this factor
-	const Double_t scaleFactorWeight = 24480*3;  // 3998 2585 813  //in units of [pb] //<-check------------------------
+	const Double_t scaleFactorWeight = 24480;  // 3998 2585 813  //in units of [pb] //<-check------------------------
 
 	// Add some of the uncertainties in quadrature (if same correlation and similar shape)
 	const bool doCombinedUnc = false;
@@ -163,7 +163,6 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 
 			totalCS_LL_MC_->Fill(Bin_bTags.at(i), scaledWeight);
         	nEvtsCS_LL_MC_->Fill(Bin_bTags.at(i));
-
 
         	totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackSysUp*scaleFactorWeightBtagProb/2);
 		    totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackSysDown*scaleFactorWeightBtagProb/2);
@@ -506,10 +505,10 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	  SaveFraction(totalPredPionIsoTrackSysUp_LL_, totalPred_LL_, dPreData);
 	  SaveFraction(totalPredPionIsoTrackSysDown_LL_, totalPred_LL_, dPreData);
 	*/
-	SaveFraction(totalPredIsoTrackSysUp_LL_, totalPred_LL_, dPreData, "llp_isoTrackSys", "HTMHTNJetsCombined");
-	SaveFraction(totalPredIsoTrackSysDown_LL_, totalPred_LL_, dPreData, "llp_isoTrackSys", "HTMHTNJetsCombined");
-	SaveFraction(totalPredMTWSysUp_LL_, totalPred_LL_, dPreData, "llp_mtwSys", "NJets");
-	SaveFraction(totalPredMTWSysDown_LL_, totalPred_LL_, dPreData, "llp_mtwSys", "NJets");
+	SaveFraction(totalPredIsoTrackSysUp_LL_, totalPred_LL_, dPreData, "llp_isoTrackSys", "all");
+	SaveFraction(totalPredIsoTrackSysDown_LL_, totalPred_LL_, dPreData, "llp_isoTrackSys", "all");
+	SaveFraction(totalPredMTWSysUp_LL_, totalPred_LL_, dPreData, "llp_mtwSys", "NJetsHTMHT");
+	SaveFraction(totalPredMTWSysDown_LL_, totalPred_LL_, dPreData, "llp_mtwSys", "NJetsHTMHT");
 	SaveFraction(totalPredPuritySysUp_LL_, totalPred_LL_, dPreData, "llp_puritySys", "MHTNJets");
 	SaveFraction(totalPredPuritySysDown_LL_, totalPred_LL_, dPreData, "llp_puritySys", "MHTNJets");
 
@@ -531,10 +530,10 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	  SaveFraction(totalPredPionIsoTrackStatUp_LL_, totalPred_LL_, dPreData);
 	  SaveFraction(totalPredPionIsoTrackStatDown_LL_, totalPred_LL_, dPreData);
 	*/
-	SaveFraction(totalPredIsoTrackStatUp_LL_, totalPred_LL_, dPreData, "llp_isoTrackStat", "HTMHTNJetsCombined");
-	SaveFraction(totalPredIsoTrackStatDown_LL_, totalPred_LL_, dPreData, "llp_isoTrackStat", "HTMHTNJetsCombined");
-	SaveFraction(totalPredMTWStatUp_LL_, totalPred_LL_, dPreData, "llp_mtwStat", "NJets");
-	SaveFraction(totalPredMTWStatDown_LL_, totalPred_LL_, dPreData, "llp_mtwStat", "NJets");
+	SaveFraction(totalPredIsoTrackStatUp_LL_, totalPred_LL_, dPreData, "llp_isoTrackStat", "BinByBin");
+	SaveFraction(totalPredIsoTrackStatDown_LL_, totalPred_LL_, dPreData, "llp_isoTrackStat", "BinByBin");
+	SaveFraction(totalPredMTWStatUp_LL_, totalPred_LL_, dPreData, "llp_mtwStat", "BinByBin");
+	SaveFraction(totalPredMTWStatDown_LL_, totalPred_LL_, dPreData, "llp_mtwStat", "BinByBin");
 	SaveFraction(totalPredPurityStatUp_LL_, totalPred_LL_, dPreData, "llp_purityStat", "MHTNJets");
 	SaveFraction(totalPredPurityStatDown_LL_, totalPred_LL_, dPreData, "llp_purityStat", "MHTNJets");
 
@@ -544,14 +543,14 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 		SaveFraction(totalPredDiLepFoundSysUp_LL_, totalPred_LL_, dPreData, "llp_diLepFoundSys", "NJets");
 		SaveFraction(totalPredDiLepFoundSysDown_LL_, totalPred_LL_, dPreData, "llp_diLepFoundSys", "NJets");
 
-		SaveFraction(totalPredMuAccSysUp_LL_, totalPred_LL_, dPreData, "llp_muAccSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredMuAccSysDown_LL_, totalPred_LL_, dPreData, "llp_muAccSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredMuAccQsquareSysUp_LL_, totalPred_LL_, dPreData, "llp_muAccQsquareSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredMuAccQsquareSysDown_LL_, totalPred_LL_, dPreData, "llp_muAccQsquareSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredElecAccSysUp_LL_, totalPred_LL_, dPreData, "llp_elecAccSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredElecAccSysDown_LL_, totalPred_LL_, dPreData, "llp_elecAccSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredElecAccQsquareSysUp_LL_, totalPred_LL_, dPreData, "llp_elecAccQsquareSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredElecAccQsquareSysDown_LL_, totalPred_LL_, dPreData, "llp_elecAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredMuAccSysUp_LL_, totalPred_LL_, dPreData, "llp_muAccSys", "NJetsHTMHT");
+		SaveFraction(totalPredMuAccSysDown_LL_, totalPred_LL_, dPreData, "llp_muAccSys", "NJetsHTMHT");
+		SaveFraction(totalPredMuAccQsquareSysUp_LL_, totalPred_LL_, dPreData, "llp_muAccQsquareSys", "NJetsHTMHT");
+		SaveFraction(totalPredMuAccQsquareSysDown_LL_, totalPred_LL_, dPreData, "llp_muAccQsquareSys", "NJetsHTMHT");
+		SaveFraction(totalPredElecAccSysUp_LL_, totalPred_LL_, dPreData, "llp_elecAccSys", "NJetsHTMHT");
+		SaveFraction(totalPredElecAccSysDown_LL_, totalPred_LL_, dPreData, "llp_elecAccSys", "NJetsHTMHT");
+		SaveFraction(totalPredElecAccQsquareSysUp_LL_, totalPred_LL_, dPreData, "llp_elecAccQsquareSys", "NJetsHTMHT");
+		SaveFraction(totalPredElecAccQsquareSysDown_LL_, totalPred_LL_, dPreData, "llp_elecAccQsquareSys", "NJetsHTMHT");
 
 		SaveFraction(totalPredSingleLepPurityStatUp_LL_, totalPred_LL_, dPreData, "llp_singleLepPurityStat", "NJets");
 		SaveFraction(totalPredSingleLepPurityStatDown_LL_, totalPred_LL_, dPreData, "llp_singleLepPurityStat", "NJets");
@@ -562,14 +561,14 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 		SaveFraction(totalPredMuIsoStatDown_LL_, totalPred_LL_, dPreData, "llp_muIsoStat", "ptAct");
 		SaveFraction(totalPredMuRecoStatUp_LL_, totalPred_LL_, dPreData, "llp_muRecoStat", "ptAct");
 		SaveFraction(totalPredMuRecoStatDown_LL_, totalPred_LL_, dPreData, "llp_muRecoStat", "ptAct");
-		SaveFraction(totalPredMuAccStatUp_LL_, totalPred_LL_, dPreData, "llp_muAccStat", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredMuAccStatDown_LL_, totalPred_LL_, dPreData, "llp_muAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredMuAccStatUp_LL_, totalPred_LL_, dPreData, "llp_muAccStat", "BinByBin");
+		SaveFraction(totalPredMuAccStatDown_LL_, totalPred_LL_, dPreData, "llp_muAccStat", "BinByBin");
 		SaveFraction(totalPredElecIsoStatUp_LL_, totalPred_LL_, dPreData, "llp_elecIsoStat", "ptAct");
 		SaveFraction(totalPredElecIsoStatDown_LL_, totalPred_LL_, dPreData, "llp_elecIsoStat", "ptAct");
 		SaveFraction(totalPredElecRecoStatUp_LL_, totalPred_LL_, dPreData, "llp_elecRecoStat", "ptAct");
 		SaveFraction(totalPredElecRecoStatDown_LL_, totalPred_LL_, dPreData, "llp_elecRecoStat", "ptAct");
-		SaveFraction(totalPredElecAccStatUp_LL_, totalPred_LL_, dPreData, "llp_elecAccStat", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredElecAccStatDown_LL_, totalPred_LL_, dPreData, "llp_elecAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecAccStatUp_LL_, totalPred_LL_, dPreData, "llp_elecAccStat", "BinByBin");
+		SaveFraction(totalPredElecAccStatDown_LL_, totalPred_LL_, dPreData, "llp_elecAccStat", "BinByBin");
 	}else{
 		std::vector<TH1D*> diLepContributionSysUp_LL_;
 		diLepContributionSysUp_LL_.push_back(totalPredSingleLepPuritySysUp_LL_);
@@ -586,23 +585,23 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 		lepAccSysUp_LL_.push_back(totalPredMuAccSysUp_LL_);
 		lepAccSysUp_LL_.push_back(totalPredElecAccSysUp_LL_);
 		addUncertainties(totalPredLepAccSysUp_LL_, lepAccSysUp_LL_, true);
-		SaveFraction(totalPredLepAccSysUp_LL_, totalPred_LL_, dPreData, "llp_lepAccSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredLepAccSysUp_LL_, totalPred_LL_, dPreData, "llp_lepAccSys", "NJetsHTMHT");
 		std::vector<TH1D*> lepAccSysDown_LL_;
 		lepAccSysDown_LL_.push_back(totalPredMuAccSysDown_LL_);
 		lepAccSysDown_LL_.push_back(totalPredElecAccSysDown_LL_);
 		addUncertainties(totalPredLepAccSysDown_LL_, lepAccSysDown_LL_, false);
-		SaveFraction(totalPredLepAccSysDown_LL_, totalPred_LL_, dPreData, "llp_lepAccSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredLepAccSysDown_LL_, totalPred_LL_, dPreData, "llp_lepAccSys", "NJetsHTMHT");
 
 		std::vector<TH1D*> lepAccQsquareSysUp_LL_;
 		lepAccQsquareSysUp_LL_.push_back(totalPredMuAccQsquareSysUp_LL_);
 		lepAccQsquareSysUp_LL_.push_back(totalPredElecAccQsquareSysUp_LL_);
 		addUncertainties(totalPredLepAccQsquareSysUp_LL_, lepAccQsquareSysUp_LL_, true);
-		SaveFraction(totalPredLepAccQsquareSysUp_LL_, totalPred_LL_, dPreData, "llp_lepAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredLepAccQsquareSysUp_LL_, totalPred_LL_, dPreData, "llp_lepAccQsquareSys", "NJetsHTMHT");
 		std::vector<TH1D*> lepAccQsquareSysDown_LL_;
 		lepAccQsquareSysDown_LL_.push_back(totalPredMuAccQsquareSysDown_LL_);
 		lepAccQsquareSysDown_LL_.push_back(totalPredElecAccQsquareSysDown_LL_);
 		addUncertainties(totalPredLepAccQsquareSysDown_LL_, lepAccQsquareSysDown_LL_, false);
-		SaveFraction(totalPredLepAccQsquareSysDown_LL_, totalPred_LL_, dPreData, "llp_lepAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredLepAccQsquareSysDown_LL_, totalPred_LL_, dPreData, "llp_lepAccQsquareSys", "NJetsHTMHT");
 
 
 		std::vector<TH1D*> diLepContributionStatUp_LL_;
@@ -635,12 +634,12 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 		lepAccStatUp_LL_.push_back(totalPredMuAccStatUp_LL_);
 		lepAccStatUp_LL_.push_back(totalPredElecAccStatUp_LL_);
 		addUncertainties(totalPredLepAccStatUp_LL_, lepAccStatUp_LL_, true);
-		SaveFraction(totalPredLepAccStatUp_LL_, totalPred_LL_, dPreData, "llp_lepAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredLepAccStatUp_LL_, totalPred_LL_, dPreData, "llp_lepAccStat", "BinByBin");
 		std::vector<TH1D*> lepAccStatDown_LL_;
 		lepAccStatDown_LL_.push_back(totalPredMuAccStatDown_LL_);
 		lepAccStatDown_LL_.push_back(totalPredElecAccStatDown_LL_);
 		addUncertainties(totalPredLepAccStatDown_LL_, lepAccStatDown_LL_, false);
-		SaveFraction(totalPredLepAccStatDown_LL_, totalPred_LL_, dPreData, "llp_lepAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredLepAccStatDown_LL_, totalPred_LL_, dPreData, "llp_lepAccStat", "BinByBin");
 	}
 
 
@@ -800,10 +799,10 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	  SaveFraction(totalPredPionIsoTrackSysUp_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredPionIsoTrackSysDown_LL_MC_, totalPred_LL_MC_, dPreMC);
 	*/
-	SaveFraction(totalPredIsoTrackSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_isoTrackSys", "HTMHTNJetsCombined");
-	SaveFraction(totalPredIsoTrackSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_isoTrackSys", "HTMHTNJetsCombined");
-	SaveFraction(totalPredMTWSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_mtwSys", "NJets");
-	SaveFraction(totalPredMTWSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_mtwSys", "NJets");
+	SaveFraction(totalPredIsoTrackSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_isoTrackSys", "all");
+	SaveFraction(totalPredIsoTrackSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_isoTrackSys", "all");
+	SaveFraction(totalPredMTWSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_mtwSys", "NJetsHTMHT");
+	SaveFraction(totalPredMTWSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_mtwSys", "NJetsHTMHT");
 	SaveFraction(totalPredPuritySysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_puritySys", "MHTNJets");
 	SaveFraction(totalPredPuritySysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_puritySys", "MHTNJets");
 
@@ -825,10 +824,10 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	  SaveFraction(totalPredPionIsoTrackStatUp_LL_MC_, totalPred_LL_MC_, dPreMC);
 	  SaveFraction(totalPredPionIsoTrackStatDown_LL_MC_, totalPred_LL_MC_, dPreMC);
 	*/
-	SaveFraction(totalPredIsoTrackStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_isoTrackStat", "HTMHTNJetsCombined");
-	SaveFraction(totalPredIsoTrackStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_isoTrackStat", "HTMHTNJetsCombined");
-	SaveFraction(totalPredMTWStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_mtwStat", "NJets");
-	SaveFraction(totalPredMTWStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_mtwStat", "NJets");
+	SaveFraction(totalPredIsoTrackStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_isoTrackStat", "BinByBin");
+	SaveFraction(totalPredIsoTrackStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_isoTrackStat", "BinByBin");
+	SaveFraction(totalPredMTWStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_mtwStat", "BinByBin");
+	SaveFraction(totalPredMTWStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_mtwStat", "BinByBin");
 	SaveFraction(totalPredPurityStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_purityStat", "MHTNJets");
 	SaveFraction(totalPredPurityStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_purityStat", "MHTNJets");
 
@@ -838,14 +837,14 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 		SaveFraction(totalPredDiLepFoundSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepFoundSys", "NJets");
 		SaveFraction(totalPredDiLepFoundSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepFoundSys", "NJets");
 
-		SaveFraction(totalPredMuAccSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredMuAccSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredMuAccQsquareSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccQsquareSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredMuAccQsquareSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccQsquareSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredElecAccSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredElecAccSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredElecAccQsquareSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccQsquareSys", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredElecAccQsquareSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredMuAccSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccSys", "NJetsHTMHT");
+		SaveFraction(totalPredMuAccSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccSys", "NJetsHTMHT");
+		SaveFraction(totalPredMuAccQsquareSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccQsquareSys", "NJetsHTMHT");
+		SaveFraction(totalPredMuAccQsquareSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccQsquareSys", "NJetsHTMHT");
+		SaveFraction(totalPredElecAccSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccSys", "NJetsHTMHT");
+		SaveFraction(totalPredElecAccSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccSys", "NJetsHTMHT");
+		SaveFraction(totalPredElecAccQsquareSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccQsquareSys", "NJetsHTMHT");
+		SaveFraction(totalPredElecAccQsquareSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccQsquareSys", "NJetsHTMHT");
 
 		SaveFraction(totalPredSingleLepPurityStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPurityStat", "NJets");
 		SaveFraction(totalPredSingleLepPurityStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPurityStat", "NJets");
@@ -856,14 +855,14 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 		SaveFraction(totalPredMuIsoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muIsoStat", "ptAct");
 		SaveFraction(totalPredMuRecoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muRecoStat", "ptAct");
 		SaveFraction(totalPredMuRecoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muRecoStat", "ptAct");
-		SaveFraction(totalPredMuAccStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccStat", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredMuAccStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredMuAccStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccStat", "BinByBin");
+		SaveFraction(totalPredMuAccStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccStat", "BinByBin");
 		SaveFraction(totalPredElecIsoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecIsoStat", "ptAct");
 		SaveFraction(totalPredElecIsoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecIsoStat", "ptAct");
 		SaveFraction(totalPredElecRecoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecRecoStat", "ptAct");
 		SaveFraction(totalPredElecRecoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecRecoStat", "ptAct");
-		SaveFraction(totalPredElecAccStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccStat", "HTMHTNJetsBTagsCombined");
-		SaveFraction(totalPredElecAccStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredElecAccStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccStat", "BinByBin");
+		SaveFraction(totalPredElecAccStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccStat", "BinByBin");
 	}else{
 		std::vector<TH1D*> diLepContributionSysUp_LL_MC_;
 		diLepContributionSysUp_LL_MC_.push_back(totalPredSingleLepPuritySysUp_LL_MC_);
@@ -880,23 +879,23 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 		lepAccSysUp_LL_MC_.push_back(totalPredMuAccSysUp_LL_MC_);
 		lepAccSysUp_LL_MC_.push_back(totalPredElecAccSysUp_LL_MC_);
 		addUncertainties(totalPredLepAccSysUp_LL_MC_, lepAccSysUp_LL_MC_, true);
-		SaveFraction(totalPredLepAccSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredLepAccSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccSys", "NJetsHTMHT");
 		std::vector<TH1D*> lepAccSysDown_LL_MC_;
 		lepAccSysDown_LL_MC_.push_back(totalPredMuAccSysDown_LL_MC_);
 		lepAccSysDown_LL_MC_.push_back(totalPredElecAccSysDown_LL_MC_);
 		addUncertainties(totalPredLepAccSysDown_LL_MC_, lepAccSysDown_LL_MC_, false);
-		SaveFraction(totalPredLepAccSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredLepAccSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccSys", "NJetsHTMHT");
 
 		std::vector<TH1D*> lepAccQsquareSysUp_LL_MC_;
 		lepAccQsquareSysUp_LL_MC_.push_back(totalPredMuAccQsquareSysUp_LL_MC_);
 		lepAccQsquareSysUp_LL_MC_.push_back(totalPredElecAccQsquareSysUp_LL_MC_);
 		addUncertainties(totalPredLepAccQsquareSysUp_LL_MC_, lepAccQsquareSysUp_LL_MC_, true);
-		SaveFraction(totalPredLepAccQsquareSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredLepAccQsquareSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccQsquareSys", "NJetsHTMHT");
 		std::vector<TH1D*> lepAccQsquareSysDown_LL_MC_;
 		lepAccQsquareSysDown_LL_MC_.push_back(totalPredMuAccQsquareSysDown_LL_MC_);
 		lepAccQsquareSysDown_LL_MC_.push_back(totalPredElecAccQsquareSysDown_LL_MC_);
 		addUncertainties(totalPredLepAccQsquareSysDown_LL_MC_, lepAccQsquareSysDown_LL_MC_, false);
-		SaveFraction(totalPredLepAccQsquareSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccQsquareSys", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredLepAccQsquareSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccQsquareSys", "NJetsHTMHT");
 
 
 		std::vector<TH1D*> diLepContributionStatUp_LL_MC_;
@@ -929,12 +928,12 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 		lepAccStatUp_LL_MC_.push_back(totalPredMuAccStatUp_LL_MC_);
 		lepAccStatUp_LL_MC_.push_back(totalPredElecAccStatUp_LL_MC_);
 		addUncertainties(totalPredLepAccStatUp_LL_MC_, lepAccStatUp_LL_MC_, true);
-		SaveFraction(totalPredLepAccStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredLepAccStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccStat", "BinByBin");
 		std::vector<TH1D*> lepAccStatDown_LL_MC_;
 		lepAccStatDown_LL_MC_.push_back(totalPredMuAccStatDown_LL_MC_);
 		lepAccStatDown_LL_MC_.push_back(totalPredElecAccStatDown_LL_MC_);
 		addUncertainties(totalPredLepAccStatDown_LL_MC_, lepAccStatDown_LL_MC_, false);
-		SaveFraction(totalPredLepAccStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccStat", "HTMHTNJetsBTagsCombined");
+		SaveFraction(totalPredLepAccStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_lepAccStat", "BinByBin");
 	}
 
 

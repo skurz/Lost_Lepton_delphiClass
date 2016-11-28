@@ -156,7 +156,7 @@ static double GetSF(TH1 *hist, Double_t xVal) {
 }
 
 static double GetAccSF(std::vector<TH2D*> hists, Int_t NJets, Double_t xVal, Double_t yVal) {
-  if(hists.size() != 5){
+  if(hists.size() != 7){
     std::cout<<"Wrong dimension of histograms for acceptance uncertainty maps!"<<std::endl;
     return 0;
   }
@@ -164,20 +164,27 @@ static double GetAccSF(std::vector<TH2D*> hists, Int_t NJets, Double_t xVal, Dou
   TH2D* hist = 0;
 
   switch(NJets){
-    case 3:
+    case 2:
       hist = hists.at(0);
       break;
-    case 4:
+    case 3:
       hist = hists.at(1);
       break;
-    case 5:
+    case 4:
       hist = hists.at(2);
       break;
-    case 6:
+    case 5:
       hist = hists.at(3);
       break;
-    default:
+    case 6:
       hist = hists.at(4);
+      break;
+    case 7:
+    case 8:
+      hist = hists.at(5);
+      break;
+    default:
+      hist = hists.at(6);
       break;
   }
 

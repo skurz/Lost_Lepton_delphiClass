@@ -239,9 +239,9 @@ double calcEnvMax(TH1D* hist){
 
 
 void VaryPDFs(){
-	TString outName("AcceptanceUncertainty/PDFuncertainty_up.root");
+	TString outName("AcceptanceUncertainty/PDFuncertainty_down.root");
 	// lower/upper uncertainty
-	bool lower = false;
+	bool lower = true;
 
 	bool showRatio = true;
 
@@ -259,11 +259,11 @@ void VaryPDFs(){
 	std::vector<double>  *PDFweights=0;
 
 	gROOT->Reset();
-	TFile *fExp = (TFile*)gROOT->GetListOfFiles()->FindObject("Expectation_ttbarWJets.root");
+	TFile *fExp = (TFile*)gROOT->GetListOfFiles()->FindObject("Expectation.root");
 	//TFile *fExp = (TFile*)gROOT->GetListOfFiles()->FindObject("/nfs/dust/cms/user/kurzsimo/LostLepton/Expectation_woExo.root");
 	if (!fExp) {
     	//fExp = new TFile("/nfs/dust/cms/user/kurzsimo/LostLepton/Expectation_woExo.root");
-    	fExp = new TFile("Expectation_ttbarWJets.root");
+    	fExp = new TFile("Expectation.root");
 	}
 	TTree* LostLeptonExpectation = (TTree*) fExp->Get("LostLeptonExpectation");
 
@@ -296,8 +296,10 @@ void VaryPDFs(){
 	double ThreeDHT_[threeDHT_] = {300,500,1000,10000};
 	const int threeDMHT_=4;
 	double ThreeDMHT_[threeDMHT_] = {250,350,500,10000};
-	const int twoDNJets_=7;
-	double TwoDNJets_[twoDNJets_] = {2.5,3.5,4.5,5.5,6.5,8.5,21.5};
+	const int twoDNJets_=8;
+	double TwoDNJets_[twoDNJets_] = {1.5,2.5,3.5,4.5,5.5,6.5,8.5,21.5};
+	TH2D* MuAccControl_NJets2_pass = new TH2D("MuAccControl_NJets2_pass","MuAccControl_NJets2_pass",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+	TH2D* MuAccControl_NJets2_fail = new TH2D("MuAccControl_NJets2_fail","MuAccControl_NJets2_fail",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* MuAccControl_NJets3_pass = new TH2D("MuAccControl_NJets3_pass","MuAccControl_NJets3_pass",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* MuAccControl_NJets3_fail = new TH2D("MuAccControl_NJets3_fail","MuAccControl_NJets3_fail",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* MuAccControl_NJets4_pass = new TH2D("MuAccControl_NJets4_pass","MuAccControl_NJets4_pass",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
@@ -313,6 +315,7 @@ void VaryPDFs(){
 	TH2D* MuAccControl_NJets7Inf_pass = new TH2D("MuAccControl_NJets7Inf_pass"," MuAccControl_NJets7Inf_pass",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* MuAccControl_NJets7Inf_fail = new TH2D("MuAccControl_NJets7Inf_fail"," MuAccControl_NJets7Inf_fail",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 
+	TH2D* MuAccUnc_NJets2 = new TH2D("MuAccPDFUnc_NJets2","MuAccPDFUnc_NJets2",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* MuAccUnc_NJets3 = new TH2D("MuAccPDFUnc_NJets3","MuAccPDFUnc_NJets3",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* MuAccUnc_NJets4 = new TH2D("MuAccPDFUnc_NJets4","MuAccPDFUnc_NJets4",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* MuAccUnc_NJets5 = new TH2D("MuAccPDFUnc_NJets5","MuAccPDFUnc_NJets5",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
@@ -321,10 +324,12 @@ void VaryPDFs(){
 	TH2D* MuAccUnc_NJets9Inf = new TH2D("MuAccPDFUnc_NJets9Inf","MuAccPDFUnc_NJets9Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* MuAccUnc_NJets7Inf = new TH2D("MuAccPDFUnc_NJets7Inf","MuAccPDFUnc_NJets7Inf",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 
-	TH2D* ElecAccControl_NJets4_pass = new TH2D("ElecAccControl_NJets4_pass","ElecAccControl_NJets4_pass",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
-	TH2D* ElecAccControl_NJets4_fail = new TH2D("ElecAccControl_NJets4_fail","ElecAccControl_NJets4_fail",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+	TH2D* ElecAccControl_NJets2_pass = new TH2D("ElecAccControl_NJets2_pass","ElecAccControl_NJets2_pass",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+	TH2D* ElecAccControl_NJets2_fail = new TH2D("ElecAccControl_NJets2_fail","ElecAccControl_NJets2_fail",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* ElecAccControl_NJets3_pass = new TH2D("ElecAccControl_NJets3_pass","ElecAccControl_NJets3_pass",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* ElecAccControl_NJets3_fail = new TH2D("ElecAccControl_NJets3_fail","ElecAccControl_NJets3_fail",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+	TH2D* ElecAccControl_NJets4_pass = new TH2D("ElecAccControl_NJets4_pass","ElecAccControl_NJets4_pass",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+	TH2D* ElecAccControl_NJets4_fail = new TH2D("ElecAccControl_NJets4_fail","ElecAccControl_NJets4_fail",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* ElecAccControl_NJets5_pass = new TH2D("ElecAccControl_NJets5_pass","ElecAccControl_NJets5_pass",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* ElecAccControl_NJets5_fail = new TH2D("ElecAccControl_NJets5_fail","ElecAccControl_NJets5_fail",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* ElecAccControl_NJets6_pass = new TH2D("ElecAccControl_NJets6_pass","ElecAccControl_NJets6_pass",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
@@ -336,6 +341,7 @@ void VaryPDFs(){
 	TH2D* ElecAccControl_NJets7Inf_pass = new TH2D("ElecAccControl_NJets7Inf_pass"," ElecAccControl_NJets7Inf_pass",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* ElecAccControl_NJets7Inf_fail = new TH2D("ElecAccControl_NJets7Inf_fail"," ElecAccControl_NJets7Inf_fail",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 
+	TH2D* ElecAccUnc_NJets2 = new TH2D("ElecAccPDFUnc_NJets2","ElecAccPDFUnc_NJets2",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* ElecAccUnc_NJets3 = new TH2D("ElecAccPDFUnc_NJets3","ElecAccPDFUnc_NJets3",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* ElecAccUnc_NJets4 = new TH2D("ElecAccPDFUnc_NJets4","ElecAccPDFUnc_NJets4",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 	TH2D* ElecAccUnc_NJets5 = new TH2D("ElecAccPDFUnc_NJets5","ElecAccPDFUnc_NJets5",threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
@@ -356,6 +362,8 @@ void VaryPDFs(){
 	std::vector<double> mu_pass(100, 0);
 	std::vector<double> mu_fail(100, 0);
 
+	std::vector<TH2D*> h_mu_pass2(100, 0);
+	std::vector<TH2D*> h_mu_fail2(100, 0);
 	std::vector<TH2D*> h_mu_pass3(100, 0);
 	std::vector<TH2D*> h_mu_fail3(100, 0);
 	std::vector<TH2D*> h_mu_pass4(100, 0);
@@ -377,6 +385,8 @@ void VaryPDFs(){
 	std::vector<double> elec_pass(100, 0);
 	std::vector<double> elec_fail(100, 0);
 
+	std::vector<TH2D*> h_elec_pass2(100, 0);
+	std::vector<TH2D*> h_elec_fail2(100, 0);
 	std::vector<TH2D*> h_elec_pass3(100, 0);
 	std::vector<TH2D*> h_elec_fail3(100, 0);
 	std::vector<TH2D*> h_elec_pass4(100, 0);
@@ -404,6 +414,8 @@ void VaryPDFs(){
 
 
 	for(unsigned i = 0; i<h_mu_pass4.size(); ++i){
+		h_mu_pass2.at(i) = new TH2D(TString("mu_pass2_")+TString(std::to_string(i)),TString("mu_pass2_")+TString(std::to_string(i)),threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+		h_mu_fail2.at(i) = new TH2D(TString("mu_fail2_")+TString(std::to_string(i)),TString("mu_fail2_")+TString(std::to_string(i)),threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 		h_mu_pass3.at(i) = new TH2D(TString("mu_pass3_")+TString(std::to_string(i)),TString("mu_pass3_")+TString(std::to_string(i)),threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 		h_mu_fail3.at(i) = new TH2D(TString("mu_fail3_")+TString(std::to_string(i)),TString("mu_fail3_")+TString(std::to_string(i)),threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 		h_mu_pass4.at(i) = new TH2D(TString("mu_pass4_")+TString(std::to_string(i)),TString("mu_pass4_")+TString(std::to_string(i)),threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
@@ -419,6 +431,8 @@ void VaryPDFs(){
 		h_mu_pass7Inf.at(i) = new TH2D(TString("mu_pass7Inf_")+TString(std::to_string(i)),TString("mu_pass7Inf_")+TString(std::to_string(i)),threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 		h_mu_fail7Inf.at(i) = new TH2D(TString("mu_fail7Inf_")+TString(std::to_string(i)),TString("mu_fail7Inf_")+TString(std::to_string(i)),threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 
+		h_elec_pass2.at(i) = new TH2D(TString("elec_pass2_")+TString(std::to_string(i)),TString("elec_pass2_")+TString(std::to_string(i)),threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
+		h_elec_fail2.at(i) = new TH2D(TString("elec_fail2_")+TString(std::to_string(i)),TString("elec_fail2_")+TString(std::to_string(i)),threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 		h_elec_pass3.at(i) = new TH2D(TString("elec_pass3_")+TString(std::to_string(i)),TString("elec_pass3_")+TString(std::to_string(i)),threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 		h_elec_fail3.at(i) = new TH2D(TString("elec_fail3_")+TString(std::to_string(i)),TString("elec_fail3_")+TString(std::to_string(i)),threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
 		h_elec_pass4.at(i) = new TH2D(TString("elec_pass4_")+TString(std::to_string(i)),TString("elec_pass4_")+TString(std::to_string(i)),threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
@@ -451,7 +465,7 @@ void VaryPDFs(){
 	Long64_t nentries = LostLeptonExpectation->GetEntries();
 	for (Long64_t i=0; i<nentries;i++) {
     	LostLeptonExpectation->GetEntry(i);
-    	if(HT<300 || MHT<250 || NJets<2.5) continue;
+    	if(HT<300 || MHT<250 || NJets<1.5) continue;
 
     	if(Weight<0) Weight*=-1;
 
@@ -475,7 +489,10 @@ void VaryPDFs(){
     	if(muAcc==2){
     		mu_pass_central += Weight;
 	    	switch(NJets){
-	        	case 3:
+	        	case 2:
+	        		MuAccControl_NJets2_pass->Fill(HT,MHT,Weight);
+		            break;
+		        case 3:
 	        		MuAccControl_NJets3_pass->Fill(HT,MHT,Weight);
 		            break;
 		        case 4:
@@ -501,7 +518,10 @@ void VaryPDFs(){
     			h_mu_passAvg.at(i-1)->Fill(HT,MHT,std::abs(PDFweights->at(i)*Weight));
     			h_mu_passNJets.at(i-1)->Fill(NJets, std::abs(PDFweights->at(i)*Weight));
 			    switch(NJets){
-		        	case 3:
+		        	case 2:
+		        		h_mu_pass2.at(i-1)->Fill(HT,MHT,std::abs(PDFweights->at(i)*Weight));
+			            break;
+			        case 3:
 		        		h_mu_pass3.at(i-1)->Fill(HT,MHT,std::abs(PDFweights->at(i)*Weight));
 			            break;
 			        case 4:
@@ -527,7 +547,10 @@ void VaryPDFs(){
   		}else if(muAcc==0){
   			mu_fail_central += Weight;
 	    	switch(NJets){
-	        	case 3:
+	        	case 2:
+	        		MuAccControl_NJets2_fail->Fill(HT,MHT,Weight);
+		            break;
+		        case 3:
 	        		MuAccControl_NJets3_fail->Fill(HT,MHT,Weight);
 		            break;
 		        case 4:
@@ -553,6 +576,9 @@ void VaryPDFs(){
     			h_mu_failAvg.at(i-1)->Fill(HT,MHT,std::abs(PDFweights->at(i)*Weight));
     			h_mu_failNJets.at(i-1)->Fill(NJets, std::abs(PDFweights->at(i)*Weight));
     			switch(NJets){
+    				case 2:
+		        		h_mu_fail2.at(i-1)->Fill(HT,MHT,std::abs(PDFweights->at(i)*Weight));
+			            break;
 		        	case 3:
 		        		h_mu_fail3.at(i-1)->Fill(HT,MHT,std::abs(PDFweights->at(i)*Weight));
 			            break;
@@ -581,6 +607,9 @@ void VaryPDFs(){
     	if(elecAcc==2){
     		elec_pass_central += Weight;
 	    	switch(NJets){
+	    		case 2:
+	        		ElecAccControl_NJets2_pass->Fill(HT,MHT,Weight);
+		            break;
 	        	case 3:
 	        		ElecAccControl_NJets3_pass->Fill(HT,MHT,Weight);
 		            break;
@@ -607,6 +636,9 @@ void VaryPDFs(){
     			h_elec_passAvg.at(i-1)->Fill(HT,MHT,std::abs(PDFweights->at(i)*Weight));
     			h_elec_passNJets.at(i-1)->Fill(NJets, std::abs(PDFweights->at(i)*Weight));
 			    switch(NJets){
+			    	case 2:
+		        		h_elec_pass2.at(i-1)->Fill(HT,MHT,std::abs(PDFweights->at(i)*Weight));
+			            break;
 		        	case 3:
 		        		h_elec_pass3.at(i-1)->Fill(HT,MHT,std::abs(PDFweights->at(i)*Weight));
 			            break;
@@ -633,6 +665,9 @@ void VaryPDFs(){
   		}else if(elecAcc==0){
   			elec_fail_central += Weight;
 	    	switch(NJets){
+	    		case 2:
+	        		ElecAccControl_NJets2_fail->Fill(HT,MHT,Weight);
+		            break;
 	        	case 3:
 	        		ElecAccControl_NJets3_fail->Fill(HT,MHT,Weight);
 		            break;
@@ -659,6 +694,9 @@ void VaryPDFs(){
     			h_elec_failAvg.at(i-1)->Fill(HT,MHT,std::abs(PDFweights->at(i)*Weight));
     			h_elec_failNJets.at(i-1)->Fill(NJets, std::abs(PDFweights->at(i)*Weight));
     			switch(NJets){
+    				case 2:
+		        		h_elec_fail2.at(i-1)->Fill(HT,MHT,std::abs(PDFweights->at(i)*Weight));
+			            break;
 		        	case 3:
 		        		h_elec_fail3.at(i-1)->Fill(HT,MHT,std::abs(PDFweights->at(i)*Weight));
 			            break;
@@ -692,6 +730,7 @@ void VaryPDFs(){
 
 
 	TH1D* h_mu_ratio = new TH1D("h_mu_ratio", "h_mu_ratio", 10000, 0., 1.);
+	std::vector<TH1D*> h_mu_ratio2(8, 0);
 	std::vector<TH1D*> h_mu_ratio3(8, 0);
 	std::vector<TH1D*> h_mu_ratio4(8, 0);
 	std::vector<TH1D*> h_mu_ratio5(8, 0);
@@ -701,6 +740,7 @@ void VaryPDFs(){
 	std::vector<TH1D*> h_mu_ratio7Inf(8, 0);
 
 	TH1D* h_elec_ratio = new TH1D("h_elec_ratio", "h_elec_ratio", 10000, 0., 1.);
+	std::vector<TH1D*> h_elec_ratio2(8, 0);
 	std::vector<TH1D*> h_elec_ratio3(8, 0);
 	std::vector<TH1D*> h_elec_ratio4(8, 0);
 	std::vector<TH1D*> h_elec_ratio5(8, 0);
@@ -712,11 +752,12 @@ void VaryPDFs(){
 	std::vector<TH1D*> h_mu_ratioAvg(8, 0);
 	std::vector<TH1D*> h_elec_ratioAvg(8, 0);
 
-	std::vector<TH1D*> h_mu_ratioNJets(6, 0);
-	std::vector<TH1D*> h_elec_ratioNJets(6, 0);
+	std::vector<TH1D*> h_mu_ratioNJets(7, 0);
+	std::vector<TH1D*> h_elec_ratioNJets(7, 0);
 
 
 	for(unsigned i = 0; i<h_mu_ratio4.size(); ++i){
+		h_mu_ratio2.at(i) = new TH1D(TString("h_mu_ratio2_")+TString(std::to_string(i)),TString("h_mu_ratio2_")+TString(std::to_string(i)), 10000, 0., 1.);
 		h_mu_ratio3.at(i) = new TH1D(TString("h_mu_ratio3_")+TString(std::to_string(i)),TString("h_mu_ratio3_")+TString(std::to_string(i)), 10000, 0., 1.);
 		h_mu_ratio4.at(i) = new TH1D(TString("h_mu_ratio4_")+TString(std::to_string(i)),TString("h_mu_ratio4_")+TString(std::to_string(i)), 10000, 0., 1.);
 		h_mu_ratio5.at(i) = new TH1D(TString("h_mu_ratio5_")+TString(std::to_string(i)),TString("h_mu_ratio5_")+TString(std::to_string(i)), 10000, 0., 1.);
@@ -725,6 +766,7 @@ void VaryPDFs(){
 		h_mu_ratio9Inf.at(i) = new TH1D(TString("h_mu_ratio9Inf_")+TString(std::to_string(i)),TString("h_mu_ratio9Inf_")+TString(std::to_string(i)), 10000, 0., 1.);
 		h_mu_ratio7Inf.at(i) = new TH1D(TString("h_mu_ratio7Inf_")+TString(std::to_string(i)),TString("h_mu_ratio7Inf_")+TString(std::to_string(i)), 10000, 0., 1.);
 
+		h_elec_ratio2.at(i) = new TH1D(TString("h_elec_ratio2_")+TString(std::to_string(i)),TString("h_elec_ratio2_")+TString(std::to_string(i)), 10000, 0., 1.);
 		h_elec_ratio3.at(i) = new TH1D(TString("h_elec_ratio3_")+TString(std::to_string(i)),TString("h_elec_ratio3_")+TString(std::to_string(i)), 10000, 0., 1.);
 		h_elec_ratio4.at(i) = new TH1D(TString("h_elec_ratio4_")+TString(std::to_string(i)),TString("h_elec_ratio4_")+TString(std::to_string(i)), 10000, 0., 1.);
 		h_elec_ratio5.at(i) = new TH1D(TString("h_elec_ratio5_")+TString(std::to_string(i)),TString("h_elec_ratio5_")+TString(std::to_string(i)), 10000, 0., 1.);
@@ -744,6 +786,14 @@ void VaryPDFs(){
 
 	for(unsigned i = 0; i<mu_pass.size(); ++i){
     	h_mu_ratio->Fill(mu_pass.at(i)/(mu_pass.at(i)+mu_fail.at(i)));
+    	h_mu_ratio2.at(0)->Fill(h_mu_pass2.at(i)->GetBinContent(1,1)/(h_mu_pass2.at(i)->GetBinContent(1,1)+h_mu_fail2.at(i)->GetBinContent(1,1)));
+		h_mu_ratio2.at(1)->Fill(h_mu_pass2.at(i)->GetBinContent(2,1)/(h_mu_pass2.at(i)->GetBinContent(2,1)+h_mu_fail2.at(i)->GetBinContent(2,1)));
+		h_mu_ratio2.at(2)->Fill(h_mu_pass2.at(i)->GetBinContent(3,1)/(h_mu_pass2.at(i)->GetBinContent(3,1)+h_mu_fail2.at(i)->GetBinContent(3,1)));
+		h_mu_ratio2.at(3)->Fill(h_mu_pass2.at(i)->GetBinContent(1,2)/(h_mu_pass2.at(i)->GetBinContent(1,2)+h_mu_fail2.at(i)->GetBinContent(1,2)));
+		h_mu_ratio2.at(4)->Fill(h_mu_pass2.at(i)->GetBinContent(2,2)/(h_mu_pass2.at(i)->GetBinContent(2,2)+h_mu_fail2.at(i)->GetBinContent(2,2)));
+		h_mu_ratio2.at(5)->Fill(h_mu_pass2.at(i)->GetBinContent(3,2)/(h_mu_pass2.at(i)->GetBinContent(3,2)+h_mu_fail2.at(i)->GetBinContent(3,2)));
+		h_mu_ratio2.at(6)->Fill(h_mu_pass2.at(i)->GetBinContent(2,3)/(h_mu_pass2.at(i)->GetBinContent(2,3)+h_mu_fail2.at(i)->GetBinContent(2,3)));
+		h_mu_ratio2.at(7)->Fill(h_mu_pass2.at(i)->GetBinContent(3,3)/(h_mu_pass2.at(i)->GetBinContent(3,3)+h_mu_fail2.at(i)->GetBinContent(3,3)));
     	h_mu_ratio3.at(0)->Fill(h_mu_pass3.at(i)->GetBinContent(1,1)/(h_mu_pass3.at(i)->GetBinContent(1,1)+h_mu_fail3.at(i)->GetBinContent(1,1)));
 		h_mu_ratio3.at(1)->Fill(h_mu_pass3.at(i)->GetBinContent(2,1)/(h_mu_pass3.at(i)->GetBinContent(2,1)+h_mu_fail3.at(i)->GetBinContent(2,1)));
 		h_mu_ratio3.at(2)->Fill(h_mu_pass3.at(i)->GetBinContent(3,1)/(h_mu_pass3.at(i)->GetBinContent(3,1)+h_mu_fail3.at(i)->GetBinContent(3,1)));
@@ -802,6 +852,14 @@ void VaryPDFs(){
 		h_mu_ratio7Inf.at(7)->Fill(h_mu_pass7Inf.at(i)->GetBinContent(3,3)/(h_mu_pass7Inf.at(i)->GetBinContent(3,3)+h_mu_fail7Inf.at(i)->GetBinContent(3,3)));
 
 		h_elec_ratio->Fill(elec_pass.at(i)/(elec_pass.at(i)+elec_fail.at(i)));
+		h_elec_ratio2.at(0)->Fill(h_elec_pass2.at(i)->GetBinContent(1,1)/(h_elec_pass2.at(i)->GetBinContent(1,1)+h_elec_fail2.at(i)->GetBinContent(1,1)));
+		h_elec_ratio2.at(1)->Fill(h_elec_pass2.at(i)->GetBinContent(2,1)/(h_elec_pass2.at(i)->GetBinContent(2,1)+h_elec_fail2.at(i)->GetBinContent(2,1)));
+		h_elec_ratio2.at(2)->Fill(h_elec_pass2.at(i)->GetBinContent(3,1)/(h_elec_pass2.at(i)->GetBinContent(3,1)+h_elec_fail2.at(i)->GetBinContent(3,1)));
+		h_elec_ratio2.at(3)->Fill(h_elec_pass2.at(i)->GetBinContent(1,2)/(h_elec_pass2.at(i)->GetBinContent(1,2)+h_elec_fail2.at(i)->GetBinContent(1,2)));
+		h_elec_ratio2.at(4)->Fill(h_elec_pass2.at(i)->GetBinContent(2,2)/(h_elec_pass2.at(i)->GetBinContent(2,2)+h_elec_fail2.at(i)->GetBinContent(2,2)));
+		h_elec_ratio2.at(5)->Fill(h_elec_pass2.at(i)->GetBinContent(3,2)/(h_elec_pass2.at(i)->GetBinContent(3,2)+h_elec_fail2.at(i)->GetBinContent(3,2)));
+		h_elec_ratio2.at(6)->Fill(h_elec_pass2.at(i)->GetBinContent(2,3)/(h_elec_pass2.at(i)->GetBinContent(2,3)+h_elec_fail2.at(i)->GetBinContent(2,3)));
+		h_elec_ratio2.at(7)->Fill(h_elec_pass2.at(i)->GetBinContent(3,3)/(h_elec_pass2.at(i)->GetBinContent(3,3)+h_elec_fail2.at(i)->GetBinContent(3,3)));
     	h_elec_ratio3.at(0)->Fill(h_elec_pass3.at(i)->GetBinContent(1,1)/(h_elec_pass3.at(i)->GetBinContent(1,1)+h_elec_fail3.at(i)->GetBinContent(1,1)));
 		h_elec_ratio3.at(1)->Fill(h_elec_pass3.at(i)->GetBinContent(2,1)/(h_elec_pass3.at(i)->GetBinContent(2,1)+h_elec_fail3.at(i)->GetBinContent(2,1)));
 		h_elec_ratio3.at(2)->Fill(h_elec_pass3.at(i)->GetBinContent(3,1)/(h_elec_pass3.at(i)->GetBinContent(3,1)+h_elec_fail3.at(i)->GetBinContent(3,1)));
@@ -882,6 +940,7 @@ void VaryPDFs(){
 		h_mu_ratioNJets.at(3)->Fill(h_mu_passNJets.at(i)->GetBinContent(4)/(h_mu_passNJets.at(i)->GetBinContent(4)+h_mu_failNJets.at(i)->GetBinContent(4)));
 		h_mu_ratioNJets.at(4)->Fill(h_mu_passNJets.at(i)->GetBinContent(5)/(h_mu_passNJets.at(i)->GetBinContent(5)+h_mu_failNJets.at(i)->GetBinContent(5)));
 		h_mu_ratioNJets.at(5)->Fill(h_mu_passNJets.at(i)->GetBinContent(6)/(h_mu_passNJets.at(i)->GetBinContent(6)+h_mu_failNJets.at(i)->GetBinContent(6)));
+		h_mu_ratioNJets.at(6)->Fill(h_mu_passNJets.at(i)->GetBinContent(7)/(h_mu_passNJets.at(i)->GetBinContent(7)+h_mu_failNJets.at(i)->GetBinContent(7)));
 
 		h_elec_ratioNJets.at(0)->Fill(h_elec_passNJets.at(i)->GetBinContent(1)/(h_elec_passNJets.at(i)->GetBinContent(1)+h_elec_failNJets.at(i)->GetBinContent(1)));
 		h_elec_ratioNJets.at(1)->Fill(h_elec_passNJets.at(i)->GetBinContent(2)/(h_elec_passNJets.at(i)->GetBinContent(2)+h_elec_failNJets.at(i)->GetBinContent(2)));
@@ -889,6 +948,7 @@ void VaryPDFs(){
 		h_elec_ratioNJets.at(3)->Fill(h_elec_passNJets.at(i)->GetBinContent(4)/(h_elec_passNJets.at(i)->GetBinContent(4)+h_elec_failNJets.at(i)->GetBinContent(4)));
 		h_elec_ratioNJets.at(4)->Fill(h_elec_passNJets.at(i)->GetBinContent(5)/(h_elec_passNJets.at(i)->GetBinContent(5)+h_elec_failNJets.at(i)->GetBinContent(5)));
 		h_elec_ratioNJets.at(5)->Fill(h_elec_passNJets.at(i)->GetBinContent(6)/(h_elec_passNJets.at(i)->GetBinContent(6)+h_elec_failNJets.at(i)->GetBinContent(6)));
+		h_elec_ratioNJets.at(6)->Fill(h_elec_passNJets.at(i)->GetBinContent(7)/(h_elec_passNJets.at(i)->GetBinContent(7)+h_elec_failNJets.at(i)->GetBinContent(7)));
     }
 /*
   	TCanvas *c1 = new TCanvas("c1","c1",1000,500);
@@ -913,6 +973,22 @@ void VaryPDFs(){
     std::cout<<"Elec: Assym: "<<h_elec_ratio->GetMean()<<"+"<<calcUnc(h_elec_ratio, false)<<"-"<<calcUnc(h_elec_ratio, true)<<std::endl;
     std::cout<<"Elec: Env: "<<h_elec_ratio->GetMean()<<"+"<<calcEnv(h_elec_ratio, false)<<"-"<<calcEnv(h_elec_ratio, true)<<std::endl;
 
+    MuAccUnc_NJets2->SetBinContent(1,1, h_mu_ratio2.at(0)->GetMean());
+    MuAccUnc_NJets2->SetBinError(1,1, calcUnc2(h_mu_ratio2.at(0), lower));
+    MuAccUnc_NJets2->SetBinContent(2,1, h_mu_ratio2.at(1)->GetMean());
+    MuAccUnc_NJets2->SetBinError(2,1, calcUnc2(h_mu_ratio2.at(1), lower));
+    MuAccUnc_NJets2->SetBinContent(3,1, h_mu_ratio2.at(2)->GetMean());
+    MuAccUnc_NJets2->SetBinError(3,1, calcUnc2(h_mu_ratio2.at(2), lower));
+    MuAccUnc_NJets2->SetBinContent(1,2, h_mu_ratio2.at(3)->GetMean());
+    MuAccUnc_NJets2->SetBinError(1,2, calcUnc2(h_mu_ratio2.at(3), lower));
+    MuAccUnc_NJets2->SetBinContent(2,2, h_mu_ratio2.at(4)->GetMean());
+    MuAccUnc_NJets2->SetBinError(2,2, calcUnc2(h_mu_ratio2.at(4), lower));
+    MuAccUnc_NJets2->SetBinContent(3,2, h_mu_ratio2.at(5)->GetMean());
+    MuAccUnc_NJets2->SetBinError(3,2, calcUnc2(h_mu_ratio2.at(5), lower));
+    MuAccUnc_NJets2->SetBinContent(2,3, h_mu_ratio2.at(6)->GetMean());
+    MuAccUnc_NJets2->SetBinError(2,3, calcUnc2(h_mu_ratio2.at(6), lower));
+    MuAccUnc_NJets2->SetBinContent(3,3, h_mu_ratio2.at(7)->GetMean());
+    MuAccUnc_NJets2->SetBinError(3,3, calcUnc2(h_mu_ratio2.at(7), lower));
     MuAccUnc_NJets3->SetBinContent(1,1, h_mu_ratio3.at(0)->GetMean());
     MuAccUnc_NJets3->SetBinError(1,1, calcUnc2(h_mu_ratio3.at(0), lower));
     MuAccUnc_NJets3->SetBinContent(2,1, h_mu_ratio3.at(1)->GetMean());
@@ -1026,6 +1102,22 @@ void VaryPDFs(){
     MuAccUnc_NJets7Inf->SetBinContent(3,3, h_mu_ratio7Inf.at(7)->GetMean());
     MuAccUnc_NJets7Inf->SetBinError(3,3, calcUnc2(h_mu_ratio7Inf.at(7), lower));
 
+    ElecAccUnc_NJets2->SetBinContent(1,1, h_elec_ratio2.at(0)->GetMean());
+    ElecAccUnc_NJets2->SetBinError(1,1, calcUnc2(h_elec_ratio2.at(0), lower));
+    ElecAccUnc_NJets2->SetBinContent(2,1, h_elec_ratio2.at(1)->GetMean());
+    ElecAccUnc_NJets2->SetBinError(2,1, calcUnc2(h_elec_ratio2.at(1), lower));
+    ElecAccUnc_NJets2->SetBinContent(3,1, h_elec_ratio2.at(2)->GetMean());
+    ElecAccUnc_NJets2->SetBinError(3,1, calcUnc2(h_elec_ratio2.at(2), lower));
+    ElecAccUnc_NJets2->SetBinContent(1,2, h_elec_ratio2.at(3)->GetMean());
+    ElecAccUnc_NJets2->SetBinError(1,2, calcUnc2(h_elec_ratio2.at(3), lower));
+    ElecAccUnc_NJets2->SetBinContent(2,2, h_elec_ratio2.at(4)->GetMean());
+    ElecAccUnc_NJets2->SetBinError(2,2, calcUnc2(h_elec_ratio2.at(4), lower));
+    ElecAccUnc_NJets2->SetBinContent(3,2, h_elec_ratio2.at(5)->GetMean());
+    ElecAccUnc_NJets2->SetBinError(3,2, calcUnc2(h_elec_ratio2.at(5), lower));
+    ElecAccUnc_NJets2->SetBinContent(2,3, h_elec_ratio2.at(6)->GetMean());
+    ElecAccUnc_NJets2->SetBinError(2,3, calcUnc2(h_elec_ratio2.at(6), lower));
+    ElecAccUnc_NJets2->SetBinContent(3,3, h_elec_ratio2.at(7)->GetMean());
+    ElecAccUnc_NJets2->SetBinError(3,3, calcUnc2(h_elec_ratio2.at(7), lower));
     ElecAccUnc_NJets3->SetBinContent(1,1, h_elec_ratio3.at(0)->GetMean());
     ElecAccUnc_NJets3->SetBinError(1,1, calcUnc2(h_elec_ratio3.at(0), lower));
     ElecAccUnc_NJets3->SetBinContent(2,1, h_elec_ratio3.at(1)->GetMean());
@@ -1184,6 +1276,8 @@ void VaryPDFs(){
     MuAccUnc_NJets->SetBinError(5, calcUnc2(h_mu_ratioNJets.at(4), lower));
     MuAccUnc_NJets->SetBinContent(6, h_mu_ratioNJets.at(5)->GetMean());
     MuAccUnc_NJets->SetBinError(6, calcUnc2(h_mu_ratioNJets.at(5), lower));
+    MuAccUnc_NJets->SetBinContent(7, h_mu_ratioNJets.at(6)->GetMean());
+    MuAccUnc_NJets->SetBinError(7, calcUnc2(h_mu_ratioNJets.at(6), lower));
 
     ElecAccUnc_NJets->SetBinContent(1, h_elec_ratioNJets.at(0)->GetMean());
     ElecAccUnc_NJets->SetBinError(1, calcUnc2(h_elec_ratioNJets.at(0), lower));
@@ -1197,12 +1291,15 @@ void VaryPDFs(){
     ElecAccUnc_NJets->SetBinError(5, calcUnc2(h_elec_ratioNJets.at(4), lower));
     ElecAccUnc_NJets->SetBinContent(6, h_elec_ratioNJets.at(5)->GetMean());
     ElecAccUnc_NJets->SetBinError(6, calcUnc2(h_elec_ratioNJets.at(5), lower));
+    ElecAccUnc_NJets->SetBinContent(7, h_elec_ratioNJets.at(6)->GetMean());
+    ElecAccUnc_NJets->SetBinError(7, calcUnc2(h_elec_ratioNJets.at(6), lower));
 
     if(showRatio)
     for(int xb = 1; xb <= 3; xb++){
 		for(int yb = 1; yb <= 3; yb++){
 			if(xb == 1 && yb == 3) continue;
 
+			MuAccUnc_NJets2->SetBinContent(xb, yb, MuAccUnc_NJets2->GetBinError(xb, yb)/MuAccUnc_NJets2->GetBinContent(xb, yb));
 			MuAccUnc_NJets3->SetBinContent(xb, yb, MuAccUnc_NJets3->GetBinError(xb, yb)/MuAccUnc_NJets3->GetBinContent(xb, yb));
 			MuAccUnc_NJets4->SetBinContent(xb, yb, MuAccUnc_NJets4->GetBinError(xb, yb)/MuAccUnc_NJets4->GetBinContent(xb, yb));
 			MuAccUnc_NJets5->SetBinContent(xb, yb, MuAccUnc_NJets5->GetBinError(xb, yb)/MuAccUnc_NJets5->GetBinContent(xb, yb));
@@ -1211,6 +1308,7 @@ void VaryPDFs(){
 			MuAccUnc_NJets9Inf->SetBinContent(xb, yb, MuAccUnc_NJets9Inf->GetBinError(xb, yb)/MuAccUnc_NJets9Inf->GetBinContent(xb, yb));
 			MuAccUnc_NJets7Inf->SetBinContent(xb, yb, MuAccUnc_NJets7Inf->GetBinError(xb, yb)/MuAccUnc_NJets7Inf->GetBinContent(xb, yb));
 
+			ElecAccUnc_NJets2->SetBinContent(xb, yb, ElecAccUnc_NJets2->GetBinError(xb, yb)/ElecAccUnc_NJets2->GetBinContent(xb, yb));
 			ElecAccUnc_NJets3->SetBinContent(xb, yb, ElecAccUnc_NJets3->GetBinError(xb, yb)/ElecAccUnc_NJets3->GetBinContent(xb, yb));
 			ElecAccUnc_NJets4->SetBinContent(xb, yb, ElecAccUnc_NJets4->GetBinError(xb, yb)/ElecAccUnc_NJets4->GetBinContent(xb, yb));
 			ElecAccUnc_NJets5->SetBinContent(xb, yb, ElecAccUnc_NJets5->GetBinError(xb, yb)/ElecAccUnc_NJets5->GetBinContent(xb, yb));
@@ -1219,6 +1317,7 @@ void VaryPDFs(){
 			ElecAccUnc_NJets9Inf->SetBinContent(xb, yb, ElecAccUnc_NJets9Inf->GetBinError(xb, yb)/ElecAccUnc_NJets9Inf->GetBinContent(xb, yb));
 			ElecAccUnc_NJets7Inf->SetBinContent(xb, yb, ElecAccUnc_NJets7Inf->GetBinError(xb, yb)/ElecAccUnc_NJets7Inf->GetBinContent(xb, yb));
 
+			MuAccUnc_NJets2->SetBinError(xb, yb, 0);
 			MuAccUnc_NJets3->SetBinError(xb, yb, 0);
 			MuAccUnc_NJets4->SetBinError(xb, yb, 0);
 			MuAccUnc_NJets5->SetBinError(xb, yb, 0);
@@ -1227,6 +1326,7 @@ void VaryPDFs(){
 			MuAccUnc_NJets9Inf->SetBinError(xb, yb, 0);
 			MuAccUnc_NJets7Inf->SetBinError(xb, yb, 0);
 
+			ElecAccUnc_NJets2->SetBinError(xb, yb, 0);
 			ElecAccUnc_NJets3->SetBinError(xb, yb, 0);
 			ElecAccUnc_NJets4->SetBinError(xb, yb, 0);
 			ElecAccUnc_NJets5->SetBinError(xb, yb, 0);
@@ -1243,7 +1343,7 @@ void VaryPDFs(){
     }
 
     if(showRatio)
-    for(int xb = 1; xb <= 6; xb++){
+    for(int xb = 1; xb <= 7; xb++){
     	MuAccUnc_NJets->SetBinContent(xb, MuAccUnc_NJets->GetBinError(xb)/MuAccUnc_NJets->GetBinContent(xb));
 		ElecAccUnc_NJets->SetBinContent(xb, ElecAccUnc_NJets->GetBinError(xb)/ElecAccUnc_NJets->GetBinContent(xb));
 		MuAccUnc_NJets->SetBinError(xb, 0);
@@ -1254,6 +1354,7 @@ void VaryPDFs(){
 	outPutFile->cd();
 
 
+    saveEff(MuAccUnc_NJets2, outPutFile);
     saveEff(MuAccUnc_NJets3, outPutFile);
     saveEff(MuAccUnc_NJets4, outPutFile);
     saveEff(MuAccUnc_NJets5, outPutFile);
@@ -1262,6 +1363,7 @@ void VaryPDFs(){
     saveEff(MuAccUnc_NJets9Inf, outPutFile);
     saveEff(MuAccUnc_NJets7Inf, outPutFile);
 
+    saveEff(ElecAccUnc_NJets2, outPutFile);
     saveEff(ElecAccUnc_NJets3, outPutFile);
     saveEff(ElecAccUnc_NJets4, outPutFile);
     saveEff(ElecAccUnc_NJets5, outPutFile);
@@ -1276,12 +1378,14 @@ void VaryPDFs(){
     saveEff(MuAccUnc_NJets, outPutFile);
     saveEff(ElecAccUnc_NJets, outPutFile);
 
+	divideEff(MuAccControl_NJets2_pass, MuAccControl_NJets2_fail);
 	divideEff(MuAccControl_NJets3_pass, MuAccControl_NJets3_fail);
 	divideEff(MuAccControl_NJets4_pass, MuAccControl_NJets4_fail);
 	divideEff(MuAccControl_NJets5_pass, MuAccControl_NJets5_fail);
 	divideEff(MuAccControl_NJets6_pass, MuAccControl_NJets6_fail);
 	divideEff(MuAccControl_NJets78_pass, MuAccControl_NJets78_fail);
 	divideEff(MuAccControl_NJets9Inf_pass, MuAccControl_NJets9Inf_fail);
+	divideEff(ElecAccControl_NJets2_pass, ElecAccControl_NJets2_fail);
 	divideEff(ElecAccControl_NJets3_pass, ElecAccControl_NJets3_fail);
 	divideEff(ElecAccControl_NJets4_pass, ElecAccControl_NJets4_fail);
 	divideEff(ElecAccControl_NJets5_pass, ElecAccControl_NJets5_fail);

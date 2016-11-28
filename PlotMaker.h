@@ -364,11 +364,11 @@ void SaveFraction(TH1D* Num, TH1D* Denom, TDirectory* dir, TString name, TString
         Num->GetXaxis()->SetBinLabel(bi, name + TString::Format("_NJets%d_MHT%d", idx.at(0), idx.at(2)));
       }
     // All bins correlated (not parametrized as a function of search bins)
-    }else if(correlation == TString("ptAct") || correlation == TString("ActPt")){
+    }else if(correlation == TString("ptAct") || correlation == TString("ActPt") || correlation == TString("ptEta") || correlation == TString("all")){
       for(int bi = 1; bi<Num->GetNbinsX()+1; ++bi){
         Num->GetXaxis()->SetBinLabel(bi, name);
       }
-    // Used for e.g. the isolated Tracks Veto. Please note that some bins are combined!!!
+    // Old: Used for e.g. the isolated Tracks Veto. Please note that some bins are combined!!!
     }else if(correlation == TString("NJetsHTMHTCombined") || correlation == TString("HTMHTNJetsCombined")){
       for(int bi = 1; bi<Num->GetNbinsX()+1; ++bi){
         std::vector<int> idx = SearchBins_->GetSearchBin(bi)->getIdx();
@@ -391,7 +391,7 @@ void SaveFraction(TH1D* Num, TH1D* Denom, TDirectory* dir, TString name, TString
         }
         Num->GetXaxis()->SetBinLabel(bi, name + TString::Format("_NJets%d_MHT%d_HT%d", nj, idx.at(2), idx.at(3)));
       }
-      //  Used for e.g. the lepton acceptance. Please note that some bins are combined!!!
+      // Old: Used for e.g. the lepton acceptance. Please note that some bins are combined!!!
     }else if(correlation == TString("NJetsBTagsHTMHTCombined") || correlation == TString("HTMHTNJetsBTagsCombined")){
       for(int bi = 1; bi<Num->GetNbinsX()+1; ++bi){
         std::vector<int> idx = SearchBins_->GetSearchBin(bi)->getIdx();
@@ -418,6 +418,16 @@ void SaveFraction(TH1D* Num, TH1D* Denom, TDirectory* dir, TString name, TString
             break;
         }
         Num->GetXaxis()->SetBinLabel(bi, name + TString::Format("_NJets%d_BTags%d_MHT%d_HT%d", idx.at(0), nb, idx.at(2), idx.at(3)));
+      }
+    }else if(correlation == TString("NJetsHTMHT") || correlation == TString("HTMHTNJets")){
+      for(int bi = 1; bi<Num->GetNbinsX()+1; ++bi){
+        std::vector<int> idx = SearchBins_->GetSearchBin(bi)->getIdx();
+        Num->GetXaxis()->SetBinLabel(bi, name + TString::Format("_NJets%d_MHT%d_HT%d", idx.at(0), idx.at(2), idx.at(3)));
+      }
+    }else if(correlation == TString("BinByBin")){
+      for(int bi = 1; bi<Num->GetNbinsX()+1; ++bi){
+        std::vector<int> idx = SearchBins_->GetSearchBin(bi)->getIdx();
+        Num->GetXaxis()->SetBinLabel(bi, name + TString::Format("_NJets%d_BTags%d_MHT%d_HT%d", idx.at(0), idx.at(1), idx.at(2), idx.at(3)));
       }
     }else{
       std::cout<<"No valid correlation model for "<<Num->GetName()<<std::endl;

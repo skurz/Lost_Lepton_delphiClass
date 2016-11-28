@@ -48,6 +48,16 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuDiLepContributionSearchBins_ = new TH1Eff("MuDiLepContributionSearchBins","MuDiLepContributionSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
   ElecDiLepContributionSearchBins_ = new TH1Eff("ElecDiLepContributionSearchBins","ElecDiLepContributionSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
 
+  MuIsoTrackVetoSearchBinsLowPt_ = new TH1Eff("MuIsoTrackVetoSearchBinsLowPt","MuIsoTrackVetoSearchBinsLowPt", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecIsoTrackVetoSearchBinsLowPt_ = new TH1Eff("ElecIsoTrackVetoSearchBinsLowPt","ElecIsoTrackVetoSearchBinsLowPt", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  PionIsoTrackVetoSearchBinsLowPt_ = new TH1Eff("PionIsoTrackVetoSearchBinsLowPt","PionIsoTrackVetoSearchBinsLowPt", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  IsoTrackVetoSearchBinsLowPt_ = new TH1Eff("IsoTrackVetoSearchBinsLowPt","IsoTrackVetoSearchBinsLowPt", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+
+  MuIsoTrackVetoSearchBinsHighPt_ = new TH1Eff("MuIsoTrackVetoSearchBinsHighPt","MuIsoTrackVetoSearchBinsHighPt", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecIsoTrackVetoSearchBinsHighPt_ = new TH1Eff("ElecIsoTrackVetoSearchBinsHighPt","ElecIsoTrackVetoSearchBinsHighPt", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  PionIsoTrackVetoSearchBinsHighPt_ = new TH1Eff("PionIsoTrackVetoSearchBinsHighPt","PionIsoTrackVetoSearchBinsHighPt", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  IsoTrackVetoSearchBinsHighPt_ = new TH1Eff("IsoTrackVetoSearchBinsHighPt","IsoTrackVetoSearchBinsHighPt", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+
 
   // purity
   // muon
@@ -1695,6 +1705,11 @@ Bool_t EffMaker::Process(Long64_t entry)
             isoTrack_highestPt = 3;
         }
 
+        if(isoMuonTracksNum+isoElectronTracksNum+isoPionTracksNum==0){
+        	IsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, false);
+            IsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, false);
+        }
+
 
         // muon iso tracks
         if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
@@ -1734,6 +1749,10 @@ Bool_t EffMaker::Process(Long64_t entry)
 
             //NEW
             MuIsoTrackVetoSearchBins_->Fill(BinQCD, WeightBTagProb, true);
+            if(isoMuonTracks->at(0).Pt() < 10) MuIsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, true);
+            else MuIsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, true);
+            if(isoMuonTracks->at(0).Pt() < 10) IsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, true);
+            else IsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, true);
             // cout << "DONE" << endl;
         }else{
             // cout << "Muon tracks not found...";
@@ -1772,6 +1791,8 @@ Bool_t EffMaker::Process(Long64_t entry)
 
             //NEW
             MuIsoTrackVetoSearchBins_->Fill(BinQCD, WeightBTagProb, false);
+            MuIsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, false);
+            MuIsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, false);
             // cout << "DONE" << endl;
         }
       
@@ -1814,6 +1835,10 @@ Bool_t EffMaker::Process(Long64_t entry)
 
             //NEW
             ElecIsoTrackVetoSearchBins_->Fill(BinQCD, WeightBTagProb, true);
+            if(isoElectronTracks->at(0).Pt() < 10) ElecIsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, true);
+            else ElecIsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, true);
+            if(isoElectronTracks->at(0).Pt() < 10) IsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, true);
+            else IsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, true);
             // cout << "DONE" << endl;    
         }else{
             // cout << "Electron tracks not found...";
@@ -1851,7 +1876,9 @@ Bool_t EffMaker::Process(Long64_t entry)
 
             //NEW
             ElecIsoTrackVetoSearchBins_->Fill(BinQCD, WeightBTagProb, false);
-                // cout << "DONE" << endl;    
+            ElecIsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, false);
+            ElecIsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, false);
+            // cout << "DONE" << endl;    
         }
 
         // pion iso tracks
@@ -1892,6 +1919,10 @@ Bool_t EffMaker::Process(Long64_t entry)
 
             //NEW
             PionIsoTrackVetoSearchBins_->Fill(BinQCD, WeightBTagProb, true);
+            if(isoPionTracks->at(0).Pt() < 10) PionIsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, true);
+            else PionIsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, true);
+            if(isoPionTracks->at(0).Pt() < 10) IsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, true);
+            else IsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, true);
             // cout << "DONE" << endl;    
         }else{
             // cout << "Pion tracks not found...";
@@ -1929,6 +1960,8 @@ Bool_t EffMaker::Process(Long64_t entry)
 
             //NEW
             PionIsoTrackVetoSearchBins_->Fill(BinQCD, WeightBTagProb, false);
+            PionIsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, false);
+            PionIsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, false);
                 // cout << "DONE" << endl;    
         }
 
@@ -2034,6 +2067,16 @@ void EffMaker::Terminate()
   ElecIsoTrackVetoSearchBins_->SaveEff("e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
   PionIsoTrackVetoSearchBins_->SaveEff("#pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
   IsoTrackVetoSearchBins_->SaveEff("iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+
+  MuIsoTrackVetoSearchBinsLowPt_->SaveEff("#mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsLowPt_->SaveEff("e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  PionIsoTrackVetoSearchBinsLowPt_->SaveEff("#pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsLowPt_->SaveEff("iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+
+  MuIsoTrackVetoSearchBinsHighPt_->SaveEff("#mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsHighPt_->SaveEff("e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  PionIsoTrackVetoSearchBinsHighPt_->SaveEff("#pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsHighPt_->SaveEff("iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
 
   MuMTWSearchBins_->SaveEff("#mu m_{T}^{W}; SearchBins(QCD)", dEfficiencies);  
   ElecMTWSearchBins_->SaveEff("e m_{T}^{W}; SearchBins(QCD)", dEfficiencies);  

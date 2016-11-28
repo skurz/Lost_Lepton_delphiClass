@@ -46,7 +46,7 @@ const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims (bTag reweighting)
 // Does not matter for Data
-const bool runOnNtuples = true;
+const bool runOnNtuples = false;
 const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v11/SLe/tree_");
 
 // Useful for T2tt corridor studies
@@ -89,10 +89,13 @@ const TString path_muIso("SFs/TnP_MuonID_NUM_MiniIsoTight_DENOM_MediumID_VAR_map
 // muIso: still binned in pt/eta since this was recommended! Has to be changed for Moriond (also in Prediction.C when getting the uncertainties)!
 const TString hist_muIso("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
 
-//Acceptance uncertainty maps
+//Uncertainty maps
 const TString path_AccPDF_up("AcceptanceUncertainty/PDFuncertainty_up.root");
 const TString path_AccPDF_down("AcceptanceUncertainty/PDFuncertainty_down.root");
-const TString path_AccQ2("AcceptanceUncertainty/Q2uncertainty.root");
+const TString path_AccQ2_up("AcceptanceUncertainty/Q2uncertainty_up.root");
+const TString path_AccQ2_down("AcceptanceUncertainty/Q2uncertainty_down.root");
+const TString path_MTWunc("MTWUncertainty/MTWuncertainty.root");
+const TString path_isoTrackunc("IsoTrackUncertainty/NJets_uncertainty.root");
 
 // Muon tracking inefficiency
 const TString path_muonTrk("SFs/general_tracks_and_early_general_tracks_corr_ratio.root");
@@ -124,6 +127,8 @@ const bool doTrackingCorrection = true;
 
 // Flat uncertainties for acceptance efficiency. Just for testing
 const bool useFlatAccUnc = false;
+const bool useFlatMTWUnc = false;
+const bool useFlatIsoTrackUnc = false;
 
 // scaleMet = 0: keep things the way they are
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%// NOT USED ANYMORE
@@ -305,8 +310,17 @@ class Prediction : public TSelector {
   std::vector<TH2D*> h_elecAccPDF_up;
   std::vector<TH2D*> h_muAccPDF_down;
   std::vector<TH2D*> h_elecAccPDF_down;
-  std::vector<TH2D*> h_muAccQ2;
-  std::vector<TH2D*> h_elecAccQ2;
+  std::vector<TH2D*> h_muAccQ2_up;
+  std::vector<TH2D*> h_muAccQ2_down;
+  std::vector<TH2D*> h_elecAccQ2_up;
+  std::vector<TH2D*> h_elecAccQ2_down;
+  std::vector<TH2D*> h_muMTW_up;
+  std::vector<TH2D*> h_muMTW_down;
+  std::vector<TH2D*> h_elecMTW_up;
+  std::vector<TH2D*> h_elecMTW_down;
+  TH1D* h_muIsoTrack_NJetsunc = 0;
+  TH1D* h_elecIsoTrack_NJetsunc = 0;
+  TH1D* h_pionIsoTrack_NJetsunc = 0;
 
 
   TString treeName = " ";
@@ -972,40 +986,104 @@ void Prediction::Init(TTree *tree)
 
   //Open histograms for Acceptance uncertainties
   TFile *accPDF_histFile_up = TFile::Open(path_AccPDF_up, "READ");
+  h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets2")->Clone());
   h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets3")->Clone());
   h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets4")->Clone());
   h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets5")->Clone());
   h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets6")->Clone());
-  h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets7Inf")->Clone());
+  h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets78")->Clone());
+  h_muAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("MuAccPDFUnc_NJets9Inf")->Clone());
+  h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets2")->Clone());
   h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets3")->Clone());
   h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets4")->Clone());
   h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets5")->Clone());
   h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets6")->Clone());
-  h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets7Inf")->Clone());
+  h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets78")->Clone());
+  h_elecAccPDF_up.push_back((TH2D*) accPDF_histFile_up->Get("ElecAccPDFUnc_NJets9Inf")->Clone());
 
   TFile *accPDF_histFile_down = TFile::Open(path_AccPDF_down, "READ");
+  h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets2")->Clone());
   h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets3")->Clone());
   h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets4")->Clone());
   h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets5")->Clone());
   h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets6")->Clone());
-  h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets7Inf")->Clone());
+  h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets78")->Clone());
+  h_muAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("MuAccPDFUnc_NJets9Inf")->Clone());
+  h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets2")->Clone());
   h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets3")->Clone());
   h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets4")->Clone());
   h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets5")->Clone());
   h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets6")->Clone());
-  h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets7Inf")->Clone());
+  h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets78")->Clone());
+  h_elecAccPDF_down.push_back((TH2D*) accPDF_histFile_down->Get("ElecAccPDFUnc_NJets9Inf")->Clone());
 
-  TFile *accQ2_histFile = TFile::Open(path_AccQ2, "READ");
-  h_muAccQ2.push_back((TH2D*) accQ2_histFile->Get("MuAccQ2Unc_NJets3")->Clone());
-  h_muAccQ2.push_back((TH2D*) accQ2_histFile->Get("MuAccQ2Unc_NJets4")->Clone());
-  h_muAccQ2.push_back((TH2D*) accQ2_histFile->Get("MuAccQ2Unc_NJets5")->Clone());
-  h_muAccQ2.push_back((TH2D*) accQ2_histFile->Get("MuAccQ2Unc_NJets6")->Clone());
-  h_muAccQ2.push_back((TH2D*) accQ2_histFile->Get("MuAccQ2Unc_NJets7Inf")->Clone());
-  h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets3")->Clone());
-  h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets4")->Clone());
-  h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets5")->Clone());
-  h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets6")->Clone());
-  h_elecAccQ2.push_back((TH2D*) accQ2_histFile->Get("ElecAccQ2Unc_NJets7Inf")->Clone());
+  TFile *accQ2_histFile_up = TFile::Open(path_AccQ2_up, "READ");
+  h_muAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("MuAccQ2Unc_NJets2")->Clone());
+  h_muAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("MuAccQ2Unc_NJets3")->Clone());
+  h_muAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("MuAccQ2Unc_NJets4")->Clone());
+  h_muAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("MuAccQ2Unc_NJets5")->Clone());
+  h_muAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("MuAccQ2Unc_NJets6")->Clone());
+  h_muAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("MuAccQ2Unc_NJets78")->Clone());
+  h_muAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("MuAccQ2Unc_NJets9Inf")->Clone());
+  h_elecAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("ElecAccQ2Unc_NJets2")->Clone());
+  h_elecAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("ElecAccQ2Unc_NJets3")->Clone());
+  h_elecAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("ElecAccQ2Unc_NJets4")->Clone());
+  h_elecAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("ElecAccQ2Unc_NJets5")->Clone());
+  h_elecAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("ElecAccQ2Unc_NJets6")->Clone());
+  h_elecAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("ElecAccQ2Unc_NJets78")->Clone());
+  h_elecAccQ2_up.push_back((TH2D*) accQ2_histFile_up->Get("ElecAccQ2Unc_NJets9Inf")->Clone());
+
+  TFile *accQ2_histFile_down = TFile::Open(path_AccQ2_down, "READ");
+  h_muAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("MuAccQ2Unc_NJets2")->Clone());
+  h_muAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("MuAccQ2Unc_NJets3")->Clone());
+  h_muAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("MuAccQ2Unc_NJets4")->Clone());
+  h_muAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("MuAccQ2Unc_NJets5")->Clone());
+  h_muAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("MuAccQ2Unc_NJets6")->Clone());
+  h_muAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("MuAccQ2Unc_NJets78")->Clone());
+  h_muAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("MuAccQ2Unc_NJets9Inf")->Clone());
+  h_elecAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("ElecAccQ2Unc_NJets2")->Clone());
+  h_elecAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("ElecAccQ2Unc_NJets3")->Clone());
+  h_elecAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("ElecAccQ2Unc_NJets4")->Clone());
+  h_elecAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("ElecAccQ2Unc_NJets5")->Clone());
+  h_elecAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("ElecAccQ2Unc_NJets6")->Clone());
+  h_elecAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("ElecAccQ2Unc_NJets78")->Clone());
+  h_elecAccQ2_down.push_back((TH2D*) accQ2_histFile_down->Get("ElecAccQ2Unc_NJets9Inf")->Clone());
+
+  TFile *MTWunc_histFile = TFile::Open(path_MTWunc, "READ");
+  h_muMTW_up.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets2_METup")->Clone());
+  h_muMTW_up.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets3_METup")->Clone());
+  h_muMTW_up.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets4_METup")->Clone());
+  h_muMTW_up.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets5_METup")->Clone());
+  h_muMTW_up.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets6_METup")->Clone());
+  h_muMTW_up.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets78_METup")->Clone());
+  h_muMTW_up.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets9Inf_METup")->Clone());
+  h_elecMTW_up.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets2_METup")->Clone());
+  h_elecMTW_up.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets3_METup")->Clone());
+  h_elecMTW_up.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets4_METup")->Clone());
+  h_elecMTW_up.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets5_METup")->Clone());
+  h_elecMTW_up.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets6_METup")->Clone());
+  h_elecMTW_up.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets78_METup")->Clone());
+  h_elecMTW_up.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets9Inf_METup")->Clone());
+  h_muMTW_down.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets2_METdown")->Clone());
+  h_muMTW_down.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets3_METdown")->Clone());
+  h_muMTW_down.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets4_METdown")->Clone());
+  h_muMTW_down.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets5_METdown")->Clone());
+  h_muMTW_down.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets6_METdown")->Clone());
+  h_muMTW_down.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets78_METdown")->Clone());
+  h_muMTW_down.push_back((TH2D*) MTWunc_histFile->Get("MuMTWHTMHT_NJets9Inf_METdown")->Clone());
+  h_elecMTW_down.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets2_METdown")->Clone());
+  h_elecMTW_down.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets3_METdown")->Clone());
+  h_elecMTW_down.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets4_METdown")->Clone());
+  h_elecMTW_down.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets5_METdown")->Clone());
+  h_elecMTW_down.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets6_METdown")->Clone());
+  h_elecMTW_down.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets78_METdown")->Clone());
+  h_elecMTW_down.push_back((TH2D*) MTWunc_histFile->Get("ElecMTWHTMHT_NJets9Inf_METdown")->Clone());
+
+  TFile *isoTrackunc_histFile = TFile::Open(path_isoTrackunc, "READ");
+  h_muIsoTrack_NJetsunc = (TH1D*) isoTrackunc_histFile->Get("muon_trkveto_syst")->Clone();
+  h_elecIsoTrack_NJetsunc = (TH1D*) isoTrackunc_histFile->Get("electron_trkveto_syst")->Clone();
+  h_pionIsoTrack_NJetsunc = (TH1D*) isoTrackunc_histFile->Get("pion_trkveto_syst")->Clone(); 
+
 
   TFile *muTrkSF_histFile = TFile::Open(path_muonTrk, "READ");
   h_muTrkLowPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkLowPt)->Clone();

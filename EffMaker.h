@@ -137,6 +137,16 @@ class EffMaker : public TSelector {
   TH1Eff *MuDiLepContributionSearchBins_;
   TH1Eff *ElecDiLepContributionSearchBins_;
 
+  TH1Eff *MuIsoTrackVetoSearchBinsLowPt_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsLowPt_;
+  TH1Eff *PionIsoTrackVetoSearchBinsLowPt_;
+  TH1Eff *IsoTrackVetoSearchBinsLowPt_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsHighPt_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsHighPt_;
+  TH1Eff *PionIsoTrackVetoSearchBinsHighPt_;
+  TH1Eff *IsoTrackVetoSearchBinsHighPt_;
+
 
   //purity
   //mu
