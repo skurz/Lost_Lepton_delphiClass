@@ -31,7 +31,7 @@ void shift_bin(TH1* input, TH1* output){
 
 }
 
-void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string option="QCD"
+void Plot_searchBin_full_extended2016(string option="", int pull=1){ // string option="QCD"
 
   // Use option="QCD" to produce plots in QCD binning
 
@@ -70,7 +70,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
 
   //
   // Various vertical line coordinates
-  float ymax_top = 40000.;
+  float ymax_top = 300000.;
   float ymin_top = 0.015;
 
   float ymax2_top = 1000.;
@@ -87,8 +87,8 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
 
   //
   // Luminosity information for scaling
-  double lumi     = 24.5; // normaliza to this lumi (fb-1)
-  double lumi_ref = 24.5; // normaliza to 3 (fb-1)
+  double lumi     = 36.3; // normaliza to this lumi (fb-1)
+  double lumi_ref = 36.3; // normaliza to 3 (fb-1)
   
   ///////////////////////////////////////////////////////////////////////////////////////////
   //
