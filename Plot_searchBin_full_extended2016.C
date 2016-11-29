@@ -31,7 +31,7 @@ void shift_bin(TH1* input, TH1* output){
 
 }
 
-void Plot_searchBin_full_extended2016(string option="", int pull=1){ // string option="QCD"
+void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string option="QCD"
 
   // Use option="QCD" to produce plots in QCD binning
 
