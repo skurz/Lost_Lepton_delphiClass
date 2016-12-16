@@ -78,6 +78,9 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   float ymax4_top = 30.;
   float ymax5_top = 5.;
 
+  //float ymax_bottom = 1.19;
+  //float ymin_bottom = 0.81;
+
   float ymax_bottom = 1.99;
   float ymin_bottom = 0.01;
 
@@ -570,8 +573,14 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       numerator->Divide(GenHist_Clone,EstHist_NoError,1,1,"");
       denominator->Divide(EstHist_Clone,EstHist_NoError,1,1,"");
 
-      numerator_fullstaterr->Divide(GenHist_Clone,EstHist_Clone,1,1,"");  // Expectation/Prediction
-      numerator_fullstaterr->Add(One_NoError,-1.);                        // Expectation/Prediction-1
+//      if(pull==1){
+//      		numerator_fullstaterr->Add(GenHist_Clone,EstHist_Clone,1,-1); // Expectation-Prediction
+//      }else{
+	      numerator_fullstaterr->Divide(GenHist_Clone,EstHist_Clone,1,1,"");  // Expectation/Prediction
+      	  numerator_fullstaterr->Add(One_NoError,-1.);                        // Expectation/Prediction-1
+//      }
+
+
 
       // draw bottom figure
       canvas_dw->cd();
@@ -622,7 +631,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       if (pull==1){
 
         //sprintf(ytitlename,"#frac{Exp - Pre}{Stat Error} ");
-        sprintf(ytitlename,"pull    ");
+        sprintf(ytitlename,"pull(Dir./Pred.)");
         numerator_fullstaterr->SetMaximum(3.9);
         numerator_fullstaterr->SetMinimum(-3.9);
         
@@ -639,6 +648,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
           }         
           numerator_fullstaterr->SetBinError(ibin,0.);
         }
+
         numerator_fullstaterr->Print("all");
         
         numerator_fullstaterr->GetXaxis()->SetLabelSize(font_size_dw);
@@ -791,6 +801,38 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   }
 
   canvas->Print(tempname);
+
+  TH1D *h_ratioDist = 0;
+  if(pull==0){
+    h_ratioDist = new TH1D("h_ratioDist", "h_ratioDist", 39, 0.025, 1.975);
+
+    for(int ibin=1; ibin<numerator->GetNbinsX()+1; ibin++){
+      h_ratioDist->Fill(numerator->GetBinContent(ibin));
+      h_ratioDist->GetYaxis()->SetRangeUser(0., h_ratioDist->GetBinContent(20)*1.5);
+    }
+  }
+  else{
+    h_ratioDist = new TH1D("h_pullDist", "h_pullDist", 19, -2.85, 2.85);
+
+    for(int ibin=1; ibin<numerator_fullstaterr->GetNbinsX()+1; ibin++){
+      h_ratioDist->Fill(numerator_fullstaterr->GetBinContent(ibin));
+      h_ratioDist->GetYaxis()->SetRangeUser(0., h_ratioDist->GetBinContent(10)*1.5);
+    }
+  }
+
+  gROOT->SetBatch(true);
+  gStyle->SetOptStat(2211);
+  gStyle->SetStatW(0.5);
+  gStyle->SetStatH(0.5);
+
+  TString name_(h_ratioDist->GetName());
+  TCanvas *c1 = new TCanvas(name_,h_ratioDist->GetTitle(),1);
+  //c1->SetLogy();
+  c1->cd();
+  h_ratioDist->Draw();
+  c1->SaveAs(name_+".pdf");
+  delete c1;
+  gROOT->SetBatch(false);
 
 }
 

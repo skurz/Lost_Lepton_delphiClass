@@ -3,6 +3,8 @@
 #include <cmath>
 #include <iostream>
 #include <utility>
+#include <TROOT.h>
+#include <TCanvas.h>
 
 static double deltaR(double eta1, double phi1, double eta2, double phi2)
 {
@@ -220,6 +222,26 @@ static double GetAccSF(std::vector<TH2D*> hists, Int_t NJets, Double_t xVal, Dou
 
   return hist->GetBinContent(nxBin, nyBin);
 }
+
+static void savePlot(TH1* plot){
+  gROOT->SetBatch(true);
+  TString name_(plot->GetName());
+  TCanvas *c1 = new TCanvas(name_,plot->GetTitle(),1);
+  c1->cd();
+/*  if (xlog) {
+    c1->SetLogx();
+    RatioTH1D_->GetXaxis()->SetRangeUser(0.001, 10*RatioTH1D_->GetBinLowEdge(RatioTH1D_->GetNbinsX()+1));
+  }
+  if (ylog) c1->SetLogy();
+  if(RatioTH1D_->GetXaxis()->GetBinCenter(RatioTH1D_->GetXaxis()->GetNbins()) > 500) c1->SetLogx();
+  RatioTH1D_->GetYaxis()->SetRangeUser(0.001, 1.05);
+*/
+  plot->Draw("Text");
+  c1->SaveAs("AdditionalPlots/"+name_+".pdf");
+  delete c1;
+  gROOT->SetBatch(false);
+}
+
 
 static double getMuonIDSF(Double_t pt, Double_t eta){
   double sf = 1.;

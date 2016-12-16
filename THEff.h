@@ -169,7 +169,7 @@ effVec TH1Eff::GetEff(double xValue, bool asymm)
 	errDown_ = RatioTH1D_->GetBinErrorLow(nxBin);
 
 	if(result<0.0001){
-		std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.0001 for histo: "<<RatioTH1D_->GetName()<<std::endl;
+		//std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.0001 for histo: "<<RatioTH1D_->GetName()<<std::endl;
 		result =0.0001;
 		errUp_ = 0.0001;
 		errDown_ = 0.0001;
@@ -182,7 +182,7 @@ effVec TH1Eff::GetEff(double xValue, bool asymm)
 	if(asymm && result>0.0001){
 		// empty bins in the end/beginning of the th's are removed when creating a tgraph..
 	  	int nEmpty = 0;
-	  	while(RatioTH1D_->GetBinContent(nEmpty+1) < 0.0001){
+	  	while(RatioTH1D_->GetBinContent(nEmpty+1) < 0.00001){
 	  		nEmpty++;
 	  		if(nEmpty > RatioTH1D_->GetXaxis()->GetNbins()) break;
 	  	}
@@ -265,6 +265,7 @@ public:
 		TotalTH2D_->SetTitle(title_);
 	}
 	void Fill(Double_t x, Double_t y, Double_t Weight, bool passOrFail);
+	void FillFrac(Double_t x, Double_t y, Double_t Weight, bool passOrFail);
 	void SaveEff(TDirectory* MainDirectory){ SaveEff(title_, MainDirectory); }
 	void SaveEff(const char* title, TDirectory* MainDirectory, bool xlog=false, bool ylog=false);
 	void OpenEff(const char* name, TDirectory* MainDirectory);
@@ -297,6 +298,26 @@ void TH2Eff::Fill(Double_t x, Double_t y, Double_t Weight, bool passOrFail)
 		if(nyBin > 0 && nyBin <= nBinsy_){
 			PassTH1Dvec_.at(nyBin-1)->Fill(x, Weight);
 			TotalTH1Dvec_.at(nyBin-1)->Fill(x, Weight);
+		}
+
+	}else{
+		TotalTH2D_->Fill(x, y, Weight);
+
+		if(nyBin > 0 && nyBin <= nBinsy_){
+			TotalTH1Dvec_.at(nyBin-1)->Fill(x, Weight);
+		}
+	}
+}
+
+void TH2Eff::FillFrac(Double_t x, Double_t y, Double_t Weight, bool passOrFail)
+{
+	int nyBin = RatioTH2D_->GetYaxis()->FindBin(y);
+
+	if(passOrFail){
+		PassTH2D_->Fill(x, y, Weight);
+		
+		if(nyBin > 0 && nyBin <= nBinsy_){
+			PassTH1Dvec_.at(nyBin-1)->Fill(x, Weight);
 		}
 
 	}else{
@@ -393,7 +414,7 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
 
   if(result<0.0001)
   {
-    std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.001 for histo: "<<RatioTH2D_->GetName()<<std::endl;
+    //std::cout<<"Warning efficiency is: "<<result<<" is smaller than 0.001 for histo: "<<RatioTH2D_->GetName()<<std::endl;
     int nValidBins = 0;
     double sum = 0;
     double sumUp = 0;
@@ -434,11 +455,13 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
 
     effVec effVec_;
     if(sum/double(nValidBins)<0.0001){
-    	std::cout<<"Warning: efficiency still < 0.001!"<<std::endl;
+    	std::cout<<"Warning: efficiency still < 0.0001!"<<std::endl;
     	effVec_ = {0.0001, 0.9999, 0.0001};
 	}else{
-		std::cout<<"Warning applying fix (avg. of surrounding bins): "<<sum/double(nValidBins)<<std::endl;
+		//std::cout<<"Warning applying fix (avg. of surrounding bins): "<<sum/double(nValidBins)<<std::endl;
+    	//effVec_ = {sum/double(nValidBins), sumUp/double(nValidBins), sumDown/double(nValidBins)};
     	effVec_ = {sum/double(nValidBins), sumUp/double(nValidBins), sumDown/double(nValidBins)};
+    	effVec_ = {0.0001, 0.0001, 0.0001};
 	}
     return effVec_; 
   }
@@ -451,7 +474,7 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   if(asymm && result>0.0001){
   	// empty bins in the end/beginning of the th's are removed when creating a tgraph.. WORKAROUND:
   	int nEmpty = 0;
-  	while(RatioTH2D_->GetBinContent(nEmpty+1, nyBin) < 0.0001){
+  	while(RatioTH2D_->GetBinContent(nEmpty+1, nyBin) < 0.00001){
   		nEmpty++;
   		if(nEmpty > RatioTH2D_->GetXaxis()->GetNbins()) break;
   	}
@@ -460,7 +483,7 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   	Double_t yValueAsymm = 1;
   	for(int i = 0; i < RatioTH2D_->GetNbinsX(); ++i){
   		RatioTGraphAsymmVec_.at(nyBin-1)->GetPoint(i, xValueAsymm, yValueAsymm);
-  		if(yValueAsymm < 0.01) nEmpty--;
+  		if(yValueAsymm < 0.0001) nEmpty--;
   		else break;
   	}
 
@@ -470,6 +493,7 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
 
 	if(std::abs(resultAsymm-result)>0.0001){
 		std::cout<<"Efficiencies of TGraph "<<name_<<" doens't fit to THist!: "<<result<<"; "<<resultAsymm<<std::endl;
+		//std::cout<<"xbin="<<nxBin<<" ybin="<<nyBin<<std::endl;
 		effVec effVec_ = {result, errUp_, errDown_};
   		return effVec_;
 	}

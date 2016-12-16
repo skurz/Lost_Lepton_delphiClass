@@ -1,5 +1,5 @@
-#ifndef Prediction_h
-#define Prediction_h
+#ifndef Prediction_isoTrackFact_h
+#define Prediction_isoTrackFact_h
 
 #include "LLTools.h"
 #include "THEff.h"
@@ -33,8 +33,8 @@
 // useDeltaPhiCut = -1: inverted deltaPhiCut
 const int useDeltaPhiCut = 1;  //<-check------------------------
 
-const bool runOnData = false;  //<-check------------------------
-const bool runOnStandardModelMC = true;  //<-check------------------------
+const bool runOnData = true;  //<-check------------------------
+const bool runOnStandardModelMC = false;  //<-check------------------------
 const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims (bTag reweighting)
@@ -99,10 +99,7 @@ const TString hist_elecTrk("EGamma_SF2D");
 //////// Usually don't have to be changed
 ///////////////////////
 
-// ScaleFactors from SUSY lepton SG groups: presentation from Oct 23 (preliminary!!)
-// NOT USED ANYMORE
-const bool usePrelimSFs = false;
-// Those are the SFs you want! Read from root file
+// ScaleFactors from SUSY lepton SG groups:
 const bool useSFs = true;
 // Apply corrections on ID/Iso based on SFs. Used to correct for systematic offsets
 const bool correctElectronID = true;
@@ -143,57 +140,59 @@ const bool UseTagAndProbeEffIso_=false; // warning overriges all other choices f
 const bool UseTagAndProbeEffReco_=false; // warning overriges all other choices for reconstruction efficiency
 
 // uncertainties
-const double muIsoTrackUncertaintyUp_ = 8; // dummies as long as TAP is not available 20
-const double muIsoTrackUncertaintyDown_ = 8; // dummies as long as TAP is not available 20
-const double elecIsoTrackUncertaintyUp_ = 15; // dummies as long as TAP is not available 20
-const double elecIsoTrackUncertaintyDown_ = 15; // dummies as long as TAP is not available 20
-const double pionIsoTrackUncertaintyUp_ = 10; // dummies as long as TAP is not available 20
-const double pionIsoTrackUncertaintyDown_ = 10; // dummies as long as TAP is not available 20
-const double isoTrackUncertaintyUp_ = 10; // inclusive Isotracks (if used)
-const double isoTrackUncertaintyDown_ = 10; // inclusive Isotracks (if used)
+const double muIsoTrackUncertaintyUp_ = 0.08; 
+const double muIsoTrackUncertaintyDown_ = 0.08; 
+const double elecIsoTrackUncertaintyUp_ = 0.15; 
+const double elecIsoTrackUncertaintyDown_ = 0.15; 
+const double pionIsoTrackUncertaintyUp_ = 0.10; 
+const double pionIsoTrackUncertaintyDown_ = 0.10; 
+const double isoTrackUncertaintyUp_ = 0.10; // inclusive Isotracks (if used)
+const double isoTrackUncertaintyDown_ = 0.10; // inclusive Isotracks (if used)
 
-const double MuMTWUncertaintyUp_ = 5;  //5
-const double MuMTWUncertaintyDown_ = 5;
-const double ElecMTWUncertaintyUp_ = 5;
-const double ElecMTWUncertaintyDown_ = 5;
+const double MuMTWUncertaintyUp_ = 0.05;  //5
+const double MuMTWUncertaintyDown_ = 0.05;
+const double ElecMTWUncertaintyUp_ = 0.05;
+const double ElecMTWUncertaintyDown_ = 0.05;
 
-const double ElecPurityUncertaintyUp_ = 20; // no purity correction for muCS (>99%)
-const double ElecPurityUncertaintyDown_ = 20; // no purity correction for muCS (>99%)
+const double ElecPurityUncertaintyUp_ = 0.20;
+const double ElecPurityUncertaintyDown_ = 0.20;
+const double MuPurityUncertaintyUp_ = 0.20;
+const double MuPurityUncertaintyDown_ = 0.20;
 
-const double MuSingleLepPurityUp_ = 50;
-const double MuSingleLepPurityDown_ = 50;
-const double ElecSingleLepPurityUp_ = 50;
-const double ElecSingleLepPurityDown_ = 50;
+const double MuSingleLepPurityUp_ = 0.50;
+const double MuSingleLepPurityDown_ = 0.50;
+const double ElecSingleLepPurityUp_ = 0.50;
+const double ElecSingleLepPurityDown_ = 0.50;
 
-const double MuDiLepFoundUp_ = 20;
-const double MuDiLepFoundDown_ = 20;
-const double ElecDiLepFoundUp_ = 20;
-const double ElecDiLepFoundDown_ = 20;
+const double MuDiLepSRUp_ = 0.50;
+const double MuDiLepSRDown_ = 0.50;
+const double ElecDiLepSRUp_ = 0.50;
+const double ElecDiLepSRDown_ = 0.50;
 
-const double MuAccUncertaintyUp_LowMHT_ = 0.7;  // pdf //  MHT < 500
-const double MuAccUncertaintyDown_LowMHT_ = 0.7;  // pdf
-const double ElecAccUncertaintyUp_LowMHT_ = 0.7;  // pdf
-const double ElecAccUncertaintyDown_LowMHT_ = 0.7;  // pdf
-const double MuAccUncertaintyUp_HighMHT_ = 1.9;  // pdf // MHT > 500
-const double MuAccUncertaintyDown_HighMHT_ = 1.9;  // pdf
-const double ElecAccUncertaintyUp_HighMHT_ = 1.9;  // pdf
-const double ElecAccUncertaintyDown_HighMHT_ = 1.9;  // pdf
-const double MuAccQsquareUncertaintyUp_ = 0.7;  // Q^2
-const double MuAccQsquareUncertaintyDown_ = 0.7;  // Q^2
-const double ElecAccQsquareUncertaintyUp_ = 0.7;  // Q^2
-const double ElecAccQsquareUncertaintyDown_ = 0.7;  // Q^2
+const double MuAccUncertaintyUp_LowMHT_ = 0.007;  // pdf //  MHT < 500
+const double MuAccUncertaintyDown_LowMHT_ = 0.007;  // pdf
+const double ElecAccUncertaintyUp_LowMHT_ = 0.007;  // pdf
+const double ElecAccUncertaintyDown_LowMHT_ = 0.007;  // pdf
+const double MuAccUncertaintyUp_HighMHT_ = 0.019;  // pdf // MHT > 500
+const double MuAccUncertaintyDown_HighMHT_ = 0.019;  // pdf
+const double ElecAccUncertaintyUp_HighMHT_ = 0.019;  // pdf
+const double ElecAccUncertaintyDown_HighMHT_ = 0.019;  // pdf
+const double MuAccQsquareUncertaintyUp_ = 0.007;  // Q^2
+const double MuAccQsquareUncertaintyDown_ = 0.007;  // Q^2
+const double ElecAccQsquareUncertaintyUp_ = 0.007;  // Q^2
+const double ElecAccQsquareUncertaintyDown_ = 0.007;  // Q^2
 
-const double MuRecoUncertaintyUp_ = 5;  // dummies as long as TAP is not available 10
-const double MuRecoUncertaintyDown_ = 5;  // dummies as long as TAP is not available
-const double ElecRecoUncertaintyUp_ = 5;  // dummies as long as TAP is not available
-const double ElecRecoUncertaintyDown_ = 5;  // dummies as long as TAP is not available
-const double MuIsoUncertaintyUp_ = 5;  // dummies as long as TAP is not available
-const double MuIsoUncertaintyDown_ = 5;  // dummies as long as TAP is not available
-const double ElecIsoUncertaintyUp_ = 5;  // dummies as long as TAP is not available
-const double ElecIsoUncertaintyDown_ = 5;  // dummies as long as TAP is not available
+const double MuRecoUncertaintyUp_ = 0.05; 
+const double MuRecoUncertaintyDown_ = 0.05;  
+const double ElecRecoUncertaintyUp_ = 0.05;  
+const double ElecRecoUncertaintyDown_ = 0.05;  
+const double MuIsoUncertaintyUp_ = 0.05;  
+const double MuIsoUncertaintyDown_ = 0.05;  
+const double ElecIsoUncertaintyUp_ = 0.05;  
+const double ElecIsoUncertaintyDown_ = 0.05;  
 
 
-class Prediction : public TSelector {
+class Prediction_isoTrackFact : public TSelector {
  public :
   TTree          *fChain;   //!pointer to the analyzed TTree or TChain
   void resetValues();
@@ -202,6 +201,8 @@ class Prediction : public TSelector {
   double getEff(TH1F* effTH2F, double xValue);
   double MuActivity(double muEta, double muPhi, unsigned int method);
   double ElecActivity( double elecEta, double elecPhi, unsigned int method);
+  double doMuUnc(double relUnc, std::string type);
+  double doElecUnc(double relUnc, std::string type);
 
   std::vector <int> GetPTWBin(int, double, double);
 
@@ -290,40 +291,56 @@ class Prediction : public TSelector {
   Float_t MuonsPt_, MuonsEta_;
   Float_t ElectronsPt_, ElectronsEta_;
   Float_t mtw;
-  Float_t muPurityCorrection_;
+  Float_t muPurityEff_;
   Float_t muMTWEff_, elecMTWEff_, mtwCorrectedWeight_;
   Float_t muDiLepCREff_, mtwDiLepCorrectedWeight_;
   Float_t muIsoEff_, muIsoWeight_;
   Float_t muRecoEff_, muRecoWeight_;
   Float_t muAccEff_, muAccWeight_;
   Float_t muTotalWeight_, totalMuons_;
-  Float_t elecPurityCorrection_, purityCorrectedWeight_, elecDiLepCREff_;
+  Float_t elecPurityEff_, purityCorrectedWeight_, elecDiLepCREff_;
   Float_t elecIsoEff_, elecIsoWeight_;
   Float_t elecRecoEff_, elecRecoWeight_;
   Float_t elecAccEff_, elecAccWeight_;
   Float_t elecTotalWeight_, totalElectrons_;
-  Float_t muDiLepEffEff_, elecDiLepEffEff_;
-  Float_t expectationReductionIsoTrackEff_;
-  Float_t expectationReductionMuIsoTrackEff_,expectationReductionElecIsoTrackEff_,expectationReductionPionIsoTrackEff_, expectationReductionIsoTrackEffCombined_;
+  Float_t muDiLepSREff_, elecDiLepSREff_;
+  Float_t muDiLepSRwoVetoEff_, elecDiLepSRwoVetoEff_;
   Float_t diLepLostWeight_;
+  Float_t diLepLostVetoWeight_;
+  Float_t isotrkMuAccEff_;
+  Float_t muIsotrkMuAccEff_,elecIsotrkMuAccEff_,pionIsotrkMuAccEff_;
+  Float_t isotrkMuIDEff_;
+  Float_t muIsotrkMuIDEff_,elecIsotrkMuIDEff_,pionIsotrkMuIDEff_;
+  Float_t isotrkMuIsoEff_;
+  Float_t muIsotrkMuIsoEff_,elecIsotrkMuIsoEff_,pionIsotrkMuIsoEff_;
+  Float_t isotrkElecAccEff_;
+  Float_t muIsotrkElecAccEff_,elecIsotrkElecAccEff_,pionIsotrkElecAccEff_;
+  Float_t isotrkElecIDEff_;
+  Float_t muIsotrkElecIDEff_,elecIsotrkElecIDEff_,pionIsotrkElecIDEff_;
+  Float_t isotrkElecIsoEff_;
+  Float_t muIsotrkElecIsoEff_,elecIsotrkElecIsoEff_,pionIsotrkElecIsoEff_;
 
   // Uncertainties
-  Float_t isoTrackStatUp;
-  Float_t isoTrackStatDown;
-  Float_t muIsoTrackStatUp;
-  Float_t muIsoTrackStatDown;
-  Float_t elecIsoTrackStatUp;
-  Float_t elecIsoTrackStatDown;
-  Float_t pionIsoTrackStatUp;
-  Float_t pionIsoTrackStatDown;
+  Float_t isoTrackMuAccStatUp;
+  Float_t isoTrackMuAccStatDown;
+  Float_t isoTrackMuIDStatUp;
+  Float_t isoTrackMuIDStatDown;
+  Float_t isoTrackMuIsoStatUp;
+  Float_t isoTrackMuIsoStatDown;
+  Float_t isoTrackElecAccStatUp;
+  Float_t isoTrackElecAccStatDown;
+  Float_t isoTrackElecIDStatUp;
+  Float_t isoTrackElecIDStatDown;
+  Float_t isoTrackElecIsoStatUp;
+  Float_t isoTrackElecIsoStatDown;
   Float_t MTWStatUp;
   Float_t MTWStatDown;
   Float_t purityStatUp;
   Float_t purityStatDown;
   Float_t singleLepPurityStatUp;
   Float_t singleLepPurityStatDown;
-  Float_t diLepFoundStatUp;
-  Float_t diLepFoundStatDown;
+  Float_t diLepSRStatUp;
+  Float_t diLepSRStatDown;
   Float_t muIsoStatUp;
   Float_t muIsoStatDown;
   Float_t muRecoStatUp;
@@ -337,22 +354,26 @@ class Prediction : public TSelector {
   Float_t elecAccStatUp;
   Float_t elecAccStatDown;
 
-  Float_t isoTrackSysUp;
-  Float_t isoTrackSysDown;
-  Float_t muIsoTrackSysUp;
-  Float_t muIsoTrackSysDown;
-  Float_t elecIsoTrackSysUp;
-  Float_t elecIsoTrackSysDown;
-  Float_t pionIsoTrackSysUp;
-  Float_t pionIsoTrackSysDown;
+  Float_t isoTrackMuAccSysUp;
+  Float_t isoTrackMuAccSysDown;
+  Float_t isoTrackMuIDSysUp;
+  Float_t isoTrackMuIDSysDown;
+  Float_t isoTrackMuIsoSysUp;
+  Float_t isoTrackMuIsoSysDown;
+  Float_t isoTrackElecAccSysUp;
+  Float_t isoTrackElecAccSysDown;
+  Float_t isoTrackElecIDSysUp;
+  Float_t isoTrackElecIDSysDown;
+  Float_t isoTrackElecIsoSysUp;
+  Float_t isoTrackElecIsoSysDown;
   Float_t MTWSysUp;
   Float_t MTWSysDown;
   Float_t puritySysUp;
   Float_t puritySysDown;
   Float_t singleLepPuritySysUp;
   Float_t singleLepPuritySysDown;
-  Float_t diLepFoundSysUp;
-  Float_t diLepFoundSysDown;
+  Float_t diLepSRSysUp;
+  Float_t diLepSRSysDown;
   Float_t muIsoSysUp;
   Float_t muIsoSysDown;
   Float_t muRecoSysUp;
@@ -370,19 +391,30 @@ class Prediction : public TSelector {
   Float_t elecAccQsquareSysUp;
   Float_t elecAccQsquareSysDown;
 
-  effVec muPurityCorrectionVec_;
+  effVec muPurityEffVec_;
   effVec muMTWEffVec_, elecMTWEffVec_;
   effVec muDiLepCREffVec_;
   effVec muIsoEffVec_;
   effVec muRecoEffVec_;
   effVec muAccEffVec_;
-  effVec elecPurityCorrectionVec_, elecDiLepCREffVec_;
+  effVec elecPurityEffVec_, elecDiLepCREffVec_;
   effVec elecIsoEffVec_;
   effVec elecRecoEffVec_;
   effVec elecAccEffVec_;
-  effVec muDiLepEffEffVec_, elecDiLepEffEffVec_;
-  effVec expectationReductionIsoTrackEffVec_;
-  effVec expectationReductionMuIsoTrackEffVec_,expectationReductionElecIsoTrackEffVec_,expectationReductionPionIsoTrackEffVec_, expectationReductionIsoTrackEffCombinedVec_;
+  effVec muDiLepSREffVec_, elecDiLepSREffVec_;
+  effVec muDiLepSRwoVetoEffVec_, elecDiLepSRwoVetoEffVec_;
+  effVec isotrkMuAccEffVec_;
+  effVec muIsotrkMuAccEffVec_,elecIsotrkMuAccEffVec_,pionIsotrkMuAccEffVec_;
+  effVec isotrkMuIDEffVec_;
+  effVec muIsotrkMuIDEffVec_,elecIsotrkMuIDEffVec_,pionIsotrkMuIDEffVec_;
+  effVec isotrkMuIsoEffVec_;
+  effVec muIsotrkMuIsoEffVec_,elecIsotrkMuIsoEffVec_,pionIsotrkMuIsoEffVec_;
+  effVec isotrkElecAccEffVec_;
+  effVec muIsotrkElecAccEffVec_,elecIsotrkElecAccEffVec_,pionIsotrkElecAccEffVec_;
+  effVec isotrkElecIDEffVec_;
+  effVec muIsotrkElecIDEffVec_,elecIsotrkElecIDEffVec_,pionIsotrkElecIDEffVec_;
+  effVec isotrkElecIsoEffVec_;
+  effVec muIsotrkElecIsoEffVec_,elecIsotrkElecIsoEffVec_,pionIsotrkElecIsoEffVec_;
 
   
   Float_t totalWeight_, totalWeightDiLep_, totalWeightDiLepIsoTrackReduced_,totalWeightDiLepIsoMuTrackReduced_,totalWeightDiLepIsoElecTrackReduced_,totalWeightDiLepIsoPionTrackReduced_,totalWeightDiLepIsoTrackReducedCombined_;
@@ -390,8 +422,6 @@ class Prediction : public TSelector {
   std::vector<Float_t> totalWeight_BTags_noIsoTrack_;
   Float_t muTotalWeightDiLep_, muTotalWeightDiLepIsoTrackReduced_;
   Float_t elecTotalWeightDiLep_, elecTotalWeightDiLepIsoTrackReduced_;
-  std::vector<Float_t> MuonsDeltaRJet, MuonsRelPTJet;
-  std::vector<Float_t> ElectronsDeltaRJet, ElectronsRelPTJet;
   std::vector<Float_t>         MuonsPTW;
   std::vector<Float_t>         ElectronsPTW;
 
@@ -431,18 +461,14 @@ class Prediction : public TSelector {
   TH1Eff *MuDiLepCRNJets_=0;
   TH2Eff *MuDiLepCRMHTNJets_=0;
   TH2Eff *MuDiLepCRNJetsBTags_=0;
-  TH1Eff *MuDiLepEffNJets_=0;
-  TH2Eff *MuDiLepEffNJetsBTags_=0;
 
   TH2Eff *MuIsoActivityPT_=0;
-  TH2Eff *MuIsoRelPTDeltaRJet_=0;
   TH2Eff *MuRecoActivityPT_=0;
   TH2Eff *MuRecoPTEta_=0;
   TH2Eff *MuPurityMHTNJets_=0; 
   TH2Eff *MuPurityHTMHT_=0; 
   
   TH2Eff *ElecIsoActivityPT_=0;
-  TH2Eff *ElecIsoRelPTDeltaRJet_=0;
   TH2Eff *ElecRecoActivityPT_=0;
   TH2Eff *ElecRecoPTEta_=0;
 
@@ -466,31 +492,107 @@ class Prediction : public TSelector {
   TH1Eff *ElecDiLepCRNJets_=0;
   TH2Eff *ElecDiLepCRMHTNJets_=0;
   TH2Eff *ElecDiLepCRNJetsBTags_=0;
-  TH1Eff *ElecDiLepEffNJets_=0;
-  TH2Eff *ElecDiLepEffNJetsBTags_=0;
-  
-  // expectation reduction by the isolated track veto
-  TH1Eff *ExpectationReductionIsoTrackNJetsEff=0;
-  TH2Eff *ExpectationReductionIsoTrackBTagsNJetsEff_=0;
-  TH2Eff *ExpectationReductionIsoTrackHTNJetsEff_=0;
-  TH2Eff *ExpectationReductionIsoTrackMHTNJetsEff_=0;
-  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets24Eff_=0;
-  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets56Eff_=0;
-  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets2Eff_=0;
-  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets3Eff_=0;
-  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets4Eff_=0;
-  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets5Eff_=0;
-  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets6Eff_=0;
-  TH2Eff *ExpectationReductionIsoTrackHTMHT_NJets7InfEff_=0;
-  TH2Eff *ExpectationReductionMuIsoTrackBTagsNJetsEff_=0, *ExpectationReductionElecIsoTrackBTagsNJetsEff_=0, *ExpectationReductionPionIsoTrackBTagsNJetsEff_=0;
-  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets24Eff_=0, *ExpectationReductionElecIsoTrackHTMHT_NJets24Eff_=0, *ExpectationReductionPionIsoTrackHTMHT_NJets24Eff_=0;
-  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets56Eff_=0, *ExpectationReductionElecIsoTrackHTMHT_NJets56Eff_=0, *ExpectationReductionPionIsoTrackHTMHT_NJets56Eff_=0;
-  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets7InfEff_=0, *ExpectationReductionElecIsoTrackHTMHT_NJets7InfEff_=0, *ExpectationReductionPionIsoTrackHTMHT_NJets7InfEff_=0;
-  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets2Eff_=0, *ExpectationReductionElecIsoTrackHTMHT_NJets2Eff_=0, *ExpectationReductionPionIsoTrackHTMHT_NJets2Eff_=0;
-  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets3Eff_=0, *ExpectationReductionElecIsoTrackHTMHT_NJets3Eff_=0, *ExpectationReductionPionIsoTrackHTMHT_NJets3Eff_=0;
-  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets4Eff_=0, *ExpectationReductionElecIsoTrackHTMHT_NJets4Eff_=0, *ExpectationReductionPionIsoTrackHTMHT_NJets4Eff_=0;
-  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets5Eff_=0, *ExpectationReductionElecIsoTrackHTMHT_NJets5Eff_=0, *ExpectationReductionPionIsoTrackHTMHT_NJets5Eff_=0;
-  TH2Eff *ExpectationReductionMuIsoTrackHTMHT_NJets6Eff_=0, *ExpectationReductionElecIsoTrackHTMHT_NJets6Eff_=0, *ExpectationReductionPionIsoTrackHTMHT_NJets6Eff_=0;
+
+  TH1Eff *MuDiLepSRNJets_=0;
+  TH2Eff *MuDiLepSRNJetsBTags_=0;  
+  TH1Eff *ElecDiLepSRNJets_=0;
+  TH2Eff *ElecDiLepSRNJetsBTags_=0;
+
+  TH1Eff *MuDiLepSRwoVetoNJets_=0;
+  TH2Eff *MuDiLepSRwoVetoNJetsBTags_=0;  
+  TH1Eff *ElecDiLepSRwoVetoNJets_=0;
+  TH2Eff *ElecDiLepSRwoVetoNJetsBTags_=0;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsAcc_=0;
+  TH1Eff *ElecIsoTrackVetoSearchBinsAcc_=0;
+  TH1Eff *PionIsoTrackVetoSearchBinsAcc_=0;
+  TH1Eff *IsoTrackVetoSearchBinsAcc_=0;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsIDIso_=0;
+  TH1Eff *ElecIsoTrackVetoSearchBinsIDIso_=0;
+  TH1Eff *PionIsoTrackVetoSearchBinsIDIso_=0;
+  TH1Eff *IsoTrackVetoSearchBinsIDIso_=0;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsID_=0;
+  TH1Eff *ElecIsoTrackVetoSearchBinsID_=0;
+  TH1Eff *PionIsoTrackVetoSearchBinsID_=0;
+  TH1Eff *IsoTrackVetoSearchBinsID_=0;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsIso_=0;
+  TH1Eff *ElecIsoTrackVetoSearchBinsIso_=0;
+  TH1Eff *PionIsoTrackVetoSearchBinsIso_=0;
+  TH1Eff *IsoTrackVetoSearchBinsIso_=0;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsMuAcc_=0;
+  TH1Eff *ElecIsoTrackVetoSearchBinsMuAcc_=0;
+  TH1Eff *PionIsoTrackVetoSearchBinsMuAcc_=0;
+  TH1Eff *IsoTrackVetoSearchBinsMuAcc_=0;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsMuIDIso_=0;
+  TH1Eff *ElecIsoTrackVetoSearchBinsMuIDIso_=0;
+  TH1Eff *PionIsoTrackVetoSearchBinsMuIDIso_=0;
+  TH1Eff *IsoTrackVetoSearchBinsMuIDIso_=0;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsMuID_=0;
+  TH1Eff *ElecIsoTrackVetoSearchBinsMuID_=0;
+  TH1Eff *PionIsoTrackVetoSearchBinsMuID_=0;
+  TH1Eff *IsoTrackVetoSearchBinsMuID_=0;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsMuIso_=0;
+  TH1Eff *ElecIsoTrackVetoSearchBinsMuIso_=0;
+  TH1Eff *PionIsoTrackVetoSearchBinsMuIso_=0;
+  TH1Eff *IsoTrackVetoSearchBinsMuIso_=0;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsElecAcc_=0;
+  TH1Eff *ElecIsoTrackVetoSearchBinsElecAcc_=0;
+  TH1Eff *PionIsoTrackVetoSearchBinsElecAcc_=0;
+  TH1Eff *IsoTrackVetoSearchBinsElecAcc_=0;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsElecIDIso_=0;
+  TH1Eff *ElecIsoTrackVetoSearchBinsElecIDIso_=0;
+  TH1Eff *PionIsoTrackVetoSearchBinsElecIDIso_=0;
+  TH1Eff *IsoTrackVetoSearchBinsElecIDIso_=0;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsElecID_=0;
+  TH1Eff *ElecIsoTrackVetoSearchBinsElecID_=0;
+  TH1Eff *PionIsoTrackVetoSearchBinsElecID_=0;
+  TH1Eff *IsoTrackVetoSearchBinsElecID_=0;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsElecIso_=0;
+  TH1Eff *ElecIsoTrackVetoSearchBinsElecIso_=0;
+  TH1Eff *PionIsoTrackVetoSearchBinsElecIso_=0;
+  TH1Eff *IsoTrackVetoSearchBinsElecIso_=0;
+
+
+  TH2Eff *MuIsoTrackVetoActivityPtMuIDIso_=0;
+  TH2Eff *ElecIsoTrackVetoActivityPtMuIDIso_=0;
+  TH2Eff *PionIsoTrackVetoActivityPtMuIDIso_=0;
+  TH2Eff *IsoTrackVetoActivityPtMuIDIso_=0;
+
+  TH2Eff *MuIsoTrackVetoActivityPtMuID_=0;
+  TH2Eff *ElecIsoTrackVetoActivityPtMuID_=0;
+  TH2Eff *PionIsoTrackVetoActivityPtMuID_=0;
+  TH2Eff *IsoTrackVetoActivityPtMuID_=0;
+
+  TH2Eff *MuIsoTrackVetoActivityPtMuIso_=0;
+  TH2Eff *ElecIsoTrackVetoActivityPtMuIso_=0;
+  TH2Eff *PionIsoTrackVetoActivityPtMuIso_=0;
+  TH2Eff *IsoTrackVetoActivityPtMuIso_=0;
+
+  TH2Eff *MuIsoTrackVetoActivityPtElecIDIso_=0;
+  TH2Eff *ElecIsoTrackVetoActivityPtElecIDIso_=0;
+  TH2Eff *PionIsoTrackVetoActivityPtElecIDIso_=0;
+  TH2Eff *IsoTrackVetoActivityPtElecIDIso_=0;
+
+  TH2Eff *MuIsoTrackVetoActivityPtElecID_=0;
+  TH2Eff *ElecIsoTrackVetoActivityPtElecID_=0;
+  TH2Eff *PionIsoTrackVetoActivityPtElecID_=0;
+  TH2Eff *IsoTrackVetoActivityPtElecID_=0;
+
+  TH2Eff *MuIsoTrackVetoActivityPtElecIso_=0;
+  TH2Eff *ElecIsoTrackVetoActivityPtElecIso_=0;
+  TH2Eff *PionIsoTrackVetoActivityPtElecIso_=0;
+  TH2Eff *IsoTrackVetoActivityPtElecIso_=0;
 
 
   
@@ -628,8 +730,8 @@ class Prediction : public TSelector {
 
 
   
- Prediction(TTree * /*tree*/ =0) : fChain(0) { }
-  virtual ~Prediction() { }
+ Prediction_isoTrackFact(TTree * /*tree*/ =0) : fChain(0) { }
+  virtual ~Prediction_isoTrackFact() { }
   virtual Int_t   Version() const { return 2; }
   virtual void    Begin(TTree *tree);
   virtual void    SlaveBegin(TTree *tree);
@@ -644,13 +746,13 @@ class Prediction : public TSelector {
   virtual void    SlaveTerminate();
   virtual void    Terminate();
   
-  ClassDef(Prediction,0);
+  ClassDef(Prediction_isoTrackFact,0);
 };
 
 #endif
 
-#ifdef Prediction_cxx
-void Prediction::Init(TTree *tree)
+#ifdef Prediction_isoTrackFact_cxx
+void Prediction_isoTrackFact::Init(TTree *tree)
 {
   // The Init() function is called when the selector needs to initialize
   // a new tree or chain. Typically here the branch addresses and branch
@@ -1055,7 +1157,7 @@ void Prediction::Init(TTree *tree)
 }
 
 
-Bool_t Prediction::Notify()
+Bool_t Prediction_isoTrackFact::Notify()
 {
   // The Notify() function is called when a new file is opened. This
   // can be either for a new TTree in a TChain or when when a new TTree
@@ -1066,4 +1168,4 @@ Bool_t Prediction::Notify()
   return kTRUE;
 }
 
-#endif // #ifdef Prediction_cxx
+#endif // #ifdef Prediction_isoTrackFact_cxx

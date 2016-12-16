@@ -152,9 +152,9 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	        }
 
 	        if(nLoops==1){
-				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReduced*scaleFactorWeightBtagProb/2);
 				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb/2);
-				avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+				avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeightDiLepIsoTrackReduced/Weight/2), Weight);
 			}else{
 				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
 				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb/2);
@@ -164,27 +164,40 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 			totalCS_LL_MC_->Fill(Bin_bTags.at(i), scaledWeight);
         	nEvtsCS_LL_MC_->Fill(Bin_bTags.at(i));
 
-        	totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuAccSysUp*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuAccSysDown*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuIDSysUp*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuIDSysDown*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuIsoSysUp*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuIsoSysDown*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecAccSysUp*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecAccSysDown*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecIDSysUp*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecIDSysDown*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecIsoSysUp*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecIsoSysDown*scaleFactorWeightBtagProb/2);
 
-		    totalPredMuIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredMuIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredElecIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredElecIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackSysDown*scaleFactorWeightBtagProb/2);
-		    totalPredPionIsoTrackSysUp_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredPionIsoTrackSysDown_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackSysDown*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackMuAccSysUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuAccSysUp*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackMuAccSysDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuAccSysDown*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackMuIDSysUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuIDSysUp*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackMuIDSysDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuIDSysDown*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackMuIsoSysUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuIsoSysUp*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackMuIsoSysDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuIsoSysDown*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackElecAccSysUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecAccSysUp*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackElecAccSysDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecAccSysDown*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackElecIDSysUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecIDSysUp*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackElecIDSysDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecIDSysDown*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackElecIsoSysUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecIsoSysUp*scaleFactorWeightBtagProb/2);
+			totalPredIsoTrackElecIsoSysDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecIsoSysDown*scaleFactorWeightBtagProb/2);
+
 		    totalPredMTWSysUp_LL_MC_->Fill(Bin_bTags.at(i), MTWSysUp*scaleFactorWeightBtagProb/2);
 		    totalPredMTWSysDown_LL_MC_->Fill(Bin_bTags.at(i), MTWSysDown*scaleFactorWeightBtagProb/2);
 		    totalPredPuritySysUp_LL_MC_->Fill(Bin_bTags.at(i), puritySysUp*scaleFactorWeightBtagProb/2);
 		    totalPredPuritySysDown_LL_MC_->Fill(Bin_bTags.at(i), puritySysDown*scaleFactorWeightBtagProb/2);
 		    totalPredSingleLepPuritySysUp_LL_MC_->Fill(Bin_bTags.at(i), singleLepPuritySysUp*scaleFactorWeightBtagProb/2);
 		    totalPredSingleLepPuritySysDown_LL_MC_->Fill(Bin_bTags.at(i), singleLepPuritySysDown*scaleFactorWeightBtagProb/2);
-		    totalPredDiLepFoundSysUp_LL_MC_->Fill(Bin_bTags.at(i), diLepFoundSysUp*scaleFactorWeightBtagProb/2);
-		    totalPredDiLepFoundSysDown_LL_MC_->Fill(Bin_bTags.at(i), diLepFoundSysDown*scaleFactorWeightBtagProb/2);
+		    totalPredDiLepSRSysUp_LL_MC_->Fill(Bin_bTags.at(i), diLepSRSysUp*scaleFactorWeightBtagProb/2);
+		    totalPredDiLepSRSysDown_LL_MC_->Fill(Bin_bTags.at(i), diLepSRSysDown*scaleFactorWeightBtagProb/2);
 		    totalPredMuIsoSysUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoSysUp*scaleFactorWeightBtagProb/2);
 		    totalPredMuIsoSysDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoSysDown*scaleFactorWeightBtagProb/2);
 		    totalPredMuRecoSysUp_LL_MC_->Fill(Bin_bTags.at(i), muRecoSysUp*scaleFactorWeightBtagProb/2);
@@ -202,29 +215,26 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 		    totalPredElecAccQsquareSysUp_LL_MC_->Fill(Bin_bTags.at(i), elecAccQsquareSysUp*scaleFactorWeightBtagProb/2);
 		    totalPredElecAccQsquareSysDown_LL_MC_->Fill(Bin_bTags.at(i), elecAccQsquareSysDown*scaleFactorWeightBtagProb/2);
 
-		    totalPredIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackStatDown*scaleFactorWeightBtagProb/2);
-		    /*    totalPredIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackStatUp*scaleFactorWeightBtagProb/2);
-			  totalPredIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackStatDown*scaleFactorWeightBtagProb/2);
-			  totalPredIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackStatUp*scaleFactorWeightBtagProb/2);
-			  totalPredIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackStatDown*scaleFactorWeightBtagProb/2);
-			  totalPredIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackStatUp*scaleFactorWeightBtagProb/2);
-			  totalPredIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackStatDown*scaleFactorWeightBtagProb/2);
-		    */
-		    totalPredMuIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredMuIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoTrackStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredElecIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredElecIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), elecIsoTrackStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredPionIsoTrackStatUp_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredPionIsoTrackStatDown_LL_MC_->Fill(Bin_bTags.at(i), pionIsoTrackStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackMuAccStatUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuAccStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackMuAccStatDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuAccStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackMuIDStatUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuIDStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackMuIDStatDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuIDStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackMuIsoStatUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuIsoStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackMuIsoStatDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackMuIsoStatDown*scaleFactorWeightBtagProb/2);
+		   	totalPredIsoTrackElecAccStatUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecAccStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackElecAccStatDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecAccStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackElecIDStatUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecIDStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackElecIDStatDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecIDStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackElecIsoStatUp_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecIsoStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredIsoTrackElecIsoStatDown_LL_MC_->Fill(Bin_bTags.at(i), isoTrackElecIsoStatDown*scaleFactorWeightBtagProb/2);
 		    totalPredMTWStatUp_LL_MC_->Fill(Bin_bTags.at(i), MTWStatUp*scaleFactorWeightBtagProb/2);
 		    totalPredMTWStatDown_LL_MC_->Fill(Bin_bTags.at(i), MTWStatDown*scaleFactorWeightBtagProb/2);
 		    totalPredPurityStatUp_LL_MC_->Fill(Bin_bTags.at(i), purityStatUp*scaleFactorWeightBtagProb/2);
 		    totalPredPurityStatDown_LL_MC_->Fill(Bin_bTags.at(i), purityStatDown*scaleFactorWeightBtagProb/2);
 		    totalPredSingleLepPurityStatUp_LL_MC_->Fill(Bin_bTags.at(i), singleLepPurityStatUp*scaleFactorWeightBtagProb/2);
 		    totalPredSingleLepPurityStatDown_LL_MC_->Fill(Bin_bTags.at(i), singleLepPurityStatDown*scaleFactorWeightBtagProb/2);
-		    totalPredDiLepFoundStatUp_LL_MC_->Fill(Bin_bTags.at(i), diLepFoundStatUp*scaleFactorWeightBtagProb/2);
-		    totalPredDiLepFoundStatDown_LL_MC_->Fill(Bin_bTags.at(i), diLepFoundStatDown*scaleFactorWeightBtagProb/2);
+		    totalPredDiLepSRStatUp_LL_MC_->Fill(Bin_bTags.at(i), diLepSRStatUp*scaleFactorWeightBtagProb/2);
+		    totalPredDiLepSRStatDown_LL_MC_->Fill(Bin_bTags.at(i), diLepSRStatDown*scaleFactorWeightBtagProb/2);
 		    totalPredMuIsoStatUp_LL_MC_->Fill(Bin_bTags.at(i), muIsoStatUp*scaleFactorWeightBtagProb/2);
 		    totalPredMuIsoStatDown_LL_MC_->Fill(Bin_bTags.at(i), muIsoStatDown*scaleFactorWeightBtagProb/2);
 		    totalPredMuRecoStatUp_LL_MC_->Fill(Bin_bTags.at(i), muRecoStatUp*scaleFactorWeightBtagProb/2);
@@ -237,12 +247,6 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 		    totalPredElecRecoStatDown_LL_MC_->Fill(Bin_bTags.at(i), elecRecoStatDown*scaleFactorWeightBtagProb/2);
 		    totalPredElecAccStatUp_LL_MC_->Fill(Bin_bTags.at(i), elecAccStatUp*scaleFactorWeightBtagProb/2);
 		    totalPredElecAccStatDown_LL_MC_->Fill(Bin_bTags.at(i), elecAccStatDown*scaleFactorWeightBtagProb/2);
-
-		    //totalPropSysUp = sqrt(isoTrackSysUp*isoTrackSysUp+MTWSysUp*MTWSysUp+puritySysUp*puritySysUp+singleLepPuritySysUp*singleLepPuritySysUp+diLepFoundSysUp*diLepFoundSysUp+muIsoSysUp*muIsoSysUp+muRecoSysUp*muRecoSysUp+muAccSysUp*muAccSysUp+muAccQsquareSysUp*muAccQsquareSysUp+elecIsoSysUp*elecIsoSysUp+elecRecoSysUp*elecRecoSysUp+elecAccSysUp*elecAccSysUp+elecAccQsquareSysUp*elecAccQsquareSysUp+isoTrackStatUp*isoTrackStatUp+MTWStatUp*MTWStatUp+purityStatUp*purityStatUp+singleLepPurityStatUp*singleLepPurityStatUp+diLepFoundStatUp*diLepFoundStatUp+muIsoStatUp*muIsoStatUp+muRecoStatUp*muRecoStatUp+muAccStatUp*muAccStatUp+elecIsoStatUp*elecIsoStatUp+elecRecoStatUp*elecRecoStatUp+elecAccStatUp*elecAccStatUp);
-		    //totalPropSysDown = -sqrt(isoTrackSysDown*isoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+muAccQsquareSysDown*muAccQsquareSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown+elecAccQsquareSysDown*elecAccQsquareSysDown+isoTrackStatDown*isoTrackStatDown+MTWStatDown*MTWStatDown+purityStatDown*purityStatDown+singleLepPurityStatDown*singleLepPurityStatDown+diLepFoundStatDown*diLepFoundStatDown+muIsoStatDown*muIsoStatDown+muRecoStatDown*muRecoStatDown+muAccStatDown*muAccStatDown+elecIsoStatDown*elecIsoStatDown+elecRecoStatDown*elecRecoStatDown+elecAccStatDown*elecAccStatDown);
-
-		    //totalPropSysUp_LL_MC_->Fill(Bin_bTags.at(i), totalPropSysUp*scaleFactorWeightBtagProb/2);
-		    //totalPropSysDown_LL_MC_->Fill(Bin_bTags.at(i), totalPropSysDown*scaleFactorWeightBtagProb/2)
 	   	}
 	}
 
@@ -280,33 +284,46 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 		    scaledWeight = Weight * scaleFactorWeightData;
 		    
 
-		    totalPred_LL_->Fill(SearchBin, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightData/2);
-		    avgWeight_LL_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReducedCombined/Weight/2), Weight);
+		    totalPred_LL_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData/2);
+		    avgWeight_LL_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReduced/Weight/2), Weight);
 
 		    totalCS_LL_->Fill(SearchBin, scaledWeight);
 		    nEvtsCS_LL_->Fill(SearchBin);
 
-		    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeightData/2);
-		    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeightData/2);
-		    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, elecIsoTrackSysUp*scaleFactorWeightData/2);
-		    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, elecIsoTrackSysDown*scaleFactorWeightData/2);
-		    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, pionIsoTrackSysUp*scaleFactorWeightData/2);
-		    totalPredIsoTrackSysDown_LL_->Fill(SearchBin, pionIsoTrackSysDown*scaleFactorWeightData/2);
+		    totalPredIsoTrackSysUp_LL_->Fill(SearchBin, isoTrackMuAccSysUp*scaleFactorWeightData/2);
+			totalPredIsoTrackSysDown_LL_->Fill(SearchBin, isoTrackMuAccSysDown*scaleFactorWeightData/2);
+			totalPredIsoTrackSysUp_LL_->Fill(SearchBin, isoTrackMuIDSysUp*scaleFactorWeightData/2);
+			totalPredIsoTrackSysDown_LL_->Fill(SearchBin, isoTrackMuIDSysDown*scaleFactorWeightData/2);
+			totalPredIsoTrackSysUp_LL_->Fill(SearchBin, isoTrackMuIsoSysUp*scaleFactorWeightData/2);
+			totalPredIsoTrackSysDown_LL_->Fill(SearchBin, isoTrackMuIsoSysDown*scaleFactorWeightData/2);
+			totalPredIsoTrackSysUp_LL_->Fill(SearchBin, isoTrackElecAccSysUp*scaleFactorWeightData/2);
+			totalPredIsoTrackSysDown_LL_->Fill(SearchBin, isoTrackElecAccSysDown*scaleFactorWeightData/2);
+			totalPredIsoTrackSysUp_LL_->Fill(SearchBin, isoTrackElecIDSysUp*scaleFactorWeightData/2);
+			totalPredIsoTrackSysDown_LL_->Fill(SearchBin, isoTrackElecIDSysDown*scaleFactorWeightData/2);
+			totalPredIsoTrackSysUp_LL_->Fill(SearchBin, isoTrackElecIsoSysUp*scaleFactorWeightData/2);
+			totalPredIsoTrackSysDown_LL_->Fill(SearchBin, isoTrackElecIsoSysDown*scaleFactorWeightData/2);
 
-		    totalPredMuIsoTrackSysUp_LL_->Fill(SearchBin, muIsoTrackSysUp*scaleFactorWeightData/2);
-		    totalPredMuIsoTrackSysDown_LL_->Fill(SearchBin, muIsoTrackSysDown*scaleFactorWeightData/2);
-		    totalPredElecIsoTrackSysUp_LL_->Fill(SearchBin, elecIsoTrackSysUp*scaleFactorWeightData/2);
-		    totalPredElecIsoTrackSysDown_LL_->Fill(SearchBin, elecIsoTrackSysDown*scaleFactorWeightData/2);
-		    totalPredPionIsoTrackSysUp_LL_->Fill(SearchBin, pionIsoTrackSysUp*scaleFactorWeightData/2);
-		    totalPredPionIsoTrackSysDown_LL_->Fill(SearchBin, pionIsoTrackSysDown*scaleFactorWeightData/2);
+			totalPredIsoTrackMuAccSysUp_LL_->Fill(SearchBin, isoTrackMuAccSysUp*scaleFactorWeightData/2);
+			totalPredIsoTrackMuAccSysDown_LL_->Fill(SearchBin, isoTrackMuAccSysDown*scaleFactorWeightData/2);
+			totalPredIsoTrackMuIDSysUp_LL_->Fill(SearchBin, isoTrackMuIDSysUp*scaleFactorWeightData/2);
+			totalPredIsoTrackMuIDSysDown_LL_->Fill(SearchBin, isoTrackMuIDSysDown*scaleFactorWeightData/2);
+			totalPredIsoTrackMuIsoSysUp_LL_->Fill(SearchBin, isoTrackMuIsoSysUp*scaleFactorWeightData/2);
+			totalPredIsoTrackMuIsoSysDown_LL_->Fill(SearchBin, isoTrackMuIsoSysDown*scaleFactorWeightData/2);
+			totalPredIsoTrackElecAccSysUp_LL_->Fill(SearchBin, isoTrackElecAccSysUp*scaleFactorWeightData/2);
+			totalPredIsoTrackElecAccSysDown_LL_->Fill(SearchBin, isoTrackElecAccSysDown*scaleFactorWeightData/2);
+			totalPredIsoTrackElecIDSysUp_LL_->Fill(SearchBin, isoTrackElecIDSysUp*scaleFactorWeightData/2);
+			totalPredIsoTrackElecIDSysDown_LL_->Fill(SearchBin, isoTrackElecIDSysDown*scaleFactorWeightData/2);
+			totalPredIsoTrackElecIsoSysUp_LL_->Fill(SearchBin, isoTrackElecIsoSysUp*scaleFactorWeightData/2);
+			totalPredIsoTrackElecIsoSysDown_LL_->Fill(SearchBin, isoTrackElecIsoSysDown*scaleFactorWeightData/2);
+
 		    totalPredMTWSysUp_LL_->Fill(SearchBin, MTWSysUp*scaleFactorWeightData/2);
 		    totalPredMTWSysDown_LL_->Fill(SearchBin, MTWSysDown*scaleFactorWeightData/2);
 		    totalPredPuritySysUp_LL_->Fill(SearchBin, puritySysUp*scaleFactorWeightData/2);
 		    totalPredPuritySysDown_LL_->Fill(SearchBin, puritySysDown*scaleFactorWeightData/2);
 		    totalPredSingleLepPuritySysUp_LL_->Fill(SearchBin, singleLepPuritySysUp*scaleFactorWeightData/2);
 		    totalPredSingleLepPuritySysDown_LL_->Fill(SearchBin, singleLepPuritySysDown*scaleFactorWeightData/2);
-		    totalPredDiLepFoundSysUp_LL_->Fill(SearchBin, diLepFoundSysUp*scaleFactorWeightData/2);
-		    totalPredDiLepFoundSysDown_LL_->Fill(SearchBin, diLepFoundSysDown*scaleFactorWeightData/2);
+		    totalPredDiLepSRSysUp_LL_->Fill(SearchBin, diLepSRSysUp*scaleFactorWeightData/2);
+		    totalPredDiLepSRSysDown_LL_->Fill(SearchBin, diLepSRSysDown*scaleFactorWeightData/2);
 		    totalPredMuIsoSysUp_LL_->Fill(SearchBin, muIsoSysUp*scaleFactorWeightData/2);
 		    totalPredMuIsoSysDown_LL_->Fill(SearchBin, muIsoSysDown*scaleFactorWeightData/2);
 		    totalPredMuRecoSysUp_LL_->Fill(SearchBin, muRecoSysUp*scaleFactorWeightData/2);
@@ -324,29 +341,26 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 		    totalPredElecAccQsquareSysUp_LL_->Fill(SearchBin, elecAccQsquareSysUp*scaleFactorWeightData/2);
 		    totalPredElecAccQsquareSysDown_LL_->Fill(SearchBin, elecAccQsquareSysDown*scaleFactorWeightData/2);
 
-		    totalPredIsoTrackStatUp_LL_->Fill(SearchBin, isoTrackStatUp*scaleFactorWeightData/2);
-		    totalPredIsoTrackStatDown_LL_->Fill(SearchBin, isoTrackStatDown*scaleFactorWeightData/2);
-		    /*    totalPredIsoTrackStatUp_LL_->Fill(SearchBin, muIsoTrackStatUp*scaleFactorWeightData/2);
-			  totalPredIsoTrackStatDown_LL_->Fill(SearchBin, muIsoTrackStatDown*scaleFactorWeightData/2);
-			  totalPredIsoTrackStatUp_LL_->Fill(SearchBin, elecIsoTrackStatUp*scaleFactorWeightData/2);
-			  totalPredIsoTrackStatDown_LL_->Fill(SearchBin, elecIsoTrackStatDown*scaleFactorWeightData/2);
-			  totalPredIsoTrackStatUp_LL_->Fill(SearchBin, pionIsoTrackStatUp*scaleFactorWeightData/2);
-			  totalPredIsoTrackStatDown_LL_->Fill(SearchBin, pionIsoTrackStatDown*scaleFactorWeightData/2);
-		    */
-		    totalPredMuIsoTrackStatUp_LL_->Fill(SearchBin, muIsoTrackStatUp*scaleFactorWeightData/2);
-		    totalPredMuIsoTrackStatDown_LL_->Fill(SearchBin, muIsoTrackStatDown*scaleFactorWeightData/2);
-		    totalPredElecIsoTrackStatUp_LL_->Fill(SearchBin, elecIsoTrackStatUp*scaleFactorWeightData/2);
-		    totalPredElecIsoTrackStatDown_LL_->Fill(SearchBin, elecIsoTrackStatDown*scaleFactorWeightData/2);
-		    totalPredPionIsoTrackStatUp_LL_->Fill(SearchBin, pionIsoTrackStatUp*scaleFactorWeightData/2);
-		    totalPredPionIsoTrackStatDown_LL_->Fill(SearchBin, pionIsoTrackStatDown*scaleFactorWeightData/2);
+		    totalPredIsoTrackMuAccStatUp_LL_->Fill(SearchBin, isoTrackMuAccStatUp*scaleFactorWeightData/2);
+		    totalPredIsoTrackMuAccStatDown_LL_->Fill(SearchBin, isoTrackMuAccStatDown*scaleFactorWeightData/2);
+		    totalPredIsoTrackMuIDStatUp_LL_->Fill(SearchBin, isoTrackMuIDStatUp*scaleFactorWeightData/2);
+		    totalPredIsoTrackMuIDStatDown_LL_->Fill(SearchBin, isoTrackMuIDStatDown*scaleFactorWeightData/2);
+		    totalPredIsoTrackMuIsoStatUp_LL_->Fill(SearchBin, isoTrackMuIsoStatUp*scaleFactorWeightData/2);
+		    totalPredIsoTrackMuIsoStatDown_LL_->Fill(SearchBin, isoTrackMuIsoStatDown*scaleFactorWeightData/2);
+		   	totalPredIsoTrackElecAccStatUp_LL_->Fill(SearchBin, isoTrackElecAccStatUp*scaleFactorWeightData/2);
+		    totalPredIsoTrackElecAccStatDown_LL_->Fill(SearchBin, isoTrackElecAccStatDown*scaleFactorWeightData/2);
+		    totalPredIsoTrackElecIDStatUp_LL_->Fill(SearchBin, isoTrackElecIDStatUp*scaleFactorWeightData/2);
+		    totalPredIsoTrackElecIDStatDown_LL_->Fill(SearchBin, isoTrackElecIDStatDown*scaleFactorWeightData/2);
+		    totalPredIsoTrackElecIsoStatUp_LL_->Fill(SearchBin, isoTrackElecIsoStatUp*scaleFactorWeightData/2);
+		    totalPredIsoTrackElecIsoStatDown_LL_->Fill(SearchBin, isoTrackElecIsoStatDown*scaleFactorWeightData/2);
 		    totalPredMTWStatUp_LL_->Fill(SearchBin, MTWStatUp*scaleFactorWeightData/2);
 		    totalPredMTWStatDown_LL_->Fill(SearchBin, MTWStatDown*scaleFactorWeightData/2);
 		    totalPredPurityStatUp_LL_->Fill(SearchBin, purityStatUp*scaleFactorWeightData/2);
 		    totalPredPurityStatDown_LL_->Fill(SearchBin, purityStatDown*scaleFactorWeightData/2);
 		    totalPredSingleLepPurityStatUp_LL_->Fill(SearchBin, singleLepPurityStatUp*scaleFactorWeightData/2);
 		    totalPredSingleLepPurityStatDown_LL_->Fill(SearchBin, singleLepPurityStatDown*scaleFactorWeightData/2);
-		    totalPredDiLepFoundStatUp_LL_->Fill(SearchBin, diLepFoundStatUp*scaleFactorWeightData/2);
-		    totalPredDiLepFoundStatDown_LL_->Fill(SearchBin, diLepFoundStatDown*scaleFactorWeightData/2);
+		    totalPredDiLepSRStatUp_LL_->Fill(SearchBin, diLepSRStatUp*scaleFactorWeightData/2);
+		    totalPredDiLepSRStatDown_LL_->Fill(SearchBin, diLepSRStatDown*scaleFactorWeightData/2);
 		    totalPredMuIsoStatUp_LL_->Fill(SearchBin, muIsoStatUp*scaleFactorWeightData/2);
 		    totalPredMuIsoStatDown_LL_->Fill(SearchBin, muIsoStatDown*scaleFactorWeightData/2);
 		    totalPredMuRecoStatUp_LL_->Fill(SearchBin, muRecoStatUp*scaleFactorWeightData/2);
@@ -359,12 +373,6 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 		    totalPredElecRecoStatDown_LL_->Fill(SearchBin, elecRecoStatDown*scaleFactorWeightData/2);
 		    totalPredElecAccStatUp_LL_->Fill(SearchBin, elecAccStatUp*scaleFactorWeightData/2);
 		    totalPredElecAccStatDown_LL_->Fill(SearchBin, elecAccStatDown*scaleFactorWeightData/2);
-
-		    //totalPropSysUp = sqrt(isoTrackSysUp*isoTrackSysUp+MTWSysUp*MTWSysUp+puritySysUp*puritySysUp+singleLepPuritySysUp*singleLepPuritySysUp+diLepFoundSysUp*diLepFoundSysUp+muIsoSysUp*muIsoSysUp+muRecoSysUp*muRecoSysUp+muAccSysUp*muAccSysUp+muAccQsquareSysUp*muAccQsquareSysUp+elecIsoSysUp*elecIsoSysUp+elecRecoSysUp*elecRecoSysUp+elecAccSysUp*elecAccSysUp+elecAccQsquareSysUp*elecAccQsquareSysUp+isoTrackStatUp*isoTrackStatUp+MTWStatUp*MTWStatUp+purityStatUp*purityStatUp+singleLepPurityStatUp*singleLepPurityStatUp+diLepFoundStatUp*diLepFoundStatUp+muIsoStatUp*muIsoStatUp+muRecoStatUp*muRecoStatUp+muAccStatUp*muAccStatUp+elecIsoStatUp*elecIsoStatUp+elecRecoStatUp*elecRecoStatUp+elecAccStatUp*elecAccStatUp);
-		    //totalPropSysDown = -sqrt(isoTrackSysDown*isoTrackSysDown+MTWSysDown*MTWSysDown+puritySysDown*puritySysDown+singleLepPuritySysDown*singleLepPuritySysDown+diLepFoundSysDown*diLepFoundSysDown+muIsoSysDown*muIsoSysDown+muRecoSysDown*muRecoSysDown+muAccSysDown*muAccSysDown+muAccQsquareSysDown*muAccQsquareSysDown+elecIsoSysDown*elecIsoSysDown+elecRecoSysDown*elecRecoSysDown+elecAccSysDown*elecAccSysDown+elecAccQsquareSysDown*elecAccQsquareSysDown+isoTrackStatDown*isoTrackStatDown+MTWStatDown*MTWStatDown+purityStatDown*purityStatDown+singleLepPurityStatDown*singleLepPurityStatDown+diLepFoundStatDown*diLepFoundStatDown+muIsoStatDown*muIsoStatDown+muRecoStatDown*muRecoStatDown+muAccStatDown*muAccStatDown+elecIsoStatDown*elecIsoStatDown+elecRecoStatDown*elecRecoStatDown+elecAccStatDown*elecAccStatDown);
-
-		    //totalPropSysUp_LL_->Fill(SearchBin, totalPropSysUp*scaleFactorWeightData/2);
-		    //totalPropSysDown_LL_->Fill(SearchBin, totalPropSysDown*scaleFactorWeightData/2;
 		}
 
 		fPre->Close();
@@ -440,13 +448,31 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	totalCS_LL_->Write();
 	SetBinLabel(nEvtsCS_LL_);
 	nEvtsCS_LL_->Write();
+
+	std::vector<TH1D*> isoTrackStatUncUp_LL_;
+	isoTrackStatUncUp_LL_.push_back(totalPredIsoTrackMuAccStatUp_LL_);
+	isoTrackStatUncUp_LL_.push_back(totalPredIsoTrackMuIDStatUp_LL_);
+	isoTrackStatUncUp_LL_.push_back(totalPredIsoTrackMuIsoStatUp_LL_);
+	isoTrackStatUncUp_LL_.push_back(totalPredIsoTrackElecAccStatUp_LL_);
+	isoTrackStatUncUp_LL_.push_back(totalPredIsoTrackElecIDStatUp_LL_);
+	isoTrackStatUncUp_LL_.push_back(totalPredIsoTrackElecIsoStatUp_LL_);
+	addUncertainties(totalPredIsoTrackStatUp_LL_, isoTrackStatUncUp_LL_, true);
+
+	std::vector<TH1D*> isoTrackStatUncDown_LL_;
+	isoTrackStatUncDown_LL_.push_back(totalPredIsoTrackMuAccStatDown_LL_);
+	isoTrackStatUncDown_LL_.push_back(totalPredIsoTrackMuIDStatDown_LL_);
+	isoTrackStatUncDown_LL_.push_back(totalPredIsoTrackMuIsoStatDown_LL_);
+	isoTrackStatUncDown_LL_.push_back(totalPredIsoTrackElecAccStatDown_LL_);
+	isoTrackStatUncDown_LL_.push_back(totalPredIsoTrackElecIDStatDown_LL_);
+	isoTrackStatUncDown_LL_.push_back(totalPredIsoTrackElecIsoStatDown_LL_);
+	addUncertainties(totalPredIsoTrackStatDown_LL_, isoTrackStatUncDown_LL_, false);
   
 	std::vector<TH1D*> allUncUp_LL_;
 	allUncUp_LL_.push_back(totalPredIsoTrackSysUp_LL_);
 	allUncUp_LL_.push_back(totalPredMTWSysUp_LL_);
 	allUncUp_LL_.push_back(totalPredPuritySysUp_LL_);
 	allUncUp_LL_.push_back(totalPredSingleLepPuritySysUp_LL_);
-	allUncUp_LL_.push_back(totalPredDiLepFoundSysUp_LL_);
+	allUncUp_LL_.push_back(totalPredDiLepSRSysUp_LL_);
 	allUncUp_LL_.push_back(totalPredMuIsoSysUp_LL_);
 	allUncUp_LL_.push_back(totalPredMuRecoSysUp_LL_);
 	allUncUp_LL_.push_back(totalPredMuAccSysUp_LL_);
@@ -459,14 +485,13 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	allUncUp_LL_.push_back(totalPredMTWStatUp_LL_);
 	allUncUp_LL_.push_back(totalPredPurityStatUp_LL_);
 	allUncUp_LL_.push_back(totalPredSingleLepPurityStatUp_LL_);
-	allUncUp_LL_.push_back(totalPredDiLepFoundStatUp_LL_);
+	allUncUp_LL_.push_back(totalPredDiLepSRStatUp_LL_);
 	allUncUp_LL_.push_back(totalPredMuIsoStatUp_LL_);
 	allUncUp_LL_.push_back(totalPredMuRecoStatUp_LL_);
 	allUncUp_LL_.push_back(totalPredMuAccStatUp_LL_);
 	allUncUp_LL_.push_back(totalPredElecIsoStatUp_LL_);
 	allUncUp_LL_.push_back(totalPredElecRecoStatUp_LL_);
 	allUncUp_LL_.push_back(totalPredElecAccStatUp_LL_);
-
 	addUncertainties(totalPropSysUp_LL_, allUncUp_LL_, true);
 
 	std::vector<TH1D*> allUncDown_LL_;
@@ -474,7 +499,7 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	allUncDown_LL_.push_back(totalPredMTWSysDown_LL_);
 	allUncDown_LL_.push_back(totalPredPuritySysDown_LL_);
 	allUncDown_LL_.push_back(totalPredSingleLepPuritySysDown_LL_);
-	allUncDown_LL_.push_back(totalPredDiLepFoundSysDown_LL_);
+	allUncDown_LL_.push_back(totalPredDiLepSRSysDown_LL_);
 	allUncDown_LL_.push_back(totalPredMuIsoSysDown_LL_);
 	allUncDown_LL_.push_back(totalPredMuRecoSysDown_LL_);
 	allUncDown_LL_.push_back(totalPredMuAccSysDown_LL_);
@@ -487,14 +512,13 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	allUncDown_LL_.push_back(totalPredMTWStatDown_LL_);
 	allUncDown_LL_.push_back(totalPredPurityStatDown_LL_);
 	allUncDown_LL_.push_back(totalPredSingleLepPurityStatDown_LL_);
-	allUncDown_LL_.push_back(totalPredDiLepFoundStatDown_LL_);
+	allUncDown_LL_.push_back(totalPredDiLepSRStatDown_LL_);
 	allUncDown_LL_.push_back(totalPredMuIsoStatDown_LL_);
 	allUncDown_LL_.push_back(totalPredMuRecoStatDown_LL_);
 	allUncDown_LL_.push_back(totalPredMuAccStatDown_LL_);
 	allUncDown_LL_.push_back(totalPredElecIsoStatDown_LL_);
 	allUncDown_LL_.push_back(totalPredElecRecoStatDown_LL_);
 	allUncDown_LL_.push_back(totalPredElecAccStatDown_LL_);
-
 	addUncertainties(totalPropSysDown_LL_, allUncDown_LL_, false);
   
   	/*
@@ -538,10 +562,10 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	SaveFraction(totalPredPurityStatDown_LL_, totalPred_LL_, dPreData, "llp_purityStat", "MHTNJets");
 
 	if(!combinedUnc){
-		SaveFraction(totalPredSingleLepPuritySysUp_LL_, totalPred_LL_, dPreData, "llp_singleLepPuritySys", "NJets");
-		SaveFraction(totalPredSingleLepPuritySysDown_LL_, totalPred_LL_, dPreData, "llp_singleLepPuritySys", "NJets");
-		SaveFraction(totalPredDiLepFoundSysUp_LL_, totalPred_LL_, dPreData, "llp_diLepFoundSys", "NJets");
-		SaveFraction(totalPredDiLepFoundSysDown_LL_, totalPred_LL_, dPreData, "llp_diLepFoundSys", "NJets");
+		SaveFraction(totalPredSingleLepPuritySysUp_LL_, totalPred_LL_, dPreData, "llp_singleLepPuritySys", "NJetsBTags");
+		SaveFraction(totalPredSingleLepPuritySysDown_LL_, totalPred_LL_, dPreData, "llp_singleLepPuritySys", "NJetsBTags");
+		SaveFraction(totalPredDiLepSRSysUp_LL_, totalPred_LL_, dPreData, "llp_diLepSRSys", "NJetsBTags");
+		SaveFraction(totalPredDiLepSRSysDown_LL_, totalPred_LL_, dPreData, "llp_diLepSRSys", "NJetsBTags");
 
 		SaveFraction(totalPredMuAccSysUp_LL_, totalPred_LL_, dPreData, "llp_muAccSys", "NJetsHTMHT");
 		SaveFraction(totalPredMuAccSysDown_LL_, totalPred_LL_, dPreData, "llp_muAccSys", "NJetsHTMHT");
@@ -552,10 +576,10 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 		SaveFraction(totalPredElecAccQsquareSysUp_LL_, totalPred_LL_, dPreData, "llp_elecAccQsquareSys", "NJetsHTMHT");
 		SaveFraction(totalPredElecAccQsquareSysDown_LL_, totalPred_LL_, dPreData, "llp_elecAccQsquareSys", "NJetsHTMHT");
 
-		SaveFraction(totalPredSingleLepPurityStatUp_LL_, totalPred_LL_, dPreData, "llp_singleLepPurityStat", "NJets");
-		SaveFraction(totalPredSingleLepPurityStatDown_LL_, totalPred_LL_, dPreData, "llp_singleLepPurityStat", "NJets");
-		SaveFraction(totalPredDiLepFoundStatUp_LL_, totalPred_LL_, dPreData, "llp_diLepFoundStat", "NJets");
-		SaveFraction(totalPredDiLepFoundStatDown_LL_, totalPred_LL_, dPreData, "llp_diLepFoundStat", "NJets");
+		SaveFraction(totalPredSingleLepPurityStatUp_LL_, totalPred_LL_, dPreData, "llp_singleLepPurityStat", "NJetsBTags");
+		SaveFraction(totalPredSingleLepPurityStatDown_LL_, totalPred_LL_, dPreData, "llp_singleLepPurityStat", "NJetsBTags");
+		SaveFraction(totalPredDiLepSRStatUp_LL_, totalPred_LL_, dPreData, "llp_diLepSRStat", "NJetsBTags");
+		SaveFraction(totalPredDiLepSRStatDown_LL_, totalPred_LL_, dPreData, "llp_diLepSRStat", "NJetsBTags");
 
 		SaveFraction(totalPredMuIsoStatUp_LL_, totalPred_LL_, dPreData, "llp_muIsoStat", "ptAct");
 		SaveFraction(totalPredMuIsoStatDown_LL_, totalPred_LL_, dPreData, "llp_muIsoStat", "ptAct");
@@ -572,14 +596,14 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	}else{
 		std::vector<TH1D*> diLepContributionSysUp_LL_;
 		diLepContributionSysUp_LL_.push_back(totalPredSingleLepPuritySysUp_LL_);
-		diLepContributionSysUp_LL_.push_back(totalPredDiLepFoundSysUp_LL_);
+		diLepContributionSysUp_LL_.push_back(totalPredDiLepSRSysUp_LL_);
 		addUncertainties(totalPredDiLepContributionSysUp_LL_, diLepContributionSysUp_LL_, true);
-		SaveFraction(totalPredDiLepContributionSysUp_LL_, totalPred_LL_, dPreData, "llp_diLepContribSys", "NJets");
+		SaveFraction(totalPredDiLepContributionSysUp_LL_, totalPred_LL_, dPreData, "llp_diLepContribSys", "NJetsBTags");
 		std::vector<TH1D*> diLepContributionSysDown_LL_;
 		diLepContributionSysDown_LL_.push_back(totalPredSingleLepPuritySysDown_LL_);
-		diLepContributionSysDown_LL_.push_back(totalPredDiLepFoundSysDown_LL_);
+		diLepContributionSysDown_LL_.push_back(totalPredDiLepSRSysDown_LL_);
 		addUncertainties(totalPredDiLepContributionSysDown_LL_, diLepContributionSysDown_LL_, false);
-		SaveFraction(totalPredDiLepContributionSysDown_LL_, totalPred_LL_, dPreData, "llp_diLepContribSys", "NJets");
+		SaveFraction(totalPredDiLepContributionSysDown_LL_, totalPred_LL_, dPreData, "llp_diLepContribSys", "NJetsBTags");
 
 		std::vector<TH1D*> lepAccSysUp_LL_;
 		lepAccSysUp_LL_.push_back(totalPredMuAccSysUp_LL_);
@@ -606,14 +630,14 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 
 		std::vector<TH1D*> diLepContributionStatUp_LL_;
 		diLepContributionStatUp_LL_.push_back(totalPredSingleLepPurityStatUp_LL_);
-		diLepContributionStatUp_LL_.push_back(totalPredDiLepFoundStatUp_LL_);
+		diLepContributionStatUp_LL_.push_back(totalPredDiLepSRStatUp_LL_);
 		addUncertainties(totalPredDiLepContributionStatUp_LL_, diLepContributionStatUp_LL_, true);
-		SaveFraction(totalPredDiLepContributionStatUp_LL_, totalPred_LL_, dPreData, "llp_diLepContribStat", "NJets");
+		SaveFraction(totalPredDiLepContributionStatUp_LL_, totalPred_LL_, dPreData, "llp_diLepContribStat", "NJetsBTags");
 		std::vector<TH1D*> diLepContributionStatDown_LL_;
 		diLepContributionStatDown_LL_.push_back(totalPredSingleLepPurityStatDown_LL_);
-		diLepContributionStatDown_LL_.push_back(totalPredDiLepFoundStatDown_LL_);
+		diLepContributionStatDown_LL_.push_back(totalPredDiLepSRStatDown_LL_);
 		addUncertainties(totalPredDiLepContributionStatDown_LL_, diLepContributionStatDown_LL_, false);
-		SaveFraction(totalPredDiLepContributionStatDown_LL_, totalPred_LL_, dPreData, "llp_diLepContribStat", "NJets");
+		SaveFraction(totalPredDiLepContributionStatDown_LL_, totalPred_LL_, dPreData, "llp_diLepContribStat", "NJetsBTags");
 
 		std::vector<TH1D*> lepRecoIsoStatUp_LL_;
 		lepRecoIsoStatUp_LL_.push_back(totalPredMuIsoStatUp_LL_);
@@ -735,12 +759,30 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	avgWeight_0L1L_->Write();
 
 
+	std::vector<TH1D*> isoTrackStatUncUp_LL_MC_;
+	isoTrackStatUncUp_LL_MC_.push_back(totalPredIsoTrackMuAccStatUp_LL_MC_);
+	isoTrackStatUncUp_LL_MC_.push_back(totalPredIsoTrackMuIDStatUp_LL_MC_);
+	isoTrackStatUncUp_LL_MC_.push_back(totalPredIsoTrackMuIsoStatUp_LL_MC_);
+	isoTrackStatUncUp_LL_MC_.push_back(totalPredIsoTrackElecAccStatUp_LL_MC_);
+	isoTrackStatUncUp_LL_MC_.push_back(totalPredIsoTrackElecIDStatUp_LL_MC_);
+	isoTrackStatUncUp_LL_MC_.push_back(totalPredIsoTrackElecIsoStatUp_LL_MC_);
+	addUncertainties(totalPredIsoTrackStatUp_LL_MC_, isoTrackStatUncUp_LL_MC_, true);
+
+	std::vector<TH1D*> isoTrackStatUncDown_LL_MC_;
+	isoTrackStatUncDown_LL_MC_.push_back(totalPredIsoTrackMuAccStatDown_LL_MC_);
+	isoTrackStatUncDown_LL_MC_.push_back(totalPredIsoTrackMuIDStatDown_LL_MC_);
+	isoTrackStatUncDown_LL_MC_.push_back(totalPredIsoTrackMuIsoStatDown_LL_MC_);
+	isoTrackStatUncDown_LL_MC_.push_back(totalPredIsoTrackElecAccStatDown_LL_MC_);
+	isoTrackStatUncDown_LL_MC_.push_back(totalPredIsoTrackElecIDStatDown_LL_MC_);
+	isoTrackStatUncDown_LL_MC_.push_back(totalPredIsoTrackElecIsoStatDown_LL_MC_);
+	addUncertainties(totalPredIsoTrackStatDown_LL_MC_, isoTrackStatUncDown_LL_MC_, false);
+
 	std::vector<TH1D*> allUncUp_LL_MC_;
 	allUncUp_LL_MC_.push_back(totalPredIsoTrackSysUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredMTWSysUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredPuritySysUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredSingleLepPuritySysUp_LL_MC_);
-	allUncUp_LL_MC_.push_back(totalPredDiLepFoundSysUp_LL_MC_);
+	allUncUp_LL_MC_.push_back(totalPredDiLepSRSysUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredMuIsoSysUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredMuRecoSysUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredMuAccSysUp_LL_MC_);
@@ -753,14 +795,13 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	allUncUp_LL_MC_.push_back(totalPredMTWStatUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredPurityStatUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredSingleLepPurityStatUp_LL_MC_);
-	allUncUp_LL_MC_.push_back(totalPredDiLepFoundStatUp_LL_MC_);
+	allUncUp_LL_MC_.push_back(totalPredDiLepSRStatUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredMuIsoStatUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredMuRecoStatUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredMuAccStatUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredElecIsoStatUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredElecRecoStatUp_LL_MC_);
 	allUncUp_LL_MC_.push_back(totalPredElecAccStatUp_LL_MC_);
-
 	addUncertainties(totalPropSysUp_LL_MC_, allUncUp_LL_MC_, true);
 
 	std::vector<TH1D*> allUncDown_LL_MC_;
@@ -768,7 +809,7 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	allUncDown_LL_MC_.push_back(totalPredMTWSysDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredPuritySysDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredSingleLepPuritySysDown_LL_MC_);
-	allUncDown_LL_MC_.push_back(totalPredDiLepFoundSysDown_LL_MC_);
+	allUncDown_LL_MC_.push_back(totalPredDiLepSRSysDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredMuIsoSysDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredMuRecoSysDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredMuAccSysDown_LL_MC_);
@@ -781,14 +822,13 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	allUncDown_LL_MC_.push_back(totalPredMTWStatDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredPurityStatDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredSingleLepPurityStatDown_LL_MC_);
-	allUncDown_LL_MC_.push_back(totalPredDiLepFoundStatDown_LL_MC_);
+	allUncDown_LL_MC_.push_back(totalPredDiLepSRStatDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredMuIsoStatDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredMuRecoStatDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredMuAccStatDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredElecIsoStatDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredElecRecoStatDown_LL_MC_);
 	allUncDown_LL_MC_.push_back(totalPredElecAccStatDown_LL_MC_);
-
 	addUncertainties(totalPropSysDown_LL_MC_, allUncDown_LL_MC_, false);
 
 	/*
@@ -832,10 +872,10 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	SaveFraction(totalPredPurityStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_purityStat", "MHTNJets");
 
 	if(!combinedUnc){
-		SaveFraction(totalPredSingleLepPuritySysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPuritySys", "NJets");
-		SaveFraction(totalPredSingleLepPuritySysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPuritySys", "NJets");
-		SaveFraction(totalPredDiLepFoundSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepFoundSys", "NJets");
-		SaveFraction(totalPredDiLepFoundSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepFoundSys", "NJets");
+		SaveFraction(totalPredSingleLepPuritySysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPuritySys", "NJetsBTags");
+		SaveFraction(totalPredSingleLepPuritySysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPuritySys", "NJetsBTags");
+		SaveFraction(totalPredDiLepSRSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepSRSys", "NJetsBTags");
+		SaveFraction(totalPredDiLepSRSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepSRSys", "NJetsBTags");
 
 		SaveFraction(totalPredMuAccSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccSys", "NJetsHTMHT");
 		SaveFraction(totalPredMuAccSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muAccSys", "NJetsHTMHT");
@@ -846,10 +886,10 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 		SaveFraction(totalPredElecAccQsquareSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccQsquareSys", "NJetsHTMHT");
 		SaveFraction(totalPredElecAccQsquareSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_elecAccQsquareSys", "NJetsHTMHT");
 
-		SaveFraction(totalPredSingleLepPurityStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPurityStat", "NJets");
-		SaveFraction(totalPredSingleLepPurityStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPurityStat", "NJets");
-		SaveFraction(totalPredDiLepFoundStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepFoundStat", "NJets");
-		SaveFraction(totalPredDiLepFoundStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepFoundStat", "NJets");
+		SaveFraction(totalPredSingleLepPurityStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPurityStat", "NJetsBTags");
+		SaveFraction(totalPredSingleLepPurityStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_singleLepPurityStat", "NJetsBTags");
+		SaveFraction(totalPredDiLepSRStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepSRStat", "NJetsBTags");
+		SaveFraction(totalPredDiLepSRStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepSRStat", "NJetsBTags");
 
 		SaveFraction(totalPredMuIsoStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muIsoStat", "ptAct");
 		SaveFraction(totalPredMuIsoStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_muIsoStat", "ptAct");
@@ -866,14 +906,14 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	}else{
 		std::vector<TH1D*> diLepContributionSysUp_LL_MC_;
 		diLepContributionSysUp_LL_MC_.push_back(totalPredSingleLepPuritySysUp_LL_MC_);
-		diLepContributionSysUp_LL_MC_.push_back(totalPredDiLepFoundSysUp_LL_MC_);
+		diLepContributionSysUp_LL_MC_.push_back(totalPredDiLepSRSysUp_LL_MC_);
 		addUncertainties(totalPredDiLepContributionSysUp_LL_MC_, diLepContributionSysUp_LL_MC_, true);
-		SaveFraction(totalPredDiLepContributionSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepContribSys", "NJets");
+		SaveFraction(totalPredDiLepContributionSysUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepContribSys", "NJetsBTags");
 		std::vector<TH1D*> diLepContributionSysDown_LL_MC_;
 		diLepContributionSysDown_LL_MC_.push_back(totalPredSingleLepPuritySysDown_LL_MC_);
-		diLepContributionSysDown_LL_MC_.push_back(totalPredDiLepFoundSysDown_LL_MC_);
+		diLepContributionSysDown_LL_MC_.push_back(totalPredDiLepSRSysDown_LL_MC_);
 		addUncertainties(totalPredDiLepContributionSysDown_LL_MC_, diLepContributionSysDown_LL_MC_, false);
-		SaveFraction(totalPredDiLepContributionSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepContribSys", "NJets");
+		SaveFraction(totalPredDiLepContributionSysDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepContribSys", "NJetsBTags");
 
 		std::vector<TH1D*> lepAccSysUp_LL_MC_;
 		lepAccSysUp_LL_MC_.push_back(totalPredMuAccSysUp_LL_MC_);
@@ -900,14 +940,14 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 
 		std::vector<TH1D*> diLepContributionStatUp_LL_MC_;
 		diLepContributionStatUp_LL_MC_.push_back(totalPredSingleLepPurityStatUp_LL_MC_);
-		diLepContributionStatUp_LL_MC_.push_back(totalPredDiLepFoundStatUp_LL_MC_);
+		diLepContributionStatUp_LL_MC_.push_back(totalPredDiLepSRStatUp_LL_MC_);
 		addUncertainties(totalPredDiLepContributionStatUp_LL_MC_, diLepContributionStatUp_LL_MC_, true);
-		SaveFraction(totalPredDiLepContributionStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepContribStat", "NJets");
+		SaveFraction(totalPredDiLepContributionStatUp_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepContribStat", "NJetsBTags");
 		std::vector<TH1D*> diLepContributionStatDown_LL_MC_;
 		diLepContributionStatDown_LL_MC_.push_back(totalPredSingleLepPurityStatDown_LL_MC_);
-		diLepContributionStatDown_LL_MC_.push_back(totalPredDiLepFoundStatDown_LL_MC_);
+		diLepContributionStatDown_LL_MC_.push_back(totalPredDiLepSRStatDown_LL_MC_);
 		addUncertainties(totalPredDiLepContributionStatDown_LL_MC_, diLepContributionStatDown_LL_MC_, false);
-		SaveFraction(totalPredDiLepContributionStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepContribStat", "NJets");
+		SaveFraction(totalPredDiLepContributionStatDown_LL_MC_, totalPred_LL_MC_, dPreMC, "llp_mc_diLepContribStat", "NJetsBTags");
 
 		std::vector<TH1D*> lepRecoIsoStatUp_LL_MC_;
 		lepRecoIsoStatUp_LL_MC_.push_back(totalPredMuIsoStatUp_LL_MC_);
@@ -982,20 +1022,26 @@ void initHistograms(Int_t nBins){
 
  	totalPredIsoTrackSysUp_LL_ = new TH1D("totalPredIsoTrackSysUp_LL","totalPredIsoTrackSysUp_LL", nBins, 0.5, nBins+0.5);
 	totalPredIsoTrackSysDown_LL_ = new TH1D("totalPredIsoTrackSysDown_LL","totalPredIsoTrackSysDown_LL", nBins, 0.5, nBins+0.5);
-	totalPredMuIsoTrackSysUp_LL_ = new TH1D("totalPredMuIsoTrackSysUp_LL","totalPredMuIsoTrackSysUp_LL", nBins, 0.5, nBins+0.5);
-	totalPredMuIsoTrackSysDown_LL_ = new TH1D("totalPredMuIsoTrackSysDown_LL","totalPredMuIsoTrackSysDown_LL", nBins, 0.5, nBins+0.5);
-	totalPredElecIsoTrackSysUp_LL_ = new TH1D("totalPredElecIsoTrackSysUp_LL","totalPredElecIsoTrackSysUp_LL", nBins, 0.5, nBins+0.5);
-	totalPredElecIsoTrackSysDown_LL_ = new TH1D("totalPredElecIsoTrackSysDown_LL","totalPredElecIsoTrackSysDown_LL", nBins, 0.5, nBins+0.5);
-	totalPredPionIsoTrackSysUp_LL_ = new TH1D("totalPredPionIsoTrackSysUp_LL","totalPredPionIsoTrackSysUp_LL", nBins, 0.5, nBins+0.5);
-	totalPredPionIsoTrackSysDown_LL_ = new TH1D("totalPredPionIsoTrackSysDown_LL","totalPredPionIsoTrackSysDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuAccSysUp_LL_ = new TH1D("totalPredIsoTrackMuAccSysUp_LL","totalPredIsoTrackMuAccSysUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuAccSysDown_LL_ = new TH1D("totalPredIsoTrackMuAccSysDown_LL","totalPredIsoTrackMuAccSysDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIDSysUp_LL_ = new TH1D("totalPredIsoTrackMuIDSysUp_LL","totalPredIsoTrackMuIDSysUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIDSysDown_LL_ = new TH1D("totalPredIsoTrackMuIDSysDown_LL","totalPredIsoTrackMuIDSysDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIsoSysUp_LL_ = new TH1D("totalPredIsoTrackMuIsoSysUp_LL","totalPredIsoTrackMuIsoSysUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIsoSysDown_LL_ = new TH1D("totalPredIsoTrackMuIsoSysDown_LL","totalPredIsoTrackMuIsoSysDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecAccSysUp_LL_ = new TH1D("totalPredIsoTrackElecAccSysUp_LL","totalPredIsoTrackElecAccSysUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecAccSysDown_LL_ = new TH1D("totalPredIsoTrackElecAccSysDown_LL","totalPredIsoTrackElecAccSysDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIDSysUp_LL_ = new TH1D("totalPredIsoTrackElecIDSysUp_LL","totalPredIsoTrackElecIDSysUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIDSysDown_LL_ = new TH1D("totalPredIsoTrackElecIDSysDown_LL","totalPredIsoTrackElecIDSysDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIsoSysUp_LL_ = new TH1D("totalPredIsoTrackElecIsoSysUp_LL","totalPredIsoTrackElecIsoSysUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIsoSysDown_LL_ = new TH1D("totalPredIsoTrackElecIsoSysDown_LL","totalPredIsoTrackElecIsoSysDown_LL", nBins, 0.5, nBins+0.5);	
 	totalPredMTWSysUp_LL_ = new TH1D("totalPredMTWSysUp_LL","totalPredMTWSysUp_LL", nBins, 0.5, nBins+0.5);
 	totalPredMTWSysDown_LL_ = new TH1D("totalPredMTWSysDown_LL","totalPredMTWSysDown_LL", nBins, 0.5, nBins+0.5);
 	totalPredPuritySysUp_LL_ = new TH1D("totalPredPuritySysUp_LL","totalPredPuritySysUp_LL", nBins, 0.5, nBins+0.5);
 	totalPredPuritySysDown_LL_ = new TH1D("totalPredPuritySysDown_LL","totalPredPuritySysDown_LL", nBins, 0.5, nBins+0.5);
 	totalPredSingleLepPuritySysUp_LL_ = new TH1D("totalPredSingleLepPuritySysUp_LL","totalPredSingleLepPuritySysUp_LL", nBins, 0.5, nBins+0.5);
 	totalPredSingleLepPuritySysDown_LL_ = new TH1D("totalPredSingleLepPuritySysDown_LL","totalPredSingleLepPuritySysDown_LL", nBins, 0.5, nBins+0.5);
-	totalPredDiLepFoundSysUp_LL_ = new TH1D("totalPredDiLepFoundSysUp_LL","totalPredDiLepFoundSysUp_LL", nBins, 0.5, nBins+0.5);
-	totalPredDiLepFoundSysDown_LL_ = new TH1D("totalPredDiLepFoundSysDown_LL","totalPredDiLepFoundSysDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredDiLepSRSysUp_LL_ = new TH1D("totalPredDiLepSRSysUp_LL","totalPredDiLepSRSysUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredDiLepSRSysDown_LL_ = new TH1D("totalPredDiLepSRSysDown_LL","totalPredDiLepSRSysDown_LL", nBins, 0.5, nBins+0.5);
 	totalPredMuIsoSysUp_LL_ = new TH1D("totalPredMuIsoSysUp_LL","totalPredMuIsoSysUp_LL", nBins, 0.5, nBins+0.5);
 	totalPredMuIsoSysDown_LL_ = new TH1D("totalPredMuIsoSysDown_LL","totalPredMuIsoSysDown_LL", nBins, 0.5, nBins+0.5);
 	totalPredMuRecoSysUp_LL_ = new TH1D("totalPredMuRecoSysUp_LL","totalPredMuRecoSysUp_LL", nBins, 0.5, nBins+0.5);
@@ -1017,20 +1063,26 @@ void initHistograms(Int_t nBins){
 
 	totalPredIsoTrackStatUp_LL_ = new TH1D("totalPredIsoTrackStatUp_LL","totalPredIsoTrackStatUp_LL", nBins, 0.5, nBins+0.5);
 	totalPredIsoTrackStatDown_LL_ = new TH1D("totalPredIsoTrackStatDown_LL","totalPredIsoTrackStatDown_LL", nBins, 0.5, nBins+0.5);
-	totalPredMuIsoTrackStatUp_LL_ = new TH1D("totalPredMuIsoTrackStatUp_LL","totalPredMuIsoTrackStatUp_LL", nBins, 0.5, nBins+0.5);
-	totalPredMuIsoTrackStatDown_LL_ = new TH1D("totalPredMuIsoTrackStatDown_LL","totalPredMuIsoTrackStatDown_LL", nBins, 0.5, nBins+0.5);
-	totalPredElecIsoTrackStatUp_LL_ = new TH1D("totalPredElecIsoTrackStatUp_LL","totalPredElecIsoTrackStatUp_LL", nBins, 0.5, nBins+0.5);
-	totalPredElecIsoTrackStatDown_LL_ = new TH1D("totalPredElecIsoTrackStatDown_LL","totalPredElecIsoTrackStatDown_LL", nBins, 0.5, nBins+0.5);
-	totalPredPionIsoTrackStatUp_LL_ = new TH1D("totalPredPionIsoTrackStatUp_LL","totalPredPionIsoTrackStatUp_LL", nBins, 0.5, nBins+0.5);
-	totalPredPionIsoTrackStatDown_LL_ = new TH1D("totalPredPionIsoTrackStatDown_LL","totalPredPionIsoTrackStatDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuAccStatUp_LL_ = new TH1D("totalPredIsoTrackMuAccStatUp_LL","totalPredIsoTrackMuAccStatUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuAccStatDown_LL_ = new TH1D("totalPredIsoTrackMuAccStatDown_LL","totalPredIsoTrackMuAccStatDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIDStatUp_LL_ = new TH1D("totalPredIsoTrackMuIDStatUp_LL","totalPredIsoTrackMuIDStatUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIDStatDown_LL_ = new TH1D("totalPredIsoTrackMuIDStatDown_LL","totalPredIsoTrackMuIDStatDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIsoStatUp_LL_ = new TH1D("totalPredIsoTrackMuIsoStatUp_LL","totalPredIsoTrackMuIsoStatUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIsoStatDown_LL_ = new TH1D("totalPredIsoTrackMuIsoStatDown_LL","totalPredIsoTrackMuIsoStatDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecAccStatUp_LL_ = new TH1D("totalPredIsoTrackElecAccStatUp_LL","totalPredIsoTrackElecAccStatUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecAccStatDown_LL_ = new TH1D("totalPredIsoTrackElecAccStatDown_LL","totalPredIsoTrackElecAccStatDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIDStatUp_LL_ = new TH1D("totalPredIsoTrackElecIDStatUp_LL","totalPredIsoTrackElecIDStatUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIDStatDown_LL_ = new TH1D("totalPredIsoTrackElecIDStatDown_LL","totalPredIsoTrackElecIDStatDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIsoStatUp_LL_ = new TH1D("totalPredIsoTrackElecIsoStatUp_LL","totalPredIsoTrackElecIsoStatUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIsoStatDown_LL_ = new TH1D("totalPredIsoTrackElecIsoStatDown_LL","totalPredIsoTrackElecIsoStatDown_LL", nBins, 0.5, nBins+0.5);
 	totalPredMTWStatUp_LL_ = new TH1D("totalPredMTWStatUp_LL","totalPredMTWStatUp_LL", nBins, 0.5, nBins+0.5);
 	totalPredMTWStatDown_LL_ = new TH1D("totalPredMTWStatDown_LL","totalPredMTWStatDown_LL", nBins, 0.5, nBins+0.5);
 	totalPredPurityStatUp_LL_ = new TH1D("totalPredPurityStatUp_LL","totalPredPurityStatUp_LL", nBins, 0.5, nBins+0.5);
 	totalPredPurityStatDown_LL_ = new TH1D("totalPredPurityStatDown_LL","totalPredPurityStatDown_LL", nBins, 0.5, nBins+0.5);
 	totalPredSingleLepPurityStatUp_LL_ = new TH1D("totalPredSingleLepPurityStatUp_LL","totalPredSingleLepPurityStatUp_LL", nBins, 0.5, nBins+0.5);
 	totalPredSingleLepPurityStatDown_LL_ = new TH1D("totalPredSingleLepPurityStatDown_LL","totalPredSingleLepPurityStatDown_LL", nBins, 0.5, nBins+0.5);
-	totalPredDiLepFoundStatUp_LL_ = new TH1D("totalPredDiLepFoundStatUp_LL","totalPredDiLepFoundStatUp_LL", nBins, 0.5, nBins+0.5);
-	totalPredDiLepFoundStatDown_LL_ = new TH1D("totalPredDiLepFoundStatDown_LL","totalPredDiLepFoundStatDown_LL", nBins, 0.5, nBins+0.5);
+	totalPredDiLepSRStatUp_LL_ = new TH1D("totalPredDiLepSRStatUp_LL","totalPredDiLepSRStatUp_LL", nBins, 0.5, nBins+0.5);
+	totalPredDiLepSRStatDown_LL_ = new TH1D("totalPredDiLepSRStatDown_LL","totalPredDiLepSRStatDown_LL", nBins, 0.5, nBins+0.5);
 	totalPredMuIsoStatUp_LL_ = new TH1D("totalPredMuIsoStatUp_LL","totalPredMuIsoStatUp_LL", nBins, 0.5, nBins+0.5);
 	totalPredMuIsoStatDown_LL_ = new TH1D("totalPredMuIsoStatDown_LL","totalPredMuIsoStatDown_LL", nBins, 0.5, nBins+0.5);
 	totalPredMuRecoStatUp_LL_ = new TH1D("totalPredMuRecoStatUp_LL","totalPredMuRecoStatUp_LL", nBins, 0.5, nBins+0.5);
@@ -1062,20 +1114,26 @@ void initHistograms(Int_t nBins){
 
 	totalPredIsoTrackSysUp_LL_MC_ = new TH1D("totalPredIsoTrackSysUp_LL_MC","totalPredIsoTrackSysUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredIsoTrackSysDown_LL_MC_ = new TH1D("totalPredIsoTrackSysDown_LL_MC","totalPredIsoTrackSysDown_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredMuIsoTrackSysUp_LL_MC_ = new TH1D("totalPredMuIsoTrackSysUp_LL_MC","totalPredMuIsoTrackSysUp_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredMuIsoTrackSysDown_LL_MC_ = new TH1D("totalPredMuIsoTrackSysDown_LL_MC","totalPredMuIsoTrackSysDown_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredElecIsoTrackSysUp_LL_MC_ = new TH1D("totalPredElecIsoTrackSysUp_LL_MC","totalPredElecIsoTrackSysUp_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredElecIsoTrackSysDown_LL_MC_ = new TH1D("totalPredElecIsoTrackSysDown_LL_MC","totalPredElecIsoTrackSysDown_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredPionIsoTrackSysUp_LL_MC_ = new TH1D("totalPredPionIsoTrackSysUp_LL_MC","totalPredPionIsoTrackSysUp_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredPionIsoTrackSysDown_LL_MC_ = new TH1D("totalPredPionIsoTrackSysDown_LL_MC","totalPredPionIsoTrackSysDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuAccSysUp_LL_MC_ = new TH1D("totalPredIsoTrackMuAccSysUp_LL_MC","totalPredIsoTrackMuAccSysUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuAccSysDown_LL_MC_ = new TH1D("totalPredIsoTrackMuAccSysDown_LL_MC","totalPredIsoTrackMuAccSysDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIDSysUp_LL_MC_ = new TH1D("totalPredIsoTrackMuIDSysUp_LL_MC","totalPredIsoTrackMuIDSysUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIDSysDown_LL_MC_ = new TH1D("totalPredIsoTrackMuIDSysDown_LL_MC","totalPredIsoTrackMuIDSysDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIsoSysUp_LL_MC_ = new TH1D("totalPredIsoTrackMuIsoSysUp_LL_MC","totalPredIsoTrackMuIsoSysUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIsoSysDown_LL_MC_ = new TH1D("totalPredIsoTrackMuIsoSysDown_LL_MC","totalPredIsoTrackMuIsoSysDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecAccSysUp_LL_MC_ = new TH1D("totalPredIsoTrackElecAccSysUp_LL_MC","totalPredIsoTrackElecAccSysUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecAccSysDown_LL_MC_ = new TH1D("totalPredIsoTrackElecAccSysDown_LL_MC","totalPredIsoTrackElecAccSysDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIDSysUp_LL_MC_ = new TH1D("totalPredIsoTrackElecIDSysUp_LL_MC","totalPredIsoTrackElecIDSysUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIDSysDown_LL_MC_ = new TH1D("totalPredIsoTrackElecIDSysDown_LL_MC","totalPredIsoTrackElecIDSysDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIsoSysUp_LL_MC_ = new TH1D("totalPredIsoTrackElecIsoSysUp_LL_MC","totalPredIsoTrackElecIsoSysUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIsoSysDown_LL_MC_ = new TH1D("totalPredIsoTrackElecIsoSysDown_LL_MC","totalPredIsoTrackElecIsoSysDown_LL_MC", nBins, 0.5, nBins+0.5);	
 	totalPredMTWSysUp_LL_MC_ = new TH1D("totalPredMTWSysUp_LL_MC","totalPredMTWSysUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredMTWSysDown_LL_MC_ = new TH1D("totalPredMTWSysDown_LL_MC","totalPredMTWSysDown_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredPuritySysUp_LL_MC_ = new TH1D("totalPredPuritySysUp_LL_MC","totalPredPuritySysUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredPuritySysDown_LL_MC_ = new TH1D("totalPredPuritySysDown_LL_MC","totalPredPuritySysDown_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredSingleLepPuritySysUp_LL_MC_ = new TH1D("totalPredSingleLepPuritySysUp_LL_MC","totalPredSingleLepPuritySysUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredSingleLepPuritySysDown_LL_MC_ = new TH1D("totalPredSingleLepPuritySysDown_LL_MC","totalPredSingleLepPuritySysDown_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredDiLepFoundSysUp_LL_MC_ = new TH1D("totalPredDiLepFoundSysUp_LL_MC","totalPredDiLepFoundSysUp_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredDiLepFoundSysDown_LL_MC_ = new TH1D("totalPredDiLepFoundSysDown_LL_MC","totalPredDiLepFoundSysDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredDiLepSRSysUp_LL_MC_ = new TH1D("totalPredDiLepSRSysUp_LL_MC","totalPredDiLepSRSysUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredDiLepSRSysDown_LL_MC_ = new TH1D("totalPredDiLepSRSysDown_LL_MC","totalPredDiLepSRSysDown_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredMuIsoSysUp_LL_MC_ = new TH1D("totalPredMuIsoSysUp_LL_MC","totalPredMuIsoSysUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredMuIsoSysDown_LL_MC_ = new TH1D("totalPredMuIsoSysDown_LL_MC","totalPredMuIsoSysDown_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredMuRecoSysUp_LL_MC_ = new TH1D("totalPredMuRecoSysUp_LL_MC","totalPredMuRecoSysUp_LL_MC", nBins, 0.5, nBins+0.5);
@@ -1097,20 +1155,26 @@ void initHistograms(Int_t nBins){
 
 	totalPredIsoTrackStatUp_LL_MC_ = new TH1D("totalPredIsoTrackStatUp_LL_MC","totalPredIsoTrackStatUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredIsoTrackStatDown_LL_MC_ = new TH1D("totalPredIsoTrackStatDown_LL_MC","totalPredIsoTrackStatDown_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredMuIsoTrackStatUp_LL_MC_ = new TH1D("totalPredMuIsoTrackStatUp_LL_MC","totalPredMuIsoTrackStatUp_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredMuIsoTrackStatDown_LL_MC_ = new TH1D("totalPredMuIsoTrackStatDown_LL_MC","totalPredMuIsoTrackStatDown_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredElecIsoTrackStatUp_LL_MC_ = new TH1D("totalPredElecIsoTrackStatUp_LL_MC","totalPredElecIsoTrackStatUp_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredElecIsoTrackStatDown_LL_MC_ = new TH1D("totalPredElecIsoTrackStatDown_LL_MC","totalPredElecIsoTrackStatDown_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredPionIsoTrackStatUp_LL_MC_ = new TH1D("totalPredPionIsoTrackStatUp_LL_MC","totalPredPionIsoTrackStatUp_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredPionIsoTrackStatDown_LL_MC_ = new TH1D("totalPredPionIsoTrackStatDown_LL_MC","totalPredPionIsoTrackStatDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuAccStatUp_LL_MC_ = new TH1D("totalPredIsoTrackMuAccStatUp_LL_MC","totalPredIsoTrackMuAccStatUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuAccStatDown_LL_MC_ = new TH1D("totalPredIsoTrackMuAccStatDown_LL_MC","totalPredIsoTrackMuAccStatDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIDStatUp_LL_MC_ = new TH1D("totalPredIsoTrackMuIDStatUp_LL_MC","totalPredIsoTrackMuIDStatUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIDStatDown_LL_MC_ = new TH1D("totalPredIsoTrackMuIDStatDown_LL_MC","totalPredIsoTrackMuIDStatDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIsoStatUp_LL_MC_ = new TH1D("totalPredIsoTrackMuIsoStatUp_LL_MC","totalPredIsoTrackMuIsoStatUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackMuIsoStatDown_LL_MC_ = new TH1D("totalPredIsoTrackMuIsoStatDown_LL_MC","totalPredIsoTrackMuIsoStatDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecAccStatUp_LL_MC_ = new TH1D("totalPredIsoTrackElecAccStatUp_LL_MC","totalPredIsoTrackElecAccStatUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecAccStatDown_LL_MC_ = new TH1D("totalPredIsoTrackElecAccStatDown_LL_MC","totalPredIsoTrackElecAccStatDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIDStatUp_LL_MC_ = new TH1D("totalPredIsoTrackElecIDStatUp_LL_MC","totalPredIsoTrackElecIDStatUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIDStatDown_LL_MC_ = new TH1D("totalPredIsoTrackElecIDStatDown_LL_MC","totalPredIsoTrackElecIDStatDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIsoStatUp_LL_MC_ = new TH1D("totalPredIsoTrackElecIsoStatUp_LL_MC","totalPredIsoTrackElecIsoStatUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredIsoTrackElecIsoStatDown_LL_MC_ = new TH1D("totalPredIsoTrackElecIsoStatDown_LL_MC","totalPredIsoTrackElecIsoStatDown_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredMTWStatUp_LL_MC_ = new TH1D("totalPredMTWStatUp_LL_MC","totalPredMTWStatUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredMTWStatDown_LL_MC_ = new TH1D("totalPredMTWStatDown_LL_MC","totalPredMTWStatDown_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredPurityStatUp_LL_MC_ = new TH1D("totalPredPurityStatUp_LL_MC","totalPredPurityStatUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredPurityStatDown_LL_MC_ = new TH1D("totalPredPurityStatDown_LL_MC","totalPredPurityStatDown_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredSingleLepPurityStatUp_LL_MC_ = new TH1D("totalPredSingleLepPurityStatUp_LL_MC","totalPredSingleLepPurityStatUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredSingleLepPurityStatDown_LL_MC_ = new TH1D("totalPredSingleLepPurityStatDown_LL_MC","totalPredSingleLepPurityStatDown_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredDiLepFoundStatUp_LL_MC_ = new TH1D("totalPredDiLepFoundStatUp_LL_MC","totalPredDiLepFoundStatUp_LL_MC", nBins, 0.5, nBins+0.5);
-	totalPredDiLepFoundStatDown_LL_MC_ = new TH1D("totalPredDiLepFoundStatDown_LL_MC","totalPredDiLepFoundStatDown_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredDiLepSRStatUp_LL_MC_ = new TH1D("totalPredDiLepSRStatUp_LL_MC","totalPredDiLepSRStatUp_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPredDiLepSRStatDown_LL_MC_ = new TH1D("totalPredDiLepSRStatDown_LL_MC","totalPredDiLepSRStatDown_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredMuIsoStatUp_LL_MC_ = new TH1D("totalPredMuIsoStatUp_LL_MC","totalPredMuIsoStatUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredMuIsoStatDown_LL_MC_ = new TH1D("totalPredMuIsoStatDown_LL_MC","totalPredMuIsoStatDown_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredMuRecoStatUp_LL_MC_ = new TH1D("totalPredMuRecoStatUp_LL_MC","totalPredMuRecoStatUp_LL_MC", nBins, 0.5, nBins+0.5);

@@ -1,6 +1,7 @@
 #include <TChain.h>
 #include "TProofServ.h"
 #include "TProof.h"
+#include "Prediction_isoTrackFact.h"
 
 using std::vector;
 
@@ -41,7 +42,7 @@ void MakePrediction_Data()
     	Effchain->SetProof();     	
     }
 
-	Effchain->Process("Prediction.C++g", "Prediction_data.root");
+	Effchain->Process("Prediction_isoTrackFact.C++g", "Prediction_data.root");
 
     delete proof;
 }

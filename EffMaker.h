@@ -1,7 +1,7 @@
 #ifndef EffMaker_h
 #define EffMaker_h
 
-//#include <LLTools.h>
+#include <LLTools.h>
 #include <THEff.h>
 
 
@@ -27,6 +27,9 @@ using std::cout;
 using std::cerr;
 using std::endl;
 const bool doBtagProbabilities = true;
+
+// Do some additional plots, like composition of LL background, isotrack pT distribution...
+const bool doAdditionalPlots = true;
 
 // output control
 const bool saveEffToPDF_=true;
@@ -134,8 +137,15 @@ class EffMaker : public TSelector {
   TH1Eff *MuPuritySearchBins_;
   TH1Eff *ElecPuritySearchBins_;
 
-  TH1Eff *MuDiLepContributionSearchBins_;
-  TH1Eff *ElecDiLepContributionSearchBins_;
+  TH1Eff *MuDiLepCRSearchBins_;
+  TH1Eff *ElecDiLepCRSearchBins_;
+
+  TH1Eff *MuDiLepSRSearchBins_;
+  TH1Eff *ElecDiLepSRSearchBins_;
+
+  TH1Eff *MuDiLepSRwoVetoSearchBins_;
+  TH1Eff *ElecDiLepSRwoVetoSearchBins_;
+
 
   TH1Eff *MuIsoTrackVetoSearchBinsLowPt_;
   TH1Eff *ElecIsoTrackVetoSearchBinsLowPt_;
@@ -146,6 +156,128 @@ class EffMaker : public TSelector {
   TH1Eff *ElecIsoTrackVetoSearchBinsHighPt_;
   TH1Eff *PionIsoTrackVetoSearchBinsHighPt_;
   TH1Eff *IsoTrackVetoSearchBinsHighPt_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsAcc_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsAcc_;
+  TH1Eff *PionIsoTrackVetoSearchBinsAcc_;
+  TH1Eff *IsoTrackVetoSearchBinsAcc_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsIDIso_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsIDIso_;
+  TH1Eff *PionIsoTrackVetoSearchBinsIDIso_;
+  TH1Eff *IsoTrackVetoSearchBinsIDIso_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsID_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsID_;
+  TH1Eff *PionIsoTrackVetoSearchBinsID_;
+  TH1Eff *IsoTrackVetoSearchBinsID_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsIso_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsIso_;
+  TH1Eff *PionIsoTrackVetoSearchBinsIso_;
+  TH1Eff *IsoTrackVetoSearchBinsIso_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsMuAcc_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsMuAcc_;
+  TH1Eff *PionIsoTrackVetoSearchBinsMuAcc_;
+  TH1Eff *IsoTrackVetoSearchBinsMuAcc_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsMuIDIso_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsMuIDIso_;
+  TH1Eff *PionIsoTrackVetoSearchBinsMuIDIso_;
+  TH1Eff *IsoTrackVetoSearchBinsMuIDIso_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsMuID_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsMuID_;
+  TH1Eff *PionIsoTrackVetoSearchBinsMuID_;
+  TH1Eff *IsoTrackVetoSearchBinsMuID_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsMuIso_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsMuIso_;
+  TH1Eff *PionIsoTrackVetoSearchBinsMuIso_;
+  TH1Eff *IsoTrackVetoSearchBinsMuIso_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsElecAcc_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsElecAcc_;
+  TH1Eff *PionIsoTrackVetoSearchBinsElecAcc_;
+  TH1Eff *IsoTrackVetoSearchBinsElecAcc_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsElecIDIso_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsElecIDIso_;
+  TH1Eff *PionIsoTrackVetoSearchBinsElecIDIso_;
+  TH1Eff *IsoTrackVetoSearchBinsElecIDIso_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsElecID_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsElecID_;
+  TH1Eff *PionIsoTrackVetoSearchBinsElecID_;
+  TH1Eff *IsoTrackVetoSearchBinsElecID_;
+
+  TH1Eff *MuIsoTrackVetoSearchBinsElecIso_;
+  TH1Eff *ElecIsoTrackVetoSearchBinsElecIso_;
+  TH1Eff *PionIsoTrackVetoSearchBinsElecIso_;
+  TH1Eff *IsoTrackVetoSearchBinsElecIso_;
+
+
+  TH2Eff *MuIsoTrackVetoActivityPtMuIDIso_;
+  TH2Eff *ElecIsoTrackVetoActivityPtMuIDIso_;
+  TH2Eff *PionIsoTrackVetoActivityPtMuIDIso_;
+  TH2Eff *IsoTrackVetoActivityPtMuIDIso_;
+
+  TH2Eff *MuIsoTrackVetoActivityPtMuID_;
+  TH2Eff *ElecIsoTrackVetoActivityPtMuID_;
+  TH2Eff *PionIsoTrackVetoActivityPtMuID_;
+  TH2Eff *IsoTrackVetoActivityPtMuID_;
+
+  TH2Eff *MuIsoTrackVetoActivityPtMuIso_;
+  TH2Eff *ElecIsoTrackVetoActivityPtMuIso_;
+  TH2Eff *PionIsoTrackVetoActivityPtMuIso_;
+  TH2Eff *IsoTrackVetoActivityPtMuIso_;
+
+  TH2Eff *MuIsoTrackVetoActivityPtElecIDIso_;
+  TH2Eff *ElecIsoTrackVetoActivityPtElecIDIso_;
+  TH2Eff *PionIsoTrackVetoActivityPtElecIDIso_;
+  TH2Eff *IsoTrackVetoActivityPtElecIDIso_;
+
+  TH2Eff *MuIsoTrackVetoActivityPtElecID_;
+  TH2Eff *ElecIsoTrackVetoActivityPtElecID_;
+  TH2Eff *PionIsoTrackVetoActivityPtElecID_;
+  TH2Eff *IsoTrackVetoActivityPtElecID_;
+
+  TH2Eff *MuIsoTrackVetoActivityPtElecIso_;
+  TH2Eff *ElecIsoTrackVetoActivityPtElecIso_;
+  TH2Eff *PionIsoTrackVetoActivityPtElecIso_;
+  TH2Eff *IsoTrackVetoActivityPtElecIso_;
+
+
+  TH2Eff *MuIsoTrackVetoPtEtaMuIDIso_;
+  TH2Eff *ElecIsoTrackVetoPtEtaMuIDIso_;
+  TH2Eff *PionIsoTrackVetoPtEtaMuIDIso_;
+  TH2Eff *IsoTrackVetoPtEtaMuIDIso_;
+
+  TH2Eff *MuIsoTrackVetoPtEtaMuID_;
+  TH2Eff *ElecIsoTrackVetoPtEtaMuID_;
+  TH2Eff *PionIsoTrackVetoPtEtaMuID_;
+  TH2Eff *IsoTrackVetoPtEtaMuID_;
+
+  TH2Eff *MuIsoTrackVetoPtEtaMuIso_;
+  TH2Eff *ElecIsoTrackVetoPtEtaMuIso_;
+  TH2Eff *PionIsoTrackVetoPtEtaMuIso_;
+  TH2Eff *IsoTrackVetoPtEtaMuIso_;
+
+  TH2Eff *MuIsoTrackVetoPtEtaElecIDIso_;
+  TH2Eff *ElecIsoTrackVetoPtEtaElecIDIso_;
+  TH2Eff *PionIsoTrackVetoPtEtaElecIDIso_;
+  TH2Eff *IsoTrackVetoPtEtaElecIDIso_;
+
+  TH2Eff *MuIsoTrackVetoPtEtaElecID_;
+  TH2Eff *ElecIsoTrackVetoPtEtaElecID_;
+  TH2Eff *PionIsoTrackVetoPtEtaElecID_;
+  TH2Eff *IsoTrackVetoPtEtaElecID_;
+
+  TH2Eff *MuIsoTrackVetoPtEtaElecIso_;
+  TH2Eff *ElecIsoTrackVetoPtEtaElecIso_;
+  TH2Eff *PionIsoTrackVetoPtEtaElecIso_;
+  TH2Eff *IsoTrackVetoPtEtaElecIso_;
 
 
   //purity
@@ -504,24 +636,24 @@ class EffMaker : public TSelector {
   // di lep mtw cut applied
   // mu 
   //1D
-  TH1Eff *MuDiLepMTWBTag_;
-  TH1Eff *MuDiLepMTWNJets_;
-  TH1Eff *MuDiLepMTWHT_;
-  TH1Eff *MuDiLepMTWMHT_;
-  TH1Eff *MuDiLepMTWPT_;
-  TH1Eff *MuDiLepMTWActivity_;
-  TH2Eff *MuDiLepMTWNJetsBTags_;
+  TH1Eff *MuDiLepEffBTag_;
+  TH1Eff *MuDiLepEffNJets_;
+  TH1Eff *MuDiLepEffHT_;
+  TH1Eff *MuDiLepEffMHT_;
+  TH1Eff *MuDiLepEffPT_;
+  TH1Eff *MuDiLepEffActivity_;
+  TH2Eff *MuDiLepEffNJetsBTags_;
 
   
   // elec
   //1D
-  TH1Eff *ElecDiLepMTWBTag_;
-  TH1Eff *ElecDiLepMTWNJets_;
-  TH1Eff *ElecDiLepMTWHT_;
-  TH1Eff *ElecDiLepMTWMHT_;
-  TH1Eff *ElecDiLepMTWPT_;
-  TH1Eff *ElecDiLepMTWActivity_;
-  TH2Eff *ElecDiLepMTWNJetsBTags_;
+  TH1Eff *ElecDiLepEffBTag_;
+  TH1Eff *ElecDiLepEffNJets_;
+  TH1Eff *ElecDiLepEffHT_;
+  TH1Eff *ElecDiLepEffMHT_;
+  TH1Eff *ElecDiLepEffPT_;
+  TH1Eff *ElecDiLepEffActivity_;
+  TH2Eff *ElecDiLepEffNJetsBTags_;
 
   
   // mu 
@@ -551,21 +683,49 @@ class EffMaker : public TSelector {
   // di lep mtw cut applied
   // mu 
   //1D
-  TH1Eff *MuDiLepContributionMTWBTag_;
-  TH1Eff *MuDiLepContributionMTWNJets_;
-  TH1Eff *MuDiLepContributionMTWHT_;
-  TH1Eff *MuDiLepContributionMTWMHT_;
-  TH2Eff *MuDiLepContributionMTWMHTNJets_;
-  TH2Eff *MuDiLepContributionMTWNJetsBTags_;
+  TH1Eff *MuDiLepCRBTag_;
+  TH1Eff *MuDiLepCRNJets_;
+  TH1Eff *MuDiLepCRHT_;
+  TH1Eff *MuDiLepCRMHT_;
+  TH2Eff *MuDiLepCRMHTNJets_;
+  TH2Eff *MuDiLepCRNJetsBTags_;
   
   // elec
   //1D
-  TH1Eff *ElecDiLepContributionMTWBTag_;
-  TH1Eff *ElecDiLepContributionMTWNJets_;
-  TH1Eff *ElecDiLepContributionMTWHT_;
-  TH1Eff *ElecDiLepContributionMTWMHT_;
-  TH2Eff *ElecDiLepContributionMTWMHTNJets_;
-  TH2Eff *ElecDiLepContributionMTWNJetsBTags_;
+  TH1Eff *ElecDiLepCRBTag_;
+  TH1Eff *ElecDiLepCRNJets_;
+  TH1Eff *ElecDiLepCRHT_;
+  TH1Eff *ElecDiLepCRMHT_;
+  TH2Eff *ElecDiLepCRMHTNJets_;
+  TH2Eff *ElecDiLepCRNJetsBTags_;
+
+  TH1Eff *MuDiLepSRBTag_;
+  TH1Eff *MuDiLepSRNJets_;
+  TH1Eff *MuDiLepSRHT_;
+  TH1Eff *MuDiLepSRMHT_;
+  TH2Eff *MuDiLepSRMHTNJets_;
+  TH2Eff *MuDiLepSRNJetsBTags_;
+  
+  TH1Eff *ElecDiLepSRBTag_;
+  TH1Eff *ElecDiLepSRNJets_;
+  TH1Eff *ElecDiLepSRHT_;
+  TH1Eff *ElecDiLepSRMHT_;
+  TH2Eff *ElecDiLepSRMHTNJets_;
+  TH2Eff *ElecDiLepSRNJetsBTags_;
+
+  TH1Eff *MuDiLepSRwoVetoBTag_;
+  TH1Eff *MuDiLepSRwoVetoNJets_;
+  TH1Eff *MuDiLepSRwoVetoHT_;
+  TH1Eff *MuDiLepSRwoVetoMHT_;
+  TH2Eff *MuDiLepSRwoVetoMHTNJets_;
+  TH2Eff *MuDiLepSRwoVetoNJetsBTags_;
+  
+  TH1Eff *ElecDiLepSRwoVetoBTag_;
+  TH1Eff *ElecDiLepSRwoVetoNJets_;
+  TH1Eff *ElecDiLepSRwoVetoHT_;
+  TH1Eff *ElecDiLepSRwoVetoMHT_;
+  TH2Eff *ElecDiLepSRwoVetoMHTNJets_;
+  TH2Eff *ElecDiLepSRwoVetoNJetsBTags_;
   
 
   // single isolated track from mu or electron
@@ -688,6 +848,120 @@ class EffMaker : public TSelector {
   TH2Eff *PionIsoTrackReductionHTMHT_NJets6_;
   TH2Eff *PionIsoTrackReductionHTMHT_NJets78_;
   TH2Eff *PionIsoTrackReductionHTMHT_NJets9Inf_;
+
+
+  // Additional Plots
+  TH1D *MuIsoTrackVetoPtAcc_;
+  TH1D *ElecIsoTrackVetoPtAcc_;
+  TH1D *PionIsoTrackVetoPtAcc_;
+  TH1D *IsoTrackVetoPtAcc_;
+
+  TH1D *MuIsoTrackVetoPtIDIso_;
+  TH1D *ElecIsoTrackVetoPtIDIso_;
+  TH1D *PionIsoTrackVetoPtIDIso_;
+  TH1D *IsoTrackVetoPtIDIso_;
+
+  TH1D *MuIsoTrackVetoPtID_;
+  TH1D *ElecIsoTrackVetoPtID_;
+  TH1D *PionIsoTrackVetoPtID_;
+  TH1D *IsoTrackVetoPtID_;
+
+  TH1D *MuIsoTrackVetoPtIso_;
+  TH1D *ElecIsoTrackVetoPtIso_;
+  TH1D *PionIsoTrackVetoPtIso_;
+  TH1D *IsoTrackVetoPtIso_;
+
+  TH1D *MuIsoTrackVetoPtMuAcc_;
+  TH1D *ElecIsoTrackVetoPtMuAcc_;
+  TH1D *PionIsoTrackVetoPtMuAcc_;
+  TH1D *IsoTrackVetoPtMuAcc_;
+
+  TH1D *MuIsoTrackVetoPtMuIDIso_;
+  TH1D *ElecIsoTrackVetoPtMuIDIso_;
+  TH1D *PionIsoTrackVetoPtMuIDIso_;
+  TH1D *IsoTrackVetoPtMuIDIso_;
+
+  TH1D *MuIsoTrackVetoPtMuID_;
+  TH1D *ElecIsoTrackVetoPtMuID_;
+  TH1D *PionIsoTrackVetoPtMuID_;
+  TH1D *IsoTrackVetoPtMuID_;
+
+  TH1D *MuIsoTrackVetoPtMuIso_;
+  TH1D *ElecIsoTrackVetoPtMuIso_;
+  TH1D *PionIsoTrackVetoPtMuIso_;
+  TH1D *IsoTrackVetoPtMuIso_;
+
+  TH1D *MuIsoTrackVetoPtElecAcc_;
+  TH1D *ElecIsoTrackVetoPtElecAcc_;
+  TH1D *PionIsoTrackVetoPtElecAcc_;
+  TH1D *IsoTrackVetoPtElecAcc_;
+
+  TH1D *MuIsoTrackVetoPtElecIDIso_;
+  TH1D *ElecIsoTrackVetoPtElecIDIso_;
+  TH1D *PionIsoTrackVetoPtElecIDIso_;
+  TH1D *IsoTrackVetoPtElecIDIso_;
+
+  TH1D *MuIsoTrackVetoPtElecID_;
+  TH1D *ElecIsoTrackVetoPtElecID_;
+  TH1D *PionIsoTrackVetoPtElecID_;
+  TH1D *IsoTrackVetoPtElecID_;
+
+  TH1D *MuIsoTrackVetoPtElecIso_;
+  TH1D *ElecIsoTrackVetoPtElecIso_;
+  TH1D *PionIsoTrackVetoPtElecIso_;
+  TH1D *IsoTrackVetoPtElecIso_;
+
+  TH1D *MuAccFracHT_;
+  TH1D *MuRecoFracHT_;
+  TH1D *MuIsoFracHT_;
+  TH1D *MuAccWoVetoFracHT_;
+  TH1D *MuRecoWoVetoFracHT_;
+  TH1D *MuIsoWoVetoFracHT_;
+  TH1D *ElecAccFracHT_;
+  TH1D *ElecRecoFracHT_;
+  TH1D *ElecIsoFracHT_;
+  TH1D *ElecAccWoVetoFracHT_;
+  TH1D *ElecRecoWoVetoFracHT_;
+  TH1D *ElecIsoWoVetoFracHT_;
+
+  TH1D *MuAccFracMHT_;
+  TH1D *MuRecoFracMHT_;
+  TH1D *MuIsoFracMHT_;
+  TH1D *MuAccWoVetoFracMHT_;
+  TH1D *MuRecoWoVetoFracMHT_;
+  TH1D *MuIsoWoVetoFracMHT_;
+  TH1D *ElecAccFracMHT_;
+  TH1D *ElecRecoFracMHT_;
+  TH1D *ElecIsoFracMHT_;
+  TH1D *ElecAccWoVetoFracMHT_;
+  TH1D *ElecRecoWoVetoFracMHT_;
+  TH1D *ElecIsoWoVetoFracMHT_;
+
+  TH1D *MuAccFracNJets_;
+  TH1D *MuRecoFracNJets_;
+  TH1D *MuIsoFracNJets_;
+  TH1D *MuAccWoVetoFracNJets_;
+  TH1D *MuRecoWoVetoFracNJets_;
+  TH1D *MuIsoWoVetoFracNJets_;
+  TH1D *ElecAccFracNJets_;
+  TH1D *ElecRecoFracNJets_;
+  TH1D *ElecIsoFracNJets_;
+  TH1D *ElecAccWoVetoFracNJets_;
+  TH1D *ElecRecoWoVetoFracNJets_;
+  TH1D *ElecIsoWoVetoFracNJets_;
+
+  TH1D *MuAccFracBTags_;
+  TH1D *MuRecoFracBTags_;
+  TH1D *MuIsoFracBTags_;
+  TH1D *MuAccWoVetoFracBTags_;
+  TH1D *MuRecoWoVetoFracBTags_;
+  TH1D *MuIsoWoVetoFracBTags_;
+  TH1D *ElecAccFracBTags_;
+  TH1D *ElecRecoFracBTags_;
+  TH1D *ElecIsoFracBTags_;
+  TH1D *ElecAccWoVetoFracBTags_;
+  TH1D *ElecRecoWoVetoFracBTags_;
+  TH1D *ElecIsoWoVetoFracBTags_;
 
   // MHT/PTW PDFs
   // NJ X NB, merged HT bins
