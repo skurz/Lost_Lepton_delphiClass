@@ -33,8 +33,8 @@
 // useDeltaPhiCut = -1: inverted deltaPhiCut
 const int useDeltaPhiCut = 1;  //<-check------------------------
 
-const bool runOnData = true;  //<-check------------------------
-const bool runOnStandardModelMC = false;  //<-check------------------------
+const bool runOnData = false;  //<-check------------------------
+const bool runOnStandardModelMC = true;  //<-check------------------------
 const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims (bTag reweighting)
