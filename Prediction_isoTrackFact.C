@@ -1985,6 +1985,24 @@ bool Prediction_isoTrackFact::FiltersPass()
     if(Jets->at(j).Pt()>200 && Jets_muonEnergyFraction->at(j)>0.5 && (TVector2::Phi_mpi_pi(Jets->at(j).Phi()-METPhi)>(TMath::Pi()-0.4))){
       //std::cout<<"found bad muon jet"<<std::endl;
       result=false;
+      break;
+    }
+  }
+
+  //reject events with any jet pt>20, |eta|<2.5 NOT matched to a GenJet (w/in DeltaR<0.3) and chfrac < 0.1
+  if (runOnSignalMC)
+  for(unsigned j = 0; j < Jets->size(); ++j){
+    if(Jets->at(j).Pt() <= 20 || fabs(Jets->at(j).Eta())>=2.5) continue;
+    bool genMatched = false;
+    for(unsigned g = 0; g < GenJets->size(); ++g){
+      if(GenJets->at(g).DeltaR(Jets->at(j)) < 0.3) {
+         genMatched = true;
+         break;
+      }
+    }
+    if(!genMatched && Jets_chargedHadronEnergyFraction->at(j) < 0.1){
+      result = false;
+      break;
     }
   }
 

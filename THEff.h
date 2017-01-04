@@ -146,12 +146,12 @@ effVec TH1Eff::GetEff(double xValue, bool asymm)
   	double errUp_ = 0;
   	double errDown_ = 0;  	
 
-  	if(xValue < RatioTH1D_->GetXaxis()->GetXmin()){
+  	if(xValue <= RatioTH1D_->GetXaxis()->GetXmin()){
 	    //std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<RatioTH1D_->GetName()<<std::endl;
 	    xValue= RatioTH1D_->GetXaxis()->GetXmin()+0.01;
 	    //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
 	}
-	else if(xValue > RatioTH1D_->GetXaxis()->GetXmax()){
+	else if(xValue >= RatioTH1D_->GetXaxis()->GetXmax()){
 	    //std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<RatioTH1D_->GetName()<<" which is: "<<RatioTH1D_->GetXaxis()->GetXmax();
 	    xValue= RatioTH1D_->GetXaxis()->GetXmax()-0.01;
 	    //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
@@ -160,7 +160,7 @@ effVec TH1Eff::GetEff(double xValue, bool asymm)
 	int nxBin = RatioTH1D_->GetXaxis()->FindBin(xValue);
 
 	if(nxBin > RatioTH1D_->GetNbinsX()){
-		std::cout <<"Problem getting Efficiencies!"<<std::endl;
+		std::cout << RatioTH1D_->GetName() << " (" << nxBin <<"): Problem getting Efficiencies!"<<std::endl;
 		nxBin = RatioTH1D_->GetNbinsX();
 	}
 
@@ -375,26 +375,26 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   double errUpAsymm_ = 0;
   double errDownAsymm_ = 0;
 
-  if(xValue < RatioTH2D_->GetXaxis()->GetXmin() )
+  if(xValue <= RatioTH2D_->GetXaxis()->GetXmin() )
   {
     //std::cout<<"Warning xValue: "<<xValue<<" is smaller than minimum of histo: "<<RatioTH2D_->GetName()<<std::endl;
     xValue= RatioTH2D_->GetXaxis()->GetXmin()+0.01;
     //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
   }
-  else if(xValue > RatioTH2D_->GetXaxis()->GetXmax() )
+  else if(xValue >= RatioTH2D_->GetXaxis()->GetXmax() )
   {
     //std::cout<<"Warning xValue: "<<xValue<<" is bigger than maximum of histo: "<<RatioTH2D_->GetName()<<" which is: "<<RatioTH2D_->GetXaxis()->GetXmax()<<std::endl;
     xValue= RatioTH2D_->GetXaxis()->GetXmax()-0.01;
     //std::cout<<" Setting xValue to: "<<xValue<<std::endl;
   }
   
-  if(yValue < RatioTH2D_->GetYaxis()->GetXmin() )
+  if(yValue <= RatioTH2D_->GetYaxis()->GetXmin() )
   {
     //std::cout<<"Warning yValue: "<<yValue<<" is smaller than minimum of histo: "<<RatioTH2D_->GetName()<<std::endl;
     yValue= RatioTH2D_->GetYaxis()->GetXmin()+0.01;
     //std::cout<<" Setting yValue to: "<<yValue<<std::endl;
   }
-  else if(yValue > RatioTH2D_->GetYaxis()->GetXmax() )
+  else if(yValue >= RatioTH2D_->GetYaxis()->GetXmax() )
   {
     //std::cout<<"Warning yValue: "<<yValue<<" is bigger than maximum of histo: "<<RatioTH2D_->GetName()<<std::endl;
     yValue= RatioTH2D_->GetYaxis()->GetXmax()-0.01;
@@ -404,7 +404,7 @@ effVec TH2Eff::GetEff(double xValue, double yValue, bool asymm)
   int nxBin = RatioTH2D_->GetXaxis()->FindBin(xValue);
   int nyBin = RatioTH2D_->GetYaxis()->FindBin(yValue);
 
-  if(nxBin > RatioTH2D_->GetNbinsX() || nyBin > RatioTH2D_->GetNbinsY()) std::cout<<"Problem in getting Efficiencies!"<<std::endl;
+  if(nxBin > RatioTH2D_->GetNbinsX() || nyBin > RatioTH2D_->GetNbinsY()) std::cout << RatioTH2D_->GetName() << " (" << nxBin << ";" << nyBin <<"): Problem in getting Efficiencies!"<<std::endl;
   if(nxBin > RatioTH2D_->GetNbinsX()) nxBin = RatioTH2D_->GetNbinsX();
   if(nyBin > RatioTH2D_->GetNbinsY()) nyBin = RatioTH2D_->GetNbinsY();
 

@@ -37,7 +37,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
 
   char tempname[200];
   // Open root file
-  sprintf(tempname,"LLPrediction.root");
+  sprintf(tempname,"LLPrediction_onethird.root");
 
   // true: do closure test (MC prediction vs MC truth)
   // false: do data driven prediction and compare to MC truth

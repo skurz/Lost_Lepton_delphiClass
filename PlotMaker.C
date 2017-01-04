@@ -6,9 +6,9 @@ using std::string;
 void initHistograms(Int_t nBins);
 void saveHistograms(TFile* tf, bool combinedUnc = false);
 
-void PlotMaker(string InputPath_Expectation="Expectation.root",
+void PlotMaker(string InputPath_Expectation="Expectation_onethird.root",
 	string InputPath_Efficiencies="Efficiencies.root",
-	string InputPath_Prediction="Prediction.root",
+	string InputPath_Prediction="Prediction_onethird.root",
 	string InputPath_Prediction_Data="Prediction_data.root", // Use same path as above if pure MC prediction wanted
 	string OutputPath_Prediction="LLPrediction.root"){
 	
@@ -23,7 +23,7 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 	const bool doBtagProbabilities = true;
 
 	// Fill MC histograms only (saves time)
-	const bool doMConly = false;
+	const bool doMConly = true;
 
 	// Prepare Code for Extrapolation Method
 	const bool doExtrapolation = false;		// NOT IMPLEMENTED

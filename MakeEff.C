@@ -14,5 +14,5 @@ void MakeEff(std::string ExpFile="Expectation.root", std::string EffFile="Effici
 {
   TChain *Effchain = new TChain("LostLeptonExpectation");
   Effchain->Add(ExpFile.c_str());
-  Effchain->Process("EffMaker.C+", EffFile.c_str()); //specify output path/file here // folder already has to exist for the time being...
+  Effchain->Process("EffMaker.C+", EffFile.c_str());
 }

@@ -619,6 +619,7 @@ class Prediction_isoTrackFact : public TSelector {
   Double_t        HT;
   Double_t        GenHT;
   Double_t        GenMHT;
+  std::vector<TLorentzVector> *GenJets=0;
   Int_t           isoElectronTracksNum;
   Int_t           isoMuonTracksNum;
   Int_t           isoPionTracksNum;
@@ -627,6 +628,7 @@ class Prediction_isoTrackFact : public TSelector {
   std::vector<double>     *Jets_muonEnergyFraction=0;
   std::vector<double>     *Jets_bDiscriminatorCSV=0;
   std::vector<int>     *Jets_hadronFlavor=0;
+  std::vector<int>     *Jets_chargedHadronEnergyFraction=0;
   std::vector<bool>    *Jets_HTMask=0;
   Double_t        METPhi;
   Double_t        MET;
@@ -686,6 +688,7 @@ class Prediction_isoTrackFact : public TSelector {
   TBranch        *b_HT=0;   //!
   TBranch        *b_GenHT=0;   //!
   TBranch        *b_GenMHT=0;   //!
+  TBranch        *b_GenJets=0;   //!
   TBranch        *b_isoElectronTracksNum=0;   //!
   TBranch        *b_isoMuonTracksNum=0;   //!
   TBranch        *b_isoPionTracksNum=0;   //!
@@ -694,6 +697,7 @@ class Prediction_isoTrackFact : public TSelector {
   TBranch        *b_Jets_muonEnergyFraction=0;   //!
   TBranch        *b_Jets_bDiscriminatorCSV=0;   //!
   TBranch        *b_Jets_hadronFlavor=0;   //!
+  TBranch        *b_Jets_chargedHadronEnergyFraction=0;   //!
   TBranch        *b_Jets_HTMask=0;   //!
   TBranch        *b_METPhi=0;   //!
   TBranch        *b_MET=0;   //!
@@ -1061,6 +1065,8 @@ void Prediction_isoTrackFact::Init(TTree *tree)
     fChain->SetBranchStatus("SusyLSPMass", 1);
     fChain->SetBranchStatus("SusyMotherMass", 1);
     fChain->SetBranchStatus("NJetsISR", 1);
+    fChain->SetBranchStatus("GenJets", 1);
+    fChain->SetBranchStatus("Jets_chargedHadronEnergyFraction", 1);
   }
 
   //if(useGenHTMHT){
@@ -1138,6 +1144,8 @@ void Prediction_isoTrackFact::Init(TTree *tree)
     fChain->SetBranchAddress("SusyLSPMass", &SusyLSPMass, &b_SusyLSPMass);
     fChain->SetBranchAddress("SusyMotherMass", &SusyMotherMass, &b_SusyMotherMass);
     fChain->SetBranchAddress("NJetsISR", &NJetsISR, &b_NJetsISR);
+    fChain->SetBranchAddress("GenJets", &GenJets, &b_GenJets);
+    fChain->SetBranchAddress("Jets_chargedHadronEnergyFraction", &Jets_chargedHadronEnergyFraction, &b_Jets_chargedHadronEnergyFraction);
   }
 
   //if(useGenHTMHT){
