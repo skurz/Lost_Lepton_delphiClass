@@ -37,7 +37,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
 
   char tempname[200];
   // Open root file
-  sprintf(tempname,"LLPrediction_onethird.root");
+  sprintf(tempname,"LLPrediction.root");
 
   // true: do closure test (MC prediction vs MC truth)
   // false: do data driven prediction and compare to MC truth
@@ -110,7 +110,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   //
   Float_t legendX1 = .655; //.50;
   Float_t legendX2 = .955; //.70;
-  Float_t legendY1 = .53; //.65;
+  Float_t legendY1 = .58; //.65;
   Float_t legendY2 = .78;
 
   TLegend* catLeg1 = new TLegend(legendX1,legendY1,legendX2,legendY2);
@@ -539,7 +539,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   catLeg1->SetHeader(tempname);
   //sprintf(tempname,"#tau_{hadronic} BG expectation (MC truth)");
   sprintf(tempname,"Direct from simulation");
-  catLeg1->AddEntry(GenHist,tempname,"p");
+  catLeg1->AddEntry(GenHist,tempname,"pe");
   //sprintf(tempname,"Prediction from MC");
   if(doDataVsMC) sprintf(tempname,"Prediction from data");
   else sprintf(tempname,"Treat simulation like data");
