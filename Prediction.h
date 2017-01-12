@@ -56,7 +56,7 @@ const bool fillEventSeperateBTags = false;
 const TString path_puHist("PU/PileupHistograms_0721_63mb_pm5.root");
 // bTag corrections
 const string path_bTagCalib("btag/CSVv2_ichep.csv");
-const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
+const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_14_07_2016.csv");
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // ISR corrections: NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond! Just uncomment in Prediction::Init(Tree*) of this file
 const TString path_ISRcorr("isr_corrections/ISRWeights.root");
