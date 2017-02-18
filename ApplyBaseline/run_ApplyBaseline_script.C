@@ -6,6 +6,8 @@
 #include <iostream>
 #include <fstream>
 #include "TROOT.h"
+#include "TSystem.h"
+#include "TEnv.h"
 
 using std::vector;
 
@@ -24,9 +26,12 @@ using std::vector;
 
 void run_ApplyBaseline_script(std::string outName, std::string inFiles)
 {
-  TProof *proof = TProof::Open("lite://", "workers=20"); //"pod://"  "workers=10"
+  gEnv->SetValue("ProofLite.Sandbox", "/nfs/dust/cms/user/kurzsimo/.proof/");
+
+  TProof *proof = TProof::Open("lite://", "workers=5"); //"pod://"  "workers=10"
   //TProof *proof = TProof::Open("pod://"); //"pod://"  "workers=10"
 
+  // Fast merging
   proof->SetParameter("PROOF_UseMergers", (Int_t)0);
  
   gSystem->Load("libPhysics.so");
@@ -35,8 +40,8 @@ void run_ApplyBaseline_script(std::string outName, std::string inFiles)
 
   Effchain->SetProof();
 
-  Effchain->Add(TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v11/")+TString(inFiles));
+  Effchain->Add(TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v12/")+TString(inFiles));
  
-  Effchain->Process("ApplyBaseline.C++g", TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v11_baseline/")+TString(outName)+TString(".root"));
+  Effchain->Process("ApplyBaseline.C++g", TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v12_baseline/")+TString(outName)+TString(".root"));
 
 }

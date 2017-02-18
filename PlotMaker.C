@@ -4,13 +4,13 @@
 using std::string;
 
 void initHistograms(Int_t nBins);
-void saveHistograms(TFile* tf, bool combinedUnc = false);
+void saveHistograms(TFile* tf, bool combinedUnc = false, bool addCont = false);
 
-void PlotMaker(string InputPath_Expectation="Expectation_onethird.root",
+void PlotMaker(string InputPath_Expectation="Expectation.root",
 	string InputPath_Efficiencies="Efficiencies.root",
-	string InputPath_Prediction="Prediction_onethird.root",
+	string InputPath_Prediction="Prediction_SF.root",
 	string InputPath_Prediction_Data="Prediction_data.root", // Use same path as above if pure MC prediction wanted
-	string OutputPath_Prediction="LLPrediction.root"){
+	string OutputPath_Prediction="LLPrediction_SF.root"){
 	
 	gSystem->Load("libPhysics.so");
 	gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");
@@ -23,16 +23,19 @@ void PlotMaker(string InputPath_Expectation="Expectation_onethird.root",
 	const bool doBtagProbabilities = true;
 
 	// Fill MC histograms only (saves time)
-	const bool doMConly = true;
+	const bool doMConly = false;
 
 	// Prepare Code for Extrapolation Method
 	const bool doExtrapolation = false;		// NOT IMPLEMENTED
+
+	// Do some additional Plots for x-checks
+	const bool doAdditionalPlots = true;
 
 	// If you want to compare MC to MC set this to true. E.g. prediction with and without signal contamination
 	const bool useMCForDataTree = false;	// NOT IMPLEMENTED
 
 	// Scale all MC weights by this factor
-	const Double_t scaleFactorWeight = 36348.540;  // 3998 2585 813  //in units of [pb] //<-check------------------------
+	const Double_t scaleFactorWeight = 35862.351;  // 3998 2585 813  //in units of [pb] //<-check------------------------
 
 	// Add some of the uncertainties in quadrature (if same correlation and similar shape)
 	const bool doCombinedUnc = false;
@@ -155,10 +158,36 @@ void PlotMaker(string InputPath_Expectation="Expectation_onethird.root",
 				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReduced*scaleFactorWeightBtagProb/2);
 				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb/2);
 				avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeightDiLepIsoTrackReduced/Weight/2), Weight);
+
+				if(MuonsNum==1){
+					totalPred_LL_Mu_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+				}else{
+					totalPred_LL_Elec_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+				}
 			}else{
 				totalPred_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
 				totalPred_woIsoTrack_LL_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb/2);
 				avgWeight_LL_MC_->Fill(Bin_bTags.at(i), abs(totalWeight_BTags->at(i)/Weight/2), abs(Weight* bTagProb->at(i)));
+
+				if(MuonsNum==1){
+					totalPred_LL_Mu_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_Mu_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_HT_Mu_MC_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_MHT_Mu_MC_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_MET_Mu_MC_->Fill(MET, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_NJets_Mu_MC_->Fill(NJets, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_NBTags_Mu_MC_->Fill(i, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_LepPt_Mu_MC_->Fill(Muons->at(0).Pt(), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+				}else{
+					totalPred_LL_Elec_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_Elec_MC_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_HT_Elec_MC_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_MHT_Elec_MC_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_MET_Elec_MC_->Fill(MET, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_NJets_Elec_MC_->Fill(NJets, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_NBTags_Elec_MC_->Fill(i, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+					totalCS_LL_LepPt_Elec_MC_->Fill(Electrons->at(0).Pt(), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+				}
 			}
 
 			totalCS_LL_MC_->Fill(Bin_bTags.at(i), scaledWeight);
@@ -287,6 +316,26 @@ void PlotMaker(string InputPath_Expectation="Expectation_onethird.root",
 		    totalPred_LL_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData/2);
 		    avgWeight_LL_->Fill(SearchBin, abs(totalWeightDiLepIsoTrackReduced/Weight/2), Weight);
 
+			if(MuonsNum==1){
+				totalPred_LL_Mu_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_Mu_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_HT_Mu_->Fill(HT, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_MHT_Mu_->Fill(MHT, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_MET_Mu_->Fill(MET, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_NJets_Mu_->Fill(NJets, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_NBTags_Mu_->Fill(BTags < 3 ? BTags : 3, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_LepPt_Mu_->Fill(Muons->at(0).Pt(), totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+			}else{
+				totalPred_LL_Elec_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_Elec_->Fill(SearchBin, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_HT_Elec_->Fill(HT, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_MHT_Elec_->Fill(MHT, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_MET_Elec_->Fill(MET, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_NJets_Elec_->Fill(NJets, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_NBTags_Elec_->Fill(BTags < 3 ? BTags : 3, totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+				totalCS_LL_LepPt_Elec_->Fill(Electrons->at(0).Pt(), totalWeightDiLepIsoTrackReduced*scaleFactorWeightData);
+			}
+
 		    totalCS_LL_->Fill(SearchBin, scaledWeight);
 		    nEvtsCS_LL_->Fill(SearchBin);
 
@@ -381,7 +430,7 @@ void PlotMaker(string InputPath_Expectation="Expectation_onethird.root",
 
 
 	TFile *LLoutputFile = new TFile(OutputPath_Prediction.c_str(),"RECREATE");
-	saveHistograms(LLoutputFile, doCombinedUnc);
+	saveHistograms(LLoutputFile, doCombinedUnc, doAdditionalPlots);
 	LLoutputFile->Close();
 
 
@@ -389,7 +438,7 @@ void PlotMaker(string InputPath_Expectation="Expectation_onethird.root",
 
 
 
-void saveHistograms(TFile* tf, bool combinedUnc){
+void saveHistograms(TFile* tf, bool combinedUnc, bool addCont){
 	tf->cd();
 	tf->mkdir("Closure");
 	TDirectory *dClosure = (TDirectory*)tf->Get("Closure");
@@ -998,6 +1047,114 @@ void saveHistograms(TFile* tf, bool combinedUnc){
 	SaveFraction(totalPropSysDown_LL_MC_, totalPred_LL_MC_, dAdd);
 	SaveFraction(totalPropSysUp_LL_, totalPred_LL_, dAdd);
 	SaveFraction(totalPropSysDown_LL_, totalPred_LL_, dAdd);
+
+	if(addCont){
+		tf->cd();
+		tf->mkdir("AdditionalPlots");
+		TDirectory *dAddPlots = (TDirectory*)tf->Get("AdditionalPlots");
+		dAddPlots->cd();
+/*
+		SetBinLabel(totalPred_LL_Mu_MC_);
+		totalPred_LL_Mu_MC_->Write();
+		SetBinLabel(totalPred_LL_Elec_MC_);
+		totalPred_LL_Elec_MC_->Write();
+
+		SetBinLabel(totalPred_LL_Mu_);
+		totalPred_LL_Mu_->Write();
+		SetBinLabel(totalPred_LL_Elec_);
+		totalPred_LL_Elec_->Write();
+*/
+		SetBinLabel(totalCS_LL_Mu_MC_);
+		totalCS_LL_Mu_MC_->Write();
+		totalCS_LL_HT_Mu_MC_->Write();
+		totalCS_LL_MHT_Mu_MC_->Write();
+		totalCS_LL_MET_Mu_MC_->Write();
+		totalCS_LL_NJets_Mu_MC_->Write();
+		totalCS_LL_NBTags_Mu_MC_->Write();
+		totalCS_LL_LepPt_Mu_MC_->Write();
+		
+		SetBinLabel(totalCS_LL_Elec_MC_);
+		totalCS_LL_Elec_MC_->Write();
+		totalCS_LL_HT_Elec_MC_->Write();
+		totalCS_LL_MHT_Elec_MC_->Write();
+		totalCS_LL_MET_Elec_MC_->Write();
+		totalCS_LL_NJets_Elec_MC_->Write();
+		totalCS_LL_NBTags_Elec_MC_->Write();
+		totalCS_LL_LepPt_Elec_MC_->Write();
+
+		SetBinLabel(totalCS_LL_Mu_);
+		totalCS_LL_Mu_->Write();
+		totalCS_LL_HT_Mu_->Write();
+		totalCS_LL_MHT_Mu_->Write();
+		totalCS_LL_MET_Mu_->Write();
+		totalCS_LL_NJets_Mu_->Write();
+		totalCS_LL_NBTags_Mu_->Write();
+		totalCS_LL_LepPt_Mu_->Write();
+		
+		SetBinLabel(totalCS_LL_Elec_);
+		totalCS_LL_Elec_->Write();
+		totalCS_LL_HT_Elec_->Write();
+		totalCS_LL_MHT_Elec_->Write();
+		totalCS_LL_MET_Elec_->Write();
+		totalCS_LL_NJets_Elec_->Write();
+		totalCS_LL_NBTags_Elec_->Write();
+		totalCS_LL_LepPt_Elec_->Write();
+
+		dAddPlots->mkdir("DoubleRatio");
+		TDirectory *dAddPlots2 = (TDirectory*)dAddPlots->Get("DoubleRatio");
+		dAddPlots2->cd();
+
+		TH1D* totalCS_DR_SB = new TH1D("totalCS_DR_SB", "totalCS_DR_SB", totalCS_LL_Mu_MC_->GetNbinsX(), 0.5, totalCS_LL_Mu_MC_->GetNbinsX()+0.5);
+		TH1D* totalCS_DR_HT = new TH1D("totalCS_DR_HT", "totalCS_DR_HT", 22, 250, 3000);
+		TH1D* totalCS_DR_MHT = new TH1D("totalCS_DR_MHT", "totalCS_DR_MHT", 20, 250, 1500);
+		TH1D* totalCS_DR_MET = new TH1D("totalCS_DR_MET", "totalCS_DR_MET", 22, 125, 1500);
+		TH1D* totalCS_DR_NJets = new TH1D("totalCS_DR_NJets", "totalCS_DR_NJets", 9, 1.5, 10.5);
+		TH1D* totalCS_DR_NBTags = new TH1D("totalCS_DR_NBTags", "totalCS_DR_NBTags", 3, -0.5, 2.5);
+		TH1D* totalCS_DR_LepPt = new TH1D("totalCS_DR_LepPt", "totalCS_DR_LepPt", 25, 0, 500);
+
+		totalCS_LL_Mu_->Divide(totalCS_LL_Mu_MC_);
+		totalCS_LL_Elec_->Divide(totalCS_LL_Elec_MC_);
+		totalCS_DR_SB->Divide(totalCS_LL_Mu_, totalCS_LL_Elec_);
+		SetBinLabel(totalCS_DR_SB);
+		totalCS_DR_SB->GetYaxis()->SetRangeUser(0., 2.);
+		totalCS_DR_SB->Write();
+
+		totalCS_LL_HT_Mu_->Divide(totalCS_LL_HT_Mu_MC_);
+		totalCS_LL_HT_Elec_->Divide(totalCS_LL_HT_Elec_MC_);
+		totalCS_DR_HT->Divide(totalCS_LL_HT_Mu_, totalCS_LL_HT_Elec_);
+		totalCS_DR_HT->GetYaxis()->SetRangeUser(0., 2.);
+		totalCS_DR_HT->Write();
+
+		totalCS_LL_MHT_Mu_->Divide(totalCS_LL_MHT_Mu_MC_);
+		totalCS_LL_MHT_Elec_->Divide(totalCS_LL_MHT_Elec_MC_);
+		totalCS_DR_MHT->Divide(totalCS_LL_MHT_Mu_, totalCS_LL_MHT_Elec_);
+		totalCS_DR_MHT->GetYaxis()->SetRangeUser(0., 2.);
+		totalCS_DR_MHT->Write();
+
+		totalCS_LL_MET_Mu_->Divide(totalCS_LL_MET_Mu_MC_);
+		totalCS_LL_MET_Elec_->Divide(totalCS_LL_MET_Elec_MC_);
+		totalCS_DR_MET->Divide(totalCS_LL_MET_Mu_, totalCS_LL_MET_Elec_);
+		totalCS_DR_MET->GetYaxis()->SetRangeUser(0., 2.);
+		totalCS_DR_MET->Write();
+
+		totalCS_LL_NJets_Mu_->Divide(totalCS_LL_NJets_Mu_MC_);
+		totalCS_LL_NJets_Elec_->Divide(totalCS_LL_NJets_Elec_MC_);
+		totalCS_DR_NJets->Divide(totalCS_LL_NJets_Mu_, totalCS_LL_NJets_Elec_);
+		totalCS_DR_NJets->GetYaxis()->SetRangeUser(0., 2.);
+		totalCS_DR_NJets->Write();
+
+		totalCS_LL_NBTags_Mu_->Divide(totalCS_LL_NBTags_Mu_MC_);
+		totalCS_LL_NBTags_Elec_->Divide(totalCS_LL_NBTags_Elec_MC_);
+		totalCS_DR_NBTags->Divide(totalCS_LL_NBTags_Mu_, totalCS_LL_NBTags_Elec_);
+		totalCS_DR_NBTags->GetYaxis()->SetRangeUser(0., 2.);
+		totalCS_DR_NBTags->Write();
+
+		totalCS_LL_LepPt_Mu_->Divide(totalCS_LL_LepPt_Mu_MC_);
+		totalCS_LL_LepPt_Elec_->Divide(totalCS_LL_LepPt_Elec_MC_);
+		totalCS_DR_LepPt->Divide(totalCS_LL_LepPt_Mu_, totalCS_LL_LepPt_Elec_);
+		totalCS_DR_LepPt->GetYaxis()->SetRangeUser(0., 2.);
+		totalCS_DR_LepPt->Write();
+	}
 }
 
 void initHistograms(Int_t nBins){
@@ -1008,12 +1165,16 @@ void initHistograms(Int_t nBins){
   	nEvtsExp_LL_ = new TH1D("nEvtsExp_LL","nEvtsExp_LL", nBins, 0.5, nBins+0.5);
 
  	totalPred_LL_ = new TH1D("totalPred_LL","totalPred_LL", nBins, 0.5, nBins+0.5);
+ 	totalPred_LL_Mu_ = new TH1D("totalPred_LL_Mu","totalPred_LL_Mu", nBins, 0.5, nBins+0.5);
+ 	totalPred_LL_Elec_ = new TH1D("totalPred_LL_Elec","totalPred_LL_Elec", nBins, 0.5, nBins+0.5);
  	totalPredControlStat_LL_ = new TH1D("totalPredControlStat_LL","totalPredControlStat_LL", nBins, 0.5, nBins+0.5);
  	totalCS_LL_ = new TH1D("totalCS_LL","totalCS_LL", nBins, 0.5, nBins+0.5);
 	nEvtsCS_LL_ = new TH1D("nEvtsCS_LL","nEvtsCS_LL", nBins, 0.5, nBins+0.5);
 	avgWeight_LL_ = new TProfile("avgWeight_LL","avgWeight_LL", nBins, 0.5, nBins+0.5);
 
 	totalPred_LL_MC_ = new TH1D("totalPred_LL_MC","totalPred_LL_MC", nBins, 0.5, nBins+0.5);
+	totalPred_LL_Mu_MC_ = new TH1D("totalPred_LL_Mu_MC","totalPred_LL_Mu_MC", nBins, 0.5, nBins+0.5);
+	totalPred_LL_Elec_MC_ = new TH1D("totalPred_LL_Elec_MC","totalPred_LL_Elec_MC", nBins, 0.5, nBins+0.5);
 	totalPredControlStat_LL_MC_ = new TH1D("totalPredControlStat_LL_MC","totalPredControlStat_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPred_woIsoTrack_LL_MC_ = new TH1D("totalPred_woIsoTrack_LL_MC","totalPred_woIsoTrack_LL_MC", nBins, 0.5, nBins+0.5);
  	totalCS_LL_MC_ = new TH1D("totalCS_LL_MC","totalCS_LL_MC", nBins, 0.5, nBins+0.5);
@@ -1203,4 +1364,39 @@ void initHistograms(Int_t nBins){
 	totalPredLepAccSysDown_LL_MC_ = new TH1D("totalPredLepAccSysDown_LL_MC", "totalPredLepAccSysDown_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredLepAccQsquareSysUp_LL_MC_ = new TH1D("totalPredLepAccQsquareSysUp_LL_MC", "totalPredLepAccQsquareSysUp_LL_MC", nBins, 0.5, nBins+0.5);
 	totalPredLepAccQsquareSysDown_LL_MC_ = new TH1D("totalPredLepAccQsquareSysDown_LL_MC", "totalPredLepAccQsquareSysDown_LL_MC", nBins, 0.5, nBins+0.5);
+
+	totalCS_LL_Mu_ = new TH1D("totalCS_LL_Mu","totalCS_LL_Mu", nBins, 0.5, nBins+0.5);
+	totalCS_LL_Elec_ = new TH1D("totalCS_LL_Elec","totalCS_LL_Elec", nBins, 0.5, nBins+0.5);
+	totalCS_LL_Mu_MC_ = new TH1D("totalCS_LL_Mu_MC","totalCS_LL_Mu_MC", nBins, 0.5, nBins+0.5);
+	totalCS_LL_Elec_MC_ = new TH1D("totalCS_LL_Elec_MC","totalCS_LL_Elec_MC", nBins, 0.5, nBins+0.5);
+
+	totalCS_LL_HT_Mu_ = new TH1D("totalCS_LL_HT_Mu","totalCS_LL_HT_Mu", 22, 250, 3000);
+	totalCS_LL_HT_Elec_ = new TH1D("totalCS_LL_HT_Elec","totalCS_LL_HT_Elec", 22, 250, 3000);
+	totalCS_LL_HT_Mu_MC_ = new TH1D("totalCS_LL_HT_Mu_MC","totalCS_LL_HT_Mu_MC", 22, 250, 3000);
+	totalCS_LL_HT_Elec_MC_ = new TH1D("totalCS_LL_HT_Elec_MC","totalCS_LL_HT_Elec_MC", 22, 250, 3000);
+
+	totalCS_LL_MHT_Mu_ = new TH1D("totalCS_LL_MHT_Mu","totalCS_LL_MHT_Mu", 20, 250, 1500);
+	totalCS_LL_MHT_Elec_ = new TH1D("totalCS_LL_MHT_Elec","totalCS_LL_MHT_Elec", 20, 250, 1500);
+	totalCS_LL_MHT_Mu_MC_ = new TH1D("totalCS_LL_MHT_Mu_MC","totalCS_LL_MHT_Mu_MC", 20, 250, 1500);
+	totalCS_LL_MHT_Elec_MC_ = new TH1D("totalCS_LL_MHT_Elec_MC","totalCS_LL_MHT_Elec_MC", 20, 250, 1500);
+
+	totalCS_LL_MET_Mu_ = new TH1D("totalCS_LL_MET_Mu","totalCS_LL_MET_Mu", 22, 125, 1500);
+	totalCS_LL_MET_Elec_ = new TH1D("totalCS_LL_MET_Elec","totalCS_LL_MET_Elec", 22, 125, 1500);
+	totalCS_LL_MET_Mu_MC_ = new TH1D("totalCS_LL_MET_Mu_MC","totalCS_LL_MET_Mu_MC", 22, 125, 1500);
+	totalCS_LL_MET_Elec_MC_ = new TH1D("totalCS_LL_MET_Elec_MC","totalCS_LL_MET_Elec_MC", 22, 125, 1500);
+
+	totalCS_LL_NJets_Mu_ = new TH1D("totalCS_LL_NJets_Mu","totalCS_LL_NJets_Mu", 9, 1.5, 10.5);
+	totalCS_LL_NJets_Elec_ = new TH1D("totalCS_LL_NJets_Elec","totalCS_LL_NJets_Elec", 9, 1.5, 10.5);
+	totalCS_LL_NJets_Mu_MC_ = new TH1D("totalCS_LL_NJets_Mu_MC","totalCS_LL_NJets_Mu_MC", 9, 1.5, 10.5);
+	totalCS_LL_NJets_Elec_MC_ = new TH1D("totalCS_LL_NJets_Elec_MC","totalCS_LL_NJets_Elec_MC", 9, 1.5, 10.5);
+
+	totalCS_LL_NBTags_Mu_ = new TH1D("totalCS_LL_NBTags_Mu","totalCS_LL_NBTags_Mu", 3, -0.5, 2.5);
+	totalCS_LL_NBTags_Elec_ = new TH1D("totalCS_LL_NBTags_Elec","totalCS_LL_NBTags_Elec", 3, -0.5, 2.5);
+	totalCS_LL_NBTags_Mu_MC_ = new TH1D("totalCS_LL_NBTags_Mu_MC","totalCS_LL_NBTags_Mu_MC", 3, -0.5, 2.5);
+	totalCS_LL_NBTags_Elec_MC_ = new TH1D("totalCS_LL_NBTags_Elec_MC","totalCS_LL_NBTags_Elec_MC", 3, -0.5, 2.5);
+
+	totalCS_LL_LepPt_Mu_ = new TH1D("totalCS_LL_LepPt_Mu","totalCS_LL_LepPt_Mu", 25, 0, 500);
+	totalCS_LL_LepPt_Elec_ = new TH1D("totalCS_LL_LepPt_Elec","totalCS_LL_LepPt_Elec", 25, 0, 500);
+	totalCS_LL_LepPt_Mu_MC_ = new TH1D("totalCS_LL_LepPt_Mu_MC","totalCS_LL_LepPt_Mu_MC", 25, 0, 500);
+	totalCS_LL_LepPt_Elec_MC_ = new TH1D("totalCS_LL_LepPt_Elec_MC","totalCS_LL_LepPt_Elec_MC", 25, 0, 500);
 }

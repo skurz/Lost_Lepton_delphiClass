@@ -39,6 +39,7 @@ Double_t         Weight;
 Double_t         scaledWeight=0;
 Double_t         HT;
 Double_t         MHT;
+Double_t         MET;
 Double_t         MHTPhi;
 Int_t            NJets;
 Int_t            BTags;
@@ -153,10 +154,14 @@ TH1D* nEvtsCS_LL_ = 0;
 TProfile* avgWeight_LL_ = 0;
 
 TH1D* totalPred_LL_MC_ = 0;
+TH1D* totalPred_LL_Elec_MC_ = 0;
+TH1D* totalPred_LL_Mu_MC_ = 0;
 TH1D* totalPredControlStat_LL_MC_ = 0;
 TH1D* totalPred_woIsoTrack_LL_MC_ = 0;
 TH1D* totalCS_LL_MC_ = 0;
 TH1D* nEvtsCS_LL_MC_ = 0;
+TH1D* totalPred_LL_Elec_ = 0;
+TH1D* totalPred_LL_Mu_ = 0;
 TProfile* avgWeight_LL_MC_ = 0;
 
 TH1D* totalPredIsoTrackSysUp_LL_ = 0;
@@ -316,6 +321,42 @@ TH1D* totalPredElecAccStatDown_LL_MC_ = 0;
 
 TH1D* totalPropSysUp_LL_MC_ = 0;
 TH1D* totalPropSysDown_LL_MC_ = 0;
+
+// Additional Plots
+TH1D* totalCS_LL_Mu_ = 0;
+TH1D* totalCS_LL_Elec_ = 0;
+TH1D* totalCS_LL_Mu_MC_ = 0;
+TH1D* totalCS_LL_Elec_MC_ = 0;
+
+TH1D* totalCS_LL_HT_Mu_ = 0;
+TH1D* totalCS_LL_HT_Elec_ = 0;
+TH1D* totalCS_LL_HT_Mu_MC_ = 0;
+TH1D* totalCS_LL_HT_Elec_MC_ = 0;
+
+TH1D* totalCS_LL_MHT_Mu_ = 0;
+TH1D* totalCS_LL_MHT_Elec_ = 0;
+TH1D* totalCS_LL_MHT_Mu_MC_ = 0;
+TH1D* totalCS_LL_MHT_Elec_MC_ = 0;
+
+TH1D* totalCS_LL_MET_Mu_ = 0;
+TH1D* totalCS_LL_MET_Elec_ = 0;
+TH1D* totalCS_LL_MET_Mu_MC_ = 0;
+TH1D* totalCS_LL_MET_Elec_MC_ = 0;
+
+TH1D* totalCS_LL_NJets_Mu_ = 0;
+TH1D* totalCS_LL_NJets_Elec_ = 0;
+TH1D* totalCS_LL_NJets_Mu_MC_ = 0;
+TH1D* totalCS_LL_NJets_Elec_MC_ = 0;
+
+TH1D* totalCS_LL_NBTags_Mu_ = 0;
+TH1D* totalCS_LL_NBTags_Elec_ = 0;
+TH1D* totalCS_LL_NBTags_Mu_MC_ = 0;
+TH1D* totalCS_LL_NBTags_Elec_MC_ = 0;
+
+TH1D* totalCS_LL_LepPt_Mu_ = 0;
+TH1D* totalCS_LL_LepPt_Elec_ = 0;
+TH1D* totalCS_LL_LepPt_Mu_MC_ = 0;
+TH1D* totalCS_LL_LepPt_Elec_MC_ = 0;
 
 // Add some of the uncertainties in quadrature (easier for integration)
 TH1D* totalPredDiLepContributionStatUp_LL_ = 0;
@@ -531,6 +572,8 @@ void setBranchesPrediction(TTree *tree, bool isData){
   tree->SetBranchAddress("HT",&HT);
   tree->SetBranchStatus("MHT",1);
   tree->SetBranchAddress("MHT",&MHT);
+  tree->SetBranchStatus("MET",1);
+  tree->SetBranchAddress("MET",&MET);
   tree->SetBranchStatus("NJets",1);
   tree->SetBranchAddress("NJets",&NJets);
   tree->SetBranchStatus("BTags",1);

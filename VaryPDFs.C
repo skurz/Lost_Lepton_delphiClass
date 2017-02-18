@@ -239,9 +239,9 @@ double calcEnvMax(TH1D* hist){
 
 
 void VaryPDFs(){
-	TString outName("AcceptanceUncertainty/PDFuncertainty_down.root");
+	TString outName("AcceptanceUncertainty/PDFuncertainty_up.root");
 	// lower/upper uncertainty
-	bool lower = true;
+	bool lower = false;
 
 	bool showRatio = true;
 

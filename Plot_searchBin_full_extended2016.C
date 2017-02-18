@@ -2,8 +2,8 @@
 #include <cstdio>
 #include <iostream>   // std::cout
 #include <string>     // std::string, std::to_string
-#include <tdrstyle.C>
-#include <CMS_lumi.C>
+#include "tdrstyle.C"
+#include "CMS_lumi.C"
 
 
 using namespace std;
@@ -90,8 +90,8 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
 
   //
   // Luminosity information for scaling
-  double lumi     = 36.3; // normaliza to this lumi (fb-1)
-  double lumi_ref = 36.3; // normaliza to 3 (fb-1)
+  double lumi     = 35.9; // normaliza to this lumi (fb-1)
+  double lumi_ref = 35.9; // normaliza to 3 (fb-1)
   
   ///////////////////////////////////////////////////////////////////////////////////////////
   //

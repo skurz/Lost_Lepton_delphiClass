@@ -30,15 +30,20 @@ void Prediction_isoTrackFact::SlaveBegin(TTree * /*tree*/)
   MuIsoActivityPT_ = new TH2Eff("MuIsoActivityPT", EffInputFolder);
   MuRecoActivityPT_= new TH2Eff("MuRecoActivityPT", EffInputFolder);
   MuRecoPTEta_= new TH2Eff("MuRecoPTEta", EffInputFolder);
+
   MuPurityMHTNJets_ = new TH2Eff("MuonPurityMHTNJet", EffInputFolder); 
-  MuPurityHTMHT_ = new TH2Eff("MuonPurityHTMHT", EffInputFolder); 
+  //MuPurityHTMHT_ = new TH2Eff("MuonPurityHTMHT", EffInputFolder); 
+  MuPurityNJetsBTags_ = new TH2Eff("MuonPurityNJetsBTags", EffInputFolder); 
+  MuPuritySearchBins_ = new TH1Eff("MuPuritySearchBins", EffInputFolder); 
 
   ElecIsoActivityPT_ = new TH2Eff("ElecIsoActivityPT", EffInputFolder);
   ElecRecoActivityPT_= new TH2Eff("ElecRecoActivityPT", EffInputFolder);
   ElecRecoPTEta_= new TH2Eff("ElecRecoPTEta", EffInputFolder);
   
   ElecPurityMHTNJets_ = new TH2Eff("ElecPurityMHTNJet", EffInputFolder);
-  ElecPurityHTMHT_ = new TH2Eff("MuonPurityHTMHT", EffInputFolder); 
+  //ElecPurityHTMHT_ = new TH2Eff("ElecPurityHTMHT", EffInputFolder); 
+  ElecPurityNJetsBTags_ = new TH2Eff("ElecPurityNJetsBTags", EffInputFolder); 
+  ElecPuritySearchBins_ = new TH1Eff("ElecPuritySearchBins", EffInputFolder); 
 
   ElecDiLepCRNJets_ = new TH1Eff("ElecDiLepCRNJets1D", EffInputFolder);
   ElecDiLepCRMHTNJets_ = new TH2Eff("ElecDiLepCRMHTNJets", EffInputFolder);
@@ -78,8 +83,10 @@ void Prediction_isoTrackFact::SlaveBegin(TTree * /*tree*/)
   //NEW
   MuAccSearchBins_ = new TH1Eff("MuAccSearchBins", EffInputFolder);
   ElecAccSearchBins_ = new TH1Eff("ElecAccSearchBins", EffInputFolder);
+
   MuMTWSearchBins_ = new TH1Eff("MuMTWSearchBins", EffInputFolder);
   ElecMTWSearchBins_ = new TH1Eff("ElecMTWSearchBins", EffInputFolder);
+
   IsoTrackVetoSearchBins_ = new TH1Eff("IsoTrackVetoSearchBins", EffInputFolder);
   MuIsoTrackVetoSearchBins_ = new TH1Eff("MuIsoTrackVetoSearchBins", EffInputFolder);
   ElecIsoTrackVetoSearchBins_ = new TH1Eff("ElecIsoTrackVetoSearchBins", EffInputFolder);
@@ -89,43 +96,79 @@ void Prediction_isoTrackFact::SlaveBegin(TTree * /*tree*/)
 
   MuDiLepSRNJets_ = new TH1Eff("MuDiLepSRNJets1D", EffInputFolder);
   MuDiLepSRNJetsBTags_ = new TH2Eff("MuDiLepSRNJetsBTags", EffInputFolder);  
+  MuDiLepSRSearchBins_ = new TH1Eff("MuDiLepSRSearchBins", EffInputFolder);  
   ElecDiLepSRNJets_ = new TH1Eff("ElecDiLepSRNJets1D", EffInputFolder);
   ElecDiLepSRNJetsBTags_ = new TH2Eff("ElecDiLepSRNJetsBTags", EffInputFolder);
+  ElecDiLepSRSearchBins_ = new TH1Eff("ElecDiLepSRSearchBins", EffInputFolder);  
 
   MuDiLepSRwoVetoNJets_ = new TH1Eff("MuDiLepSRwoVetoNJets1D", EffInputFolder);
   MuDiLepSRwoVetoNJetsBTags_ = new TH2Eff("MuDiLepSRwoVetoNJetsBTags", EffInputFolder);  
+  MuDiLepSRwoVetoSearchBins_ = new TH1Eff("MuDiLepSRwoVetoSearchBins", EffInputFolder);  
   ElecDiLepSRwoVetoNJets_ = new TH1Eff("ElecDiLepSRwoVetoNJets1D", EffInputFolder);
   ElecDiLepSRwoVetoNJetsBTags_ = new TH2Eff("ElecDiLepSRwoVetoNJetsBTags", EffInputFolder);
+  ElecDiLepSRwoVetoSearchBins_ = new TH1Eff("ElecDiLepSRwoVetoSearchBins", EffInputFolder);  
 
-  MuIsoTrackVetoSearchBinsMuAcc_ = new TH1Eff("MuIsoTrackVetoSearchBinsMuAcc", EffInputFolder);
-  ElecIsoTrackVetoSearchBinsMuAcc_ = new TH1Eff("ElecIsoTrackVetoSearchBinsMuAcc", EffInputFolder);
-  PionIsoTrackVetoSearchBinsMuAcc_ = new TH1Eff("PionIsoTrackVetoSearchBinsMuAcc", EffInputFolder);
-  IsoTrackVetoSearchBinsMuAcc_ = new TH1Eff("IsoTrackVetoSearchBinsMuAcc", EffInputFolder);
+  if(runOnStandardModelMC && !forceSFs){
+    MuIsoTrackVetoSearchBinsMuAcc_ = new TH1Eff("MuIsoTrackVetoSearchBinsMuAcc", EffInputFolder);
+    ElecIsoTrackVetoSearchBinsMuAcc_ = new TH1Eff("ElecIsoTrackVetoSearchBinsMuAcc", EffInputFolder);
+    PionIsoTrackVetoSearchBinsMuAcc_ = new TH1Eff("PionIsoTrackVetoSearchBinsMuAcc", EffInputFolder);
+    IsoTrackVetoSearchBinsMuAcc_ = new TH1Eff("IsoTrackVetoSearchBinsMuAcc", EffInputFolder);
 
-  MuIsoTrackVetoSearchBinsMuID_ = new TH1Eff("MuIsoTrackVetoSearchBinsMuID", EffInputFolder);
-  ElecIsoTrackVetoSearchBinsMuID_ = new TH1Eff("ElecIsoTrackVetoSearchBinsMuID", EffInputFolder);
-  PionIsoTrackVetoSearchBinsMuID_ = new TH1Eff("PionIsoTrackVetoSearchBinsMuID", EffInputFolder);
-  IsoTrackVetoSearchBinsMuID_ = new TH1Eff("IsoTrackVetoSearchBinsMuID", EffInputFolder);
+    MuIsoTrackVetoSearchBinsMuID_ = new TH1Eff("MuIsoTrackVetoSearchBinsMuID", EffInputFolder);
+    ElecIsoTrackVetoSearchBinsMuID_ = new TH1Eff("ElecIsoTrackVetoSearchBinsMuID", EffInputFolder);
+    PionIsoTrackVetoSearchBinsMuID_ = new TH1Eff("PionIsoTrackVetoSearchBinsMuID", EffInputFolder);
+    IsoTrackVetoSearchBinsMuID_ = new TH1Eff("IsoTrackVetoSearchBinsMuID", EffInputFolder);
 
-  MuIsoTrackVetoSearchBinsMuIso_ = new TH1Eff("MuIsoTrackVetoSearchBinsMuIso", EffInputFolder);
-  ElecIsoTrackVetoSearchBinsMuIso_ = new TH1Eff("ElecIsoTrackVetoSearchBinsMuIso", EffInputFolder);
-  PionIsoTrackVetoSearchBinsMuIso_ = new TH1Eff("PionIsoTrackVetoSearchBinsMuIso", EffInputFolder);
-  IsoTrackVetoSearchBinsMuIso_ = new TH1Eff("IsoTrackVetoSearchBinsMuIso", EffInputFolder);
+    MuIsoTrackVetoSearchBinsMuIso_ = new TH1Eff("MuIsoTrackVetoSearchBinsMuIso", EffInputFolder);
+    ElecIsoTrackVetoSearchBinsMuIso_ = new TH1Eff("ElecIsoTrackVetoSearchBinsMuIso", EffInputFolder);
+    PionIsoTrackVetoSearchBinsMuIso_ = new TH1Eff("PionIsoTrackVetoSearchBinsMuIso", EffInputFolder);
+    IsoTrackVetoSearchBinsMuIso_ = new TH1Eff("IsoTrackVetoSearchBinsMuIso", EffInputFolder);
 
-  MuIsoTrackVetoSearchBinsElecAcc_ = new TH1Eff("MuIsoTrackVetoSearchBinsElecAcc", EffInputFolder);
-  ElecIsoTrackVetoSearchBinsElecAcc_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecAcc", EffInputFolder);
-  PionIsoTrackVetoSearchBinsElecAcc_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecAcc", EffInputFolder);
-  IsoTrackVetoSearchBinsElecAcc_ = new TH1Eff("IsoTrackVetoSearchBinsElecAcc", EffInputFolder);
+    MuIsoTrackVetoSearchBinsElecAcc_ = new TH1Eff("MuIsoTrackVetoSearchBinsElecAcc", EffInputFolder);
+    ElecIsoTrackVetoSearchBinsElecAcc_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecAcc", EffInputFolder);
+    PionIsoTrackVetoSearchBinsElecAcc_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecAcc", EffInputFolder);
+    IsoTrackVetoSearchBinsElecAcc_ = new TH1Eff("IsoTrackVetoSearchBinsElecAcc", EffInputFolder);
 
-  MuIsoTrackVetoSearchBinsElecID_ = new TH1Eff("MuIsoTrackVetoSearchBinsElecID", EffInputFolder);
-  ElecIsoTrackVetoSearchBinsElecID_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecID", EffInputFolder);
-  PionIsoTrackVetoSearchBinsElecID_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecID", EffInputFolder);
-  IsoTrackVetoSearchBinsElecID_ = new TH1Eff("IsoTrackVetoSearchBinsElecID", EffInputFolder);
+    MuIsoTrackVetoSearchBinsElecID_ = new TH1Eff("MuIsoTrackVetoSearchBinsElecID", EffInputFolder);
+    ElecIsoTrackVetoSearchBinsElecID_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecID", EffInputFolder);
+    PionIsoTrackVetoSearchBinsElecID_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecID", EffInputFolder);
+    IsoTrackVetoSearchBinsElecID_ = new TH1Eff("IsoTrackVetoSearchBinsElecID", EffInputFolder);
 
-  MuIsoTrackVetoSearchBinsElecIso_ = new TH1Eff("MuIsoTrackVetoSearchBinsElecIso", EffInputFolder);
-  ElecIsoTrackVetoSearchBinsElecIso_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecIso", EffInputFolder);
-  PionIsoTrackVetoSearchBinsElecIso_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecIso", EffInputFolder);
-  IsoTrackVetoSearchBinsElecIso_ = new TH1Eff("IsoTrackVetoSearchBinsElecIso", EffInputFolder);
+    MuIsoTrackVetoSearchBinsElecIso_ = new TH1Eff("MuIsoTrackVetoSearchBinsElecIso", EffInputFolder);
+    ElecIsoTrackVetoSearchBinsElecIso_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecIso", EffInputFolder);
+    PionIsoTrackVetoSearchBinsElecIso_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecIso", EffInputFolder);
+    IsoTrackVetoSearchBinsElecIso_ = new TH1Eff("IsoTrackVetoSearchBinsElecIso", EffInputFolder);
+  }else{
+    MuIsoTrackVetoSearchBinsMuAcc_ = new TH1Eff("MuIsoTrackVetoSearchBinsMuAccSF", EffInputFolder);
+    ElecIsoTrackVetoSearchBinsMuAcc_ = new TH1Eff("ElecIsoTrackVetoSearchBinsMuAccSF", EffInputFolder);
+    PionIsoTrackVetoSearchBinsMuAcc_ = new TH1Eff("PionIsoTrackVetoSearchBinsMuAccSF", EffInputFolder);
+    IsoTrackVetoSearchBinsMuAcc_ = new TH1Eff("IsoTrackVetoSearchBinsMuAccSF", EffInputFolder);
+
+    MuIsoTrackVetoSearchBinsMuID_ = new TH1Eff("MuIsoTrackVetoSearchBinsMuIDSF", EffInputFolder);
+    ElecIsoTrackVetoSearchBinsMuID_ = new TH1Eff("ElecIsoTrackVetoSearchBinsMuIDSF", EffInputFolder);
+    PionIsoTrackVetoSearchBinsMuID_ = new TH1Eff("PionIsoTrackVetoSearchBinsMuIDSF", EffInputFolder);
+    IsoTrackVetoSearchBinsMuID_ = new TH1Eff("IsoTrackVetoSearchBinsMuIDSF", EffInputFolder);
+
+    MuIsoTrackVetoSearchBinsMuIso_ = new TH1Eff("MuIsoTrackVetoSearchBinsMuIsoSF", EffInputFolder);
+    ElecIsoTrackVetoSearchBinsMuIso_ = new TH1Eff("ElecIsoTrackVetoSearchBinsMuIsoSF", EffInputFolder);
+    PionIsoTrackVetoSearchBinsMuIso_ = new TH1Eff("PionIsoTrackVetoSearchBinsMuIsoSF", EffInputFolder);
+    IsoTrackVetoSearchBinsMuIso_ = new TH1Eff("IsoTrackVetoSearchBinsMuIsoSF", EffInputFolder);
+
+    MuIsoTrackVetoSearchBinsElecAcc_ = new TH1Eff("MuIsoTrackVetoSearchBinsElecAccSF", EffInputFolder);
+    ElecIsoTrackVetoSearchBinsElecAcc_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecAccSF", EffInputFolder);
+    PionIsoTrackVetoSearchBinsElecAcc_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecAccSF", EffInputFolder);
+    IsoTrackVetoSearchBinsElecAcc_ = new TH1Eff("IsoTrackVetoSearchBinsElecAccSF", EffInputFolder);
+
+    MuIsoTrackVetoSearchBinsElecID_ = new TH1Eff("MuIsoTrackVetoSearchBinsElecIDSF", EffInputFolder);
+    ElecIsoTrackVetoSearchBinsElecID_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecIDSF", EffInputFolder);
+    PionIsoTrackVetoSearchBinsElecID_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecIDSF", EffInputFolder);
+    IsoTrackVetoSearchBinsElecID_ = new TH1Eff("IsoTrackVetoSearchBinsElecIDSF", EffInputFolder);
+
+    MuIsoTrackVetoSearchBinsElecIso_ = new TH1Eff("MuIsoTrackVetoSearchBinsElecIsoSF", EffInputFolder);
+    ElecIsoTrackVetoSearchBinsElecIso_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecIsoSF", EffInputFolder);
+    PionIsoTrackVetoSearchBinsElecIso_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecIsoSF", EffInputFolder);
+    IsoTrackVetoSearchBinsElecIso_ = new TH1Eff("IsoTrackVetoSearchBinsElecIsoSF", EffInputFolder);
+  }
 
 /*
   MuIsoTrackVetoActivityPtMuID_ = new TH2Eff("MuIsoTrackVetoPtEtaMuID", EffInputFolder);
@@ -188,6 +231,14 @@ void Prediction_isoTrackFact::SlaveBegin(TTree * /*tree*/)
   tPrediction_->Branch("totalWeightDiLepIsoTrackReducedCombined",&totalWeightDiLepIsoTrackReducedCombined_);
   tPrediction_->Branch("totalWeight_BTags",&totalWeight_BTags_);
   tPrediction_->Branch("totalWeight_BTags_noIsoTrack",&totalWeight_BTags_noIsoTrack_);
+  tPrediction_->Branch("totalWeight_BTags_MTW",&totalWeight_BTags_MTW_);
+  tPrediction_->Branch("totalWeight_BTags_MuAcc",&totalWeight_BTags_MuAcc_);
+  tPrediction_->Branch("totalWeight_BTags_MuReco",&totalWeight_BTags_MuReco_);
+  tPrediction_->Branch("totalWeight_BTags_MuIso",&totalWeight_BTags_MuIso_);
+  tPrediction_->Branch("totalWeight_BTags_ElecAcc",&totalWeight_BTags_ElecAcc_);
+  tPrediction_->Branch("totalWeight_BTags_ElecReco",&totalWeight_BTags_ElecReco_);
+  tPrediction_->Branch("totalWeight_BTags_ElecIso",&totalWeight_BTags_ElecIso_);
+
   tPrediction_->Branch("muIsoWeight",&muIsoWeight_);
   tPrediction_->Branch("muRecoWeight",&muRecoWeight_);
   tPrediction_->Branch("muAccWeight",&muAccWeight_);
@@ -306,6 +357,8 @@ void Prediction_isoTrackFact::SlaveBegin(TTree * /*tree*/)
   SearchBinsQCD_ = new SearchBins(true); // 220 QCD binning
   SearchBinsEff_ = new SearchBins(true); // 220 QCD binning
 
+  fudgeFactors = {0.931355, 0.913146, 0.866418, 0.799251, 0.706555, 0.567275, 0.422828};
+
   std::cout<<"Run on Data: "<<runOnData<<std::endl;
   std::cout<<"Run on SM MC: "<<runOnStandardModelMC<<std::endl;
   std::cout<<"Run on Signal MC: "<<runOnSignalMC<<std::endl;
@@ -328,13 +381,6 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 //    HT = GenHT;
 //    MHT = GenMHT;
 //  }
-  
-  if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_  ) return kTRUE;
-  if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_) return kTRUE;
-  if(useDeltaPhiCut == -1) if(!(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_)) return kTRUE;
-  if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
-
-  isoTracksNum= isoElectronTracksNum + isoMuonTracksNum + isoPionTracksNum;
 
   //MuonsNoIsoNum_ = MuonsNoIso->size();
   MuonsNum_ = Muons->size();
@@ -342,6 +388,13 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
   ElectronsNum_ = Electrons->size();
 
   if((MuonsNum_+ElectronsNum_) !=1) return kTRUE;
+  
+  if(HT<minHT_ || MHT< minMHT_ || NJets < minNJets_  ) return kTRUE;
+  if(useDeltaPhiCut == 1) if(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_) return kTRUE;
+  if(useDeltaPhiCut == -1) if(!(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_)) return kTRUE;
+  if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
+
+  isoTracksNum= isoElectronTracksNum + isoMuonTracksNum + isoPionTracksNum;
 
   // Signal triggers
   if(useTrigger) if(!TriggerPass->at(42) && !TriggerPass->at(43) &&!TriggerPass->at(44) && !TriggerPass->at(46) && !TriggerPass->at(47) && !TriggerPass->at(48)) return kTRUE;
@@ -351,6 +404,7 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
 
   if(Bin_ > 900 && BinQCD_ > 900) return kTRUE;
+
 
   if(topPTreweight){
     if(GenParticles->size() != GenParticles_PdgId->size()){
@@ -392,7 +446,30 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
     if(currentTree != treeName){
       treeName = currentTree;
-
+/*
+      fudgeFactorWeight = 1;
+      
+      if((std::string(treeName.Data()).find(std::string("WJetsToLNu"))) != std::string::npos){
+        if((std::string(treeName.Data()).find(std::string("100to200"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(0);
+        }else if((std::string(treeName.Data()).find(std::string("200to400"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(1);
+        }else if((std::string(treeName.Data()).find(std::string("400to600"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(2);
+        }else if((std::string(treeName.Data()).find(std::string("600to800"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(3);
+        }else if((std::string(treeName.Data()).find(std::string("800to1200"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(4);
+        }else if((std::string(treeName.Data()).find(std::string("1200to2500"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(5);
+        }else if((std::string(treeName.Data()).find(std::string("2500toInf"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(6);
+        }else{
+          std::cout<<"FudgeFactor not found"<<std::endl;
+        }
+      }
+      std::cout<<"FudgeFactor: "<<fudgeFactorWeight<<std::endl;
+*/
       if(doISRcorr){
         h_njetsisr = (TH1*) fChain->GetCurrentFile()->Get("NJetsISR");
         if(isrcorr!=0){
@@ -491,6 +568,8 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
     w_pu = puhist->GetBinContent(puhist->GetXaxis()->FindBin(min(TrueNumInteractions,puhist->GetBinLowEdge(puhist->GetNbinsX()+1))));
     Weight *= w_pu;
   }
+
+  //Weight *= fudgeFactorWeight;
 
 /*
   //if(!runOnData){
@@ -623,7 +702,9 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
       MuonsEta_ = Muons->at(0).Eta();
 
       // get Efficiencies
-      muPurityEffVec_ =  MuPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
+      //muPurityEffVec_ =  MuPuritySearchBins_->GetEff(BinQCD_, useAsymmErrors);
+      muPurityEffVec_ =  MuPurityNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);
+      //muPurityEffVec_ =  MuPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
       muMTWEffVec_ = MuMTWSearchBins_->GetEff(BinQCD_, useAsymmErrors);
       //muMTWEffVec_ = MuMTWHTNJets_->GetEff(HT, NJets, useAsymmErrors);
 /*      if(NJets < 2.5){
@@ -642,18 +723,21 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
         muMTWEffVec_ = MuMTWHTMHT_NJets9Inf_->GetEff(HT, MHT, useAsymmErrors);
       }
 */    
-      muDiLepCREffVec_ = MuDiLepCRNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);
-      muDiLepSREffVec_ = MuDiLepSRNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);      
-      muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);      
+      muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(BinQCD_, useAsymmErrors);
+      //muDiLepCREffVec_ = MuDiLepCRNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);
+      muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(BinQCD_, useAsymmErrors);      
+      //muDiLepSREffVec_ = MuDiLepSRNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);      
+      muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(BinQCD_, useAsymmErrors);      
+      //muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);      
 
       muIsoEffVec_ = MuIsoActivityPT_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
-      muRecoEffVec_ = MuRecoPTEta_->GetEff(Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()), useAsymmErrors);
+      muRecoEffVec_ = MuRecoPTEta_->GetEff(Muons->at(0).Pt(),Muons->at(0).Eta(), useAsymmErrors);
       //muRecoEffVec_ = MuRecoActivityPT_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
 
       muAccEffVec_ = MuAccSearchBins_->GetEff(BinQCD_, useAsymmErrors);
       elecAccEffVec_ = ElecAccSearchBins_->GetEff(BinQCD_, useAsymmErrors);
 
-      elecRecoEffVec_ = ElecRecoPTEta_->GetEff(Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()), useAsymmErrors);
+      elecRecoEffVec_ = ElecRecoPTEta_->GetEff(Muons->at(0).Pt(), Muons->at(0).Eta(), useAsymmErrors);
       //elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
       elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
 
@@ -670,12 +754,12 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
       elecRecoEff_ = elecRecoEffVec_.eff;
       elecIsoEff_ = elecIsoEffVec_.eff;
 
-      if(!runOnStandardModelMC && correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
-      if(!runOnStandardModelMC && correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
-      if(!runOnStandardModelMC && correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
-      if(!runOnStandardModelMC && correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
+      if((forceSFs || !runOnStandardModelMC) && correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
+      if((forceSFs || !runOnStandardModelMC) && correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
+      if((forceSFs || !runOnStandardModelMC) && correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
+      if((forceSFs || !runOnStandardModelMC) && correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()));
 
-      if(!runOnStandardModelMC && doTrackingCorrection){
+      if((forceSFs || !runOnStandardModelMC) && doTrackingCorrection){
         if(Muons->at(0).Pt() > 10) muRecoEff_ *= GetSF(h_muTrkHighPtSF, Muons->at(0).Eta());
         else muRecoEff_ *= GetSF(h_muTrkLowPtSF, Muons->at(0).Eta());
         elecRecoEff_ *= GetSF(h_elecTrkSF, Muons->at(0).Eta(), Muons->at(0).Pt());
@@ -859,12 +943,12 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
         }else{
           muRecoSysUp = doMuUnc(1-GetSFUnc(h_muIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()), 0.014) - GetSFUnc(h_muTrkHighPtSF, Muons->at(0).Eta(), 0.01), "muReco");
           muRecoSysDown = doMuUnc(1+GetSFUnc(h_muIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta()), 0.014) + GetSFUnc(h_muTrkHighPtSF, Muons->at(0).Eta(), 0.01), "muReco");
-          if(Muons->at(0).Pt() > 20){
+          if(Muons->at(0).Pt() > 20 && Muons->at(0).Pt() < 80){
             elecRecoSysUp = doMuUnc(1-GetSFUnc(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, Muons->at(0).Eta(), Muons->at(0).Pt()), "elecReco");
             elecRecoSysDown = doMuUnc(1+GetSFUnc(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, Muons->at(0).Eta(), Muons->at(0).Pt()), "elecReco");
           }else{
-            elecRecoSysUp = doMuUnc(1-GetSFUnc(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, Muons->at(0).Eta(), Muons->at(0).Pt(), 0.03), "elecReco");
-            elecRecoSysDown = doMuUnc(1+GetSFUnc(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, Muons->at(0).Eta(), Muons->at(0).Pt(), 0.03), "elecReco");
+            elecRecoSysUp = doMuUnc(1-GetSFUnc(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, Muons->at(0).Eta(), Muons->at(0).Pt(), 0.01), "elecReco");
+            elecRecoSysDown = doMuUnc(1+GetSFUnc(h_elecIDSF, Muons->at(0).Pt(), std::abs(Muons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, Muons->at(0).Eta(), Muons->at(0).Pt(), 0.01), "elecReco");
           }
           
         }
@@ -888,16 +972,19 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
       // Calculate weights if they do depend on the number of BTags:
       if(!runOnData){
         // BTags == 0
+        muPurityEffVec_ =  MuPurityNJetsBTags_->GetEff(NJets, 0, useAsymmErrors);
+        muPurityEff_ = muPurityEffVec_.eff;
+
         muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
         elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
 
         muAccEff_ = muAccEffVec_.eff;
         elecAccEff_ = elecAccEffVec_.eff;
 
-        muDiLepCREffVec_ = MuDiLepCRNJetsBTags_->GetEff(NJets, 0, useAsymmErrors);
+        muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
         muDiLepCREff_ = muDiLepCREffVec_.eff;
-        muDiLepSREffVec_ = MuDiLepSRNJetsBTags_->GetEff(NJets, 0, useAsymmErrors);      
-        muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoNJetsBTags_->GetEff(NJets, 0, useAsymmErrors);
+        muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);      
+        muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
         muDiLepSREff_ = muDiLepSREffVec_.eff;
         muDiLepSRwoVetoEff_ = muDiLepSRwoVetoEffVec_.eff;
 
@@ -934,19 +1021,29 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
         totalWeight_BTags_.push_back(mtwDiLepCorrectedWeight_ * ((1-isotrkMuIsoEff_)*muIsoFrac + (1-isotrkMuIDEff_)*muRecoFrac + (1-isotrkMuAccEff_)*muAccFrac + (1-isotrkElecIsoEff_)*elecIsoFrac + (1-isotrkElecIDEff_)*elecRecoFrac + (1-isotrkElecAccEff_)*elecAccFrac + muDiLepSREff_));
         totalWeight_BTags_noIsoTrack_.push_back(mtwDiLepCorrectedWeight_ * (muIsoFrac + muRecoFrac + muAccFrac + elecIsoFrac + elecRecoFrac + elecAccFrac + muDiLepSRwoVetoEff_));
+        totalWeight_BTags_MTW_.push_back(mtwDiLepCorrectedWeight_);
+        totalWeight_BTags_MuAcc_.push_back(mtwDiLepCorrectedWeight_*muAccFrac);
+        totalWeight_BTags_MuReco_.push_back(mtwDiLepCorrectedWeight_*muRecoFrac);
+        totalWeight_BTags_MuIso_.push_back(mtwDiLepCorrectedWeight_*muIsoFrac);
+        totalWeight_BTags_ElecAcc_.push_back(mtwDiLepCorrectedWeight_*elecAccFrac);
+        totalWeight_BTags_ElecReco_.push_back(mtwDiLepCorrectedWeight_*elecRecoFrac);
+        totalWeight_BTags_ElecIso_.push_back(mtwDiLepCorrectedWeight_*elecIsoFrac);
 
 
         // BTags == 1
+        muPurityEffVec_ =  MuPurityNJetsBTags_->GetEff(NJets, 1, useAsymmErrors);
+        muPurityEff_ = muPurityEffVec_.eff;
+
         muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
         elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
 
         muAccEff_ = muAccEffVec_.eff;
         elecAccEff_ = elecAccEffVec_.eff;
 
-        muDiLepCREffVec_ = MuDiLepCRNJetsBTags_->GetEff(NJets, 1, useAsymmErrors);
+        muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
         muDiLepCREff_ = muDiLepCREffVec_.eff;
-        muDiLepSREffVec_ = MuDiLepSRNJetsBTags_->GetEff(NJets, 1, useAsymmErrors);      
-        muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoNJetsBTags_->GetEff(NJets, 1, useAsymmErrors);
+        muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);      
+        muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
         muDiLepSREff_ = muDiLepSREffVec_.eff;
         muDiLepSRwoVetoEff_ = muDiLepSRwoVetoEffVec_.eff;
 
@@ -983,19 +1080,29 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
         totalWeight_BTags_.push_back(mtwDiLepCorrectedWeight_ * ((1-isotrkMuIsoEff_)*muIsoFrac + (1-isotrkMuIDEff_)*muRecoFrac + (1-isotrkMuAccEff_)*muAccFrac + (1-isotrkElecIsoEff_)*elecIsoFrac + (1-isotrkElecIDEff_)*elecRecoFrac + (1-isotrkElecAccEff_)*elecAccFrac + muDiLepSREff_));
         totalWeight_BTags_noIsoTrack_.push_back(mtwDiLepCorrectedWeight_ * (muIsoFrac + muRecoFrac + muAccFrac + elecIsoFrac + elecRecoFrac + elecAccFrac + muDiLepSRwoVetoEff_));
+        totalWeight_BTags_MTW_.push_back(mtwDiLepCorrectedWeight_);
+        totalWeight_BTags_MuAcc_.push_back(mtwDiLepCorrectedWeight_*muAccFrac);
+        totalWeight_BTags_MuReco_.push_back(mtwDiLepCorrectedWeight_*muRecoFrac);
+        totalWeight_BTags_MuIso_.push_back(mtwDiLepCorrectedWeight_*muIsoFrac);
+        totalWeight_BTags_ElecAcc_.push_back(mtwDiLepCorrectedWeight_*elecAccFrac);
+        totalWeight_BTags_ElecReco_.push_back(mtwDiLepCorrectedWeight_*elecRecoFrac);
+        totalWeight_BTags_ElecIso_.push_back(mtwDiLepCorrectedWeight_*elecIsoFrac);
 
 
         // BTags == 2
+        muPurityEffVec_ =  MuPurityNJetsBTags_->GetEff(NJets, 2, useAsymmErrors);
+        muPurityEff_ = muPurityEffVec_.eff;
+
         muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
         elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
 
         muAccEff_ = muAccEffVec_.eff;
         elecAccEff_ = elecAccEffVec_.eff;
 
-        muDiLepCREffVec_ = MuDiLepCRNJetsBTags_->GetEff(NJets, 2, useAsymmErrors);
+        muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
         muDiLepCREff_ = muDiLepCREffVec_.eff;
-        muDiLepSREffVec_ = MuDiLepSRNJetsBTags_->GetEff(NJets, 2, useAsymmErrors);      
-        muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoNJetsBTags_->GetEff(NJets, 2, useAsymmErrors);
+        muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);      
+        muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
         muDiLepSREff_ = muDiLepSREffVec_.eff;
         muDiLepSRwoVetoEff_ = muDiLepSRwoVetoEffVec_.eff;
 
@@ -1032,19 +1139,30 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
         totalWeight_BTags_.push_back(mtwDiLepCorrectedWeight_ * ((1-isotrkMuIsoEff_)*muIsoFrac + (1-isotrkMuIDEff_)*muRecoFrac + (1-isotrkMuAccEff_)*muAccFrac + (1-isotrkElecIsoEff_)*elecIsoFrac + (1-isotrkElecIDEff_)*elecRecoFrac + (1-isotrkElecAccEff_)*elecAccFrac + muDiLepSREff_));
         totalWeight_BTags_noIsoTrack_.push_back(mtwDiLepCorrectedWeight_ * (muIsoFrac + muRecoFrac + muAccFrac + elecIsoFrac + elecRecoFrac + elecAccFrac + muDiLepSRwoVetoEff_));
+        totalWeight_BTags_MTW_.push_back(mtwDiLepCorrectedWeight_);
+        totalWeight_BTags_MuAcc_.push_back(mtwDiLepCorrectedWeight_*muAccFrac);
+        totalWeight_BTags_MuReco_.push_back(mtwDiLepCorrectedWeight_*muRecoFrac);
+        totalWeight_BTags_MuIso_.push_back(mtwDiLepCorrectedWeight_*muIsoFrac);
+        totalWeight_BTags_ElecAcc_.push_back(mtwDiLepCorrectedWeight_*elecAccFrac);
+        totalWeight_BTags_ElecReco_.push_back(mtwDiLepCorrectedWeight_*elecRecoFrac);
+        totalWeight_BTags_ElecIso_.push_back(mtwDiLepCorrectedWeight_*elecIsoFrac);
+
 
         // BTags >= 3
         if(NJets > 2){
+          muPurityEffVec_ =  MuPurityNJetsBTags_->GetEff(NJets, 3, useAsymmErrors);
+          muPurityEff_ = muPurityEffVec_.eff;
+
           muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
           elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
 
           muAccEff_ = muAccEffVec_.eff;
           elecAccEff_ = elecAccEffVec_.eff;
 
-          muDiLepCREffVec_ = MuDiLepCRNJetsBTags_->GetEff(NJets, 3, useAsymmErrors);
+          muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
           muDiLepCREff_ = muDiLepCREffVec_.eff;
-          muDiLepSREffVec_ = MuDiLepSRNJetsBTags_->GetEff(NJets, 3, useAsymmErrors);      
-          muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoNJetsBTags_->GetEff(NJets, 3, useAsymmErrors);
+          muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);      
+          muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
           muDiLepSREff_ = muDiLepSREffVec_.eff;
           muDiLepSRwoVetoEff_ = muDiLepSRwoVetoEffVec_.eff;
 
@@ -1081,6 +1199,13 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
           totalWeight_BTags_.push_back(mtwDiLepCorrectedWeight_ * ((1-isotrkMuIsoEff_)*muIsoFrac + (1-isotrkMuIDEff_)*muRecoFrac + (1-isotrkMuAccEff_)*muAccFrac + (1-isotrkElecIsoEff_)*elecIsoFrac + (1-isotrkElecIDEff_)*elecRecoFrac + (1-isotrkElecAccEff_)*elecAccFrac + muDiLepSREff_));
           totalWeight_BTags_noIsoTrack_.push_back(mtwDiLepCorrectedWeight_ * (muIsoFrac + muRecoFrac + muAccFrac + elecIsoFrac + elecRecoFrac + elecAccFrac + muDiLepSRwoVetoEff_));
+          totalWeight_BTags_MTW_.push_back(mtwDiLepCorrectedWeight_);
+          totalWeight_BTags_MuAcc_.push_back(mtwDiLepCorrectedWeight_*muAccFrac);
+          totalWeight_BTags_MuReco_.push_back(mtwDiLepCorrectedWeight_*muRecoFrac);
+          totalWeight_BTags_MuIso_.push_back(mtwDiLepCorrectedWeight_*muIsoFrac);
+          totalWeight_BTags_ElecAcc_.push_back(mtwDiLepCorrectedWeight_*elecAccFrac);
+          totalWeight_BTags_ElecReco_.push_back(mtwDiLepCorrectedWeight_*elecRecoFrac);
+          totalWeight_BTags_ElecIso_.push_back(mtwDiLepCorrectedWeight_*elecIsoFrac);
         }
     }
 
@@ -1092,7 +1217,9 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
       ElectronsEta_ = Electrons->at(0).Eta();
 
       // get Efficiencies
-      elecPurityEffVec_ =  ElecPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
+      //elecPurityEffVec_ =  ElecPuritySearchBins_->GetEff(BinQCD_, useAsymmErrors);
+      elecPurityEffVec_ =  ElecPurityNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);
+      //elecPurityEffVec_ =  ElecPurityMHTNJets_->GetEff(MHT,NJets, useAsymmErrors);
       elecMTWEffVec_ = ElecMTWSearchBins_->GetEff(BinQCD_, useAsymmErrors);
       //elecMTWEffVec_ = ElecMTWHTNJets_->GetEff(HT, NJets, useAsymmErrors);
 /*      if(NJets < 2.5){
@@ -1111,18 +1238,21 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
         elecMTWEffVec_ = ElecMTWHTMHT_NJets9Inf_->GetEff(HT, MHT, useAsymmErrors);
       }
 */  
-      elecDiLepCREffVec_ = ElecDiLepCRNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);
-      elecDiLepSREffVec_ = ElecDiLepSRNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);      
-      elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);      
+      elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(BinQCD_, useAsymmErrors);
+      //elecDiLepCREffVec_ = ElecDiLepCRNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);
+      elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(BinQCD_, useAsymmErrors);      
+      //elecDiLepSREffVec_ = ElecDiLepSRNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);      
+      elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(BinQCD_, useAsymmErrors);      
+      //elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);      
 
       muIsoEffVec_ = MuIsoActivityPT_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
-      muRecoEffVec_ = MuRecoPTEta_->GetEff(Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()), useAsymmErrors);
+      muRecoEffVec_ = MuRecoPTEta_->GetEff(Electrons->at(0).Pt(), Electrons->at(0).Eta(), useAsymmErrors);
       //muRecoEffVec_ = MuRecoActivityPT_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
 
       muAccEffVec_ = MuAccSearchBins_->GetEff(BinQCD_, useAsymmErrors);
       elecAccEffVec_ = ElecAccSearchBins_->GetEff(BinQCD_, useAsymmErrors);
 
-      elecRecoEffVec_ = ElecRecoPTEta_->GetEff(Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()), useAsymmErrors);
+      elecRecoEffVec_ = ElecRecoPTEta_->GetEff(Electrons->at(0).Pt(), Electrons->at(0).Eta(), useAsymmErrors);
       //elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
       elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
 
@@ -1139,12 +1269,12 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
       elecRecoEff_ = elecRecoEffVec_.eff;
       elecIsoEff_ = elecIsoEffVec_.eff;
 
-      if(!runOnStandardModelMC && correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
-      if(!runOnStandardModelMC && correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
-      if(!runOnStandardModelMC && correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
-      if(!runOnStandardModelMC && correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
+      if((forceSFs || !runOnStandardModelMC) && correctMuonIso) muIsoEff_ *= GetSF(h_muIsoSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
+      if((forceSFs || !runOnStandardModelMC) && correctMuonID) muRecoEff_ *= GetSF(h_muIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
+      if((forceSFs || !runOnStandardModelMC) && correctElectronID) elecRecoEff_ *= GetSF(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
+      if((forceSFs || !runOnStandardModelMC) && correctElectronIso) elecIsoEff_ *= GetSF(h_elecIsoSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()));
 
-      if(!runOnStandardModelMC && doTrackingCorrection){
+      if((forceSFs || !runOnStandardModelMC) && doTrackingCorrection){
         if(Electrons->at(0).Pt() > 10) muRecoEff_ *= GetSF(h_muTrkHighPtSF, Electrons->at(0).Eta());
         else muRecoEff_ *= GetSF(h_muTrkLowPtSF, Electrons->at(0).Eta());
         elecRecoEff_ *= GetSF(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt());
@@ -1325,12 +1455,12 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
         }else{
           muRecoSysUp = doElecUnc(1-GetSFUnc(h_muIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()), 0.014) - GetSFUnc(h_muTrkHighPtSF, Electrons->at(0).Eta(), 0.01), "muReco");
           muRecoSysDown = doElecUnc(1+GetSFUnc(h_muIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta()), 0.014) + GetSFUnc(h_muTrkHighPtSF, Electrons->at(0).Eta(), 0.01), "muReco");
-          if(Electrons->at(0).Pt() > 20){
+          if(Electrons->at(0).Pt() > 20 && Electrons->at(0).Pt() < 80){
             elecRecoSysUp = doElecUnc(1-GetSFUnc(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt()), "elecReco");
             elecRecoSysDown = doElecUnc(1+GetSFUnc(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt()), "elecReco");
           }else{
-            elecRecoSysUp = doElecUnc(1-GetSFUnc(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt(), 0.03), "elecReco");
-            elecRecoSysDown = doElecUnc(1+GetSFUnc(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt(), 0.03), "elecReco");
+            elecRecoSysUp = doElecUnc(1-GetSFUnc(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())) - GetSFUnc(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt(), 0.01), "elecReco");
+            elecRecoSysDown = doElecUnc(1+GetSFUnc(h_elecIDSF, Electrons->at(0).Pt(), std::abs(Electrons->at(0).Eta())) + GetSFUnc(h_elecTrkSF, Electrons->at(0).Eta(), Electrons->at(0).Pt(), 0.01), "elecReco");
           }
           
         }
@@ -1354,16 +1484,19 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
       // Calculate weights if they do depend on the number of BTags:
       if(!runOnData){
         // BTags == 0
+        elecPurityEffVec_ =  ElecPurityNJetsBTags_->GetEff(NJets, 0, useAsymmErrors);
+        elecPurityEff_ = elecPurityEffVec_.eff;
+
         muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
         elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
 
         muAccEff_ = muAccEffVec_.eff;
         elecAccEff_ = elecAccEffVec_.eff;
 
-        elecDiLepCREffVec_ = ElecDiLepCRNJetsBTags_->GetEff(NJets, 0, useAsymmErrors);
+        elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
         elecDiLepCREff_ = elecDiLepCREffVec_.eff;
-        elecDiLepSREffVec_ = ElecDiLepSRNJetsBTags_->GetEff(NJets, 0, useAsymmErrors);      
-        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoNJetsBTags_->GetEff(NJets, 0, useAsymmErrors);
+        elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);      
+        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
         elecDiLepSREff_ = elecDiLepSREffVec_.eff;
         elecDiLepSRwoVetoEff_ = elecDiLepSRwoVetoEffVec_.eff;
 
@@ -1400,19 +1533,29 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
         totalWeight_BTags_.push_back(mtwDiLepCorrectedWeight_ * ((1-isotrkMuIsoEff_)*muIsoFrac + (1-isotrkMuIDEff_)*muRecoFrac + (1-isotrkMuAccEff_)*muAccFrac + (1-isotrkElecIsoEff_)*elecIsoFrac + (1-isotrkElecIDEff_)*elecRecoFrac + (1-isotrkElecAccEff_)*elecAccFrac + elecDiLepSREff_));
         totalWeight_BTags_noIsoTrack_.push_back(mtwDiLepCorrectedWeight_ * (muIsoFrac + muRecoFrac + muAccFrac + elecIsoFrac + elecRecoFrac + elecAccFrac + elecDiLepSRwoVetoEff_));
+        totalWeight_BTags_MTW_.push_back(mtwDiLepCorrectedWeight_);
+        totalWeight_BTags_MuAcc_.push_back(mtwDiLepCorrectedWeight_*muAccFrac);
+        totalWeight_BTags_MuReco_.push_back(mtwDiLepCorrectedWeight_*muRecoFrac);
+        totalWeight_BTags_MuIso_.push_back(mtwDiLepCorrectedWeight_*muIsoFrac);
+        totalWeight_BTags_ElecAcc_.push_back(mtwDiLepCorrectedWeight_*elecAccFrac);
+        totalWeight_BTags_ElecReco_.push_back(mtwDiLepCorrectedWeight_*elecRecoFrac);
+        totalWeight_BTags_ElecIso_.push_back(mtwDiLepCorrectedWeight_*elecIsoFrac);
 
 
         // BTags == 1
+        elecPurityEffVec_ =  ElecPurityNJetsBTags_->GetEff(NJets, 1, useAsymmErrors);
+        elecPurityEff_ = elecPurityEffVec_.eff;
+
         muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
         elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
 
         muAccEff_ = muAccEffVec_.eff;
         elecAccEff_ = elecAccEffVec_.eff;
 
-        elecDiLepCREffVec_ = ElecDiLepCRNJetsBTags_->GetEff(NJets, 1, useAsymmErrors);
+        elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
         elecDiLepCREff_ = elecDiLepCREffVec_.eff;
-        elecDiLepSREffVec_ = ElecDiLepSRNJetsBTags_->GetEff(NJets, 1, useAsymmErrors);      
-        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoNJetsBTags_->GetEff(NJets, 1, useAsymmErrors);
+        elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);      
+        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
         elecDiLepSREff_ = elecDiLepSREffVec_.eff;
         elecDiLepSRwoVetoEff_ = elecDiLepSRwoVetoEffVec_.eff;
 
@@ -1449,19 +1592,29 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
         totalWeight_BTags_.push_back(mtwDiLepCorrectedWeight_ * ((1-isotrkMuIsoEff_)*muIsoFrac + (1-isotrkMuIDEff_)*muRecoFrac + (1-isotrkMuAccEff_)*muAccFrac + (1-isotrkElecIsoEff_)*elecIsoFrac + (1-isotrkElecIDEff_)*elecRecoFrac + (1-isotrkElecAccEff_)*elecAccFrac + elecDiLepSREff_));
         totalWeight_BTags_noIsoTrack_.push_back(mtwDiLepCorrectedWeight_ * (muIsoFrac + muRecoFrac + muAccFrac + elecIsoFrac + elecRecoFrac + elecAccFrac + elecDiLepSRwoVetoEff_));
+        totalWeight_BTags_MTW_.push_back(mtwDiLepCorrectedWeight_);
+        totalWeight_BTags_MuAcc_.push_back(mtwDiLepCorrectedWeight_*muAccFrac);
+        totalWeight_BTags_MuReco_.push_back(mtwDiLepCorrectedWeight_*muRecoFrac);
+        totalWeight_BTags_MuIso_.push_back(mtwDiLepCorrectedWeight_*muIsoFrac);
+        totalWeight_BTags_ElecAcc_.push_back(mtwDiLepCorrectedWeight_*elecAccFrac);
+        totalWeight_BTags_ElecReco_.push_back(mtwDiLepCorrectedWeight_*elecRecoFrac);
+        totalWeight_BTags_ElecIso_.push_back(mtwDiLepCorrectedWeight_*elecIsoFrac);
 
 
         // BTags == 2
+        elecPurityEffVec_ =  ElecPurityNJetsBTags_->GetEff(NJets, 2, useAsymmErrors);
+        elecPurityEff_ = elecPurityEffVec_.eff;
+
         muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
         elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
 
         muAccEff_ = muAccEffVec_.eff;
         elecAccEff_ = elecAccEffVec_.eff;
 
-        elecDiLepCREffVec_ = ElecDiLepCRNJetsBTags_->GetEff(NJets, 2, useAsymmErrors);
+        elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
         elecDiLepCREff_ = elecDiLepCREffVec_.eff;
-        elecDiLepSREffVec_ = ElecDiLepSRNJetsBTags_->GetEff(NJets, 2, useAsymmErrors);      
-        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoNJetsBTags_->GetEff(NJets, 2, useAsymmErrors);
+        elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);      
+        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
         elecDiLepSREff_ = elecDiLepSREffVec_.eff;
         elecDiLepSRwoVetoEff_ = elecDiLepSRwoVetoEffVec_.eff;
 
@@ -1498,21 +1651,32 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
         totalWeight_BTags_.push_back(mtwDiLepCorrectedWeight_ * ((1-isotrkMuIsoEff_)*muIsoFrac + (1-isotrkMuIDEff_)*muRecoFrac + (1-isotrkMuAccEff_)*muAccFrac + (1-isotrkElecIsoEff_)*elecIsoFrac + (1-isotrkElecIDEff_)*elecRecoFrac + (1-isotrkElecAccEff_)*elecAccFrac + elecDiLepSREff_));
         totalWeight_BTags_noIsoTrack_.push_back(mtwDiLepCorrectedWeight_ * (muIsoFrac + muRecoFrac + muAccFrac + elecIsoFrac + elecRecoFrac + elecAccFrac + elecDiLepSRwoVetoEff_));
+        totalWeight_BTags_MTW_.push_back(mtwDiLepCorrectedWeight_);
+        totalWeight_BTags_MuAcc_.push_back(mtwDiLepCorrectedWeight_*muAccFrac);
+        totalWeight_BTags_MuReco_.push_back(mtwDiLepCorrectedWeight_*muRecoFrac);
+        totalWeight_BTags_MuIso_.push_back(mtwDiLepCorrectedWeight_*muIsoFrac);
+        totalWeight_BTags_ElecAcc_.push_back(mtwDiLepCorrectedWeight_*elecAccFrac);
+        totalWeight_BTags_ElecReco_.push_back(mtwDiLepCorrectedWeight_*elecRecoFrac);
+        totalWeight_BTags_ElecIso_.push_back(mtwDiLepCorrectedWeight_*elecIsoFrac);
+
 
         // BTags >= 3
         if(NJets > 2){
+          elecPurityEffVec_ =  ElecPurityNJetsBTags_->GetEff(NJets, 3, useAsymmErrors);
+          elecPurityEff_ = elecPurityEffVec_.eff;
+
           muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
           elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
 
           muAccEff_ = muAccEffVec_.eff;
           elecAccEff_ = elecAccEffVec_.eff;
 
-          elecDiLepCREffVec_ = ElecDiLepCRNJetsBTags_->GetEff(NJets, 3, useAsymmErrors);
-          elecDiLepCREff_ = elecDiLepCREffVec_.eff;
-          elecDiLepSREffVec_ = ElecDiLepSRNJetsBTags_->GetEff(NJets, 3, useAsymmErrors);      
-          elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoNJetsBTags_->GetEff(NJets, 3, useAsymmErrors);
-          elecDiLepSREff_ = elecDiLepSREffVec_.eff;
-          elecDiLepSRwoVetoEff_ = elecDiLepSRwoVetoEffVec_.eff;
+          elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+        elecDiLepCREff_ = elecDiLepCREffVec_.eff;
+        elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);      
+        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+        elecDiLepSREff_ = elecDiLepSREffVec_.eff;
+        elecDiLepSRwoVetoEff_ = elecDiLepSRwoVetoEffVec_.eff;
 
           elecMTWEffVec_ = ElecMTWSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
           elecMTWEff_ = elecMTWEffVec_.eff;
@@ -1547,6 +1711,13 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
           totalWeight_BTags_.push_back(mtwDiLepCorrectedWeight_ * ((1-isotrkMuIsoEff_)*muIsoFrac + (1-isotrkMuIDEff_)*muRecoFrac + (1-isotrkMuAccEff_)*muAccFrac + (1-isotrkElecIsoEff_)*elecIsoFrac + (1-isotrkElecIDEff_)*elecRecoFrac + (1-isotrkElecAccEff_)*elecAccFrac + elecDiLepSREff_));
           totalWeight_BTags_noIsoTrack_.push_back(mtwDiLepCorrectedWeight_ * (muIsoFrac + muRecoFrac + muAccFrac + elecIsoFrac + elecRecoFrac + elecAccFrac + elecDiLepSRwoVetoEff_));
+          totalWeight_BTags_MTW_.push_back(mtwDiLepCorrectedWeight_);
+          totalWeight_BTags_MuAcc_.push_back(mtwDiLepCorrectedWeight_*muAccFrac);
+          totalWeight_BTags_MuReco_.push_back(mtwDiLepCorrectedWeight_*muRecoFrac);
+          totalWeight_BTags_MuIso_.push_back(mtwDiLepCorrectedWeight_*muIsoFrac);
+          totalWeight_BTags_ElecAcc_.push_back(mtwDiLepCorrectedWeight_*elecAccFrac);
+          totalWeight_BTags_ElecReco_.push_back(mtwDiLepCorrectedWeight_*elecRecoFrac);
+          totalWeight_BTags_ElecIso_.push_back(mtwDiLepCorrectedWeight_*elecIsoFrac);
         }
     }
 
@@ -1592,6 +1763,14 @@ void Prediction_isoTrackFact::SlaveTerminate()
 
   std::cout<<"--- Search bins ---"<<std::endl;
   SearchBins_->PrintUsed();  
+
+  std::cout<<"--- Efficiency of RA2b BadMuon Filter ---"<<std::endl; 
+  std::cout<<"nMuCS: "<<nMuCS<<std::endl; 
+  std::cout<<"nMuVeto: "<<nMuVeto<<" ("<<double(nMuVeto)/double(nMuCS)<<")"<<std::endl; 
+  std::cout<<"nMuVetoMatch: "<<nMuVetoMatch<<" ("<<double(nMuVetoMatch)/double(nMuCS)<<")"<<std::endl; 
+
+  std::cout<<"nElecCS: "<<nElecCS<<std::endl; 
+  std::cout<<"nElecVeto: "<<nElecVeto<<" ("<<double(nElecVeto)/double(nElecCS)<<")"<<std::endl; 
 }
 
 void Prediction_isoTrackFact::Terminate()
@@ -1957,6 +2136,13 @@ void Prediction_isoTrackFact::resetValues()
 
   totalWeight_BTags_.clear();
   totalWeight_BTags_noIsoTrack_.clear();
+  totalWeight_BTags_MTW_.clear();
+  totalWeight_BTags_MuAcc_.clear();
+  totalWeight_BTags_MuReco_.clear();
+  totalWeight_BTags_MuIso_.clear();
+  totalWeight_BTags_ElecAcc_.clear();
+  totalWeight_BTags_ElecReco_.clear();
+  totalWeight_BTags_ElecIso_.clear();
   topPt.clear();
 }
 
@@ -1977,20 +2163,32 @@ bool Prediction_isoTrackFact::FiltersPass()
   }
   if(NVtx<=0) result=false;
 
+  // Do not apply on fastSim samples!
+  if(!runOnSignalMC) if(!JetID) result=false;
+
   // Preliminary filters
   if(PFCaloMETRatio>5) result=false;
 
+  // Check efficiency of filter
+  
+  if(MuonsNum_ == 1) nMuCS++;
+  else if(ElectronsNum_ == 1) nElecCS++;
+  if(result)
   for(unsigned j = 0; j < Jets->size(); j++){
     if(TMath::IsNaN(Jets->at(j).Phi()-METPhi)) result=false;
-    if(Jets->at(j).Pt()>200 && Jets_muonEnergyFraction->at(j)>0.5 && (TVector2::Phi_mpi_pi(Jets->at(j).Phi()-METPhi)>(TMath::Pi()-0.4))){
+    else if(Jets->at(j).Pt()>200 && Jets_muonEnergyFraction->at(j)>0.5 && (TVector2::Phi_mpi_pi(Jets->at(j).Phi()-METPhi)>(TMath::Pi()-0.4))){
       //std::cout<<"found bad muon jet"<<std::endl;
+      if(MuonsNum_ == 1){
+        nMuVeto++;
+        if(Jets->at(j).DeltaR(Muons->at(0)) < 0.3) nMuVetoMatch++;
+      }else if(ElectronsNum_ == 1) nElecVeto++;
       result=false;
-      break;
     }
   }
 
+
   //reject events with any jet pt>20, |eta|<2.5 NOT matched to a GenJet (w/in DeltaR<0.3) and chfrac < 0.1
-  if (runOnSignalMC)
+  if(result && runOnSignalMC)
   for(unsigned j = 0; j < Jets->size(); ++j){
     if(Jets->at(j).Pt() <= 20 || fabs(Jets->at(j).Eta())>=2.5) continue;
     bool genMatched = false;
@@ -2006,8 +2204,6 @@ bool Prediction_isoTrackFact::FiltersPass()
     }
   }
 
-  // Do not apply on fastSim samples!
-  if(!runOnSignalMC) if(!JetID) result=false;
   return result;
 }
 

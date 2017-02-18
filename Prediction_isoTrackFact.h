@@ -39,8 +39,8 @@ const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims (bTag reweighting)
 // Does not matter for Data
-const bool runOnNtuples = false;
-const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v11/SLe/tree_");
+const bool runOnNtuples = true;
+const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_");
 
 // Useful for T2tt corridor studies
 const bool useGenHTMHT = false;
@@ -52,30 +52,29 @@ const bool topPTreweight = false;
 // Not fully implemented yet! Only working for CS not for prediction!
 const bool fillEventSeperateBTags = false;
 
+// For testing only: force application of SFs in MC
+const bool forceSFs = false;
+
 // PU
 const TString path_puHist("PU/PileupHistograms_0721_63mb_pm5.root");
 // bTag corrections
-const string path_bTagCalib("btag/CSVv2_ichep.csv");
-const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_14_07_2016.csv");
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// ISR corrections: NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond! Just uncomment in Prediction::Init(Tree*) of this file
+const string path_bTagCalib("btag/CSVv2_Moriond17_B_H_mod.csv");
+const string path_bTagCalibFastSim("btag/fastsim_csvv2_ttbar_26_1_2017.csv");
+// ISR corrections
 const TString path_ISRcorr("isr_corrections/ISRWeights.root");
 // Signal x-sec: "dict_xsec.txt" for gluino pair prod; "dict_xsec_T2.txt" for (anti)stop pair prod.
 const string path_xsecT1T5("xsec/dict_xsec.txt");
 const string path_xsecT2("xsec/dict_xsec_T2.txt");
 
-const TString path_elecID("SFs/scaleFactors_electrons.root");
-const TString hist_elecID("GsfElectronToVeto");
-const TString path_elecIso("SFs/scaleFactors_electrons.root");
+const TString path_elecID("SFs_Moriond17/egamma_all.root");
+const TString hist_elecID("GsfElectronToCutBasedSpring15V");
+const TString path_elecIso("SFs_Moriond17/egamma_all.root");
 const TString hist_elecIso("MVAVLooseElectronToMini");
 
-const TString path_muID("SFs/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root");
-const TString hist_muID("pt_abseta_PLOT_pair_probeMultiplicity_bin0");
-// for muons: add 3% systematic to uncertainty -> set boolean to true in GetSF function
-const TString path_muIso("SFs/TnP_MuonID_NUM_MiniIsoTight_DENOM_MediumID_VAR_map_pt_eta.root");
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// muIso: still binned in pt/eta since this was recommended! Has to be changed for Moriond (also in Prediction.C when getting the uncertainties)!
-const TString hist_muIso("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
+const TString path_muID("SFs_Moriond17/TnP_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root");
+const TString hist_muID("SF");
+const TString path_muIso("SFs_Moriond17/TnP_NUM_MiniIsoTight_DENOM_MediumID_VAR_map_pt_eta.root");
+const TString hist_muIso("SF");
 
 //Uncertainty maps
 const TString path_AccPDF_up("AcceptanceUncertainty/PDFuncertainty_up.root");
@@ -86,12 +85,12 @@ const TString path_MTWunc("MTWUncertainty/MTWuncertainty.root");
 const TString path_isoTrackunc("IsoTrackUncertainty/NJets_uncertainty.root");
 
 // Muon tracking inefficiency
-const TString path_muonTrk("SFs/general_tracks_and_early_general_tracks_corr_ratio.root");
+const TString path_muonTrk("SFs_ICHEP16/general_tracks_and_early_general_tracks_corr_ratio.root");
 const TString hist_muonTrkHighPt("mutrksfptg10");
 const TString hist_muonTrkLowPt("mutrksfptl10");
 
 // Electron tracking inefficiency
-const TString path_elecTrk("SFs/egammaEffi.txt_SF2D.root");
+const TString path_elecTrk("SFs_Moriond17/egamma_tracking.root");
 const TString hist_elecTrk("EGamma_SF2D");
 
 
@@ -103,9 +102,9 @@ const TString hist_elecTrk("EGamma_SF2D");
 const bool useSFs = true;
 // Apply corrections on ID/Iso based on SFs. Used to correct for systematic offsets
 const bool correctElectronID = true;
-const bool correctElectronIso = false;
+const bool correctElectronIso = true;
 const bool correctMuonID = true;
-const bool correctMuonIso = false;
+const bool correctMuonIso = true;
 
 // Correction for tracking inefficiency due to high luminosity (on muon ID efficiency)
 const bool doTrackingCorrection = true;
@@ -217,6 +216,7 @@ class Prediction_isoTrackFact : public TSelector {
 
   // output variables
   TTree *tPrediction_ = 0;
+  int nEvts = 0;
 
   std::string fname; // for fetching file name
   TString fileName;
@@ -228,11 +228,15 @@ class Prediction_isoTrackFact : public TSelector {
   TH1D * h_muTrkHighPtSF = 0;
   TH2F * h_elecTrkSF = 0;
 
+  vector<double> fudgeFactors;
+  double fudgeFactorWeight;
 
   std::vector<std::pair<double, double>> xsecsT1T5;
   std::vector<std::pair<double, double>> xsecsT2;
   std::vector<std::pair<double, double>> *xsecs = 0;
 
+  // Check efficiency of RA2b badMuon filter
+  int nMuCS = 0, nElecCS = 0, nMuVeto = 0, nElecVeto = 0, nMuVetoMatch = 0;
 
     //open skim file as skimfile
   TH1* h_njetsisr = 0;
@@ -420,6 +424,13 @@ class Prediction_isoTrackFact : public TSelector {
   Float_t totalWeight_, totalWeightDiLep_, totalWeightDiLepIsoTrackReduced_,totalWeightDiLepIsoMuTrackReduced_,totalWeightDiLepIsoElecTrackReduced_,totalWeightDiLepIsoPionTrackReduced_,totalWeightDiLepIsoTrackReducedCombined_;
   std::vector<Float_t> totalWeight_BTags_;
   std::vector<Float_t> totalWeight_BTags_noIsoTrack_;
+  std::vector<Float_t> totalWeight_BTags_MTW_;
+  std::vector<Float_t> totalWeight_BTags_MuAcc_;
+  std::vector<Float_t> totalWeight_BTags_MuReco_;
+  std::vector<Float_t> totalWeight_BTags_MuIso_;
+  std::vector<Float_t> totalWeight_BTags_ElecAcc_;
+  std::vector<Float_t> totalWeight_BTags_ElecReco_;
+  std::vector<Float_t> totalWeight_BTags_ElecIso_;
   Float_t muTotalWeightDiLep_, muTotalWeightDiLepIsoTrackReduced_;
   Float_t elecTotalWeightDiLep_, elecTotalWeightDiLepIsoTrackReduced_;
   std::vector<Float_t>         MuonsPTW;
@@ -467,13 +478,18 @@ class Prediction_isoTrackFact : public TSelector {
   TH2Eff *MuRecoPTEta_=0;
   TH2Eff *MuPurityMHTNJets_=0; 
   TH2Eff *MuPurityHTMHT_=0; 
+  TH2Eff *MuPurityNJetsBTags_=0; 
+  TH1Eff *MuPuritySearchBins_=0; 
   
   TH2Eff *ElecIsoActivityPT_=0;
   TH2Eff *ElecRecoActivityPT_=0;
   TH2Eff *ElecRecoPTEta_=0;
 
   TH2Eff *ElecPurityMHTNJets_=0;
-  TH2Eff *ElecPurityHTMHT_=0; 
+  TH2Eff *ElecPurityHTMHT_=0;
+  TH2Eff *ElecPurityNJetsBTags_=0; 
+  TH1Eff *ElecPuritySearchBins_=0; 
+
   TH1Eff *ElecMTWNJets=0;
   TH2Eff *ElecMTWHTNJets_=0;
   TH2Eff *ElecMTWMHTNJets_=0;
@@ -495,13 +511,17 @@ class Prediction_isoTrackFact : public TSelector {
 
   TH1Eff *MuDiLepSRNJets_=0;
   TH2Eff *MuDiLepSRNJetsBTags_=0;  
+  TH1Eff *MuDiLepSRSearchBins_=0;  
   TH1Eff *ElecDiLepSRNJets_=0;
   TH2Eff *ElecDiLepSRNJetsBTags_=0;
+  TH1Eff *ElecDiLepSRSearchBins_=0;
 
   TH1Eff *MuDiLepSRwoVetoNJets_=0;
   TH2Eff *MuDiLepSRwoVetoNJetsBTags_=0;  
+  TH1Eff *MuDiLepSRwoVetoSearchBins_=0;  
   TH1Eff *ElecDiLepSRwoVetoNJets_=0;
   TH2Eff *ElecDiLepSRwoVetoNJetsBTags_=0;
+  TH1Eff *ElecDiLepSRwoVetoSearchBins_=0;
 
   TH1Eff *MuIsoTrackVetoSearchBinsAcc_=0;
   TH1Eff *ElecIsoTrackVetoSearchBinsAcc_=0;

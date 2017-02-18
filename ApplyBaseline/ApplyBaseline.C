@@ -1,8 +1,6 @@
 #define ApplyBaseline_cxx
 
 #include "ApplyBaseline.h"
-#include <TH2.h>
-#include <TStyle.h>
 #include <TSystem.h>
 
 void ApplyBaseline::Begin(TTree * /*tree*/)
@@ -33,7 +31,11 @@ void ApplyBaseline::SlaveBegin(TTree * /*tree*/)
    tOut->Branch("LumiBlockNum", &LumiBlockNum);
    tOut->Branch("EvtNum", &EvtNum);
    tOut->Branch("BadChargedCandidateFilter", &BadChargedCandidateFilter);
+   tOut->Branch("BadGlobalMuon", &BadGlobalMuon);
+   tOut->Branch("BadGlobalMuonLeadPt", &BadGlobalMuonLeadPt);
    tOut->Branch("BadPFMuonFilter", &BadPFMuonFilter);
+   tOut->Branch("BadTrkGlobalMuon", &BadTrkGlobalMuon);
+   tOut->Branch("BadTrkGlobalMuonLeadPt", &BadTrkGlobalMuonLeadPt);
    tOut->Branch("BTags", &BTags);
    tOut->Branch("BTagsJECdown", &BTagsJECdown);
    tOut->Branch("BTagsJECup", &BTagsJECup);
@@ -68,6 +70,8 @@ void ApplyBaseline::SlaveBegin(TTree * /*tree*/)
    tOut->Branch("DeltaPhi4JECup", &DeltaPhi4JECup);
    tOut->Branch("DeltaPhi4JERdown", &DeltaPhi4JERdown);
    tOut->Branch("DeltaPhi4JERup", &DeltaPhi4JERup);
+   tOut->Branch("DupGlobalMuon", &DupGlobalMuon);
+   tOut->Branch("DupGlobalMuonLeadPt", &DupGlobalMuonLeadPt);
    tOut->Branch("EcalDeadCellTriggerPrimitiveFilter", &EcalDeadCellTriggerPrimitiveFilter);
    tOut->Branch("eeBadScFilter", &eeBadScFilter);
    tOut->Branch("Electrons", &Electrons);
@@ -115,8 +119,11 @@ void ApplyBaseline::SlaveBegin(TTree * /*tree*/)
    tOut->Branch("GenTaus_LeadRecoTrkIso", &GenTaus_LeadRecoTrkIso);
    tOut->Branch("GenTaus_LeadTrk", &GenTaus_LeadTrk);
    tOut->Branch("GenTaus_MT2Activity", &GenTaus_MT2Activity);
+   tOut->Branch("GenTaus_NNeutralHadrons", &GenTaus_NNeutralHadrons);
    tOut->Branch("GenTaus_NProngs", &GenTaus_NProngs);
    tOut->Branch("GenTaus_Nu", &GenTaus_Nu);
+   tOut->Branch("GenTops", &GenTops);
+   tOut->Branch("GenTopWeight", &GenTopWeight);
    tOut->Branch("globalTightHalo2016Filter", &globalTightHalo2016Filter);
    tOut->Branch("HBHEIsoNoiseFilter", &HBHEIsoNoiseFilter);
    tOut->Branch("HBHENoiseFilter", &HBHENoiseFilter);
@@ -256,6 +263,7 @@ void ApplyBaseline::SlaveBegin(TTree * /*tree*/)
    tOut->Branch("PDFids", &PDFids);
    tOut->Branch("PDFweights", &PDFweights);
    tOut->Branch("PFCaloMETRatio", &PFCaloMETRatio);
+   tOut->Branch("PmssmId", &PmssmId);
    tOut->Branch("puSysDown", &puSysDown);
    tOut->Branch("puSysUp", &puSysUp);
    tOut->Branch("puWeight", &puWeight);

@@ -42,7 +42,7 @@ void run_ApplyBaseline()
   TString fileNamesExo[3] = {"TTGJets", "TTZToLLNuNu", "TTZToQQ"};
 
 //!!!! Apply madHT cut here!!!!
-//  Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV7/Spring15v2.TTJets_SingleLeptFromT_*-pythia8_?_RA2AnalysisTree.root");
+//  Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v12/Summer16.TTJets_SingleLeptFromT_*.root");
 //  Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV7/Spring15v2.TTJets_SingleLeptFromT_*-pythia8_??_RA2AnalysisTree.root");
 //  Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV7/Spring15v2.TTJets_SingleLeptFromT_*-pythia8_???_RA2AnalysisTree.root");
   //Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV7/Spring15v2.TTJets_SingleLeptFromT_*ext1_*.root");
@@ -65,9 +65,9 @@ void run_ApplyBaseline()
   //  Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV7/Spring16.WJetsToLNu_HT-1200To2500*.root");
   //  Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV7/Spring16.WJetsToLNu_HT-2500ToInf*.root");
 
-  //  Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV7/Spring16.ST_s-channel*.root");
+    Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v12/Summer16.ST_s-channel*.root");
   //  Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV7/Spring16.ST_t-channel_antitop*.root");
-    Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV8/Spring15v2.ST_t-channel_top*.root");
+  //  Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV8/Spring15v2.ST_t-channel_top*.root");
   //  Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV7/Spring16.ST_tW_antitop*.root");
   //  Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV7/Spring16.ST_tW_top*.root");
 
@@ -75,6 +75,6 @@ void run_ApplyBaseline()
   //  Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV7/Spring16.TTZToLLNuNu*.root");
   //  Effchain->Add("/eos/uscms/store/user/lpcsusyhad/SusyRA2Analysis2015/Run2ProductionV7/Spring16.TTZToQQ*.root");
   
-  Effchain->Process("ApplyBaseline.C++g", TString("/eos/uscms/store/user/skurz/central_v8_baseline/")+fileNamesST[2]+TString(".root"));
+  Effchain->Process("ApplyBaseline.C++g", TString("/nfs/dust/cms/user/kurzsimo/LostLepton/mc_v12_baseline/")+fileNamesST[0]+TString(".root"));
 
 }

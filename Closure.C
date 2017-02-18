@@ -43,7 +43,7 @@ void Closure(string InputPath_Expectation="Expectation.root",
   bool doQCDbinning = false;
 
   // Scale all MC weights by this factor
-  Double_t scaleFactorWeight = 2262;  //in units of [pb]
+  Double_t scaleFactorWeight = 35862;  //in units of [pb]
 
   // Begin of Code
   int nSearchBinsTotal = 174;
@@ -101,6 +101,13 @@ void Closure(string InputPath_Expectation="Expectation.root",
   Float_t         totalWeightDiLepIsoTrackReducedCombined;
   std::vector<Float_t>*         totalWeight_BTags=0;
   std::vector<Float_t>*         totalWeight_BTags_noIsoTrack=0;
+  std::vector<Float_t>*         totalWeight_BTags_MTW=0;
+  std::vector<Float_t>* totalWeight_BTags_MuAcc_=0;
+  std::vector<Float_t>* totalWeight_BTags_MuReco_=0;
+  std::vector<Float_t>* totalWeight_BTags_MuIso_=0;
+  std::vector<Float_t>* totalWeight_BTags_ElecAcc_=0;
+  std::vector<Float_t>* totalWeight_BTags_ElecReco_=0;
+  std::vector<Float_t>* totalWeight_BTags_ElecIso_=0;
 
   Float_t         muTotalWeightDiLepIsoTrackReduced;
   Float_t         elecTotalWeightDiLepIsoTrackReduced;
@@ -144,6 +151,9 @@ void Closure(string InputPath_Expectation="Expectation.root",
   TH1D* totalExpectation_ = new TH1D("TotalLostLeptonExpectation", "TotalLostLeptonExpectation", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalExpectationWoIso_ = new TH1D("TotalExpectationWoIso", "TotalExpectationWoIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalExpectationDiLep_ = new TH1D("TotalExpectationDiLep", "TotalExpectationDiLep", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+
+  TH1D* totalExpectationMuMTW_ = new TH1D("TotalExpectationMuMTW", "TotalExpectationMuMTW", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1D* totalExpectationElecMTW_ = new TH1D("TotalExpectationElecMTW", "TotalExpectationElecMTW", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
   // Equal dist:
   // HT:  0, 300., 2300.
@@ -215,6 +225,9 @@ void Closure(string InputPath_Expectation="Expectation.root",
   TH1D* totalPredictionElec_ = new TH1D("TotalLostLeptonPredictionElec", "TotalLostLeptonPredictionElec", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPredictionMuWoIso_ = new TH1D("TotalLostLeptonPredictionMuWoIso", "TotalLostLeptonPredictionMuWoIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
   TH1D* totalPredictionElecWoIso_ = new TH1D("TotalLostLeptonPredictionElecWoIso", "TotalLostLeptonPredictionElecWoIso", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+
+  TH1D* totalPredictionMuMTW_ = new TH1D("TotalPredictionMuMTW", "TotalPredictionMuMTW", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
+  TH1D* totalPredictionElecMTW_ = new TH1D("TotalPredictionElecMTW", "TotalPredictionElecMTW", nSearchBinsTotal, 0.5, nSearchBinsTotal+0.5);
 
   TH1D* totalPrediction_HT_ = new TH1D("totalPrediction_HT","totalPrediction_HT", nHTbins, HTbins);
   TH1D* totalPrediction_MHT_ = new TH1D("totalPrediction_MHT","totalPrediction_MHT", nMHTbins, MHTbins);
@@ -417,7 +430,9 @@ void Closure(string InputPath_Expectation="Expectation.root",
   LostLeptonExpectation->SetBranchStatus("GenMuons",1);
   LostLeptonExpectation->SetBranchAddress("GenMuons",&GenMuons);
   LostLeptonExpectation->SetBranchStatus("GenElectrons",1);
-  LostLeptonExpectation->SetBranchAddress("GenElectrons",&GenElectrons);  
+  LostLeptonExpectation->SetBranchAddress("GenElectrons",&GenElectrons);
+  LostLeptonExpectation->SetBranchStatus("MTW",1);
+  LostLeptonExpectation->SetBranchAddress("MTW",&MTW);
   LostLeptonExpectation->SetBranchStatus("Expectation",1);
   LostLeptonExpectation->SetBranchAddress("Expectation",&Expectation);
   LostLeptonExpectation->SetBranchStatus("ExpectationReductionIsoTrack",1);
@@ -485,6 +500,15 @@ void Closure(string InputPath_Expectation="Expectation.root",
         totalMuons_->Fill(Bin_bTags.at(i), scaledWeight);
       }else if(GenMuons->size()==0 && GenElectrons->size()==1){
         totalElectrons_->Fill(Bin_bTags.at(i), scaledWeight);
+      }
+
+      if(Expectation==2){
+        if(muIso==2){
+          totalExpectationMuMTW_->Fill(Bin_bTags.at(i), scaledWeight);
+        }
+        if(elecIso==2){
+          totalExpectationElecMTW_->Fill(Bin_bTags.at(i), scaledWeight);
+        }        
       }
 
       if(Expectation==1)
@@ -690,6 +714,20 @@ void Closure(string InputPath_Expectation="Expectation.root",
   LostLeptonPrediction->SetBranchAddress("totalWeight_BTags",&totalWeight_BTags);
   LostLeptonPrediction->SetBranchStatus("totalWeight_BTags_noIsoTrack",1);
   LostLeptonPrediction->SetBranchAddress("totalWeight_BTags_noIsoTrack",&totalWeight_BTags_noIsoTrack);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags_MTW",1);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags_MTW",&totalWeight_BTags_MTW);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags_MuAcc",1);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags_MuAcc",&totalWeight_BTags_MuAcc_);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags_MuReco",1);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags_MuReco",&totalWeight_BTags_MuReco_);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags_MuIso",1);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags_MuIso",&totalWeight_BTags_MuIso_);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags_ElecAcc",1);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags_ElecAcc",&totalWeight_BTags_ElecAcc_);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags_ElecReco",1);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags_ElecReco",&totalWeight_BTags_ElecReco_);
+  LostLeptonPrediction->SetBranchStatus("totalWeight_BTags_ElecIso",1);
+  LostLeptonPrediction->SetBranchAddress("totalWeight_BTags_ElecIso",&totalWeight_BTags_ElecIso_);
   LostLeptonPrediction->SetBranchStatus("muIsoWeight",1);
   LostLeptonPrediction->SetBranchStatus("muRecoWeight",1);
   LostLeptonPrediction->SetBranchStatus("muAccWeight",1);
@@ -766,70 +804,70 @@ void Closure(string InputPath_Expectation="Expectation.root",
 
         if(NJets < 2.5){
         	totalPrediction_HT_NJets2_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-			totalPrediction_MHT_NJets2_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+          totalPrediction_MHT_NJets2_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	if(BTags < 0.5){
         		totalPrediction_HT_NJets2_BTags0_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets2_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets2_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}else if(BTags < 1.5){
         		totalPrediction_HT_NJets2_BTags1_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets2_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets2_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}else{
         		totalPrediction_HT_NJets2_BTags2Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets2_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets2_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}			
-		}else if(NJets < 4.5){
-			totalPrediction_HT_NJets34_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-			totalPrediction_MHT_NJets34_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+		    }else if(NJets < 4.5){
+			     totalPrediction_HT_NJets34_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+			     totalPrediction_MHT_NJets34_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	if(BTags < 0.5){
         		totalPrediction_HT_NJets34_BTags0_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets34_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets34_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}else if(BTags < 1.5){
         		totalPrediction_HT_NJets34_BTags1_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets34_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets34_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}else{
         		totalPrediction_HT_NJets34_BTags2Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets34_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets34_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}	
-		}else if(NJets < 6.5){
-			totalPrediction_HT_NJets56_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-			totalPrediction_MHT_NJets56_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+		    }else if(NJets < 6.5){
+			     totalPrediction_HT_NJets56_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+			     totalPrediction_MHT_NJets56_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	if(BTags < 0.5){
         		totalPrediction_HT_NJets56_BTags0_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets56_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets56_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}else if(BTags < 1.5){
         		totalPrediction_HT_NJets56_BTags1_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets56_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets56_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}else{
         		totalPrediction_HT_NJets56_BTags2Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets56_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets56_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}	
-		}else if(NJets < 8.5){
-			totalPrediction_HT_NJets78_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-			totalPrediction_MHT_NJets78_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+		    }else if(NJets < 8.5){
+			   totalPrediction_HT_NJets78_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+			   totalPrediction_MHT_NJets78_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	if(BTags < 0.5){
         		totalPrediction_HT_NJets78_BTags0_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets78_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets78_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}else if(BTags < 1.5){
         		totalPrediction_HT_NJets78_BTags1_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets78_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets78_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}else{
         		totalPrediction_HT_NJets78_BTags2Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets78_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets78_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}	
-		}else{
-			totalPrediction_HT_NJets9Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-			totalPrediction_MHT_NJets9Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+		    }else{
+			     totalPrediction_HT_NJets9Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+			     totalPrediction_MHT_NJets9Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	if(BTags < 0.5){
         		totalPrediction_HT_NJets9Inf_BTags0_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets9Inf_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets9Inf_BTags0_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}else if(BTags < 1.5){
         		totalPrediction_HT_NJets9Inf_BTags1_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets9Inf_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets9Inf_BTags1_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}else{
         		totalPrediction_HT_NJets9Inf_BTags2Inf_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
-				totalPrediction_MHT_NJets9Inf_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
+				    totalPrediction_MHT_NJets9Inf_BTags2Inf_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         	}	
-		}
+		    }
     }else{
 	      totalPrediction_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
 	      totalPreIsoTrack+=totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2;
@@ -845,6 +883,13 @@ void Closure(string InputPath_Expectation="Expectation.root",
 	      totalPrediction_MHT_->Fill(MHT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
 	      totalPrediction_NJets_->Fill(NJets, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
 	      totalPrediction_BTags_->Fill(i, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
+
+        if(MuonsNum==1){
+          totalPredictionMuMTW_->Fill(Bin_bTags.at(i), totalWeight_BTags_MTW->at(i)*scaleFactorWeightBtagProb);
+        }
+        if(ElectronsNum==1){
+          totalPredictionElecMTW_->Fill(Bin_bTags.at(i), totalWeight_BTags_MTW->at(i)*scaleFactorWeightBtagProb);
+        }        
 
 	    if(NJets < 2.5){
         	totalPrediction_HT_NJets2_->Fill(HT, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
@@ -924,49 +969,49 @@ void Closure(string InputPath_Expectation="Expectation.root",
             totalPreIsoTrackMuError+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb*totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb;
 
 
-            totalPredictionMuCSMuAcc_->Fill(Bin_bTags.at(i), muAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuReco_->Fill(Bin_bTags.at(i), muRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuIso_->Fill(Bin_bTags.at(i), muIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuAccNJets_->Fill(NJets, muAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuRecoNJets_->Fill(NJets, muRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuIsoNJets_->Fill(NJets, muIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuAccBTag_->Fill(i, muAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuRecoBTag_->Fill(i, muRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuIsoBTag_->Fill(i, muIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuAccHT_->Fill(HT, muAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuRecoHT_->Fill(HT, muRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuIsoHT_->Fill(HT, muIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuAccMHT_->Fill(MHT, muAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuRecoMHT_->Fill(MHT, muRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSMuIsoMHT_->Fill(MHT, muIsoWeight*scaleFactorWeightBtagProb);
-            totalPreMuAcc+=muAccWeight*scaleFactorWeightBtagProb/2;
-            totalPreMuReco+=muRecoWeight*scaleFactorWeightBtagProb/2;
-            totalPreMuIso+=muIsoWeight*scaleFactorWeightBtagProb/2;
-            totalPreMuMuAcc+=muAccWeight*scaleFactorWeightBtagProb;
-            totalPreMuMuReco+=muRecoWeight*scaleFactorWeightBtagProb;
-            totalPreMuMuIso+=muIsoWeight*scaleFactorWeightBtagProb;
+            totalPredictionMuCSMuAcc_->Fill(Bin_bTags.at(i), totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuReco_->Fill(Bin_bTags.at(i), totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuIso_->Fill(Bin_bTags.at(i), totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuAccNJets_->Fill(NJets, totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuRecoNJets_->Fill(NJets, totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuIsoNJets_->Fill(NJets, totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuAccBTag_->Fill(i, totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuRecoBTag_->Fill(i, totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuIsoBTag_->Fill(i, totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuAccHT_->Fill(HT, totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuRecoHT_->Fill(HT, totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuIsoHT_->Fill(HT, totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuAccMHT_->Fill(MHT, totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuRecoMHT_->Fill(MHT, totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSMuIsoMHT_->Fill(MHT, totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPreMuAcc+=totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb/2;
+            totalPreMuReco+=totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb/2;
+            totalPreMuIso+=totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb/2;
+            totalPreMuMuAcc+=totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb;
+            totalPreMuMuReco+=totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb;
+            totalPreMuMuIso+=totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb;
                 
-            totalPredictionMuCSElecAcc_->Fill(Bin_bTags.at(i), elecAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecReco_->Fill(Bin_bTags.at(i), elecRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecIso_->Fill(Bin_bTags.at(i), elecIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecAccNJets_->Fill(NJets, elecAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecRecoNJets_->Fill(NJets, elecRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecIsoNJets_->Fill(NJets, elecIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecAccBTag_->Fill(i, elecAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecRecoBTag_->Fill(i, elecRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecIsoBTag_->Fill(i, elecIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecAccHT_->Fill(HT, elecAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecRecoHT_->Fill(HT, elecRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecIsoHT_->Fill(HT, elecIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecAccMHT_->Fill(MHT, elecAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecRecoMHT_->Fill(MHT, elecRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionMuCSElecIsoMHT_->Fill(MHT, elecIsoWeight*scaleFactorWeightBtagProb);
-            totalPreElecAcc+=elecAccWeight*scaleFactorWeightBtagProb/2;
-            totalPreElecReco+=elecRecoWeight*scaleFactorWeightBtagProb/2;
-            totalPreElecIso+=elecIsoWeight*scaleFactorWeightBtagProb/2;
-            totalPreMuElecAcc+=elecAccWeight*scaleFactorWeightBtagProb;
-            totalPreMuElecReco+=elecRecoWeight*scaleFactorWeightBtagProb;
-            totalPreMuElecIso+=elecIsoWeight*scaleFactorWeightBtagProb;
+            totalPredictionMuCSElecAcc_->Fill(Bin_bTags.at(i), totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecReco_->Fill(Bin_bTags.at(i), totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecIso_->Fill(Bin_bTags.at(i), totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecAccNJets_->Fill(NJets, totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecRecoNJets_->Fill(NJets, totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecIsoNJets_->Fill(NJets, totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecAccBTag_->Fill(i, totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecRecoBTag_->Fill(i, totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecIsoBTag_->Fill(i, totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecAccHT_->Fill(HT, totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecRecoHT_->Fill(HT, totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecIsoHT_->Fill(HT, totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecAccMHT_->Fill(MHT, totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecRecoMHT_->Fill(MHT, totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuCSElecIsoMHT_->Fill(MHT, totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPreElecAcc+=totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb/2;
+            totalPreElecReco+=totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb/2;
+            totalPreElecIso+=totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb/2;
+            totalPreMuElecAcc+=totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb;
+            totalPreMuElecReco+=totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb;
+            totalPreMuElecIso+=totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb;
 
           }if(ElectronsNum == 1){
             totalPredictionElec_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb);
@@ -979,49 +1024,49 @@ void Closure(string InputPath_Expectation="Expectation.root",
             totalPreIsoTrackElecError+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb*totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb;
 
 
-            totalPredictionElecCSElecAcc_->Fill(Bin_bTags.at(i), elecAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecReco_->Fill(Bin_bTags.at(i), elecRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecIso_->Fill(Bin_bTags.at(i), elecIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecAccNJets_->Fill(NJets, elecAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecRecoNJets_->Fill(NJets, elecRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecIsoNJets_->Fill(NJets, elecIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecAccBTag_->Fill(i, elecAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecRecoBTag_->Fill(i, elecRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecIsoBTag_->Fill(i, elecIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecAccHT_->Fill(HT, elecAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecRecoHT_->Fill(HT, elecRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecIsoHT_->Fill(HT, elecIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecAccMHT_->Fill(MHT, elecAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecRecoMHT_->Fill(MHT, elecRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSElecIsoMHT_->Fill(MHT, elecIsoWeight*scaleFactorWeightBtagProb);
-            totalPreElecAcc+=elecAccWeight*scaleFactorWeightBtagProb/2;
-            totalPreElecReco+=elecRecoWeight*scaleFactorWeightBtagProb/2;
-            totalPreElecIso+=elecIsoWeight*scaleFactorWeightBtagProb/2;
-            totalPreElecElecAcc+=elecAccWeight*scaleFactorWeightBtagProb;
-            totalPreElecElecReco+=elecRecoWeight*scaleFactorWeightBtagProb;
-            totalPreElecElecIso+=elecIsoWeight*scaleFactorWeightBtagProb;
+            totalPredictionElecCSElecAcc_->Fill(Bin_bTags.at(i), totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecReco_->Fill(Bin_bTags.at(i), totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecIso_->Fill(Bin_bTags.at(i), totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecAccNJets_->Fill(NJets, totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecRecoNJets_->Fill(NJets, totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecIsoNJets_->Fill(NJets, totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecAccBTag_->Fill(i, totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecRecoBTag_->Fill(i, totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecIsoBTag_->Fill(i, totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecAccHT_->Fill(HT, totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecRecoHT_->Fill(HT, totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecIsoHT_->Fill(HT, totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecAccMHT_->Fill(MHT, totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecRecoMHT_->Fill(MHT, totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSElecIsoMHT_->Fill(MHT, totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPreElecAcc+=totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb/2;
+            totalPreElecReco+=totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb/2;
+            totalPreElecIso+=totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb/2;
+            totalPreElecElecAcc+=totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb;
+            totalPreElecElecReco+=totalWeight_BTags_ElecReco_->at(i)*scaleFactorWeightBtagProb;
+            totalPreElecElecIso+=totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb;
                     
-            totalPredictionElecCSMuAcc_->Fill(Bin_bTags.at(i), muAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuReco_->Fill(Bin_bTags.at(i), muRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuIso_->Fill(Bin_bTags.at(i), muIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuAccNJets_->Fill(NJets, muAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuRecoNJets_->Fill(NJets, muRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuIsoNJets_->Fill(NJets, muIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuAccBTag_->Fill(i, muAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuRecoBTag_->Fill(i, muRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuIsoBTag_->Fill(i, muIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuAccHT_->Fill(HT, muAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuRecoHT_->Fill(HT, muRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuIsoHT_->Fill(HT, muIsoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuAccMHT_->Fill(MHT, muAccWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuRecoMHT_->Fill(MHT, muRecoWeight*scaleFactorWeightBtagProb);
-            totalPredictionElecCSMuIsoMHT_->Fill(MHT, muIsoWeight*scaleFactorWeightBtagProb);
-            totalPreMuAcc+=muAccWeight*scaleFactorWeightBtagProb/2;
-            totalPreMuReco+=muRecoWeight*scaleFactorWeightBtagProb/2;
-            totalPreMuIso+=muIsoWeight*scaleFactorWeightBtagProb/2;
-            totalPreElecMuAcc+=muAccWeight*scaleFactorWeightBtagProb;
-            totalPreElecMuReco+=muRecoWeight*scaleFactorWeightBtagProb;
-            totalPreElecMuIso+=muIsoWeight*scaleFactorWeightBtagProb;
+            totalPredictionElecCSMuAcc_->Fill(Bin_bTags.at(i), totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuReco_->Fill(Bin_bTags.at(i), totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuIso_->Fill(Bin_bTags.at(i), totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuAccNJets_->Fill(NJets, totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuRecoNJets_->Fill(NJets, totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuIsoNJets_->Fill(NJets, totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuAccBTag_->Fill(i, totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuRecoBTag_->Fill(i, totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuIsoBTag_->Fill(i, totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuAccHT_->Fill(HT, totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuRecoHT_->Fill(HT, totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuIsoHT_->Fill(HT, totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuAccMHT_->Fill(MHT, totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuRecoMHT_->Fill(MHT, totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecCSMuIsoMHT_->Fill(MHT, totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb);
+            totalPreMuAcc+=totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb/2;
+            totalPreMuReco+=totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb/2;
+            totalPreMuIso+=totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb/2;
+            totalPreElecMuAcc+=totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb;
+            totalPreElecMuReco+=totalWeight_BTags_MuReco_->at(i)*scaleFactorWeightBtagProb;
+            totalPreElecMuIso+=totalWeight_BTags_MuIso_->at(i)*scaleFactorWeightBtagProb;
           }
       }
     }
@@ -1072,6 +1117,9 @@ void Closure(string InputPath_Expectation="Expectation.root",
   SaveClosure(totalPredictionElecWoIso_, totalExpectationWoIso_, dClosures);
 
   SaveClosure(totalPredictionDiLep_, totalExpectationDiLep_, dClosures);
+
+  SaveClosure(totalPredictionMuMTW_, totalExpectationMuMTW_, dClosures);
+  SaveClosure(totalPredictionElecMTW_, totalExpectationElecMTW_, dClosures);
 
   SaveClosure(totalPrediction_HT_, totalExpectation_HT_, dClosures);    
   SaveClosure(totalPrediction_MHT_, totalExpectation_MHT_, dClosures);    

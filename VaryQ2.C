@@ -199,9 +199,9 @@ double calcEnvMax(TH1D* hist){
 
 
 void VaryQ2(){
-	TString outName("AcceptanceUncertainty/Q2uncertainty_down.root");
+	TString outName("AcceptanceUncertainty/Q2uncertainty_up.root");
 	// lower/upper uncertainty
-	bool lower = true;
+	bool lower = false;
 
 	bool showRatio = true;
 

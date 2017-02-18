@@ -128,12 +128,19 @@ void Prediction::SlaveBegin(TTree * /*tree*/)
   ElecAccSearchBins_ = new TH1Eff("ElecAccSearchBins", EffInputFolder);
   MuMTWSearchBins_ = new TH1Eff("MuMTWSearchBins", EffInputFolder);
   ElecMTWSearchBins_ = new TH1Eff("ElecMTWSearchBins", EffInputFolder);
-  IsoTrackVetoSearchBins_ = new TH1Eff("IsoTrackVetoSearchBins", EffInputFolder);
-  MuIsoTrackVetoSearchBins_ = new TH1Eff("MuIsoTrackVetoSearchBins", EffInputFolder);
-  ElecIsoTrackVetoSearchBins_ = new TH1Eff("ElecIsoTrackVetoSearchBins", EffInputFolder);
-  PionIsoTrackVetoSearchBins_ = new TH1Eff("PionIsoTrackVetoSearchBins", EffInputFolder);
   MuDiLepCRSearchBins_ = new TH1Eff("MuDiLepCRSearchBins", EffInputFolder);
   ElecDiLepCRSearchBins_ = new TH1Eff("ElecDiLepCRSearchBins", EffInputFolder);
+  if(!runOnData){
+    IsoTrackVetoSearchBins_ = new TH1Eff("IsoTrackVetoSearchBins", EffInputFolder);
+    MuIsoTrackVetoSearchBins_ = new TH1Eff("MuIsoTrackVetoSearchBins", EffInputFolder);
+    ElecIsoTrackVetoSearchBins_ = new TH1Eff("ElecIsoTrackVetoSearchBins", EffInputFolder);
+    PionIsoTrackVetoSearchBins_ = new TH1Eff("PionIsoTrackVetoSearchBins", EffInputFolder);
+  }else{
+    IsoTrackVetoSearchBins_ = new TH1Eff("IsoTrackVetoSearchBinsSF", EffInputFolder);
+    MuIsoTrackVetoSearchBins_ = new TH1Eff("MuIsoTrackVetoSearchBinsSF", EffInputFolder);
+    ElecIsoTrackVetoSearchBins_ = new TH1Eff("ElecIsoTrackVetoSearchBinsSF", EffInputFolder);
+    PionIsoTrackVetoSearchBins_ = new TH1Eff("PionIsoTrackVetoSearchBinsSF", EffInputFolder);
+  }
 
  
   tPrediction_ = new TTree("LostLeptonPrediction","a simple Tree with simple variables");
@@ -1566,7 +1573,12 @@ void Prediction::SlaveTerminate()
   //SearchBinsQCD_->PrintUsed();
 
   std::cout<<"--- Search bins ---"<<std::endl;
-  SearchBins_->PrintUsed();  
+  SearchBins_->PrintUsed();
+
+  std::cout<<"--- Efficiency of RA2b BadMuon Filter ---"<<std::endl; 
+  std::cout<<"nMuCS: "<<nMuCS<<std::endl; 
+  std::cout<<"nMuVeto: "<<nMuVeto<<" ("<<double(nMuVeto)/double(nMuCS)<<")"<<std::endl; 
+  std::cout<<"nMuVetoMatch: "<<nMuVetoMatch<<" ("<<double(nMuVetoMatch)/double(nMuCS)<<")"<<std::endl; 
 }
 
 void Prediction::Terminate()
@@ -1652,10 +1664,17 @@ bool Prediction::FiltersPass()
   // Preliminary filters
   if(PFCaloMETRatio>5) result=false;
 
+  // Check efficiency of filter
+  if(MuonsNum_ == 1) nMuCS++;
+  else if(ElectronsNum_ == 1) nElecCS++;
   for(unsigned j = 0; j < Jets->size(); j++){
     if(TMath::IsNaN(Jets->at(j).Phi()-METPhi)) result=false;
     if(Jets->at(j).Pt()>200 && Jets_muonEnergyFraction->at(j)>0.5 && (TVector2::Phi_mpi_pi(Jets->at(j).Phi()-METPhi)>(TMath::Pi()-0.4))){
       //std::cout<<"found bad muon jet"<<std::endl;
+      if(MuonsNum_ == 1){
+        nMuVeto++;
+        if(Jets->at(j).DeltaR(Muons->at(0)) < 0.3) nMuVetoMatch++;
+      }else if(ElectronsNum_ == 1) nElecVeto++;
       result=false;
     }
   }

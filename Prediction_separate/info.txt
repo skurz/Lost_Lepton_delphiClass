@@ -1,1 +1,1 @@
-Folder for Prediction.root files from SM MC 
+Folder for root files

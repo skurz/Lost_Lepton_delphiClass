@@ -1,3 +1,6 @@
+#ifndef SEARCHBINS_H
+#define SEARCHBINS_H
+
 #include "TVector2.h"
 #include <iostream>
 #include <vector>
@@ -272,3 +275,5 @@ void SearchBins::PrintUsed()
   std::cout<<"Total: "<<total<<std::endl;
   std::cout<<"Skipped events (passed baseline but no search bin)/total: "<<nSkipped<<"/"<<nSkipped+total<<std::endl;
 }
+
+#endif

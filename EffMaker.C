@@ -39,6 +39,11 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   PionIsoTrackVetoSearchBins_ = new TH1Eff("PionIsoTrackVetoSearchBins","PionIsoTrackVetoSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
   IsoTrackVetoSearchBins_ = new TH1Eff("IsoTrackVetoSearchBins","IsoTrackVetoSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
 
+  MuIsoTrackVetoSearchBinsSF_ = new TH1Eff("MuIsoTrackVetoSearchBinsSF","MuIsoTrackVetoSearchBinsSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecIsoTrackVetoSearchBinsSF_ = new TH1Eff("ElecIsoTrackVetoSearchBinsSF","ElecIsoTrackVetoSearchBinsSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  PionIsoTrackVetoSearchBinsSF_ = new TH1Eff("PionIsoTrackVetoSearchBinsSF","PionIsoTrackVetoSearchBinsSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  IsoTrackVetoSearchBinsSF_ = new TH1Eff("IsoTrackVetoSearchBinsSF","IsoTrackVetoSearchBinsSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+
   MuMTWSearchBins_ = new TH1Eff("MuMTWSearchBins","MuMTWSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
   ElecMTWSearchBins_ = new TH1Eff("ElecMTWSearchBins","ElecMTWSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
 
@@ -124,6 +129,36 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecIsoTrackVetoSearchBinsElecIso_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecIso","ElecIsoTrackVetoSearchBinsElecIso", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
   PionIsoTrackVetoSearchBinsElecIso_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecIso","PionIsoTrackVetoSearchBinsElecIso", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
 
+  IsoTrackVetoSearchBinsMuAccSF_ = new TH1Eff("IsoTrackVetoSearchBinsMuAccSF","IsoTrackVetoSearchBinsMuAccSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  MuIsoTrackVetoSearchBinsMuAccSF_ = new TH1Eff("MuIsoTrackVetoSearchBinsMuAccSF","MuIsoTrackVetoSearchBinsMuAccSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecIsoTrackVetoSearchBinsMuAccSF_ = new TH1Eff("ElecIsoTrackVetoSearchBinsMuAccSF","ElecIsoTrackVetoSearchBinsMuAccSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  PionIsoTrackVetoSearchBinsMuAccSF_ = new TH1Eff("PionIsoTrackVetoSearchBinsMuAccSF","PionIsoTrackVetoSearchBinsMuAccSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+
+  IsoTrackVetoSearchBinsMuIDSF_ = new TH1Eff("IsoTrackVetoSearchBinsMuIDSF","IsoTrackVetoSearchBinsMuIDSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  MuIsoTrackVetoSearchBinsMuIDSF_ = new TH1Eff("MuIsoTrackVetoSearchBinsMuIDSF","MuIsoTrackVetoSearchBinsMuIDSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecIsoTrackVetoSearchBinsMuIDSF_ = new TH1Eff("ElecIsoTrackVetoSearchBinsMuIDSF","ElecIsoTrackVetoSearchBinsMuIDSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  PionIsoTrackVetoSearchBinsMuIDSF_ = new TH1Eff("PionIsoTrackVetoSearchBinsMuIDSF","PionIsoTrackVetoSearchBinsMuIDSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+
+  IsoTrackVetoSearchBinsMuIsoSF_ = new TH1Eff("IsoTrackVetoSearchBinsMuIsoSF","IsoTrackVetoSearchBinsMuIsoSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  MuIsoTrackVetoSearchBinsMuIsoSF_ = new TH1Eff("MuIsoTrackVetoSearchBinsMuIsoSF","MuIsoTrackVetoSearchBinsMuIsoSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecIsoTrackVetoSearchBinsMuIsoSF_ = new TH1Eff("ElecIsoTrackVetoSearchBinsMuIsoSF","ElecIsoTrackVetoSearchBinsMuIsoSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  PionIsoTrackVetoSearchBinsMuIsoSF_ = new TH1Eff("PionIsoTrackVetoSearchBinsMuIsoSF","PionIsoTrackVetoSearchBinsMuIsoSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+
+  IsoTrackVetoSearchBinsElecAccSF_ = new TH1Eff("IsoTrackVetoSearchBinsElecAccSF","IsoTrackVetoSearchBinsElecAccSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  MuIsoTrackVetoSearchBinsElecAccSF_ = new TH1Eff("MuIsoTrackVetoSearchBinsElecAccSF","MuIsoTrackVetoSearchBinsElecAccSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecIsoTrackVetoSearchBinsElecAccSF_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecAccSF","ElecIsoTrackVetoSearchBinsElecAccSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  PionIsoTrackVetoSearchBinsElecAccSF_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecAccSF","PionIsoTrackVetoSearchBinsElecAccSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+
+  IsoTrackVetoSearchBinsElecIDSF_ = new TH1Eff("IsoTrackVetoSearchBinsElecIDSF","IsoTrackVetoSearchBinsElecIDSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  MuIsoTrackVetoSearchBinsElecIDSF_ = new TH1Eff("MuIsoTrackVetoSearchBinsElecIDSF","MuIsoTrackVetoSearchBinsElecIDSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecIsoTrackVetoSearchBinsElecIDSF_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecIDSF","ElecIsoTrackVetoSearchBinsElecIDSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  PionIsoTrackVetoSearchBinsElecIDSF_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecIDSF","PionIsoTrackVetoSearchBinsElecIDSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+
+  IsoTrackVetoSearchBinsElecIsoSF_ = new TH1Eff("IsoTrackVetoSearchBinsElecIsoSF","IsoTrackVetoSearchBinsElecIsoSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  MuIsoTrackVetoSearchBinsElecIsoSF_ = new TH1Eff("MuIsoTrackVetoSearchBinsElecIsoSF","MuIsoTrackVetoSearchBinsElecIsoSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecIsoTrackVetoSearchBinsElecIsoSF_ = new TH1Eff("ElecIsoTrackVetoSearchBinsElecIsoSF","ElecIsoTrackVetoSearchBinsElecIsoSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  PionIsoTrackVetoSearchBinsElecIsoSF_ = new TH1Eff("PionIsoTrackVetoSearchBinsElecIsoSF","PionIsoTrackVetoSearchBinsElecIsoSF", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+
   IsoTrackVetoActivityPtMuIDIso_ = new TH2Eff("IsoTrackVetoActivityPtMuIDIso","IsoTrackVetoActivityPtMuIDIso", twoDActivity_-1, TwoDActivity_, twoDPT_-1, TwoDPT_);
   MuIsoTrackVetoActivityPtMuIDIso_ = new TH2Eff("MuIsoTrackVetoActivityPtMuIDIso","MuIsoTrackVetoActivityPtMuIDIso", twoDActivity_-1, TwoDActivity_, twoDPT_-1, TwoDPT_);
   ElecIsoTrackVetoActivityPtMuIDIso_ = new TH2Eff("ElecIsoTrackVetoActivityPtMuIDIso","ElecIsoTrackVetoActivityPtMuIDIso", twoDActivity_-1, TwoDActivity_, twoDPT_-1, TwoDPT_);
@@ -194,6 +229,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuPurityOldMHT_ = new TH1Eff("MuPurityOldMHT1D","MuPurityOldMHT1D",oneDMHT_-1,OneDMHT_);
   //2D
   MuonPurityOldMHTNJet_ = new TH2Eff("MuonPurityOldMHTNJet","MuonPurityOldMHTNJet",twoDMHT_-1,TwoDMHT_,twoDNJets_-1,TwoDNJets_);
+  MuonPurityOldNJetsBTags_ = new TH2Eff("MuonPurityOldNJetsBTags","MuonPurityOldNJetsBTags",twoDNJets_-1,TwoDNJets_,twoDBJets_-1,TwoDBJets_);
   
   // electron
   //1D
@@ -203,6 +239,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecPurityOldMHT_ = new TH1Eff("ElecPurityOldMHT1D","ElecPurityOldMHT1D",oneDMHT_-1,OneDMHT_);
   //2D
   ElecPurityOldMHTNJet_ = new TH2Eff("ElecPurityOldMHTNJet","ElecPurityOldMHTNJet",twoDMHT_-1,TwoDMHT_,twoDNJets_-1,TwoDNJets_);
+  ElecPurityOldNJetsBTags_ = new TH2Eff("ElecPurityOldNJetsBTags","ElecPurityOldNJetsBTags",twoDNJets_-1,TwoDNJets_,twoDBJets_-1,TwoDBJets_);
   
   // purity x-check
 
@@ -631,6 +668,15 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecRecoActivityPT_ = new TH2Eff("ElecRecoActivityPT","ElecRecoActivityPT", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
   MuRecoPTEta_ = new TH2Eff("MuRecoPTEta","MuRecoPTEta", twoDPT_-1,TwoDPT_, twoDEtaMu_-1,TwoDEtaMu_);
   ElecRecoPTEta_ = new TH2Eff("ElecRecoPTEta","ElecRecoPTEta", twoDPT_-1,TwoDPT_, twoDEtaElec_-1,TwoDEtaElec_);
+
+  MuRecoPTEtaBTags0_ = new TH2Eff("MuRecoPTEtaBTags0","MuRecoPTEtaBTags0", twoDPT_-1,TwoDPT_, twoDEtaMu_-1,TwoDEtaMu_);
+  ElecRecoPTEtaBTags0_ = new TH2Eff("ElecRecoPTEtaBTags0","ElecRecoPTEtaBTags0", twoDPT_-1,TwoDPT_, twoDEtaElec_-1,TwoDEtaElec_);
+  MuRecoPTEtaBTags1Inf_ = new TH2Eff("MuRecoPTEtaBTags1Inf","MuRecoPTEtaBTags1Inf", twoDPT_-1,TwoDPT_, twoDEtaMu_-1,TwoDEtaMu_);
+  ElecRecoPTEtaBTags1Inf_ = new TH2Eff("ElecRecoPTEtaBTags1Inf","ElecRecoPTEtaBTags1Inf", twoDPT_-1,TwoDPT_, twoDEtaElec_-1,TwoDEtaElec_);
+  MuIsoActivityPTBTags0_ = new TH2Eff("MuIsoActivityPTBTags0","MuIsoActivityPTBTags0", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
+  ElecIsoActivityPTBTags0_ = new TH2Eff("ElecIsoActivityPTBTags0","ElecIsoActivityPTBTags0", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
+  MuIsoActivityPTBTags1Inf_ = new TH2Eff("MuIsoActivityPTBTags1Inf","MuIsoActivityPTBTags1Inf", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
+  ElecIsoActivityPTBTags1Inf_ = new TH2Eff("ElecIsoActivityPTBTags1Inf","ElecIsoActivityPTBTags1Inf", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
   
   // mtw 2d
   MuMTWPTActivity_ = new TH2Eff("MuMTWPTActivity","MuMTWPTActivity",twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
@@ -911,7 +957,8 @@ Bool_t EffMaker::Process(Long64_t entry)
 
   if(Bin > 900 && BinQCD > 900) return kTRUE;
 
-  if(Weight<0) Weight*=-1;
+  //if(Weight<0) Weight*=-1;
+  if(Weight<0) return kTRUE;
 
   // Fill events 4 times if using bTag probabilities
   int nLoops = 4;
@@ -995,7 +1042,7 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecPuritySearchBins_->Fill(BinQCD, WeightBTagProb, false);
   }
 
-  if(MuonsNum==1 && ElectronsNum==0){
+  if(MuonsNum==1 && ElectronsNum==0 && MTW < mtwCut_){
       //cout << "muon event" << endl;
       if(MuonsPromptMatched->at(0)==1){
           // cout << "PromptMatched" << endl;
@@ -1008,6 +1055,7 @@ Bool_t EffMaker::Process(Long64_t entry)
           MuPurityOldActivity_->Fill(Muons_MT2Activity->at(0),WeightBTagProb,true);
           //2D
           MuonPurityOldMHTNJet_->Fill(MHT,NJets,WeightBTagProb,true);
+          MuonPurityOldNJetsBTags_->Fill(NJets,BTags,WeightBTagProb,true);
       }
       if(MuonsPromptMatched->at(0)==0){
           //1D
@@ -1019,11 +1067,12 @@ Bool_t EffMaker::Process(Long64_t entry)
           MuPurityOldActivity_->Fill(Muons_MT2Activity->at(0),WeightBTagProb,false);
           //2D
           MuonPurityOldMHTNJet_->Fill(MHT,NJets,WeightBTagProb,false);
+          MuonPurityOldNJetsBTags_->Fill(NJets,BTags,WeightBTagProb,false);
       }
   }
 
   // single elec control sample
-  if(MuonsNum==0 && ElectronsNum==1){
+  if(MuonsNum==0 && ElectronsNum==1 && MTW < mtwCut_){
       if(ElectronsPromptMatched->at(0)==1){
           //1D
           ElecPurityOldBTag_->Fill(BTags,WeightBTagProb,true);
@@ -1034,6 +1083,7 @@ Bool_t EffMaker::Process(Long64_t entry)
           ElecPurityOldActivity_->Fill(Electrons_MT2Activity->at(0),WeightBTagProb,true);
           //2D
           ElecPurityOldMHTNJet_->Fill(MHT,NJets,WeightBTagProb,true);
+          ElecPurityOldNJetsBTags_->Fill(NJets,BTags,WeightBTagProb,true);
       }
       if(ElectronsPromptMatched->at(0)==0){
           //1D
@@ -1045,6 +1095,7 @@ Bool_t EffMaker::Process(Long64_t entry)
           ElecPurityOldActivity_->Fill(Electrons_MT2Activity->at(0),WeightBTagProb,false);
           //2D
           ElecPurityOldMHTNJet_->Fill(MHT,NJets,WeightBTagProb,false);
+          ElecPurityOldNJetsBTags_->Fill(NJets,BTags,WeightBTagProb,false);
       }
   }
 
@@ -1454,7 +1505,13 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       MuRecoActivityPT_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
       //MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,true);
-      MuRecoPTEta_->Fill(GenMuons->at(0).Pt(),std::abs(GenMuons->at(0).Eta()),WeightBTagProb,true);
+      MuRecoPTEta_->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,true);
+
+      if(BTags == 0){
+      	MuRecoPTEtaBTags0_->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,true);
+      }else{
+      	MuRecoPTEtaBTags1Inf_->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,true);
+      }
   }
 
   if(muReco==0){
@@ -1470,7 +1527,13 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       MuRecoActivityPT_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
       //MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,false);
-      MuRecoPTEta_->Fill(GenMuons->at(0).Pt(),std::abs(GenMuons->at(0).Eta()),WeightBTagProb,false);
+      MuRecoPTEta_->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,false);
+
+      if(BTags == 0){
+      	MuRecoPTEtaBTags0_->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,false);
+      }else{
+      	MuRecoPTEtaBTags1Inf_->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,false);
+      }
   }
   
   // single elecon control sample
@@ -1487,7 +1550,13 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       ElecRecoActivityPT_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
       //ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,true);
-      ElecRecoPTEta_->Fill(GenElectrons->at(0).Pt(),std::abs(GenElectrons->at(0).Eta()),WeightBTagProb,true);
+      ElecRecoPTEta_->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,true);
+
+      if(BTags == 0){
+      	ElecRecoPTEtaBTags0_->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,true);
+      }else{
+      	ElecRecoPTEtaBTags1Inf_->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,true);
+      }
   }
 
   if(elecReco==0){
@@ -1503,7 +1572,13 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       ElecRecoActivityPT_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
       //ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,false);
-      ElecRecoPTEta_->Fill(GenElectrons->at(0).Pt(),std::abs(GenElectrons->at(0).Eta()),WeightBTagProb,false);
+      ElecRecoPTEta_->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,false);
+
+      if(BTags == 0){
+      	ElecRecoPTEtaBTags0_->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,false);
+      }else{
+      	ElecRecoPTEtaBTags1Inf_->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,false);
+      }
   }
   
   // isolation
@@ -1521,6 +1596,12 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       MuIsoActivityPT_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
       //MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,true);
+
+      if(BTags == 0){
+      	MuIsoActivityPTBTags0_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
+      }else{
+      	MuIsoActivityPTBTags1Inf_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
+      }
   }
 
   if(muIso==0){
@@ -1536,6 +1617,12 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       MuIsoActivityPT_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
       //MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,false);
+
+      if(BTags == 0){
+      	MuIsoActivityPTBTags0_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
+      }else{
+      	MuIsoActivityPTBTags1Inf_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
+      }
   }
   
   // single elecon control sample
@@ -1552,6 +1639,12 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       ElecIsoActivityPT_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
       //ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,true);
+
+      if(BTags == 0){
+      	ElecIsoActivityPTBTags0_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
+      }else{
+      	ElecIsoActivityPTBTags1Inf_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
+      }
   }
 
   if(elecIso==0){
@@ -1567,6 +1660,12 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       ElecIsoActivityPT_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
       //ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,false);
+
+      if(BTags == 0){
+      	ElecIsoActivityPTBTags0_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
+      }else{
+      	ElecIsoActivityPTBTags1Inf_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
+      }
   }
 
   // mtw
@@ -2066,6 +2165,11 @@ Bool_t EffMaker::Process(Long64_t entry)
             IsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, false);
         }
 
+        MuIsoTrackVetoSearchBinsSF_->FillFrac(BinQCD, WeightBTagProb, false);
+        ElecIsoTrackVetoSearchBinsSF_->FillFrac(BinQCD, WeightBTagProb, false);
+        PionIsoTrackVetoSearchBinsSF_->FillFrac(BinQCD, WeightBTagProb, false);
+        IsoTrackVetoSearchBinsSF_->FillFrac(BinQCD, WeightBTagProb, false);
+
 
         // muon iso tracks
         if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
@@ -2121,6 +2225,11 @@ Bool_t EffMaker::Process(Long64_t entry)
               IsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, true);
               IsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, false);
             }
+
+            double trackingSF = GetSF(h_muTrkHighPtSF, isoMuonTracks->at(0).Eta());
+            if(isoMuonTracks->at(0).Pt() < 10) trackingSF = GetSF(h_muTrkLowPtSF, isoMuonTracks->at(0).Eta());
+            MuIsoTrackVetoSearchBinsSF_->FillFrac(BinQCD, WeightBTagProb*trackingSF, true);
+            IsoTrackVetoSearchBinsSF_->FillFrac(BinQCD, WeightBTagProb*trackingSF, true);
             // cout << "DONE" << endl;
         }else{
             // cout << "Muon tracks not found...";
@@ -2219,6 +2328,10 @@ Bool_t EffMaker::Process(Long64_t entry)
               IsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, true);
               IsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, false);
             }
+
+            double trackingSF = GetSF(h_elecTrkSF, isoElectronTracks->at(0).Eta(), isoElectronTracks->at(0).Pt());
+            ElecIsoTrackVetoSearchBinsSF_->FillFrac(BinQCD, WeightBTagProb*trackingSF, true);
+            IsoTrackVetoSearchBinsSF_->FillFrac(BinQCD, WeightBTagProb*trackingSF, true);
             // cout << "DONE" << endl;    
         }else{
             // cout << "Electron tracks not found...";
@@ -2315,6 +2428,10 @@ Bool_t EffMaker::Process(Long64_t entry)
               IsoTrackVetoSearchBinsHighPt_->Fill(BinQCD, WeightBTagProb, true);
               IsoTrackVetoSearchBinsLowPt_->Fill(BinQCD, WeightBTagProb, false);
             }
+
+            double trackingSF = 1;
+            PionIsoTrackVetoSearchBinsSF_->FillFrac(BinQCD, WeightBTagProb*trackingSF, true);
+            IsoTrackVetoSearchBinsSF_->FillFrac(BinQCD, WeightBTagProb*trackingSF, true);
             // cout << "DONE" << endl;    
         }else{
             // cout << "Pion tracks not found...";
@@ -2358,72 +2475,110 @@ Bool_t EffMaker::Process(Long64_t entry)
         }
 
         if(muAcc==0 || elecAcc==0){
-        	if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,true);
-        	else IsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,false);
+          if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,true);
+          else IsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,false);
 
-        	if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,true);
-        	else MuIsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,false);
+          if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,true);
+          else MuIsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,false);
 
-        	if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,true);
-        	else ElecIsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,false);
+          if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,true);
+          else ElecIsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,false);
 
-        	if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,true);
-        	else PionIsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,false);
+          if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,true);
+          else PionIsoTrackVetoSearchBinsAcc_->Fill(BinQCD,WeightBTagProb,false);
 
-        	if(muAcc == 0){
-        		if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,true);
-	        	else IsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,false);
+          if(muAcc == 0){
+            double trackingSF = 1;
+            IsoTrackVetoSearchBinsMuAccSF_->FillFrac(BinQCD,WeightBTagProb,false);
+            MuIsoTrackVetoSearchBinsMuAccSF_->FillFrac(BinQCD,WeightBTagProb,false);
+            ElecIsoTrackVetoSearchBinsMuAccSF_->FillFrac(BinQCD,WeightBTagProb,false);
+            PionIsoTrackVetoSearchBinsMuAccSF_->FillFrac(BinQCD,WeightBTagProb,false);
 
-	        	if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,true);
-	        	else MuIsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,false);
+            if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,true);
+            else IsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,true);
-	        	else ElecIsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+              MuIsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,true);
+              if(isoMuonTracks->at(0).Pt() > 10) trackingSF = GetSF(h_muTrkHighPtSF, isoMuonTracks->at(0).Eta());
+              else trackingSF = GetSF(h_muTrkLowPtSF, isoMuonTracks->at(0).Eta());
+              MuIsoTrackVetoSearchBinsMuAccSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              IsoTrackVetoSearchBinsMuAccSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+            }else MuIsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,true);
-	        	else PionIsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,false);
-        	}
+            if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+              ElecIsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,true);
+              trackingSF = GetSF(h_elecTrkSF, isoElectronTracks->at(0).Eta(), isoElectronTracks->at(0).Pt());
+              ElecIsoTrackVetoSearchBinsMuAccSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              IsoTrackVetoSearchBinsMuAccSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+            }else ElecIsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,false);
 
-        	if(elecAcc == 0){
-        		if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,true);
-	        	else IsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+              PionIsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,true);
+              trackingSF = 1;
+              PionIsoTrackVetoSearchBinsMuAccSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              IsoTrackVetoSearchBinsMuAccSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+            }else PionIsoTrackVetoSearchBinsMuAcc_->Fill(BinQCD,WeightBTagProb,false);
+          }
 
-	        	if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,true);
-	        	else MuIsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,false);
+          if(elecAcc == 0){
+            double trackingSF = 1;
+            IsoTrackVetoSearchBinsElecAccSF_->FillFrac(BinQCD,WeightBTagProb,false);
+            MuIsoTrackVetoSearchBinsElecAccSF_->FillFrac(BinQCD,WeightBTagProb,false);
+            ElecIsoTrackVetoSearchBinsElecAccSF_->FillFrac(BinQCD,WeightBTagProb,false);
+            PionIsoTrackVetoSearchBinsElecAccSF_->FillFrac(BinQCD,WeightBTagProb,false);
 
-	        	if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,true);
-	        	else ElecIsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,false);
+            if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,true);
+            else IsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,true);
-	        	else PionIsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,false);
-        	}
+            if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+              MuIsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,true);
+              if(isoMuonTracks->at(0).Pt() > 10) trackingSF = GetSF(h_muTrkHighPtSF, isoMuonTracks->at(0).Eta());
+              else trackingSF = GetSF(h_muTrkLowPtSF, isoMuonTracks->at(0).Eta());
+              MuIsoTrackVetoSearchBinsElecAccSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              IsoTrackVetoSearchBinsElecAccSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+            }else MuIsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,false);
+
+            if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+              ElecIsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,true);
+              trackingSF = GetSF(h_elecTrkSF, isoElectronTracks->at(0).Eta(), isoElectronTracks->at(0).Pt());
+              ElecIsoTrackVetoSearchBinsElecAccSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              IsoTrackVetoSearchBinsElecAccSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+            }else ElecIsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,false);
+
+            if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+              PionIsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,true);
+              trackingSF = 1;
+              PionIsoTrackVetoSearchBinsElecAccSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              IsoTrackVetoSearchBinsElecAccSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+            }else PionIsoTrackVetoSearchBinsElecAcc_->Fill(BinQCD,WeightBTagProb,false);
+          }
         }
 
         if((muAcc==2 && (muReco==0 || (muReco==2 && muIso==0))) || (elecAcc==2 && (elecReco==0 || (elecReco==2 && elecIso==0)))){
-        	if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,true);
-        	else IsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,false);
+          if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,true);
+          else IsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,false);
 
-        	if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,true);
-        	else MuIsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,false);
+          if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,true);
+          else MuIsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,false);
 
-        	if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,true);
-        	else ElecIsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,false);
+          if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,true);
+          else ElecIsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,false);
 
-        	if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,true);
-        	else PionIsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,false);
+          if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,true);
+          else PionIsoTrackVetoSearchBinsIDIso_->Fill(BinQCD,WeightBTagProb,false);
 
-        	if(muReco==0 || (muReco==2 && muIso==0)){
-        		if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,true);
-	        	else IsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,false);
+          if(muReco==0 || (muReco==2 && muIso==0)){
+            if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,true);
+            else IsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,true);
-	        	else MuIsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,true);
+            else MuIsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,true);
-	        	else ElecIsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,true);
+            else ElecIsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,true);
-	        	else PionIsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,true);
+            else PionIsoTrackVetoSearchBinsMuIDIso_->Fill(BinQCD,WeightBTagProb,false);
 
             if(ExpectationReductionIsoTrack==1) IsoTrackVetoActivityPtMuIDIso_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
             else IsoTrackVetoActivityPtMuIDIso_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
@@ -2448,20 +2603,20 @@ Bool_t EffMaker::Process(Long64_t entry)
 
             if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoPtEtaMuIDIso_->Fill(GenMuons->at(0).Pt(),std::abs(GenMuons->at(0).Eta()),WeightBTagProb,true);
             else PionIsoTrackVetoPtEtaMuIDIso_->Fill(GenMuons->at(0).Pt(),std::abs(GenMuons->at(0).Eta()),WeightBTagProb,false);
-        	}
+          }
 
-        	if(elecReco==0 || (elecReco==2 && elecIso==0)){
-        		if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,true);
-	        	else IsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,false);
+          if(elecReco==0 || (elecReco==2 && elecIso==0)){
+            if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,true);
+            else IsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,true);
-	        	else MuIsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,true);
+            else MuIsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,true);
-	        	else ElecIsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,true);
+            else ElecIsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,true);
-	        	else PionIsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,true);
+            else PionIsoTrackVetoSearchBinsElecIDIso_->Fill(BinQCD,WeightBTagProb,false);
 
             if(ExpectationReductionIsoTrack==1) IsoTrackVetoActivityPtElecIDIso_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
             else IsoTrackVetoActivityPtElecIDIso_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
@@ -2486,33 +2641,52 @@ Bool_t EffMaker::Process(Long64_t entry)
 
             if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoPtEtaElecIDIso_->Fill(GenElectrons->at(0).Pt(),std::abs(GenElectrons->at(0).Eta()),WeightBTagProb,true);
             else PionIsoTrackVetoPtEtaElecIDIso_->Fill(GenElectrons->at(0).Pt(),std::abs(GenElectrons->at(0).Eta()),WeightBTagProb,false);
-        	}
+          }
 
-        	if(muReco==0 || elecReco==0){
-	        	if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,true);
-	        	else IsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,false);
+          if(muReco==0 || elecReco==0){
+            if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,true);
+            else IsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,true);
-	        	else MuIsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,true);
+            else MuIsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,true);
-	        	else ElecIsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,true);
+            else ElecIsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,true);
-	        	else PionIsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,true);
+            else PionIsoTrackVetoSearchBinsID_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(muReco==0){
-	        		if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,true);
-		        	else IsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,false);
+            if(muReco==0){
+              double trackingSF = 1;
+              IsoTrackVetoSearchBinsMuIDSF_->FillFrac(BinQCD,WeightBTagProb,false);
+              MuIsoTrackVetoSearchBinsMuIDSF_->FillFrac(BinQCD,WeightBTagProb,false);
+              ElecIsoTrackVetoSearchBinsMuIDSF_->FillFrac(BinQCD,WeightBTagProb,false);
+              PionIsoTrackVetoSearchBinsMuIDSF_->FillFrac(BinQCD,WeightBTagProb,false);
 
-		        	if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,true);
-		        	else MuIsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,false);
+              if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,true);
+              else IsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,false);
 
-		        	if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,true);
-		        	else ElecIsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,false);
+              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                MuIsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,true);
+                if(isoMuonTracks->at(0).Pt() > 10) trackingSF = GetSF(h_muTrkHighPtSF, isoMuonTracks->at(0).Eta());
+                else trackingSF = GetSF(h_muTrkLowPtSF, isoMuonTracks->at(0).Eta());
+                MuIsoTrackVetoSearchBinsMuIDSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+                IsoTrackVetoSearchBinsMuIDSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              }else MuIsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,false);
 
-		        	if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,true);
-		        	else PionIsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,false);
+              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                ElecIsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,true);
+                trackingSF = GetSF(h_elecTrkSF, isoElectronTracks->at(0).Eta(), isoElectronTracks->at(0).Pt());
+                ElecIsoTrackVetoSearchBinsMuIDSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+                IsoTrackVetoSearchBinsMuIDSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              }else ElecIsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,false);
+
+              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                PionIsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,true);
+                trackingSF = 1;
+                PionIsoTrackVetoSearchBinsMuIDSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+                IsoTrackVetoSearchBinsMuIDSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              }else PionIsoTrackVetoSearchBinsMuID_->Fill(BinQCD,WeightBTagProb,false);
 
               if(ExpectationReductionIsoTrack==1) IsoTrackVetoActivityPtMuID_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
               else IsoTrackVetoActivityPtMuID_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
@@ -2537,20 +2711,39 @@ Bool_t EffMaker::Process(Long64_t entry)
 
               if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoPtEtaMuID_->Fill(GenMuons->at(0).Pt(),std::abs(GenMuons->at(0).Eta()),WeightBTagProb,true);
               else PionIsoTrackVetoPtEtaMuID_->Fill(GenMuons->at(0).Pt(),std::abs(GenMuons->at(0).Eta()),WeightBTagProb,false);
-	        	}
+            }
 
-	        	if(elecReco==0){
-	        		if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,true);
-		        	else IsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,false);
+            if(elecReco==0){
+              double trackingSF = 1;
+              IsoTrackVetoSearchBinsElecIDSF_->FillFrac(BinQCD,WeightBTagProb,false);
+              MuIsoTrackVetoSearchBinsElecIDSF_->FillFrac(BinQCD,WeightBTagProb,false);
+              ElecIsoTrackVetoSearchBinsElecIDSF_->FillFrac(BinQCD,WeightBTagProb,false);
+              PionIsoTrackVetoSearchBinsElecIDSF_->FillFrac(BinQCD,WeightBTagProb,false);
 
-		        	if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,true);
-		        	else MuIsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,false);
+              if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,true);
+              else IsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,false);
 
-		        	if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,true);
-		        	else ElecIsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,false);
+              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                MuIsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,true);
+                if(isoMuonTracks->at(0).Pt() > 10) trackingSF = GetSF(h_muTrkHighPtSF, isoMuonTracks->at(0).Eta());
+                else trackingSF = GetSF(h_muTrkLowPtSF, isoMuonTracks->at(0).Eta());
+                MuIsoTrackVetoSearchBinsElecIDSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+                IsoTrackVetoSearchBinsElecIDSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              }else MuIsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,false);
 
-		        	if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,true);
-		        	else PionIsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,false);
+              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                ElecIsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,true);
+                trackingSF = GetSF(h_elecTrkSF, isoElectronTracks->at(0).Eta(), isoElectronTracks->at(0).Pt());
+                ElecIsoTrackVetoSearchBinsElecIDSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+                IsoTrackVetoSearchBinsElecIDSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              }else ElecIsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,false);
+
+              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                PionIsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,true);
+                trackingSF = 1;
+                PionIsoTrackVetoSearchBinsElecIDSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+                IsoTrackVetoSearchBinsElecIDSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              }else PionIsoTrackVetoSearchBinsElecID_->Fill(BinQCD,WeightBTagProb,false);
 
               if(ExpectationReductionIsoTrack==1) IsoTrackVetoActivityPtElecID_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
               else IsoTrackVetoActivityPtElecID_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
@@ -2575,34 +2768,54 @@ Bool_t EffMaker::Process(Long64_t entry)
 
               if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoPtEtaElecID_->Fill(GenElectrons->at(0).Pt(),std::abs(GenElectrons->at(0).Eta()),WeightBTagProb,true);
               else PionIsoTrackVetoPtEtaElecID_->Fill(GenElectrons->at(0).Pt(),std::abs(GenElectrons->at(0).Eta()),WeightBTagProb,false);
-	        	}
-        	}
+            }
+          }
 
-        	if(muIso==0 || elecIso==0){
-	        	if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,true);
-	        	else IsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,false);
+          if(muIso==0 || elecIso==0){
+            if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,true);
+            else IsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,true);
-	        	else MuIsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,true);
+            else MuIsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,true);
-	        	else ElecIsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,true);
+            else ElecIsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,true);
-	        	else PionIsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,false);
+            if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,true);
+            else PionIsoTrackVetoSearchBinsIso_->Fill(BinQCD,WeightBTagProb,false);
 
-	        	if(muIso==0){
-	        		if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,true);
-		        	else IsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,false);
+            if(muIso==0){
+              double trackingSF = 1;
+              IsoTrackVetoSearchBinsMuIsoSF_->FillFrac(BinQCD,WeightBTagProb,false);
+              MuIsoTrackVetoSearchBinsMuIsoSF_->FillFrac(BinQCD,WeightBTagProb,false);
+              ElecIsoTrackVetoSearchBinsMuIsoSF_->FillFrac(BinQCD,WeightBTagProb,false);
+              PionIsoTrackVetoSearchBinsMuIsoSF_->FillFrac(BinQCD,WeightBTagProb,false);
 
-		        	if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,true);
-		        	else MuIsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,false);
+              if(ExpectationReductionIsoTrack==1){
+                IsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,true);
+              }else IsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,false);
 
-		        	if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,true);
-		        	else ElecIsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,false);
+              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                MuIsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,true);
+                if(isoMuonTracks->at(0).Pt() > 10) trackingSF = GetSF(h_muTrkHighPtSF, isoMuonTracks->at(0).Eta());
+                else trackingSF = GetSF(h_muTrkLowPtSF, isoMuonTracks->at(0).Eta());
+                MuIsoTrackVetoSearchBinsMuIsoSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+                IsoTrackVetoSearchBinsMuIsoSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              }else MuIsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,false);
 
-		        	if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,true);
-		        	else PionIsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,false);
+              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                ElecIsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,true);
+                trackingSF = GetSF(h_elecTrkSF, isoElectronTracks->at(0).Eta(), isoElectronTracks->at(0).Pt());
+                ElecIsoTrackVetoSearchBinsMuIsoSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+                IsoTrackVetoSearchBinsMuIsoSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              }else ElecIsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,false);
+
+              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                PionIsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,true);
+                trackingSF = 1;
+                PionIsoTrackVetoSearchBinsMuIsoSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+                IsoTrackVetoSearchBinsMuIsoSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              }else PionIsoTrackVetoSearchBinsMuIso_->Fill(BinQCD,WeightBTagProb,false);
 
               if(ExpectationReductionIsoTrack==1) IsoTrackVetoActivityPtMuIso_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
               else IsoTrackVetoActivityPtMuIso_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
@@ -2627,20 +2840,39 @@ Bool_t EffMaker::Process(Long64_t entry)
 
               if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoPtEtaMuIso_->Fill(GenMuons->at(0).Pt(),std::abs(GenMuons->at(0).Eta()),WeightBTagProb,true);
               else PionIsoTrackVetoPtEtaMuIso_->Fill(GenMuons->at(0).Pt(),std::abs(GenMuons->at(0).Eta()),WeightBTagProb,false);
-	        	}
+            }
 
-	        	if(elecIso==0){
-	        		if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,true);
-		        	else IsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,false);
+            if(elecIso==0){
+              double trackingSF = 1;
+              IsoTrackVetoSearchBinsElecIsoSF_->FillFrac(BinQCD,WeightBTagProb,false);
+              MuIsoTrackVetoSearchBinsElecIsoSF_->FillFrac(BinQCD,WeightBTagProb,false);
+              ElecIsoTrackVetoSearchBinsElecIsoSF_->FillFrac(BinQCD,WeightBTagProb,false);
+              PionIsoTrackVetoSearchBinsElecIsoSF_->FillFrac(BinQCD,WeightBTagProb,false);
 
-		        	if(isoMuonTracksNum>0 && isoTrack_highestPt==1) MuIsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,true);
-		        	else MuIsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,false);
+              if(ExpectationReductionIsoTrack==1) IsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,true);
+              else IsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,false);
 
-		        	if(isoElectronTracksNum>0 && isoTrack_highestPt==2) ElecIsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,true);
-		        	else ElecIsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,false);
+              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                MuIsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,true);
+                if(isoMuonTracks->at(0).Pt() > 10) trackingSF = GetSF(h_muTrkHighPtSF, isoMuonTracks->at(0).Eta());
+                else trackingSF = GetSF(h_muTrkLowPtSF, isoMuonTracks->at(0).Eta());
+                MuIsoTrackVetoSearchBinsElecIsoSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+                IsoTrackVetoSearchBinsElecIsoSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              }else MuIsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,false);
 
-		        	if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,true);
-		        	else PionIsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,false);
+              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                ElecIsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,true);
+                trackingSF = GetSF(h_elecTrkSF, isoElectronTracks->at(0).Eta(), isoElectronTracks->at(0).Pt());
+                ElecIsoTrackVetoSearchBinsElecIsoSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+                IsoTrackVetoSearchBinsElecIsoSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              }else ElecIsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,false);
+
+              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                PionIsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,true);
+                trackingSF = 1;
+                PionIsoTrackVetoSearchBinsElecIsoSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+                IsoTrackVetoSearchBinsElecIsoSF_->FillFrac(BinQCD,WeightBTagProb*trackingSF,true);
+              }else PionIsoTrackVetoSearchBinsElecIso_->Fill(BinQCD,WeightBTagProb,false);
 
               if(ExpectationReductionIsoTrack==1) IsoTrackVetoActivityPtElecIso_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
               else IsoTrackVetoActivityPtElecIso_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
@@ -2665,263 +2897,263 @@ Bool_t EffMaker::Process(Long64_t entry)
 
               if(isoPionTracksNum>0 && isoTrack_highestPt==3) PionIsoTrackVetoPtEtaElecIso_->Fill(GenElectrons->at(0).Pt(),std::abs(GenElectrons->at(0).Eta()),WeightBTagProb,true);
               else PionIsoTrackVetoPtEtaElecIso_->Fill(GenElectrons->at(0).Pt(),std::abs(GenElectrons->at(0).Eta()),WeightBTagProb,false);
-	        	}
-        	}
+            }
+          }
         }
 
         if(doAdditionalPlots){
-	        if(muAcc==0 || elecAcc==0){
-	          if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
-	            MuIsoTrackVetoPtAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	            IsoTrackVetoPtAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	          }
-	          if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
-	            ElecIsoTrackVetoPtAcc_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	            IsoTrackVetoPtAcc_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	          }
-	          if(isoPionTracksNum>0 && isoTrack_highestPt==3){
-	            PionIsoTrackVetoPtAcc_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	            IsoTrackVetoPtAcc_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	          }
+          if(muAcc==0 || elecAcc==0){
+            if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+              MuIsoTrackVetoPtAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+              IsoTrackVetoPtAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+            }
+            if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+              ElecIsoTrackVetoPtAcc_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+              IsoTrackVetoPtAcc_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+            }
+            if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+              PionIsoTrackVetoPtAcc_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+              IsoTrackVetoPtAcc_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+            }
 
-	          if(muAcc==0){
-	            if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
-	              MuIsoTrackVetoPtMuAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtMuAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	            if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
-	              ElecIsoTrackVetoPtMuAcc_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtMuAcc_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	            if(isoPionTracksNum>0 && isoTrack_highestPt==3){
-	              PionIsoTrackVetoPtMuAcc_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtMuAcc_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
+            if(muAcc==0){
+              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                MuIsoTrackVetoPtMuAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtMuAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                ElecIsoTrackVetoPtMuAcc_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtMuAcc_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                PionIsoTrackVetoPtMuAcc_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtMuAcc_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
 
-	            MuAccWoVetoFracHT_->Fill(HT, WeightBTagProb);
-	            MuAccWoVetoFracMHT_->Fill(MHT, WeightBTagProb);
-	            MuAccWoVetoFracNJets_->Fill(NJets, WeightBTagProb);
-	            MuAccWoVetoFracBTags_->Fill(BTags, WeightBTagProb);
+              MuAccWoVetoFracHT_->Fill(HT, WeightBTagProb);
+              MuAccWoVetoFracMHT_->Fill(MHT, WeightBTagProb);
+              MuAccWoVetoFracNJets_->Fill(NJets, WeightBTagProb);
+              MuAccWoVetoFracBTags_->Fill(BTags, WeightBTagProb);
 
-	            if(ExpectationReductionIsoTrack==0){
-	            	MuAccFracHT_->Fill(HT, WeightBTagProb);
-		            MuAccFracMHT_->Fill(MHT, WeightBTagProb);
-		            MuAccFracNJets_->Fill(NJets, WeightBTagProb);
-		            MuAccFracBTags_->Fill(BTags, WeightBTagProb);
-	            }
-	          }
+              if(ExpectationReductionIsoTrack==0){
+                MuAccFracHT_->Fill(HT, WeightBTagProb);
+                MuAccFracMHT_->Fill(MHT, WeightBTagProb);
+                MuAccFracNJets_->Fill(NJets, WeightBTagProb);
+                MuAccFracBTags_->Fill(BTags, WeightBTagProb);
+              }
+            }
 
-	          if(elecAcc==0){
-	            if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
-	              MuIsoTrackVetoPtElecAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtElecAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	            if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
-	              ElecIsoTrackVetoPtElecAcc_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtElecAcc_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	            if(isoPionTracksNum>0 && isoTrack_highestPt==3){
-	              PionIsoTrackVetoPtElecAcc_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtElecAcc_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
+            if(elecAcc==0){
+              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                MuIsoTrackVetoPtElecAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtElecAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                ElecIsoTrackVetoPtElecAcc_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtElecAcc_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                PionIsoTrackVetoPtElecAcc_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtElecAcc_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
 
-	            ElecAccWoVetoFracHT_->Fill(HT, WeightBTagProb);
-	            ElecAccWoVetoFracMHT_->Fill(MHT, WeightBTagProb);
-	            ElecAccWoVetoFracNJets_->Fill(NJets, WeightBTagProb);
-	            ElecAccWoVetoFracBTags_->Fill(BTags, WeightBTagProb);
+              ElecAccWoVetoFracHT_->Fill(HT, WeightBTagProb);
+              ElecAccWoVetoFracMHT_->Fill(MHT, WeightBTagProb);
+              ElecAccWoVetoFracNJets_->Fill(NJets, WeightBTagProb);
+              ElecAccWoVetoFracBTags_->Fill(BTags, WeightBTagProb);
 
-	            if(ExpectationReductionIsoTrack==0){
-	            	ElecAccFracHT_->Fill(HT, WeightBTagProb);
-		            ElecAccFracMHT_->Fill(MHT, WeightBTagProb);
-		            ElecAccFracNJets_->Fill(NJets, WeightBTagProb);
-		            ElecAccFracBTags_->Fill(BTags, WeightBTagProb);
-		        }
-	          }
-	        }
+              if(ExpectationReductionIsoTrack==0){
+                ElecAccFracHT_->Fill(HT, WeightBTagProb);
+                ElecAccFracMHT_->Fill(MHT, WeightBTagProb);
+                ElecAccFracNJets_->Fill(NJets, WeightBTagProb);
+                ElecAccFracBTags_->Fill(BTags, WeightBTagProb);
+            }
+            }
+          }
 
-	        if((muAcc==2 && (muReco==0 || (muReco==2 && muIso==0))) || (elecAcc==2 && (elecReco==0 || (elecReco==2 && elecIso==0)))){
-	          if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
-	            MuIsoTrackVetoPtIDIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	            IsoTrackVetoPtIDIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	          }
-	          if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
-	            ElecIsoTrackVetoPtIDIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	            IsoTrackVetoPtIDIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	          }
-	          if(isoPionTracksNum>0 && isoTrack_highestPt==3){
-	            PionIsoTrackVetoPtIDIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	            IsoTrackVetoPtIDIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	          }
+          if((muAcc==2 && (muReco==0 || (muReco==2 && muIso==0))) || (elecAcc==2 && (elecReco==0 || (elecReco==2 && elecIso==0)))){
+            if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+              MuIsoTrackVetoPtIDIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+              IsoTrackVetoPtIDIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+            }
+            if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+              ElecIsoTrackVetoPtIDIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+              IsoTrackVetoPtIDIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+            }
+            if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+              PionIsoTrackVetoPtIDIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+              IsoTrackVetoPtIDIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+            }
 
-	          if(muReco==0 || (muReco==2 && muIso==0)){
-	            if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
-	              MuIsoTrackVetoPtMuIDIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtMuIDIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	            if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
-	              ElecIsoTrackVetoPtMuIDIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtMuIDIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	            if(isoPionTracksNum>0 && isoTrack_highestPt==3){
-	              PionIsoTrackVetoPtMuIDIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtMuIDIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	          }
+            if(muReco==0 || (muReco==2 && muIso==0)){
+              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                MuIsoTrackVetoPtMuIDIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtMuIDIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                ElecIsoTrackVetoPtMuIDIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtMuIDIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                PionIsoTrackVetoPtMuIDIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtMuIDIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+            }
 
-	          if(elecReco==0 || (elecReco==2 && elecIso==0)){
-	            if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
-	              MuIsoTrackVetoPtElecIDIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtElecIDIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	            if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
-	              ElecIsoTrackVetoPtElecIDIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtElecIDIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	            if(isoPionTracksNum>0 && isoTrack_highestPt==3){
-	              PionIsoTrackVetoPtElecIDIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtElecIDIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	          }
+            if(elecReco==0 || (elecReco==2 && elecIso==0)){
+              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                MuIsoTrackVetoPtElecIDIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtElecIDIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                ElecIsoTrackVetoPtElecIDIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtElecIDIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                PionIsoTrackVetoPtElecIDIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtElecIDIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+            }
 
-	          if(muReco==0 || elecReco==0){
-	            if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
-	              MuIsoTrackVetoPtID_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtID_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	            if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
-	              ElecIsoTrackVetoPtID_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtID_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	            if(isoPionTracksNum>0 && isoTrack_highestPt==3){
-	              PionIsoTrackVetoPtID_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtID_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
+            if(muReco==0 || elecReco==0){
+              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                MuIsoTrackVetoPtID_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtID_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                ElecIsoTrackVetoPtID_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtID_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                PionIsoTrackVetoPtID_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtID_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
 
-	            if(muReco==0){
-	              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
-	                MuIsoTrackVetoPtMuID_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	                IsoTrackVetoPtMuID_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	              }
-	              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
-	                ElecIsoTrackVetoPtMuID_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	                IsoTrackVetoPtMuID_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	              }
-	              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
-	                PionIsoTrackVetoPtMuID_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	                IsoTrackVetoPtMuID_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	              }
+              if(muReco==0){
+                if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                  MuIsoTrackVetoPtMuID_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                  IsoTrackVetoPtMuID_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                }
+                if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                  ElecIsoTrackVetoPtMuID_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                  IsoTrackVetoPtMuID_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                }
+                if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                  PionIsoTrackVetoPtMuID_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                  IsoTrackVetoPtMuID_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                }
 
-	  	            MuRecoWoVetoFracHT_->Fill(HT, WeightBTagProb);
-		            MuRecoWoVetoFracMHT_->Fill(MHT, WeightBTagProb);
-		            MuRecoWoVetoFracNJets_->Fill(NJets, WeightBTagProb);
-		            MuRecoWoVetoFracBTags_->Fill(BTags, WeightBTagProb);
+                  MuRecoWoVetoFracHT_->Fill(HT, WeightBTagProb);
+                MuRecoWoVetoFracMHT_->Fill(MHT, WeightBTagProb);
+                MuRecoWoVetoFracNJets_->Fill(NJets, WeightBTagProb);
+                MuRecoWoVetoFracBTags_->Fill(BTags, WeightBTagProb);
 
-		            if(ExpectationReductionIsoTrack==0){
-		            	MuRecoFracHT_->Fill(HT, WeightBTagProb);
-			            MuRecoFracMHT_->Fill(MHT, WeightBTagProb);
-			            MuRecoFracNJets_->Fill(NJets, WeightBTagProb);
-			            MuRecoFracBTags_->Fill(BTags, WeightBTagProb);
-		            }
-	            }
+                if(ExpectationReductionIsoTrack==0){
+                  MuRecoFracHT_->Fill(HT, WeightBTagProb);
+                  MuRecoFracMHT_->Fill(MHT, WeightBTagProb);
+                  MuRecoFracNJets_->Fill(NJets, WeightBTagProb);
+                  MuRecoFracBTags_->Fill(BTags, WeightBTagProb);
+                }
+              }
 
-	            if(elecReco==0){
-	              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
-	                MuIsoTrackVetoPtElecID_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	                IsoTrackVetoPtElecID_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	              }
-	              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
-	                ElecIsoTrackVetoPtElecID_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	                IsoTrackVetoPtElecID_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	              }
-	              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
-	                PionIsoTrackVetoPtElecID_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	                IsoTrackVetoPtElecID_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	              }
+              if(elecReco==0){
+                if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                  MuIsoTrackVetoPtElecID_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                  IsoTrackVetoPtElecID_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                }
+                if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                  ElecIsoTrackVetoPtElecID_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                  IsoTrackVetoPtElecID_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                }
+                if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                  PionIsoTrackVetoPtElecID_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                  IsoTrackVetoPtElecID_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                }
 
-  	  	            ElecRecoWoVetoFracHT_->Fill(HT, WeightBTagProb);
-		            ElecRecoWoVetoFracMHT_->Fill(MHT, WeightBTagProb);
-		            ElecRecoWoVetoFracNJets_->Fill(NJets, WeightBTagProb);
-		            ElecRecoWoVetoFracBTags_->Fill(BTags, WeightBTagProb);
+                    ElecRecoWoVetoFracHT_->Fill(HT, WeightBTagProb);
+                ElecRecoWoVetoFracMHT_->Fill(MHT, WeightBTagProb);
+                ElecRecoWoVetoFracNJets_->Fill(NJets, WeightBTagProb);
+                ElecRecoWoVetoFracBTags_->Fill(BTags, WeightBTagProb);
 
-		            if(ExpectationReductionIsoTrack==0){
-		            	ElecRecoFracHT_->Fill(HT, WeightBTagProb);
-			            ElecRecoFracMHT_->Fill(MHT, WeightBTagProb);
-			            ElecRecoFracNJets_->Fill(NJets, WeightBTagProb);
-			            ElecRecoFracBTags_->Fill(BTags, WeightBTagProb);
-		            }
-	            }
-	          }
+                if(ExpectationReductionIsoTrack==0){
+                  ElecRecoFracHT_->Fill(HT, WeightBTagProb);
+                  ElecRecoFracMHT_->Fill(MHT, WeightBTagProb);
+                  ElecRecoFracNJets_->Fill(NJets, WeightBTagProb);
+                  ElecRecoFracBTags_->Fill(BTags, WeightBTagProb);
+                }
+              }
+            }
 
-	          if(muIso==0 || elecIso==0){
-	            if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
-	              MuIsoTrackVetoPtIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	            if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
-	              ElecIsoTrackVetoPtIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
-	            if(isoPionTracksNum>0 && isoTrack_highestPt==3){
-	              PionIsoTrackVetoPtIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	              IsoTrackVetoPtIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	            }
+            if(muIso==0 || elecIso==0){
+              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                MuIsoTrackVetoPtIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                ElecIsoTrackVetoPtIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
+              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                PionIsoTrackVetoPtIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                IsoTrackVetoPtIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+              }
 
-	            if(muIso==0){
-	              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
-	                MuIsoTrackVetoPtMuIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	                IsoTrackVetoPtMuIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	              }
-	              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
-	                ElecIsoTrackVetoPtMuIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	                IsoTrackVetoPtMuIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	              }
-	              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
-	                PionIsoTrackVetoPtMuIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	                IsoTrackVetoPtMuIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	              }
+              if(muIso==0){
+                if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                  MuIsoTrackVetoPtMuIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                  IsoTrackVetoPtMuIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                }
+                if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                  ElecIsoTrackVetoPtMuIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                  IsoTrackVetoPtMuIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                }
+                if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                  PionIsoTrackVetoPtMuIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                  IsoTrackVetoPtMuIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                }
 
-  	  	            MuIsoWoVetoFracHT_->Fill(HT, WeightBTagProb);
-		            MuIsoWoVetoFracMHT_->Fill(MHT, WeightBTagProb);
-		            MuIsoWoVetoFracNJets_->Fill(NJets, WeightBTagProb);
-		            MuIsoWoVetoFracBTags_->Fill(BTags, WeightBTagProb);
+                    MuIsoWoVetoFracHT_->Fill(HT, WeightBTagProb);
+                MuIsoWoVetoFracMHT_->Fill(MHT, WeightBTagProb);
+                MuIsoWoVetoFracNJets_->Fill(NJets, WeightBTagProb);
+                MuIsoWoVetoFracBTags_->Fill(BTags, WeightBTagProb);
 
-		            if(ExpectationReductionIsoTrack==0){
-		            	MuIsoFracHT_->Fill(HT, WeightBTagProb);
-			            MuIsoFracMHT_->Fill(MHT, WeightBTagProb);
-			            MuIsoFracNJets_->Fill(NJets, WeightBTagProb);
-			            MuIsoFracBTags_->Fill(BTags, WeightBTagProb);
-		            }
-	            }
+                if(ExpectationReductionIsoTrack==0){
+                  MuIsoFracHT_->Fill(HT, WeightBTagProb);
+                  MuIsoFracMHT_->Fill(MHT, WeightBTagProb);
+                  MuIsoFracNJets_->Fill(NJets, WeightBTagProb);
+                  MuIsoFracBTags_->Fill(BTags, WeightBTagProb);
+                }
+              }
 
-	            if(elecIso==0){
-	              if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
-	                MuIsoTrackVetoPtElecIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	                IsoTrackVetoPtElecIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
-	              }
-	              if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
-	                ElecIsoTrackVetoPtElecIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	                IsoTrackVetoPtElecIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
-	              }
-	              if(isoPionTracksNum>0 && isoTrack_highestPt==3){
-	                PionIsoTrackVetoPtElecIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	                IsoTrackVetoPtElecIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
-	              }
+              if(elecIso==0){
+                if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+                  MuIsoTrackVetoPtElecIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                  IsoTrackVetoPtElecIso_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+                }
+                if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+                  ElecIsoTrackVetoPtElecIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                  IsoTrackVetoPtElecIso_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+                }
+                if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+                  PionIsoTrackVetoPtElecIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                  IsoTrackVetoPtElecIso_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+                }
 
-	  	            ElecIsoWoVetoFracHT_->Fill(HT, WeightBTagProb);
-		            ElecIsoWoVetoFracMHT_->Fill(MHT, WeightBTagProb);
-		            ElecIsoWoVetoFracNJets_->Fill(NJets, WeightBTagProb);
-		            ElecIsoWoVetoFracBTags_->Fill(BTags, WeightBTagProb);
+                  ElecIsoWoVetoFracHT_->Fill(HT, WeightBTagProb);
+                ElecIsoWoVetoFracMHT_->Fill(MHT, WeightBTagProb);
+                ElecIsoWoVetoFracNJets_->Fill(NJets, WeightBTagProb);
+                ElecIsoWoVetoFracBTags_->Fill(BTags, WeightBTagProb);
 
-		            if(ExpectationReductionIsoTrack==0){
-		            	ElecIsoFracHT_->Fill(HT, WeightBTagProb);
-			            ElecIsoFracMHT_->Fill(MHT, WeightBTagProb);
-			            ElecIsoFracNJets_->Fill(NJets, WeightBTagProb);
-			            ElecIsoFracBTags_->Fill(BTags, WeightBTagProb);
-		            }
-	            }
-	          }
-	        }
-	    }
+                if(ExpectationReductionIsoTrack==0){
+                  ElecIsoFracHT_->Fill(HT, WeightBTagProb);
+                  ElecIsoFracMHT_->Fill(MHT, WeightBTagProb);
+                  ElecIsoFracNJets_->Fill(NJets, WeightBTagProb);
+                  ElecIsoFracBTags_->Fill(BTags, WeightBTagProb);
+                }
+              }
+            }
+          }
+      }
 
 
   // MHT/PTW histograms
@@ -2938,52 +3170,52 @@ Bool_t EffMaker::Process(Long64_t entry)
   if (HT<800&&MHT>750) IHT=-1;
 
   //  printf("INJ/INB/IHT = %d/%d/%d\n", INJ, INB, IHT);
-	  if (INJ>=0&&INB>=0&&IHT>=0) {
-	    if (Expectation==1) {
-	      if (GenMuonsNum==1&&GenElectronsNum==0) {          
-	        if (ExpectationReductionIsoTrack==0) {
-	    double PTW = sqrt( (GenMuons->at(0).Px()+MHT*cos(MHTPhi))*(GenMuons->at(0).Px()+MHT*cos(MHTPhi)) +  (GenMuons->at(0).Py()+MHT*sin(MHTPhi))*(GenMuons->at(0).Py()+MHT*sin(MHTPhi)) );
-	    if (HT>500&&HT<1200) LostMuRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	    if (HT>1200) LostMuRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	    if (HT>800) LostMuRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	    if (HT>500&&HT<1200) LostLepRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	    if (HT>1200) LostLepRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	    if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	        }
-	      }
-	      else if (GenMuonsNum==0&&GenElectronsNum==1) {
-	        if (ExpectationReductionIsoTrack==0) {        
-	    double PTW = sqrt( (GenElectrons->at(0).Px()+MHT*cos(MHTPhi))*(GenElectrons->at(0).Px()+MHT*cos(MHTPhi)) +  (GenElectrons->at(0).Py()+MHT*sin(MHTPhi))*(GenElectrons->at(0).Py()+MHT*sin(MHTPhi)) );
-	    if (HT>500&&HT<1200) LostElecRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	    if (HT>1200) LostElecRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	    if (HT>800) LostElecRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	    if (HT>500&&HT<1200) LostLepRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	    if (HT>1200) LostLepRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	    if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	        }
-	      } // 1-electron events
-	      // what do we want to do with di/multi-lepton events?
-	      // commented out below: take sum of all leptons and MHT
-	      // else if (GenMuonsNum+GenElectronsNum>1) { 
-	      //   std::vector<TLorentzVector> GenLeps;
-	      //   for (unsigned int imu(0); imu<GenMuonsNum; imu++) {
-	      //  GenLeps.push_back(GenMuons->at(imu));
-	      //   }
-	      //   for (unsigned int iel(0); iel<GenElectronsNum; iel++) {
-	      //  GenLeps.push_back(GenElectrons->at(iel));
-	      //   }
-	      //   double PXW(MHT*cos(MHTPhi)), PYW(MHT*sin(MHTPhi));
-	      //   for (unsigned int ilep(0); ilep<GenLeps.size(); ilep++) {
-	      //  PXW+=GenLeps[ilep].Px();
-	      //  PYW+=GenLeps[ilep].Py();
-	      //   }
-	      //   double PTW = sqrt(PXW*PXW+PYW*PYW);
-	      //   if (HT>500&&HT<1200) LostLepRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	      //   if (HT>1200) LostLepRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	      //   if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
-	      // } // di/multi-lepton events
-	    }
-	  }
+    if (INJ>=0&&INB>=0&&IHT>=0) {
+      if (Expectation==1) {
+        if (GenMuonsNum==1&&GenElectronsNum==0) {          
+          if (ExpectationReductionIsoTrack==0) {
+      double PTW = sqrt( (GenMuons->at(0).Px()+MHT*cos(MHTPhi))*(GenMuons->at(0).Px()+MHT*cos(MHTPhi)) +  (GenMuons->at(0).Py()+MHT*sin(MHTPhi))*(GenMuons->at(0).Py()+MHT*sin(MHTPhi)) );
+      if (HT>500&&HT<1200) LostMuRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+      if (HT>1200) LostMuRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+      if (HT>800) LostMuRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+      if (HT>500&&HT<1200) LostLepRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+      if (HT>1200) LostLepRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+      if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+          }
+        }
+        else if (GenMuonsNum==0&&GenElectronsNum==1) {
+          if (ExpectationReductionIsoTrack==0) {        
+      double PTW = sqrt( (GenElectrons->at(0).Px()+MHT*cos(MHTPhi))*(GenElectrons->at(0).Px()+MHT*cos(MHTPhi)) +  (GenElectrons->at(0).Py()+MHT*sin(MHTPhi))*(GenElectrons->at(0).Py()+MHT*sin(MHTPhi)) );
+      if (HT>500&&HT<1200) LostElecRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+      if (HT>1200) LostElecRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+      if (HT>800) LostElecRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+      if (HT>500&&HT<1200) LostLepRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+      if (HT>1200) LostLepRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+      if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+          }
+        } // 1-electron events
+        // what do we want to do with di/multi-lepton events?
+        // commented out below: take sum of all leptons and MHT
+        // else if (GenMuonsNum+GenElectronsNum>1) { 
+        //   std::vector<TLorentzVector> GenLeps;
+        //   for (unsigned int imu(0); imu<GenMuonsNum; imu++) {
+        //  GenLeps.push_back(GenMuons->at(imu));
+        //   }
+        //   for (unsigned int iel(0); iel<GenElectronsNum; iel++) {
+        //  GenLeps.push_back(GenElectrons->at(iel));
+        //   }
+        //   double PXW(MHT*cos(MHTPhi)), PYW(MHT*sin(MHTPhi));
+        //   for (unsigned int ilep(0); ilep<GenLeps.size(); ilep++) {
+        //  PXW+=GenLeps[ilep].Px();
+        //  PYW+=GenLeps[ilep].Py();
+        //   }
+        //   double PTW = sqrt(PXW*PXW+PYW*PYW);
+        //   if (HT>500&&HT<1200) LostLepRATIO_HT12[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+        //   if (HT>1200) LostLepRATIO_HT3[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+        //   if (HT>800) LostLepRATIO_HT23[INJ*3+INB]->Fill(MHT/PTW, WeightBTagProb);
+        // } // di/multi-lepton events
+      }
+    }
   
     }
 
@@ -3026,6 +3258,11 @@ void EffMaker::Terminate()
   ElecIsoTrackVetoSearchBins_->SaveEff("e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
   PionIsoTrackVetoSearchBins_->SaveEff("#pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
   IsoTrackVetoSearchBins_->SaveEff("iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+
+  MuIsoTrackVetoSearchBinsSF_->SaveEff("#mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsSF_->SaveEff("e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  PionIsoTrackVetoSearchBinsSF_->SaveEff("#pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsSF_->SaveEff("iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
 
   MuIsoTrackVetoSearchBinsLowPt_->SaveEff("#mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
   ElecIsoTrackVetoSearchBinsLowPt_->SaveEff("e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
@@ -3096,6 +3333,36 @@ void EffMaker::Terminate()
   MuIsoTrackVetoSearchBinsElecIso_->SaveEff("e !iso #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
   ElecIsoTrackVetoSearchBinsElecIso_->SaveEff("e !iso e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
   PionIsoTrackVetoSearchBinsElecIso_->SaveEff("e !iso #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+
+  IsoTrackVetoSearchBinsMuAccSF_->SaveEff("mu !acc iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  MuIsoTrackVetoSearchBinsMuAccSF_->SaveEff("mu !acc #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsMuAccSF_->SaveEff("mu !acc e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  PionIsoTrackVetoSearchBinsMuAccSF_->SaveEff("mu !acc #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+
+  IsoTrackVetoSearchBinsMuIDSF_->SaveEff("mu !id iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  MuIsoTrackVetoSearchBinsMuIDSF_->SaveEff("mu !id #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsMuIDSF_->SaveEff("mu !id e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  PionIsoTrackVetoSearchBinsMuIDSF_->SaveEff("mu !id #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+
+  IsoTrackVetoSearchBinsMuIsoSF_->SaveEff("mu !iso iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  MuIsoTrackVetoSearchBinsMuIsoSF_->SaveEff("mu !iso #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsMuIsoSF_->SaveEff("mu !iso e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  PionIsoTrackVetoSearchBinsMuIsoSF_->SaveEff("mu !iso #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+
+  IsoTrackVetoSearchBinsElecAccSF_->SaveEff("e !acc iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  MuIsoTrackVetoSearchBinsElecAccSF_->SaveEff("e !acc #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsElecAccSF_->SaveEff("e !acc e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  PionIsoTrackVetoSearchBinsElecAccSF_->SaveEff("e !acc #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+
+  IsoTrackVetoSearchBinsElecIDSF_->SaveEff("e !id iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  MuIsoTrackVetoSearchBinsElecIDSF_->SaveEff("e !id #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsElecIDSF_->SaveEff("e !id e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  PionIsoTrackVetoSearchBinsElecIDSF_->SaveEff("e !id #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+
+  IsoTrackVetoSearchBinsElecIsoSF_->SaveEff("e !iso iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  MuIsoTrackVetoSearchBinsElecIsoSF_->SaveEff("e !iso #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsElecIsoSF_->SaveEff("e !iso e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  PionIsoTrackVetoSearchBinsElecIsoSF_->SaveEff("e !iso #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
 
   IsoTrackVetoActivityPtMuIDIso_->SaveEff("mu !id/!iso iso track expec. reduction; Activity; pT", dEfficiencies, true);
   MuIsoTrackVetoActivityPtMuIDIso_->SaveEff("mu !id/!iso #mu iso track expec. reduction; Activity; pT", dEfficiencies, true);
@@ -3174,12 +3441,14 @@ void EffMaker::Terminate()
   MuPurityOldHT_->SaveEff("#mu purity; H_{T} [GeV]", dEfficiencies);   
   MuPurityOldMHT_->SaveEff("#mu purity; #slash{H}_{T} [GeV]", dEfficiencies);   
   MuonPurityOldMHTNJet_->SaveEff("#mu purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  MuonPurityOldNJetsBTags_->SaveEff("#mu purity; N_{Jets}; B_{Tags}", dEfficiencies);
   //1D
   ElecPurityOldBTag_->SaveEff("e purity; B_{Tags}", dEfficiencies);
   ElecPurityOldNJets_->SaveEff("e purity; N_{Jets}", dEfficiencies);   
   ElecPurityOldHT_->SaveEff("e purity; H_{T} [GeV]", dEfficiencies);   
   ElecPurityOldMHT_->SaveEff("e purity; #slash{H}_{T} [GeV]", dEfficiencies);   
   ElecPurityOldMHTNJet_->SaveEff("e purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
+  ElecPurityOldNJetsBTags_->SaveEff("e purity; N_{Jets}; B_{Tags}", dEfficiencies);
 
   // new purity
   //muon
@@ -3550,6 +3819,11 @@ void EffMaker::Terminate()
   MuIsoActivityPT_->SaveEff("#mu Iso; Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);   
   MuRecoPTEta_->SaveEff("#mu reco; p_{T}(#mu) [GeV]; #eta(#mu)", dEfficiencies, true);   
 
+  MuIsoActivityPTBTags0_->SaveEff("#mu Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
+  MuRecoPTEtaBTags0_->SaveEff("#mu reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
+  MuIsoActivityPTBTags1Inf_->SaveEff("#mu Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
+  MuRecoPTEtaBTags1Inf_->SaveEff("#mu reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
+
   //elec
   ElecPurityOldPT_->SaveEff("e purity; p_{T}(e) [GeV]", dEfficiencies);   
   ElecPurityOldActivity_->SaveEff("e purity; Activity", dEfficiencies, true);   
@@ -3563,7 +3837,12 @@ void EffMaker::Terminate()
   ElecMTWPT_->SaveEff("e m_{T}^{W}; p_{T}(e) [GeV]", dEfficiencies);   
   ElecMTWActivity_->SaveEff("e m_{T}^{W}; Activity", dEfficiencies, true);   
   ElecIsoActivityPT_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
-  ElecRecoPTEta_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
+  ElecRecoPTEta_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);  
+
+  ElecIsoActivityPTBTags0_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
+  ElecRecoPTEtaBTags0_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
+  ElecIsoActivityPTBTags1Inf_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
+  ElecRecoPTEtaBTags1Inf_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
 
 
   //Isotracks
@@ -3691,240 +3970,240 @@ void EffMaker::Terminate()
   PionIsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_->SaveEff("#pi iso track expec. reduction N_{Jets}#geq7, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
 
   if(doAdditionalPlots){
-  	TH1D *MuWoVetoFracHT_ = (TH1D*) MuAccWoVetoFracHT_->Clone("MuWoVetoFracHT");
-  	MuWoVetoFracHT_->Add(MuRecoWoVetoFracHT_);
-  	MuWoVetoFracHT_->Add(MuIsoWoVetoFracHT_);
-  	TH1D *MuWoVetoFracMHT_ = (TH1D*) MuAccWoVetoFracMHT_->Clone("MuWoVetoFracMHT");
-  	MuWoVetoFracMHT_->Add(MuRecoWoVetoFracMHT_);
-  	MuWoVetoFracMHT_->Add(MuIsoWoVetoFracMHT_);
-  	TH1D *MuWoVetoFracNJets_ = (TH1D*) MuAccWoVetoFracNJets_->Clone("MuWoVetoFracNJets");
-  	MuWoVetoFracNJets_->Add(MuRecoWoVetoFracNJets_);
-  	MuWoVetoFracNJets_->Add(MuIsoWoVetoFracNJets_);
-  	TH1D *MuWoVetoFracBTags_ = (TH1D*) MuAccWoVetoFracBTags_->Clone("MuWoVetoFracBTags");
-  	MuWoVetoFracBTags_->Add(MuRecoWoVetoFracBTags_);
-  	MuWoVetoFracBTags_->Add(MuIsoWoVetoFracBTags_);
+    TH1D *MuWoVetoFracHT_ = (TH1D*) MuAccWoVetoFracHT_->Clone("MuWoVetoFracHT");
+    MuWoVetoFracHT_->Add(MuRecoWoVetoFracHT_);
+    MuWoVetoFracHT_->Add(MuIsoWoVetoFracHT_);
+    TH1D *MuWoVetoFracMHT_ = (TH1D*) MuAccWoVetoFracMHT_->Clone("MuWoVetoFracMHT");
+    MuWoVetoFracMHT_->Add(MuRecoWoVetoFracMHT_);
+    MuWoVetoFracMHT_->Add(MuIsoWoVetoFracMHT_);
+    TH1D *MuWoVetoFracNJets_ = (TH1D*) MuAccWoVetoFracNJets_->Clone("MuWoVetoFracNJets");
+    MuWoVetoFracNJets_->Add(MuRecoWoVetoFracNJets_);
+    MuWoVetoFracNJets_->Add(MuIsoWoVetoFracNJets_);
+    TH1D *MuWoVetoFracBTags_ = (TH1D*) MuAccWoVetoFracBTags_->Clone("MuWoVetoFracBTags");
+    MuWoVetoFracBTags_->Add(MuRecoWoVetoFracBTags_);
+    MuWoVetoFracBTags_->Add(MuIsoWoVetoFracBTags_);
 
-  	TH1D *ElecWoVetoFracHT_ = (TH1D*) ElecAccWoVetoFracHT_->Clone("ElecWoVetoFracHT");
-  	ElecWoVetoFracHT_->Add(ElecRecoWoVetoFracHT_);
-  	ElecWoVetoFracHT_->Add(ElecIsoWoVetoFracHT_);
-  	TH1D *ElecWoVetoFracMHT_ = (TH1D*) ElecAccWoVetoFracMHT_->Clone("ElecWoVetoFracMHT");
-  	ElecWoVetoFracMHT_->Add(ElecRecoWoVetoFracMHT_);
-  	ElecWoVetoFracMHT_->Add(ElecIsoWoVetoFracMHT_);
-  	TH1D *ElecWoVetoFracNJets_ = (TH1D*) ElecAccWoVetoFracNJets_->Clone("ElecWoVetoFracNJets");
-  	ElecWoVetoFracNJets_->Add(ElecRecoWoVetoFracNJets_);
-  	ElecWoVetoFracNJets_->Add(ElecIsoWoVetoFracNJets_);
-  	TH1D *ElecWoVetoFracBTags_ = (TH1D*) ElecAccWoVetoFracBTags_->Clone("ElecWoVetoFracBTags");
-  	ElecWoVetoFracBTags_->Add(ElecRecoWoVetoFracBTags_);
-  	ElecWoVetoFracBTags_->Add(ElecIsoWoVetoFracBTags_);
+    TH1D *ElecWoVetoFracHT_ = (TH1D*) ElecAccWoVetoFracHT_->Clone("ElecWoVetoFracHT");
+    ElecWoVetoFracHT_->Add(ElecRecoWoVetoFracHT_);
+    ElecWoVetoFracHT_->Add(ElecIsoWoVetoFracHT_);
+    TH1D *ElecWoVetoFracMHT_ = (TH1D*) ElecAccWoVetoFracMHT_->Clone("ElecWoVetoFracMHT");
+    ElecWoVetoFracMHT_->Add(ElecRecoWoVetoFracMHT_);
+    ElecWoVetoFracMHT_->Add(ElecIsoWoVetoFracMHT_);
+    TH1D *ElecWoVetoFracNJets_ = (TH1D*) ElecAccWoVetoFracNJets_->Clone("ElecWoVetoFracNJets");
+    ElecWoVetoFracNJets_->Add(ElecRecoWoVetoFracNJets_);
+    ElecWoVetoFracNJets_->Add(ElecIsoWoVetoFracNJets_);
+    TH1D *ElecWoVetoFracBTags_ = (TH1D*) ElecAccWoVetoFracBTags_->Clone("ElecWoVetoFracBTags");
+    ElecWoVetoFracBTags_->Add(ElecRecoWoVetoFracBTags_);
+    ElecWoVetoFracBTags_->Add(ElecIsoWoVetoFracBTags_);
 
-  	TH1D *MuFracHT_ = (TH1D*) MuAccFracHT_->Clone("MuFracHT");
-  	MuFracHT_->Add(MuRecoFracHT_);
-  	MuFracHT_->Add(MuIsoFracHT_);
-  	TH1D *MuFracMHT_ = (TH1D*) MuAccFracMHT_->Clone("MuFracMHT");
-  	MuFracMHT_->Add(MuRecoFracMHT_);
-  	MuFracMHT_->Add(MuIsoFracMHT_);
-  	TH1D *MuFracNJets_ = (TH1D*) MuAccFracNJets_->Clone("MuFracNJets");
-  	MuFracNJets_->Add(MuRecoFracNJets_);
-  	MuFracNJets_->Add(MuIsoFracNJets_);
-  	TH1D *MuFracBTags_ = (TH1D*) MuAccFracBTags_->Clone("MuFracBTags");
-  	MuFracBTags_->Add(MuRecoFracBTags_);
-  	MuFracBTags_->Add(MuIsoFracBTags_);
+    TH1D *MuFracHT_ = (TH1D*) MuAccFracHT_->Clone("MuFracHT");
+    MuFracHT_->Add(MuRecoFracHT_);
+    MuFracHT_->Add(MuIsoFracHT_);
+    TH1D *MuFracMHT_ = (TH1D*) MuAccFracMHT_->Clone("MuFracMHT");
+    MuFracMHT_->Add(MuRecoFracMHT_);
+    MuFracMHT_->Add(MuIsoFracMHT_);
+    TH1D *MuFracNJets_ = (TH1D*) MuAccFracNJets_->Clone("MuFracNJets");
+    MuFracNJets_->Add(MuRecoFracNJets_);
+    MuFracNJets_->Add(MuIsoFracNJets_);
+    TH1D *MuFracBTags_ = (TH1D*) MuAccFracBTags_->Clone("MuFracBTags");
+    MuFracBTags_->Add(MuRecoFracBTags_);
+    MuFracBTags_->Add(MuIsoFracBTags_);
 
-  	TH1D *ElecFracHT_ = (TH1D*) ElecAccFracHT_->Clone("ElecFracHT");
-  	ElecFracHT_->Add(ElecRecoFracHT_);
-  	ElecFracHT_->Add(ElecIsoFracHT_);
-  	TH1D *ElecFracMHT_ = (TH1D*) ElecAccFracMHT_->Clone("ElecFracMHT");
-  	ElecFracMHT_->Add(ElecRecoFracMHT_);
-  	ElecFracMHT_->Add(ElecIsoFracMHT_);
-  	TH1D *ElecFracNJets_ = (TH1D*) ElecAccFracNJets_->Clone("ElecFracNJets");
-  	ElecFracNJets_->Add(ElecRecoFracNJets_);
-  	ElecFracNJets_->Add(ElecIsoFracNJets_);
-  	TH1D *ElecFracBTags_ = (TH1D*) ElecAccFracBTags_->Clone("ElecFracBTags");
-  	ElecFracBTags_->Add(ElecRecoFracBTags_);
-  	ElecFracBTags_->Add(ElecIsoFracBTags_);
-
-
-	MuAccWoVetoFracHT_->Divide(MuWoVetoFracHT_);  	
-	MuAccWoVetoFracMHT_->Divide(MuWoVetoFracMHT_);  	
-	MuAccWoVetoFracNJets_->Divide(MuWoVetoFracNJets_);  	
-	MuAccWoVetoFracBTags_->Divide(MuWoVetoFracBTags_);
-
-	MuRecoWoVetoFracHT_->Divide(MuWoVetoFracHT_);  	
-	MuRecoWoVetoFracMHT_->Divide(MuWoVetoFracMHT_);  	
-	MuRecoWoVetoFracNJets_->Divide(MuWoVetoFracNJets_);  	
-	MuRecoWoVetoFracBTags_->Divide(MuWoVetoFracBTags_);
-
-	MuIsoWoVetoFracHT_->Divide(MuWoVetoFracHT_);  	
-	MuIsoWoVetoFracMHT_->Divide(MuWoVetoFracMHT_);  	
-	MuIsoWoVetoFracNJets_->Divide(MuWoVetoFracNJets_);  	
-	MuIsoWoVetoFracBTags_->Divide(MuWoVetoFracBTags_);
-
-	ElecAccWoVetoFracHT_->Divide(ElecWoVetoFracHT_);  	
-	ElecAccWoVetoFracMHT_->Divide(ElecWoVetoFracMHT_);  	
-	ElecAccWoVetoFracNJets_->Divide(ElecWoVetoFracNJets_);  	
-	ElecAccWoVetoFracBTags_->Divide(ElecWoVetoFracBTags_);
-
-	ElecRecoWoVetoFracHT_->Divide(ElecWoVetoFracHT_);  	
-	ElecRecoWoVetoFracMHT_->Divide(ElecWoVetoFracMHT_);  	
-	ElecRecoWoVetoFracNJets_->Divide(ElecWoVetoFracNJets_);  	
-	ElecRecoWoVetoFracBTags_->Divide(ElecWoVetoFracBTags_);
-
-	ElecIsoWoVetoFracHT_->Divide(ElecWoVetoFracHT_);  	
-	ElecIsoWoVetoFracMHT_->Divide(ElecWoVetoFracMHT_);  	
-	ElecIsoWoVetoFracNJets_->Divide(ElecWoVetoFracNJets_);  	
-	ElecIsoWoVetoFracBTags_->Divide(ElecWoVetoFracBTags_);
-
-	MuAccFracHT_->Divide(MuFracHT_);  	
-	MuAccFracMHT_->Divide(MuFracMHT_);  	
-	MuAccFracNJets_->Divide(MuFracNJets_);  	
-	MuAccFracBTags_->Divide(MuFracBTags_);
-
-	MuRecoFracHT_->Divide(MuFracHT_);  	
-	MuRecoFracMHT_->Divide(MuFracMHT_);  	
-	MuRecoFracNJets_->Divide(MuFracNJets_);  	
-	MuRecoFracBTags_->Divide(MuFracBTags_);
-
-	MuIsoFracHT_->Divide(MuFracHT_);  	
-	MuIsoFracMHT_->Divide(MuFracMHT_);  	
-	MuIsoFracNJets_->Divide(MuFracNJets_);  	
-	MuIsoFracBTags_->Divide(MuFracBTags_);
-
-	ElecAccFracHT_->Divide(ElecFracHT_);  	
-	ElecAccFracMHT_->Divide(ElecFracMHT_);  	
-	ElecAccFracNJets_->Divide(ElecFracNJets_);  	
-	ElecAccFracBTags_->Divide(ElecFracBTags_);
-
-	ElecRecoFracHT_->Divide(ElecFracHT_);  	
-	ElecRecoFracMHT_->Divide(ElecFracMHT_);  	
-	ElecRecoFracNJets_->Divide(ElecFracNJets_);  	
-	ElecRecoFracBTags_->Divide(ElecFracBTags_);
-
-	ElecIsoFracHT_->Divide(ElecFracHT_);  	
-	ElecIsoFracMHT_->Divide(ElecFracMHT_);  	
-	ElecIsoFracNJets_->Divide(ElecFracNJets_);  	
-	ElecIsoFracBTags_->Divide(ElecFracBTags_);
+    TH1D *ElecFracHT_ = (TH1D*) ElecAccFracHT_->Clone("ElecFracHT");
+    ElecFracHT_->Add(ElecRecoFracHT_);
+    ElecFracHT_->Add(ElecIsoFracHT_);
+    TH1D *ElecFracMHT_ = (TH1D*) ElecAccFracMHT_->Clone("ElecFracMHT");
+    ElecFracMHT_->Add(ElecRecoFracMHT_);
+    ElecFracMHT_->Add(ElecIsoFracMHT_);
+    TH1D *ElecFracNJets_ = (TH1D*) ElecAccFracNJets_->Clone("ElecFracNJets");
+    ElecFracNJets_->Add(ElecRecoFracNJets_);
+    ElecFracNJets_->Add(ElecIsoFracNJets_);
+    TH1D *ElecFracBTags_ = (TH1D*) ElecAccFracBTags_->Clone("ElecFracBTags");
+    ElecFracBTags_->Add(ElecRecoFracBTags_);
+    ElecFracBTags_->Add(ElecIsoFracBTags_);
 
 
-	savePlot(MuAccWoVetoFracHT_);
-	savePlot(MuAccWoVetoFracMHT_);
-	savePlot(MuAccWoVetoFracNJets_);
-	savePlot(MuAccWoVetoFracBTags_);
+  MuAccWoVetoFracHT_->Divide(MuWoVetoFracHT_);    
+  MuAccWoVetoFracMHT_->Divide(MuWoVetoFracMHT_);    
+  MuAccWoVetoFracNJets_->Divide(MuWoVetoFracNJets_);    
+  MuAccWoVetoFracBTags_->Divide(MuWoVetoFracBTags_);
 
-	savePlot(MuRecoWoVetoFracHT_);
-	savePlot(MuRecoWoVetoFracMHT_);
-	savePlot(MuRecoWoVetoFracNJets_);
-	savePlot(MuRecoWoVetoFracBTags_);
+  MuRecoWoVetoFracHT_->Divide(MuWoVetoFracHT_);   
+  MuRecoWoVetoFracMHT_->Divide(MuWoVetoFracMHT_);   
+  MuRecoWoVetoFracNJets_->Divide(MuWoVetoFracNJets_);   
+  MuRecoWoVetoFracBTags_->Divide(MuWoVetoFracBTags_);
 
-	savePlot(MuIsoWoVetoFracHT_);
-	savePlot(MuIsoWoVetoFracMHT_);
-	savePlot(MuIsoWoVetoFracNJets_);
-	savePlot(MuIsoWoVetoFracBTags_);
+  MuIsoWoVetoFracHT_->Divide(MuWoVetoFracHT_);    
+  MuIsoWoVetoFracMHT_->Divide(MuWoVetoFracMHT_);    
+  MuIsoWoVetoFracNJets_->Divide(MuWoVetoFracNJets_);    
+  MuIsoWoVetoFracBTags_->Divide(MuWoVetoFracBTags_);
 
-	savePlot(ElecAccWoVetoFracHT_);
-	savePlot(ElecAccWoVetoFracMHT_);
-	savePlot(ElecAccWoVetoFracNJets_);
-	savePlot(ElecAccWoVetoFracBTags_);
+  ElecAccWoVetoFracHT_->Divide(ElecWoVetoFracHT_);    
+  ElecAccWoVetoFracMHT_->Divide(ElecWoVetoFracMHT_);    
+  ElecAccWoVetoFracNJets_->Divide(ElecWoVetoFracNJets_);    
+  ElecAccWoVetoFracBTags_->Divide(ElecWoVetoFracBTags_);
 
-	savePlot(ElecRecoWoVetoFracHT_);
-	savePlot(ElecRecoWoVetoFracMHT_);
-	savePlot(ElecRecoWoVetoFracNJets_);
-	savePlot(ElecRecoWoVetoFracBTags_);
+  ElecRecoWoVetoFracHT_->Divide(ElecWoVetoFracHT_);   
+  ElecRecoWoVetoFracMHT_->Divide(ElecWoVetoFracMHT_);   
+  ElecRecoWoVetoFracNJets_->Divide(ElecWoVetoFracNJets_);   
+  ElecRecoWoVetoFracBTags_->Divide(ElecWoVetoFracBTags_);
 
-	savePlot(ElecIsoWoVetoFracHT_);
-	savePlot(ElecIsoWoVetoFracMHT_);
-	savePlot(ElecIsoWoVetoFracNJets_);
-	savePlot(ElecIsoWoVetoFracBTags_);
+  ElecIsoWoVetoFracHT_->Divide(ElecWoVetoFracHT_);    
+  ElecIsoWoVetoFracMHT_->Divide(ElecWoVetoFracMHT_);    
+  ElecIsoWoVetoFracNJets_->Divide(ElecWoVetoFracNJets_);    
+  ElecIsoWoVetoFracBTags_->Divide(ElecWoVetoFracBTags_);
 
-	savePlot(MuAccFracHT_);
-	savePlot(MuAccFracMHT_);
-	savePlot(MuAccFracNJets_);
-	savePlot(MuAccFracBTags_);
+  MuAccFracHT_->Divide(MuFracHT_);    
+  MuAccFracMHT_->Divide(MuFracMHT_);    
+  MuAccFracNJets_->Divide(MuFracNJets_);    
+  MuAccFracBTags_->Divide(MuFracBTags_);
 
-	savePlot(MuRecoFracHT_);
-	savePlot(MuRecoFracMHT_);
-	savePlot(MuRecoFracNJets_);
-	savePlot(MuRecoFracBTags_);
+  MuRecoFracHT_->Divide(MuFracHT_);   
+  MuRecoFracMHT_->Divide(MuFracMHT_);   
+  MuRecoFracNJets_->Divide(MuFracNJets_);   
+  MuRecoFracBTags_->Divide(MuFracBTags_);
 
-	savePlot(MuIsoFracHT_);
-	savePlot(MuIsoFracMHT_);
-	savePlot(MuIsoFracNJets_);
-	savePlot(MuIsoFracBTags_);
+  MuIsoFracHT_->Divide(MuFracHT_);    
+  MuIsoFracMHT_->Divide(MuFracMHT_);    
+  MuIsoFracNJets_->Divide(MuFracNJets_);    
+  MuIsoFracBTags_->Divide(MuFracBTags_);
 
-	savePlot(ElecAccFracHT_);
-	savePlot(ElecAccFracMHT_);
-	savePlot(ElecAccFracNJets_);
-	savePlot(ElecAccFracBTags_);
+  ElecAccFracHT_->Divide(ElecFracHT_);    
+  ElecAccFracMHT_->Divide(ElecFracMHT_);    
+  ElecAccFracNJets_->Divide(ElecFracNJets_);    
+  ElecAccFracBTags_->Divide(ElecFracBTags_);
 
-	savePlot(ElecRecoFracHT_);
-	savePlot(ElecRecoFracMHT_);
-	savePlot(ElecRecoFracNJets_);
-	savePlot(ElecRecoFracBTags_);
+  ElecRecoFracHT_->Divide(ElecFracHT_);   
+  ElecRecoFracMHT_->Divide(ElecFracMHT_);   
+  ElecRecoFracNJets_->Divide(ElecFracNJets_);   
+  ElecRecoFracBTags_->Divide(ElecFracBTags_);
 
-	savePlot(ElecIsoFracHT_);
-	savePlot(ElecIsoFracMHT_);
-	savePlot(ElecIsoFracNJets_);
-	savePlot(ElecIsoFracBTags_);
+  ElecIsoFracHT_->Divide(ElecFracHT_);    
+  ElecIsoFracMHT_->Divide(ElecFracMHT_);    
+  ElecIsoFracNJets_->Divide(ElecFracNJets_);    
+  ElecIsoFracBTags_->Divide(ElecFracBTags_);
 
 
-	savePlot(MuIsoTrackVetoPtAcc_);
-	savePlot(ElecIsoTrackVetoPtAcc_);
-	savePlot(PionIsoTrackVetoPtAcc_);
-	savePlot(IsoTrackVetoPtAcc_);
+  savePlot(MuAccWoVetoFracHT_);
+  savePlot(MuAccWoVetoFracMHT_);
+  savePlot(MuAccWoVetoFracNJets_);
+  savePlot(MuAccWoVetoFracBTags_);
 
-	savePlot(MuIsoTrackVetoPtIDIso_);
-	savePlot(ElecIsoTrackVetoPtIDIso_);
-	savePlot(PionIsoTrackVetoPtIDIso_);
-	savePlot(IsoTrackVetoPtIDIso_);
+  savePlot(MuRecoWoVetoFracHT_);
+  savePlot(MuRecoWoVetoFracMHT_);
+  savePlot(MuRecoWoVetoFracNJets_);
+  savePlot(MuRecoWoVetoFracBTags_);
 
-	savePlot(MuIsoTrackVetoPtID_);
-	savePlot(ElecIsoTrackVetoPtID_);
-	savePlot(PionIsoTrackVetoPtID_);
-	savePlot(IsoTrackVetoPtID_);
+  savePlot(MuIsoWoVetoFracHT_);
+  savePlot(MuIsoWoVetoFracMHT_);
+  savePlot(MuIsoWoVetoFracNJets_);
+  savePlot(MuIsoWoVetoFracBTags_);
 
-	savePlot(MuIsoTrackVetoPtIso_);
-	savePlot(ElecIsoTrackVetoPtIso_);
-	savePlot(PionIsoTrackVetoPtIso_);
-	savePlot(IsoTrackVetoPtIso_);
+  savePlot(ElecAccWoVetoFracHT_);
+  savePlot(ElecAccWoVetoFracMHT_);
+  savePlot(ElecAccWoVetoFracNJets_);
+  savePlot(ElecAccWoVetoFracBTags_);
 
-	savePlot(MuIsoTrackVetoPtMuAcc_);
-	savePlot(ElecIsoTrackVetoPtMuAcc_);
-	savePlot(PionIsoTrackVetoPtMuAcc_);
-	savePlot(IsoTrackVetoPtMuAcc_);
+  savePlot(ElecRecoWoVetoFracHT_);
+  savePlot(ElecRecoWoVetoFracMHT_);
+  savePlot(ElecRecoWoVetoFracNJets_);
+  savePlot(ElecRecoWoVetoFracBTags_);
 
-	savePlot(MuIsoTrackVetoPtMuIDIso_);
-	savePlot(ElecIsoTrackVetoPtMuIDIso_);
-	savePlot(PionIsoTrackVetoPtMuIDIso_);
-	savePlot(IsoTrackVetoPtMuIDIso_);
+  savePlot(ElecIsoWoVetoFracHT_);
+  savePlot(ElecIsoWoVetoFracMHT_);
+  savePlot(ElecIsoWoVetoFracNJets_);
+  savePlot(ElecIsoWoVetoFracBTags_);
 
-	savePlot(MuIsoTrackVetoPtMuID_);
-	savePlot(ElecIsoTrackVetoPtMuID_);
-	savePlot(PionIsoTrackVetoPtMuID_);
-	savePlot(IsoTrackVetoPtMuID_);
+  savePlot(MuAccFracHT_);
+  savePlot(MuAccFracMHT_);
+  savePlot(MuAccFracNJets_);
+  savePlot(MuAccFracBTags_);
 
-	savePlot(MuIsoTrackVetoPtMuIso_);
-	savePlot(ElecIsoTrackVetoPtMuIso_);
-	savePlot(PionIsoTrackVetoPtMuIso_);
-	savePlot(IsoTrackVetoPtMuIso_);
+  savePlot(MuRecoFracHT_);
+  savePlot(MuRecoFracMHT_);
+  savePlot(MuRecoFracNJets_);
+  savePlot(MuRecoFracBTags_);
 
-	savePlot(MuIsoTrackVetoPtElecAcc_);
-	savePlot(ElecIsoTrackVetoPtElecAcc_);
-	savePlot(PionIsoTrackVetoPtElecAcc_);
-	savePlot(IsoTrackVetoPtElecAcc_);
+  savePlot(MuIsoFracHT_);
+  savePlot(MuIsoFracMHT_);
+  savePlot(MuIsoFracNJets_);
+  savePlot(MuIsoFracBTags_);
 
-	savePlot(MuIsoTrackVetoPtElecIDIso_);
-	savePlot(ElecIsoTrackVetoPtElecIDIso_);
-	savePlot(PionIsoTrackVetoPtElecIDIso_);
-	savePlot(IsoTrackVetoPtElecIDIso_);
+  savePlot(ElecAccFracHT_);
+  savePlot(ElecAccFracMHT_);
+  savePlot(ElecAccFracNJets_);
+  savePlot(ElecAccFracBTags_);
 
-	savePlot(MuIsoTrackVetoPtElecID_);
-	savePlot(ElecIsoTrackVetoPtElecID_);
-	savePlot(PionIsoTrackVetoPtElecID_);
-	savePlot(IsoTrackVetoPtElecID_);
+  savePlot(ElecRecoFracHT_);
+  savePlot(ElecRecoFracMHT_);
+  savePlot(ElecRecoFracNJets_);
+  savePlot(ElecRecoFracBTags_);
 
-	savePlot(MuIsoTrackVetoPtElecIso_);
-	savePlot(ElecIsoTrackVetoPtElecIso_);
-	savePlot(PionIsoTrackVetoPtElecIso_);
-	savePlot(IsoTrackVetoPtElecIso_);
+  savePlot(ElecIsoFracHT_);
+  savePlot(ElecIsoFracMHT_);
+  savePlot(ElecIsoFracNJets_);
+  savePlot(ElecIsoFracBTags_);
+
+
+  savePlot(MuIsoTrackVetoPtAcc_);
+  savePlot(ElecIsoTrackVetoPtAcc_);
+  savePlot(PionIsoTrackVetoPtAcc_);
+  savePlot(IsoTrackVetoPtAcc_);
+
+  savePlot(MuIsoTrackVetoPtIDIso_);
+  savePlot(ElecIsoTrackVetoPtIDIso_);
+  savePlot(PionIsoTrackVetoPtIDIso_);
+  savePlot(IsoTrackVetoPtIDIso_);
+
+  savePlot(MuIsoTrackVetoPtID_);
+  savePlot(ElecIsoTrackVetoPtID_);
+  savePlot(PionIsoTrackVetoPtID_);
+  savePlot(IsoTrackVetoPtID_);
+
+  savePlot(MuIsoTrackVetoPtIso_);
+  savePlot(ElecIsoTrackVetoPtIso_);
+  savePlot(PionIsoTrackVetoPtIso_);
+  savePlot(IsoTrackVetoPtIso_);
+
+  savePlot(MuIsoTrackVetoPtMuAcc_);
+  savePlot(ElecIsoTrackVetoPtMuAcc_);
+  savePlot(PionIsoTrackVetoPtMuAcc_);
+  savePlot(IsoTrackVetoPtMuAcc_);
+
+  savePlot(MuIsoTrackVetoPtMuIDIso_);
+  savePlot(ElecIsoTrackVetoPtMuIDIso_);
+  savePlot(PionIsoTrackVetoPtMuIDIso_);
+  savePlot(IsoTrackVetoPtMuIDIso_);
+
+  savePlot(MuIsoTrackVetoPtMuID_);
+  savePlot(ElecIsoTrackVetoPtMuID_);
+  savePlot(PionIsoTrackVetoPtMuID_);
+  savePlot(IsoTrackVetoPtMuID_);
+
+  savePlot(MuIsoTrackVetoPtMuIso_);
+  savePlot(ElecIsoTrackVetoPtMuIso_);
+  savePlot(PionIsoTrackVetoPtMuIso_);
+  savePlot(IsoTrackVetoPtMuIso_);
+
+  savePlot(MuIsoTrackVetoPtElecAcc_);
+  savePlot(ElecIsoTrackVetoPtElecAcc_);
+  savePlot(PionIsoTrackVetoPtElecAcc_);
+  savePlot(IsoTrackVetoPtElecAcc_);
+
+  savePlot(MuIsoTrackVetoPtElecIDIso_);
+  savePlot(ElecIsoTrackVetoPtElecIDIso_);
+  savePlot(PionIsoTrackVetoPtElecIDIso_);
+  savePlot(IsoTrackVetoPtElecIDIso_);
+
+  savePlot(MuIsoTrackVetoPtElecID_);
+  savePlot(ElecIsoTrackVetoPtElecID_);
+  savePlot(PionIsoTrackVetoPtElecID_);
+  savePlot(IsoTrackVetoPtElecID_);
+
+  savePlot(MuIsoTrackVetoPtElecIso_);
+  savePlot(ElecIsoTrackVetoPtElecIso_);
+  savePlot(PionIsoTrackVetoPtElecIso_);
+  savePlot(IsoTrackVetoPtElecIso_);
  }
 
   outPutFile->cd();

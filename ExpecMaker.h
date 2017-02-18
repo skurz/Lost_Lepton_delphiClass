@@ -73,6 +73,11 @@ const bool applyJetID = true;
 const bool doBTagCorrFullSim = true;
 const bool doBTagCorrFastSim = false;
 
+// Fill event seperately to the tree for each bTag multiplicity (size x4!). Mainly useful for plotting
+// Not fully implemented yet! Only working for SR not for prediction!
+const bool fillEventSeperateBTags = false;
+
+
 // scaleMet = 0: keep things the way they are
 // scaleMet = +-: scale MET up/down for MTW calculation (only!) by 30%
 const int scaleMet = 0;
@@ -83,9 +88,9 @@ const int scaleMet = 0;
 const bool applyFilters_=true;
 
 // bTag corrections
-const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v11/SLe/tree_");
-const string path_bTagCalib("btag/CSVv2_ichep.csv");
-const string path_bTagCalibFastSim("btag/CSV_13TEV_Combined_20_11_2015.csv");
+const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_");
+const string path_bTagCalib("btag/CSVv2_Moriond17_B_H_mod.csv");
+const string path_bTagCalibFastSim("btag/fastsim_csvv2_ttbar_26_1_2017.csv");
 
 // Muon tracking inefficiency
 const TString path_muonTrk("SFs/general_tracks_and_early_general_tracks_corr_ratio.root");
@@ -166,6 +171,7 @@ public :
   std::string fname; // for fetching file name
   TString fileName;
   Double_t HTgen_cut = 0;
+  int nEvts = 0;
 
   TFile* pufile = 0;
   TH1* puhist = 0;
@@ -187,10 +193,15 @@ public :
   
   SearchBins *SearchBins_;
   SearchBins *SearchBinsQCD_;
+
+  vector<double> fudgeFactors;
+  double fudgeFactorWeight;
+
 // eff variables fot the tree
   UShort_t Expectation;
   UShort_t ExpectationReductionIsoTrack;
   UShort_t GenMuonsNum_, GenElectronsNum_, GenTausNum_;
+  Float_t GenMuonsPt, GenElectronsPt, GenMuonsEta, GenElectronsEta;
   UShort_t muIso, muReco, muAcc, muMTW, muTotal;
   UShort_t elecIso, elecReco, elecAcc;
   std::vector<UShort_t> muIsoTrackMatchedToGenMu, elecIsoTrackMatchedToGenMu, pionIsoTrackMatchedToGenMu;

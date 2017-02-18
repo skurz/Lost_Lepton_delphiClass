@@ -35,7 +35,11 @@ public :
    UInt_t          LumiBlockNum;
    ULong64_t       EvtNum;
    Bool_t          BadChargedCandidateFilter;
+   Bool_t          BadGlobalMuon;
+   Double_t        BadGlobalMuonLeadPt;
    Bool_t          BadPFMuonFilter;
+   Bool_t          BadTrkGlobalMuon;
+   Double_t        BadTrkGlobalMuonLeadPt;
    Int_t           BTags;
    Int_t           BTagsJECdown;
    Int_t           BTagsJECup;
@@ -70,55 +74,60 @@ public :
    Double_t        DeltaPhi4JECup;
    Double_t        DeltaPhi4JERdown;
    Double_t        DeltaPhi4JERup;
+   Bool_t          DupGlobalMuon;
+   Double_t        DupGlobalMuonLeadPt;
    Int_t           EcalDeadCellTriggerPrimitiveFilter;
    Int_t           eeBadScFilter;
-   vector<TLorentzVector> *Electrons;
-   vector<int>     *Electrons_charge;
-   vector<bool>    *Electrons_mediumID;
-   vector<double>  *Electrons_MT2Activity;
-   vector<double>  *Electrons_MTW;
-   vector<double>  *Electrons_PTW;
-   vector<bool>    *Electrons_tightID;
-   vector<TLorentzVector> *ElectronsNoIso;
-   vector<bool>    *ElectronsNoIso_mediumID;
-   vector<double>  *ElectronsNoIso_MiniIso;
-   vector<double>  *ElectronsNoIso_MT2Activity;
-   vector<double>  *ElectronsNoIso_MTW;
-   vector<bool>    *ElectronsNoIso_tightID;
-   vector<TLorentzVector> *GenElectrons;
-   vector<bool>    *GenElectrons_fromTau;
-   vector<double>  *GenElectrons_MT2Activity;
-   vector<double>  *GenElectrons_RecoTrkAct;
-   vector<double>  *GenElectrons_RecoTrkd3;
-   vector<double>  *GenElectrons_RecoTrkIso;
+   vector<TLorentzVector> *Electrons = 0;
+   vector<int>     *Electrons_charge = 0;
+   vector<bool>    *Electrons_mediumID = 0;
+   vector<double>  *Electrons_MT2Activity = 0;
+   vector<double>  *Electrons_MTW = 0;
+   vector<double>  *Electrons_PTW = 0;
+   vector<bool>    *Electrons_tightID = 0;
+   vector<TLorentzVector> *ElectronsNoIso = 0;
+   vector<bool>    *ElectronsNoIso_mediumID = 0;
+   vector<double>  *ElectronsNoIso_MiniIso = 0;
+   vector<double>  *ElectronsNoIso_MT2Activity = 0;
+   vector<double>  *ElectronsNoIso_MTW = 0;
+   vector<bool>    *ElectronsNoIso_tightID = 0;
+   vector<TLorentzVector> *GenElectrons = 0;
+   vector<bool>    *GenElectrons_fromTau = 0;
+   vector<double>  *GenElectrons_MT2Activity = 0;
+   vector<double>  *GenElectrons_RecoTrkAct = 0;
+   vector<double>  *GenElectrons_RecoTrkd3 = 0;
+   vector<double>  *GenElectrons_RecoTrkIso = 0;
    Double_t        GenHT;
-   vector<TLorentzVector> *GenJets;
-   vector<bool>    *GenJets_HTMask;
-   vector<bool>    *GenJets_MHTMask;
+   vector<TLorentzVector> *GenJets = 0;
+   vector<bool>    *GenJets_HTMask = 0;
+   vector<bool>    *GenJets_MHTMask = 0;
    Double_t        GenMET;
    Double_t        GenMETPhi;
    Double_t        GenMHT;
    Double_t        GenMHTPhi;
-   vector<TLorentzVector> *GenMuons;
-   vector<bool>    *GenMuons_fromTau;
-   vector<double>  *GenMuons_MT2Activity;
-   vector<double>  *GenMuons_RecoTrkAct;
-   vector<double>  *GenMuons_RecoTrkd3;
-   vector<double>  *GenMuons_RecoTrkIso;
-   vector<TLorentzVector> *GenParticles;
-   vector<int>     *GenParticles_ParentId;
-   vector<int>     *GenParticles_ParentIdx;
-   vector<int>     *GenParticles_PdgId;
-   vector<int>     *GenParticles_Status;
-   vector<TLorentzVector> *GenTaus;
-   vector<bool>    *GenTaus_had;
-   vector<double>  *GenTaus_LeadRecoTrkAct;
-   vector<double>  *GenTaus_LeadRecoTrkd3;
-   vector<double>  *GenTaus_LeadRecoTrkIso;
-   vector<TLorentzVector> *GenTaus_LeadTrk;
-   vector<double>  *GenTaus_MT2Activity;
-   vector<int>     *GenTaus_NProngs;
-   vector<TLorentzVector> *GenTaus_Nu;
+   vector<TLorentzVector> *GenMuons = 0;
+   vector<bool>    *GenMuons_fromTau = 0;
+   vector<double>  *GenMuons_MT2Activity = 0;
+   vector<double>  *GenMuons_RecoTrkAct = 0;
+   vector<double>  *GenMuons_RecoTrkd3 = 0;
+   vector<double>  *GenMuons_RecoTrkIso = 0;
+   vector<TLorentzVector> *GenParticles = 0;
+   vector<int>     *GenParticles_ParentId = 0;
+   vector<int>     *GenParticles_ParentIdx = 0;
+   vector<int>     *GenParticles_PdgId = 0;
+   vector<int>     *GenParticles_Status = 0;
+   vector<TLorentzVector> *GenTaus = 0;
+   vector<bool>    *GenTaus_had = 0;
+   vector<double>  *GenTaus_LeadRecoTrkAct = 0;
+   vector<double>  *GenTaus_LeadRecoTrkd3 = 0;
+   vector<double>  *GenTaus_LeadRecoTrkIso = 0;
+   vector<TLorentzVector> *GenTaus_LeadTrk = 0;
+   vector<double>  *GenTaus_MT2Activity = 0;
+   vector<int>     *GenTaus_NNeutralHadrons = 0;
+   vector<int>     *GenTaus_NProngs = 0;
+   vector<TLorentzVector> *GenTaus_Nu = 0;
+   vector<TLorentzVector> *GenTops = 0;
+   Double_t        GenTopWeight;
    Int_t           globalTightHalo2016Filter;
    Int_t           HBHEIsoNoiseFilter;
    Int_t           HBHENoiseFilter;
@@ -136,89 +145,89 @@ public :
    Bool_t          JetIDJECup;
    Bool_t          JetIDJERdown;
    Bool_t          JetIDJERup;
-   vector<TLorentzVector> *Jets;
-   vector<double>  *Jets_bDiscriminatorCSV;
-   vector<double>  *Jets_bDiscriminatorMVA;
-   vector<double>  *Jets_chargedEmEnergyFraction;
-   vector<double>  *Jets_chargedHadronEnergyFraction;
-   vector<int>     *Jets_chargedHadronMultiplicity;
-   vector<int>     *Jets_chargedMultiplicity;
-   vector<int>     *Jets_electronMultiplicity;
-   vector<int>     *Jets_hadronFlavor;
-   vector<bool>    *Jets_HTMask;
-   vector<bool>    *Jets_ID;
-   vector<bool>    *Jets_ISRMask;
-   vector<double>  *Jets_jecFactor;
-   vector<double>  *Jets_jecUnc;
-   vector<double>  *Jets_jerFactor;
-   vector<double>  *Jets_jerFactorDown;
-   vector<double>  *Jets_jerFactorUp;
-   vector<bool>    *Jets_LeptonMask;
-   vector<bool>    *Jets_MHTMask;
-   vector<double>  *Jets_muonEnergyFraction;
-   vector<int>     *Jets_muonMultiplicity;
-   vector<double>  *Jets_neutralEmEnergyFraction;
-   vector<double>  *Jets_neutralHadronEnergyFraction;
-   vector<int>     *Jets_neutralHadronMultiplicity;
-   vector<int>     *Jets_neutralMultiplicity;
-   vector<int>     *Jets_partonFlavor;
-   vector<double>  *Jets_photonEnergyFraction;
-   vector<int>     *Jets_photonMultiplicity;
-   vector<double>  *Jets_qgAxis2;
-   vector<double>  *Jets_qgLikelihood;
-   vector<int>     *Jets_qgMult;
-   vector<double>  *Jets_qgPtD;
-   vector<TLorentzVector> *JetsJECdown;
-   vector<double>  *JetsJECdown_bDiscriminatorCSV;
-   vector<double>  *JetsJECdown_bDiscriminatorMVA;
-   vector<int>     *JetsJECdown_hadronFlavor;
-   vector<bool>    *JetsJECdown_HTMask;
-   vector<bool>    *JetsJECdown_ID;
-   vector<bool>    *JetsJECdown_ISRMask;
-   vector<bool>    *JetsJECdown_LeptonMask;
-   vector<bool>    *JetsJECdown_MHTMask;
-   vector<double>  *JetsJECdown_muonEnergyFraction;
-   vector<int>     *JetsJECdown_partonFlavor;
-   vector<TLorentzVector> *JetsJECup;
-   vector<double>  *JetsJECup_bDiscriminatorCSV;
-   vector<double>  *JetsJECup_bDiscriminatorMVA;
-   vector<int>     *JetsJECup_hadronFlavor;
-   vector<bool>    *JetsJECup_HTMask;
-   vector<bool>    *JetsJECup_ID;
-   vector<bool>    *JetsJECup_ISRMask;
-   vector<bool>    *JetsJECup_LeptonMask;
-   vector<bool>    *JetsJECup_MHTMask;
-   vector<double>  *JetsJECup_muonEnergyFraction;
-   vector<int>     *JetsJECup_partonFlavor;
-   vector<TLorentzVector> *JetsJERdown;
-   vector<double>  *JetsJERdown_bDiscriminatorCSV;
-   vector<double>  *JetsJERdown_bDiscriminatorMVA;
-   vector<int>     *JetsJERdown_hadronFlavor;
-   vector<bool>    *JetsJERdown_HTMask;
-   vector<bool>    *JetsJERdown_ID;
-   vector<bool>    *JetsJERdown_ISRMask;
-   vector<bool>    *JetsJERdown_LeptonMask;
-   vector<bool>    *JetsJERdown_MHTMask;
-   vector<double>  *JetsJERdown_muonEnergyFraction;
-   vector<int>     *JetsJERdown_partonFlavor;
-   vector<TLorentzVector> *JetsJERup;
-   vector<double>  *JetsJERup_bDiscriminatorCSV;
-   vector<double>  *JetsJERup_bDiscriminatorMVA;
-   vector<int>     *JetsJERup_hadronFlavor;
-   vector<bool>    *JetsJERup_HTMask;
-   vector<bool>    *JetsJERup_ID;
-   vector<bool>    *JetsJERup_ISRMask;
-   vector<bool>    *JetsJERup_LeptonMask;
-   vector<bool>    *JetsJERup_MHTMask;
-   vector<double>  *JetsJERup_muonEnergyFraction;
-   vector<int>     *JetsJERup_partonFlavor;
+   vector<TLorentzVector> *Jets = 0;
+   vector<double>  *Jets_bDiscriminatorCSV = 0;
+   vector<double>  *Jets_bDiscriminatorMVA = 0;
+   vector<double>  *Jets_chargedEmEnergyFraction = 0;
+   vector<double>  *Jets_chargedHadronEnergyFraction = 0;
+   vector<int>     *Jets_chargedHadronMultiplicity = 0;
+   vector<int>     *Jets_chargedMultiplicity = 0;
+   vector<int>     *Jets_electronMultiplicity = 0;
+   vector<int>     *Jets_hadronFlavor = 0;
+   vector<bool>    *Jets_HTMask = 0;
+   vector<bool>    *Jets_ID = 0;
+   vector<bool>    *Jets_ISRMask = 0;
+   vector<double>  *Jets_jecFactor = 0;
+   vector<double>  *Jets_jecUnc = 0;
+   vector<double>  *Jets_jerFactor = 0;
+   vector<double>  *Jets_jerFactorDown = 0;
+   vector<double>  *Jets_jerFactorUp = 0;
+   vector<bool>    *Jets_LeptonMask = 0;
+   vector<bool>    *Jets_MHTMask = 0;
+   vector<double>  *Jets_muonEnergyFraction = 0;
+   vector<int>     *Jets_muonMultiplicity = 0;
+   vector<double>  *Jets_neutralEmEnergyFraction = 0;
+   vector<double>  *Jets_neutralHadronEnergyFraction = 0;
+   vector<int>     *Jets_neutralHadronMultiplicity = 0;
+   vector<int>     *Jets_neutralMultiplicity = 0;
+   vector<int>     *Jets_partonFlavor = 0;
+   vector<double>  *Jets_photonEnergyFraction = 0;
+   vector<int>     *Jets_photonMultiplicity = 0;
+   vector<double>  *Jets_qgAxis2 = 0;
+   vector<double>  *Jets_qgLikelihood = 0;
+   vector<int>     *Jets_qgMult = 0;
+   vector<double>  *Jets_qgPtD = 0;
+   vector<TLorentzVector> *JetsJECdown = 0;
+   vector<double>  *JetsJECdown_bDiscriminatorCSV = 0;
+   vector<double>  *JetsJECdown_bDiscriminatorMVA = 0;
+   vector<int>     *JetsJECdown_hadronFlavor = 0;
+   vector<bool>    *JetsJECdown_HTMask = 0;
+   vector<bool>    *JetsJECdown_ID = 0;
+   vector<bool>    *JetsJECdown_ISRMask = 0;
+   vector<bool>    *JetsJECdown_LeptonMask = 0;
+   vector<bool>    *JetsJECdown_MHTMask = 0;
+   vector<double>  *JetsJECdown_muonEnergyFraction = 0;
+   vector<int>     *JetsJECdown_partonFlavor = 0;
+   vector<TLorentzVector> *JetsJECup = 0;
+   vector<double>  *JetsJECup_bDiscriminatorCSV = 0;
+   vector<double>  *JetsJECup_bDiscriminatorMVA = 0;
+   vector<int>     *JetsJECup_hadronFlavor = 0;
+   vector<bool>    *JetsJECup_HTMask = 0;
+   vector<bool>    *JetsJECup_ID = 0;
+   vector<bool>    *JetsJECup_ISRMask = 0;
+   vector<bool>    *JetsJECup_LeptonMask = 0;
+   vector<bool>    *JetsJECup_MHTMask = 0;
+   vector<double>  *JetsJECup_muonEnergyFraction = 0;
+   vector<int>     *JetsJECup_partonFlavor = 0;
+   vector<TLorentzVector> *JetsJERdown = 0;
+   vector<double>  *JetsJERdown_bDiscriminatorCSV = 0;
+   vector<double>  *JetsJERdown_bDiscriminatorMVA = 0;
+   vector<int>     *JetsJERdown_hadronFlavor = 0;
+   vector<bool>    *JetsJERdown_HTMask = 0;
+   vector<bool>    *JetsJERdown_ID = 0;
+   vector<bool>    *JetsJERdown_ISRMask = 0;
+   vector<bool>    *JetsJERdown_LeptonMask = 0;
+   vector<bool>    *JetsJERdown_MHTMask = 0;
+   vector<double>  *JetsJERdown_muonEnergyFraction = 0;
+   vector<int>     *JetsJERdown_partonFlavor = 0;
+   vector<TLorentzVector> *JetsJERup = 0;
+   vector<double>  *JetsJERup_bDiscriminatorCSV = 0;
+   vector<double>  *JetsJERup_bDiscriminatorMVA = 0;
+   vector<int>     *JetsJERup_hadronFlavor = 0;
+   vector<bool>    *JetsJERup_HTMask = 0;
+   vector<bool>    *JetsJERup_ID = 0;
+   vector<bool>    *JetsJERup_ISRMask = 0;
+   vector<bool>    *JetsJERup_LeptonMask = 0;
+   vector<bool>    *JetsJERup_MHTMask = 0;
+   vector<double>  *JetsJERup_muonEnergyFraction = 0;
+   vector<int>     *JetsJERup_partonFlavor = 0;
    Double_t        madHT;
    Double_t        MET;
-   vector<double>  *METDown;
+   vector<double>  *METDown = 0;
    Double_t        METPhi;
-   vector<double>  *METPhiDown;
-   vector<double>  *METPhiUp;
-   vector<double>  *METUp;
+   vector<double>  *METPhiDown = 0;
+   vector<double>  *METPhiUp = 0;
+   vector<double>  *METUp = 0;
    Double_t        MHT;
    Double_t        MHTJECdown;
    Double_t        MHTJECup;
@@ -230,17 +239,17 @@ public :
    Double_t        MHTPhiJERdown;
    Double_t        MHTPhiJERup;
    Double_t        MT2;
-   vector<TLorentzVector> *Muons;
-   vector<int>     *Muons_charge;
-   vector<double>  *Muons_MT2Activity;
-   vector<double>  *Muons_MTW;
-   vector<double>  *Muons_PTW;
-   vector<bool>    *Muons_tightID;
-   vector<TLorentzVector> *MuonsNoIso;
-   vector<double>  *MuonsNoIso_MiniIso;
-   vector<double>  *MuonsNoIso_MT2Activity;
-   vector<double>  *MuonsNoIso_MTW;
-   vector<bool>    *MuonsNoIso_tightID;
+   vector<TLorentzVector> *Muons = 0;
+   vector<int>     *Muons_charge = 0;
+   vector<double>  *Muons_MT2Activity = 0;
+   vector<double>  *Muons_MTW = 0;
+   vector<double>  *Muons_PTW = 0;
+   vector<bool>    *Muons_tightID = 0;
+   vector<TLorentzVector> *MuonsNoIso = 0;
+   vector<double>  *MuonsNoIso_MiniIso = 0;
+   vector<double>  *MuonsNoIso_MT2Activity = 0;
+   vector<double>  *MuonsNoIso_MTW = 0;
+   vector<bool>    *MuonsNoIso_tightID = 0;
    Int_t           nAllVertices;
    Int_t           NJets;
    Int_t           NJetsISR;
@@ -255,290 +264,301 @@ public :
    Double_t        NumEvents;
    Int_t           NumInteractions;
    Int_t           NVtx;
-   vector<int>     *PDFids;
-   vector<double>  *PDFweights;
+   vector<int>     *PDFids = 0;
+   vector<double>  *PDFweights = 0;
    Double_t        PFCaloMETRatio;
+   Double_t        PmssmId;
    Double_t        puSysDown;
    Double_t        puSysUp;
    Double_t        puWeight;
-   vector<double>  *ScaleWeights;
+   vector<double>  *ScaleWeights = 0;
    Double_t        SusyLSPMass;
    Double_t        SusyMotherMass;
-   vector<TLorentzVector> *TAPElectronTracks;
-   vector<double>  *TAPElectronTracks_activity;
-   vector<int>     *TAPElectronTracks_charge;
-   vector<double>  *TAPElectronTracks_mT;
-   vector<double>  *TAPElectronTracks_trkiso;
-   vector<TLorentzVector> *TAPMuonTracks;
-   vector<double>  *TAPMuonTracks_activity;
-   vector<int>     *TAPMuonTracks_charge;
-   vector<double>  *TAPMuonTracks_mT;
-   vector<double>  *TAPMuonTracks_trkiso;
-   vector<TLorentzVector> *TAPPionTracks;
-   vector<double>  *TAPPionTracks_activity;
-   vector<int>     *TAPPionTracks_charge;
-   vector<double>  *TAPPionTracks_mT;
-   vector<double>  *TAPPionTracks_trkiso;
-   vector<string>  *TriggerNames;
-   vector<int>     *TriggerPass;
-   vector<int>     *TriggerPrescales;
+   vector<TLorentzVector> *TAPElectronTracks = 0;
+   vector<double>  *TAPElectronTracks_activity = 0;
+   vector<int>     *TAPElectronTracks_charge = 0;
+   vector<double>  *TAPElectronTracks_mT = 0;
+   vector<double>  *TAPElectronTracks_trkiso = 0;
+   vector<TLorentzVector> *TAPMuonTracks = 0;
+   vector<double>  *TAPMuonTracks_activity = 0;
+   vector<int>     *TAPMuonTracks_charge = 0;
+   vector<double>  *TAPMuonTracks_mT = 0;
+   vector<double>  *TAPMuonTracks_trkiso = 0;
+   vector<TLorentzVector> *TAPPionTracks = 0;
+   vector<double>  *TAPPionTracks_activity = 0;
+   vector<int>     *TAPPionTracks_charge = 0;
+   vector<double>  *TAPPionTracks_mT = 0;
+   vector<double>  *TAPPionTracks_trkiso = 0;
+   vector<string>  *TriggerNames = 0;
+   vector<int>     *TriggerPass = 0;
+   vector<int>     *TriggerPrescales = 0;
    Double_t        TrueNumInteractions;
    Double_t        Weight;
 
    // List of branches
-   TBranch        *b_RunNum;   //!
-   TBranch        *b_LumiBlockNum;   //!
-   TBranch        *b_EvtNum;   //!
-   TBranch        *b_BadChargedCandidateFilter;   //!
-   TBranch        *b_BadPFMuonFilter;   //!
-   TBranch        *b_BTags;   //!
-   TBranch        *b_BTagsJECdown;   //!
-   TBranch        *b_BTagsJECup;   //!
-   TBranch        *b_BTagsJERdown;   //!
-   TBranch        *b_BTagsJERup;   //!
-   TBranch        *b_BTagsMVA;   //!
-   TBranch        *b_BTagsMVAJECdown;   //!
-   TBranch        *b_BTagsMVAJECup;   //!
-   TBranch        *b_BTagsMVAJERdown;   //!
-   TBranch        *b_BTagsMVAJERup;   //!
-   TBranch        *b_CaloMET;   //!
-   TBranch        *b_CaloMETPhi;   //!
-   TBranch        *b_CrossSection;   //!
-   TBranch        *b_CSCTightHaloFilter;   //!
-   TBranch        *b_DeltaPhi1;   //!
-   TBranch        *b_DeltaPhi1JECdown;   //!
-   TBranch        *b_DeltaPhi1JECup;   //!
-   TBranch        *b_DeltaPhi1JERdown;   //!
-   TBranch        *b_DeltaPhi1JERup;   //!
-   TBranch        *b_DeltaPhi2;   //!
-   TBranch        *b_DeltaPhi2JECdown;   //!
-   TBranch        *b_DeltaPhi2JECup;   //!
-   TBranch        *b_DeltaPhi2JERdown;   //!
-   TBranch        *b_DeltaPhi2JERup;   //!
-   TBranch        *b_DeltaPhi3;   //!
-   TBranch        *b_DeltaPhi3JECdown;   //!
-   TBranch        *b_DeltaPhi3JECup;   //!
-   TBranch        *b_DeltaPhi3JERdown;   //!
-   TBranch        *b_DeltaPhi3JERup;   //!
-   TBranch        *b_DeltaPhi4;   //!
-   TBranch        *b_DeltaPhi4JECdown;   //!
-   TBranch        *b_DeltaPhi4JECup;   //!
-   TBranch        *b_DeltaPhi4JERdown;   //!
-   TBranch        *b_DeltaPhi4JERup;   //!
-   TBranch        *b_EcalDeadCellTriggerPrimitiveFilter;   //!
-   TBranch        *b_eeBadScFilter;   //!
-   TBranch        *b_Electrons;   //!
-   TBranch        *b_Electrons_charge;   //!
-   TBranch        *b_Electrons_mediumID;   //!
-   TBranch        *b_Electrons_MT2Activity;   //!
-   TBranch        *b_Electrons_MTW;   //!
-   TBranch        *b_Electrons_PTW;   //!
-   TBranch        *b_Electrons_tightID;   //!
-   TBranch        *b_ElectronsNoIso;   //!
-   TBranch        *b_ElectronsNoIso_mediumID;   //!
-   TBranch        *b_ElectronsNoIso_MiniIso;   //!
-   TBranch        *b_ElectronsNoIso_MT2Activity;   //!
-   TBranch        *b_ElectronsNoIso_MTW;   //!
-   TBranch        *b_ElectronsNoIso_tightID;   //!
-   TBranch        *b_GenElectrons;   //!
-   TBranch        *b_GenElectrons_fromTau;   //!
-   TBranch        *b_GenElectrons_MT2Activity;   //!
-   TBranch        *b_GenElectrons_RecoTrkAct;   //!
-   TBranch        *b_GenElectrons_RecoTrkd3;   //!
-   TBranch        *b_GenElectrons_RecoTrkIso;   //!
-   TBranch        *b_GenHT;   //!
-   TBranch        *b_GenJets;   //!
-   TBranch        *b_GenJets_HTMask;   //!
-   TBranch        *b_GenJets_MHTMask;   //!
-   TBranch        *b_GenMET;   //!
-   TBranch        *b_GenMETPhi;   //!
-   TBranch        *b_GenMHT;   //!
-   TBranch        *b_GenMHTPhi;   //!
-   TBranch        *b_GenMuons;   //!
-   TBranch        *b_GenMuons_fromTau;   //!
-   TBranch        *b_GenMuons_MT2Activity;   //!
-   TBranch        *b_GenMuons_RecoTrkAct;   //!
-   TBranch        *b_GenMuons_RecoTrkd3;   //!
-   TBranch        *b_GenMuons_RecoTrkIso;   //!
-   TBranch        *b_GenParticles;   //!
-   TBranch        *b_GenParticles_ParentId;   //!
-   TBranch        *b_GenParticles_ParentIdx;   //!
-   TBranch        *b_GenParticles_PdgId;   //!
-   TBranch        *b_GenParticles_Status;   //!
-   TBranch        *b_GenTaus;   //!
-   TBranch        *b_GenTaus_had;   //!
-   TBranch        *b_GenTaus_LeadRecoTrkAct;   //!
-   TBranch        *b_GenTaus_LeadRecoTrkd3;   //!
-   TBranch        *b_GenTaus_LeadRecoTrkIso;   //!
-   TBranch        *b_GenTaus_LeadTrk;   //!
-   TBranch        *b_GenTaus_MT2Activity;   //!
-   TBranch        *b_GenTaus_NProngs;   //!
-   TBranch        *b_GenTaus_Nu;   //!
-   TBranch        *b_globalTightHalo2016Filter;   //!
-   TBranch        *b_HBHEIsoNoiseFilter;   //!
-   TBranch        *b_HBHENoiseFilter;   //!
-   TBranch        *b_HT;   //!
-   TBranch        *b_HTJECdown;   //!
-   TBranch        *b_HTJECup;   //!
-   TBranch        *b_HTJERdown;   //!
-   TBranch        *b_HTJERup;   //!
-   TBranch        *b_isoElectronTracks;   //!
-   TBranch        *b_isoMuonTracks;   //!
-   TBranch        *b_isoPionTracks;   //!
-   TBranch        *b_JetID;   //!
-   TBranch        *b_JetIDAK8;   //!
-   TBranch        *b_JetIDJECdown;   //!
-   TBranch        *b_JetIDJECup;   //!
-   TBranch        *b_JetIDJERdown;   //!
-   TBranch        *b_JetIDJERup;   //!
-   TBranch        *b_Jets;   //!
-   TBranch        *b_Jets_bDiscriminatorCSV;   //!
-   TBranch        *b_Jets_bDiscriminatorMVA;   //!
-   TBranch        *b_Jets_chargedEmEnergyFraction;   //!
-   TBranch        *b_Jets_chargedHadronEnergyFraction;   //!
-   TBranch        *b_Jets_chargedHadronMultiplicity;   //!
-   TBranch        *b_Jets_chargedMultiplicity;   //!
-   TBranch        *b_Jets_electronMultiplicity;   //!
-   TBranch        *b_Jets_hadronFlavor;   //!
-   TBranch        *b_Jets_HTMask;   //!
-   TBranch        *b_Jets_ID;   //!
-   TBranch        *b_Jets_ISRMask;   //!
-   TBranch        *b_Jets_jecFactor;   //!
-   TBranch        *b_Jets_jecUnc;   //!
-   TBranch        *b_Jets_jerFactor;   //!
-   TBranch        *b_Jets_jerFactorDown;   //!
-   TBranch        *b_Jets_jerFactorUp;   //!
-   TBranch        *b_Jets_LeptonMask;   //!
-   TBranch        *b_Jets_MHTMask;   //!
-   TBranch        *b_Jets_muonEnergyFraction;   //!
-   TBranch        *b_Jets_muonMultiplicity;   //!
-   TBranch        *b_Jets_neutralEmEnergyFraction;   //!
-   TBranch        *b_Jets_neutralHadronEnergyFraction;   //!
-   TBranch        *b_Jets_neutralHadronMultiplicity;   //!
-   TBranch        *b_Jets_neutralMultiplicity;   //!
-   TBranch        *b_Jets_partonFlavor;   //!
-   TBranch        *b_Jets_photonEnergyFraction;   //!
-   TBranch        *b_Jets_photonMultiplicity;   //!
-   TBranch        *b_Jets_qgAxis2;   //!
-   TBranch        *b_Jets_qgLikelihood;   //!
-   TBranch        *b_Jets_qgMult;   //!
-   TBranch        *b_Jets_qgPtD;   //!
-   TBranch        *b_JetsJECdown;   //!
-   TBranch        *b_JetsJECdown_bDiscriminatorCSV;   //!
-   TBranch        *b_JetsJECdown_bDiscriminatorMVA;   //!
-   TBranch        *b_JetsJECdown_hadronFlavor;   //!
-   TBranch        *b_JetsJECdown_HTMask;   //!
-   TBranch        *b_JetsJECdown_ID;   //!
-   TBranch        *b_JetsJECdown_ISRMask;   //!
-   TBranch        *b_JetsJECdown_LeptonMask;   //!
-   TBranch        *b_JetsJECdown_MHTMask;   //!
-   TBranch        *b_JetsJECdown_muonEnergyFraction;   //!
-   TBranch        *b_JetsJECdown_partonFlavor;   //!
-   TBranch        *b_JetsJECup;   //!
-   TBranch        *b_JetsJECup_bDiscriminatorCSV;   //!
-   TBranch        *b_JetsJECup_bDiscriminatorMVA;   //!
-   TBranch        *b_JetsJECup_hadronFlavor;   //!
-   TBranch        *b_JetsJECup_HTMask;   //!
-   TBranch        *b_JetsJECup_ID;   //!
-   TBranch        *b_JetsJECup_ISRMask;   //!
-   TBranch        *b_JetsJECup_LeptonMask;   //!
-   TBranch        *b_JetsJECup_MHTMask;   //!
-   TBranch        *b_JetsJECup_muonEnergyFraction;   //!
-   TBranch        *b_JetsJECup_partonFlavor;   //!
-   TBranch        *b_JetsJERdown;   //!
-   TBranch        *b_JetsJERdown_bDiscriminatorCSV;   //!
-   TBranch        *b_JetsJERdown_bDiscriminatorMVA;   //!
-   TBranch        *b_JetsJERdown_hadronFlavor;   //!
-   TBranch        *b_JetsJERdown_HTMask;   //!
-   TBranch        *b_JetsJERdown_ID;   //!
-   TBranch        *b_JetsJERdown_ISRMask;   //!
-   TBranch        *b_JetsJERdown_LeptonMask;   //!
-   TBranch        *b_JetsJERdown_MHTMask;   //!
-   TBranch        *b_JetsJERdown_muonEnergyFraction;   //!
-   TBranch        *b_JetsJERdown_partonFlavor;   //!
-   TBranch        *b_JetsJERup;   //!
-   TBranch        *b_JetsJERup_bDiscriminatorCSV;   //!
-   TBranch        *b_JetsJERup_bDiscriminatorMVA;   //!
-   TBranch        *b_JetsJERup_hadronFlavor;   //!
-   TBranch        *b_JetsJERup_HTMask;   //!
-   TBranch        *b_JetsJERup_ID;   //!
-   TBranch        *b_JetsJERup_ISRMask;   //!
-   TBranch        *b_JetsJERup_LeptonMask;   //!
-   TBranch        *b_JetsJERup_MHTMask;   //!
-   TBranch        *b_JetsJERup_muonEnergyFraction;   //!
-   TBranch        *b_JetsJERup_partonFlavor;   //!
-   TBranch        *b_madHT;   //!
-   TBranch        *b_MET;   //!
-   TBranch        *b_METDown;   //!
-   TBranch        *b_METPhi;   //!
-   TBranch        *b_METPhiDown;   //!
-   TBranch        *b_METPhiUp;   //!
-   TBranch        *b_METUp;   //!
-   TBranch        *b_MHT;   //!
-   TBranch        *b_MHTJECdown;   //!
-   TBranch        *b_MHTJECup;   //!
-   TBranch        *b_MHTJERdown;   //!
-   TBranch        *b_MHTJERup;   //!
-   TBranch        *b_MHTPhi;   //!
-   TBranch        *b_MHTPhiJECdown;   //!
-   TBranch        *b_MHTPhiJECup;   //!
-   TBranch        *b_MHTPhiJERdown;   //!
-   TBranch        *b_MHTPhiJERup;   //!
-   TBranch        *b_MT2;   //!
-   TBranch        *b_Muons;   //!
-   TBranch        *b_Muons_charge;   //!
-   TBranch        *b_Muons_MT2Activity;   //!
-   TBranch        *b_Muons_MTW;   //!
-   TBranch        *b_Muons_PTW;   //!
-   TBranch        *b_Muons_tightID;   //!
-   TBranch        *b_MuonsNoIso;   //!
-   TBranch        *b_MuonsNoIso_MiniIso;   //!
-   TBranch        *b_MuonsNoIso_MT2Activity;   //!
-   TBranch        *b_MuonsNoIso_MTW;   //!
-   TBranch        *b_MuonsNoIso_tightID;   //!
-   TBranch        *b_nAllVertices;   //!
-   TBranch        *b_NJets;   //!
-   TBranch        *b_NJetsISR;   //!
-   TBranch        *b_NJetsISRJECdown;   //!
-   TBranch        *b_NJetsISRJECup;   //!
-   TBranch        *b_NJetsISRJERdown;   //!
-   TBranch        *b_NJetsISRJERup;   //!
-   TBranch        *b_NJetsJECdown;   //!
-   TBranch        *b_NJetsJECup;   //!
-   TBranch        *b_NJetsJERdown;   //!
-   TBranch        *b_NJetsJERup;   //!
-   TBranch        *b_NumEvents;   //!
-   TBranch        *b_NumInteractions;   //!
-   TBranch        *b_NVtx;   //!
-   TBranch        *b_PDFids;   //!
-   TBranch        *b_PDFweights;   //!
-   TBranch        *b_PFCaloMETRatio;   //!
-   TBranch        *b_puSysDown;   //!
-   TBranch        *b_puSysUp;   //!
-   TBranch        *b_puWeight;   //!
-   TBranch        *b_ScaleWeights;   //!
-   TBranch        *b_SusyLSPMass;   //!
-   TBranch        *b_SusyMotherMass;   //!
-   TBranch        *b_TAPElectronTracks;   //!
-   TBranch        *b_TAPElectronTracks_activity;   //!
-   TBranch        *b_TAPElectronTracks_charge;   //!
-   TBranch        *b_TAPElectronTracks_mT;   //!
-   TBranch        *b_TAPElectronTracks_trkiso;   //!
-   TBranch        *b_TAPMuonTracks;   //!
-   TBranch        *b_TAPMuonTracks_activity;   //!
-   TBranch        *b_TAPMuonTracks_charge;   //!
-   TBranch        *b_TAPMuonTracks_mT;   //!
-   TBranch        *b_TAPMuonTracks_trkiso;   //!
-   TBranch        *b_TAPPionTracks;   //!
-   TBranch        *b_TAPPionTracks_activity;   //!
-   TBranch        *b_TAPPionTracks_charge;   //!
-   TBranch        *b_TAPPionTracks_mT;   //!
-   TBranch        *b_TAPPionTracks_trkiso;   //!
-   TBranch        *b_TriggerNames;   //!
-   TBranch        *b_TriggerPass;   //!
-   TBranch        *b_TriggerPrescales;   //!
-   TBranch        *b_TrueNumInteractions;   //!
-   TBranch        *b_Weight;   //!
+   TBranch        *b_RunNum = 0;   //!
+   TBranch        *b_LumiBlockNum = 0;   //!
+   TBranch        *b_EvtNum = 0;   //!
+   TBranch        *b_BadChargedCandidateFilter = 0;   //!
+   TBranch        *b_BadGlobalMuon = 0;   //!
+   TBranch        *b_BadGlobalMuonLeadPt = 0;   //!
+   TBranch        *b_BadPFMuonFilter = 0;   //!
+   TBranch        *b_BadTrkGlobalMuon = 0;   //!
+   TBranch        *b_BadTrkGlobalMuonLeadPt = 0;   //!
+   TBranch        *b_BTags = 0;   //!
+   TBranch        *b_BTagsJECdown = 0;   //!
+   TBranch        *b_BTagsJECup = 0;   //!
+   TBranch        *b_BTagsJERdown = 0;   //!
+   TBranch        *b_BTagsJERup = 0;   //!
+   TBranch        *b_BTagsMVA = 0;   //!
+   TBranch        *b_BTagsMVAJECdown = 0;   //!
+   TBranch        *b_BTagsMVAJECup = 0;   //!
+   TBranch        *b_BTagsMVAJERdown = 0;   //!
+   TBranch        *b_BTagsMVAJERup = 0;   //!
+   TBranch        *b_CaloMET = 0;   //!
+   TBranch        *b_CaloMETPhi = 0;   //!
+   TBranch        *b_CrossSection = 0;   //!
+   TBranch        *b_CSCTightHaloFilter = 0;   //!
+   TBranch        *b_DeltaPhi1 = 0;   //!
+   TBranch        *b_DeltaPhi1JECdown = 0;   //!
+   TBranch        *b_DeltaPhi1JECup = 0;   //!
+   TBranch        *b_DeltaPhi1JERdown = 0;   //!
+   TBranch        *b_DeltaPhi1JERup = 0;   //!
+   TBranch        *b_DeltaPhi2 = 0;   //!
+   TBranch        *b_DeltaPhi2JECdown = 0;   //!
+   TBranch        *b_DeltaPhi2JECup = 0;   //!
+   TBranch        *b_DeltaPhi2JERdown = 0;   //!
+   TBranch        *b_DeltaPhi2JERup = 0;   //!
+   TBranch        *b_DeltaPhi3 = 0;   //!
+   TBranch        *b_DeltaPhi3JECdown = 0;   //!
+   TBranch        *b_DeltaPhi3JECup = 0;   //!
+   TBranch        *b_DeltaPhi3JERdown = 0;   //!
+   TBranch        *b_DeltaPhi3JERup = 0;   //!
+   TBranch        *b_DeltaPhi4 = 0;   //!
+   TBranch        *b_DeltaPhi4JECdown = 0;   //!
+   TBranch        *b_DeltaPhi4JECup = 0;   //!
+   TBranch        *b_DeltaPhi4JERdown = 0;   //!
+   TBranch        *b_DeltaPhi4JERup = 0;   //!
+   TBranch        *b_DupGlobalMuon = 0;   //!
+   TBranch        *b_DupGlobalMuonLeadPt = 0;   //!
+   TBranch        *b_EcalDeadCellTriggerPrimitiveFilter = 0;   //!
+   TBranch        *b_eeBadScFilter = 0;   //!
+   TBranch        *b_Electrons = 0;   //!
+   TBranch        *b_Electrons_charge = 0;   //!
+   TBranch        *b_Electrons_mediumID = 0;   //!
+   TBranch        *b_Electrons_MT2Activity = 0;   //!
+   TBranch        *b_Electrons_MTW = 0;   //!
+   TBranch        *b_Electrons_PTW = 0;   //!
+   TBranch        *b_Electrons_tightID = 0;   //!
+   TBranch        *b_ElectronsNoIso = 0;   //!
+   TBranch        *b_ElectronsNoIso_mediumID = 0;   //!
+   TBranch        *b_ElectronsNoIso_MiniIso = 0;   //!
+   TBranch        *b_ElectronsNoIso_MT2Activity = 0;   //!
+   TBranch        *b_ElectronsNoIso_MTW = 0;   //!
+   TBranch        *b_ElectronsNoIso_tightID = 0;   //!
+   TBranch        *b_GenElectrons = 0;   //!
+   TBranch        *b_GenElectrons_fromTau = 0;   //!
+   TBranch        *b_GenElectrons_MT2Activity = 0;   //!
+   TBranch        *b_GenElectrons_RecoTrkAct = 0;   //!
+   TBranch        *b_GenElectrons_RecoTrkd3 = 0;   //!
+   TBranch        *b_GenElectrons_RecoTrkIso = 0;   //!
+   TBranch        *b_GenHT = 0;   //!
+   TBranch        *b_GenJets = 0;   //!
+   TBranch        *b_GenJets_HTMask = 0;   //!
+   TBranch        *b_GenJets_MHTMask = 0;   //!
+   TBranch        *b_GenMET = 0;   //!
+   TBranch        *b_GenMETPhi = 0;   //!
+   TBranch        *b_GenMHT = 0;   //!
+   TBranch        *b_GenMHTPhi = 0;   //!
+   TBranch        *b_GenMuons = 0;   //!
+   TBranch        *b_GenMuons_fromTau = 0;   //!
+   TBranch        *b_GenMuons_MT2Activity = 0;   //!
+   TBranch        *b_GenMuons_RecoTrkAct = 0;   //!
+   TBranch        *b_GenMuons_RecoTrkd3 = 0;   //!
+   TBranch        *b_GenMuons_RecoTrkIso = 0;   //!
+   TBranch        *b_GenParticles = 0;   //!
+   TBranch        *b_GenParticles_ParentId = 0;   //!
+   TBranch        *b_GenParticles_ParentIdx = 0;   //!
+   TBranch        *b_GenParticles_PdgId = 0;   //!
+   TBranch        *b_GenParticles_Status = 0;   //!
+   TBranch        *b_GenTaus = 0;   //!
+   TBranch        *b_GenTaus_had = 0;   //!
+   TBranch        *b_GenTaus_LeadRecoTrkAct = 0;   //!
+   TBranch        *b_GenTaus_LeadRecoTrkd3 = 0;   //!
+   TBranch        *b_GenTaus_LeadRecoTrkIso = 0;   //!
+   TBranch        *b_GenTaus_LeadTrk = 0;   //!
+   TBranch        *b_GenTaus_MT2Activity = 0;   //!
+   TBranch        *b_GenTaus_NNeutralHadrons = 0;   //!
+   TBranch        *b_GenTaus_NProngs = 0;   //!
+   TBranch        *b_GenTaus_Nu = 0;   //!
+   TBranch        *b_GenTops = 0;   //!
+   TBranch        *b_GenTopWeight = 0;   //!
+   TBranch        *b_globalTightHalo2016Filter = 0;   //!
+   TBranch        *b_HBHEIsoNoiseFilter = 0;   //!
+   TBranch        *b_HBHENoiseFilter = 0;   //!
+   TBranch        *b_HT = 0;   //!
+   TBranch        *b_HTJECdown = 0;   //!
+   TBranch        *b_HTJECup = 0;   //!
+   TBranch        *b_HTJERdown = 0;   //!
+   TBranch        *b_HTJERup = 0;   //!
+   TBranch        *b_isoElectronTracks = 0;   //!
+   TBranch        *b_isoMuonTracks = 0;   //!
+   TBranch        *b_isoPionTracks = 0;   //!
+   TBranch        *b_JetID = 0;   //!
+   TBranch        *b_JetIDAK8 = 0;   //!
+   TBranch        *b_JetIDJECdown = 0;   //!
+   TBranch        *b_JetIDJECup = 0;   //!
+   TBranch        *b_JetIDJERdown = 0;   //!
+   TBranch        *b_JetIDJERup = 0;   //!
+   TBranch        *b_Jets = 0;   //!
+   TBranch        *b_Jets_bDiscriminatorCSV = 0;   //!
+   TBranch        *b_Jets_bDiscriminatorMVA = 0;   //!
+   TBranch        *b_Jets_chargedEmEnergyFraction = 0;   //!
+   TBranch        *b_Jets_chargedHadronEnergyFraction = 0;   //!
+   TBranch        *b_Jets_chargedHadronMultiplicity = 0;   //!
+   TBranch        *b_Jets_chargedMultiplicity = 0;   //!
+   TBranch        *b_Jets_electronMultiplicity = 0;   //!
+   TBranch        *b_Jets_hadronFlavor = 0;   //!
+   TBranch        *b_Jets_HTMask = 0;   //!
+   TBranch        *b_Jets_ID = 0;   //!
+   TBranch        *b_Jets_ISRMask = 0;   //!
+   TBranch        *b_Jets_jecFactor = 0;   //!
+   TBranch        *b_Jets_jecUnc = 0;   //!
+   TBranch        *b_Jets_jerFactor = 0;   //!
+   TBranch        *b_Jets_jerFactorDown = 0;   //!
+   TBranch        *b_Jets_jerFactorUp = 0;   //!
+   TBranch        *b_Jets_LeptonMask = 0;   //!
+   TBranch        *b_Jets_MHTMask = 0;   //!
+   TBranch        *b_Jets_muonEnergyFraction = 0;   //!
+   TBranch        *b_Jets_muonMultiplicity = 0;   //!
+   TBranch        *b_Jets_neutralEmEnergyFraction = 0;   //!
+   TBranch        *b_Jets_neutralHadronEnergyFraction = 0;   //!
+   TBranch        *b_Jets_neutralHadronMultiplicity = 0;   //!
+   TBranch        *b_Jets_neutralMultiplicity = 0;   //!
+   TBranch        *b_Jets_partonFlavor = 0;   //!
+   TBranch        *b_Jets_photonEnergyFraction = 0;   //!
+   TBranch        *b_Jets_photonMultiplicity = 0;   //!
+   TBranch        *b_Jets_qgAxis2 = 0;   //!
+   TBranch        *b_Jets_qgLikelihood = 0;   //!
+   TBranch        *b_Jets_qgMult = 0;   //!
+   TBranch        *b_Jets_qgPtD = 0;   //!
+   TBranch        *b_JetsJECdown = 0;   //!
+   TBranch        *b_JetsJECdown_bDiscriminatorCSV = 0;   //!
+   TBranch        *b_JetsJECdown_bDiscriminatorMVA = 0;   //!
+   TBranch        *b_JetsJECdown_hadronFlavor = 0;   //!
+   TBranch        *b_JetsJECdown_HTMask = 0;   //!
+   TBranch        *b_JetsJECdown_ID = 0;   //!
+   TBranch        *b_JetsJECdown_ISRMask = 0;   //!
+   TBranch        *b_JetsJECdown_LeptonMask = 0;   //!
+   TBranch        *b_JetsJECdown_MHTMask = 0;   //!
+   TBranch        *b_JetsJECdown_muonEnergyFraction = 0;   //!
+   TBranch        *b_JetsJECdown_partonFlavor = 0;   //!
+   TBranch        *b_JetsJECup = 0;   //!
+   TBranch        *b_JetsJECup_bDiscriminatorCSV = 0;   //!
+   TBranch        *b_JetsJECup_bDiscriminatorMVA = 0;   //!
+   TBranch        *b_JetsJECup_hadronFlavor = 0;   //!
+   TBranch        *b_JetsJECup_HTMask = 0;   //!
+   TBranch        *b_JetsJECup_ID = 0;   //!
+   TBranch        *b_JetsJECup_ISRMask = 0;   //!
+   TBranch        *b_JetsJECup_LeptonMask = 0;   //!
+   TBranch        *b_JetsJECup_MHTMask = 0;   //!
+   TBranch        *b_JetsJECup_muonEnergyFraction = 0;   //!
+   TBranch        *b_JetsJECup_partonFlavor = 0;   //!
+   TBranch        *b_JetsJERdown = 0;   //!
+   TBranch        *b_JetsJERdown_bDiscriminatorCSV = 0;   //!
+   TBranch        *b_JetsJERdown_bDiscriminatorMVA = 0;   //!
+   TBranch        *b_JetsJERdown_hadronFlavor = 0;   //!
+   TBranch        *b_JetsJERdown_HTMask = 0;   //!
+   TBranch        *b_JetsJERdown_ID = 0;   //!
+   TBranch        *b_JetsJERdown_ISRMask = 0;   //!
+   TBranch        *b_JetsJERdown_LeptonMask = 0;   //!
+   TBranch        *b_JetsJERdown_MHTMask = 0;   //!
+   TBranch        *b_JetsJERdown_muonEnergyFraction = 0;   //!
+   TBranch        *b_JetsJERdown_partonFlavor = 0;   //!
+   TBranch        *b_JetsJERup = 0;   //!
+   TBranch        *b_JetsJERup_bDiscriminatorCSV = 0;   //!
+   TBranch        *b_JetsJERup_bDiscriminatorMVA = 0;   //!
+   TBranch        *b_JetsJERup_hadronFlavor = 0;   //!
+   TBranch        *b_JetsJERup_HTMask = 0;   //!
+   TBranch        *b_JetsJERup_ID = 0;   //!
+   TBranch        *b_JetsJERup_ISRMask = 0;   //!
+   TBranch        *b_JetsJERup_LeptonMask = 0;   //!
+   TBranch        *b_JetsJERup_MHTMask = 0;   //!
+   TBranch        *b_JetsJERup_muonEnergyFraction = 0;   //!
+   TBranch        *b_JetsJERup_partonFlavor = 0;   //!
+   TBranch        *b_madHT = 0;   //!
+   TBranch        *b_MET = 0;   //!
+   TBranch        *b_METDown = 0;   //!
+   TBranch        *b_METPhi = 0;   //!
+   TBranch        *b_METPhiDown = 0;   //!
+   TBranch        *b_METPhiUp = 0;   //!
+   TBranch        *b_METUp = 0;   //!
+   TBranch        *b_MHT = 0;   //!
+   TBranch        *b_MHTJECdown = 0;   //!
+   TBranch        *b_MHTJECup = 0;   //!
+   TBranch        *b_MHTJERdown = 0;   //!
+   TBranch        *b_MHTJERup = 0;   //!
+   TBranch        *b_MHTPhi = 0;   //!
+   TBranch        *b_MHTPhiJECdown = 0;   //!
+   TBranch        *b_MHTPhiJECup = 0;   //!
+   TBranch        *b_MHTPhiJERdown = 0;   //!
+   TBranch        *b_MHTPhiJERup = 0;   //!
+   TBranch        *b_MT2 = 0;   //!
+   TBranch        *b_Muons = 0;   //!
+   TBranch        *b_Muons_charge = 0;   //!
+   TBranch        *b_Muons_MT2Activity = 0;   //!
+   TBranch        *b_Muons_MTW = 0;   //!
+   TBranch        *b_Muons_PTW = 0;   //!
+   TBranch        *b_Muons_tightID = 0;   //!
+   TBranch        *b_MuonsNoIso = 0;   //!
+   TBranch        *b_MuonsNoIso_MiniIso = 0;   //!
+   TBranch        *b_MuonsNoIso_MT2Activity = 0;   //!
+   TBranch        *b_MuonsNoIso_MTW = 0;   //!
+   TBranch        *b_MuonsNoIso_tightID = 0;   //!
+   TBranch        *b_nAllVertices = 0;   //!
+   TBranch        *b_NJets = 0;   //!
+   TBranch        *b_NJetsISR = 0;   //!
+   TBranch        *b_NJetsISRJECdown = 0;   //!
+   TBranch        *b_NJetsISRJECup = 0;   //!
+   TBranch        *b_NJetsISRJERdown = 0;   //!
+   TBranch        *b_NJetsISRJERup = 0;   //!
+   TBranch        *b_NJetsJECdown = 0;   //!
+   TBranch        *b_NJetsJECup = 0;   //!
+   TBranch        *b_NJetsJERdown = 0;   //!
+   TBranch        *b_NJetsJERup = 0;   //!
+   TBranch        *b_NumEvents = 0;   //!
+   TBranch        *b_NumInteractions = 0;   //!
+   TBranch        *b_NVtx = 0;   //!
+   TBranch        *b_PDFids = 0;   //!
+   TBranch        *b_PDFweights = 0;   //!
+   TBranch        *b_PFCaloMETRatio = 0;   //!
+   TBranch        *b_PmssmId = 0;   //!
+   TBranch        *b_puSysDown = 0;   //!
+   TBranch        *b_puSysUp = 0;   //!
+   TBranch        *b_puWeight = 0;   //!
+   TBranch        *b_ScaleWeights = 0;   //!
+   TBranch        *b_SusyLSPMass = 0;   //!
+   TBranch        *b_SusyMotherMass = 0;   //!
+   TBranch        *b_TAPElectronTracks = 0;   //!
+   TBranch        *b_TAPElectronTracks_activity = 0;   //!
+   TBranch        *b_TAPElectronTracks_charge = 0;   //!
+   TBranch        *b_TAPElectronTracks_mT = 0;   //!
+   TBranch        *b_TAPElectronTracks_trkiso = 0;   //!
+   TBranch        *b_TAPMuonTracks = 0;   //!
+   TBranch        *b_TAPMuonTracks_activity = 0;   //!
+   TBranch        *b_TAPMuonTracks_charge = 0;   //!
+   TBranch        *b_TAPMuonTracks_mT = 0;   //!
+   TBranch        *b_TAPMuonTracks_trkiso = 0;   //!
+   TBranch        *b_TAPPionTracks = 0;   //!
+   TBranch        *b_TAPPionTracks_activity = 0;   //!
+   TBranch        *b_TAPPionTracks_charge = 0;   //!
+   TBranch        *b_TAPPionTracks_mT = 0;   //!
+   TBranch        *b_TAPPionTracks_trkiso = 0;   //!
+   TBranch        *b_TriggerNames = 0;   //!
+   TBranch        *b_TriggerPass = 0;   //!
+   TBranch        *b_TriggerPrescales = 0;   //!
+   TBranch        *b_TrueNumInteractions = 0;   //!
+   TBranch        *b_Weight = 0;   //!
 
 
    ApplyBaseline(TTree * /*tree*/ =0) : fChain(0) { }
@@ -573,161 +593,6 @@ void ApplyBaseline::Init(TTree *tree)
    // Init() will be called many times when running on PROOF
    // (once per file to be processed).
 
-   // Set object pointer
-   Electrons = 0;
-   Electrons_charge = 0;
-   Electrons_mediumID = 0;
-   Electrons_MT2Activity = 0;
-   Electrons_MTW = 0;
-   Electrons_PTW = 0;
-   Electrons_tightID = 0;
-   ElectronsNoIso = 0;
-   ElectronsNoIso_mediumID = 0;
-   ElectronsNoIso_MiniIso = 0;
-   ElectronsNoIso_MT2Activity = 0;
-   ElectronsNoIso_MTW = 0;
-   ElectronsNoIso_tightID = 0;
-   GenElectrons = 0;
-   GenElectrons_fromTau = 0;
-   GenElectrons_MT2Activity = 0;
-   GenElectrons_RecoTrkAct = 0;
-   GenElectrons_RecoTrkd3 = 0;
-   GenElectrons_RecoTrkIso = 0;
-   GenJets = 0;
-   GenJets_HTMask = 0;
-   GenJets_MHTMask = 0;
-   GenMuons = 0;
-   GenMuons_fromTau = 0;
-   GenMuons_MT2Activity = 0;
-   GenMuons_RecoTrkAct = 0;
-   GenMuons_RecoTrkd3 = 0;
-   GenMuons_RecoTrkIso = 0;
-   GenParticles = 0;
-   GenParticles_ParentId = 0;
-   GenParticles_ParentIdx = 0;
-   GenParticles_PdgId = 0;
-   GenParticles_Status = 0;
-   GenTaus = 0;
-   GenTaus_had = 0;
-   GenTaus_LeadRecoTrkAct = 0;
-   GenTaus_LeadRecoTrkd3 = 0;
-   GenTaus_LeadRecoTrkIso = 0;
-   GenTaus_LeadTrk = 0;
-   GenTaus_MT2Activity = 0;
-   GenTaus_NProngs = 0;
-   GenTaus_Nu = 0;
-   Jets = 0;
-   Jets_bDiscriminatorCSV = 0;
-   Jets_bDiscriminatorMVA = 0;
-   Jets_chargedEmEnergyFraction = 0;
-   Jets_chargedHadronEnergyFraction = 0;
-   Jets_chargedHadronMultiplicity = 0;
-   Jets_chargedMultiplicity = 0;
-   Jets_electronMultiplicity = 0;
-   Jets_hadronFlavor = 0;
-   Jets_HTMask = 0;
-   Jets_ID = 0;
-   Jets_ISRMask = 0;
-   Jets_jecFactor = 0;
-   Jets_jecUnc = 0;
-   Jets_jerFactor = 0;
-   Jets_jerFactorDown = 0;
-   Jets_jerFactorUp = 0;
-   Jets_LeptonMask = 0;
-   Jets_MHTMask = 0;
-   Jets_muonEnergyFraction = 0;
-   Jets_muonMultiplicity = 0;
-   Jets_neutralEmEnergyFraction = 0;
-   Jets_neutralHadronEnergyFraction = 0;
-   Jets_neutralHadronMultiplicity = 0;
-   Jets_neutralMultiplicity = 0;
-   Jets_partonFlavor = 0;
-   Jets_photonEnergyFraction = 0;
-   Jets_photonMultiplicity = 0;
-   Jets_qgAxis2 = 0;
-   Jets_qgLikelihood = 0;
-   Jets_qgMult = 0;
-   Jets_qgPtD = 0;
-   JetsJECdown = 0;
-   JetsJECdown_bDiscriminatorCSV = 0;
-   JetsJECdown_bDiscriminatorMVA = 0;
-   JetsJECdown_hadronFlavor = 0;
-   JetsJECdown_HTMask = 0;
-   JetsJECdown_ID = 0;
-   JetsJECdown_ISRMask = 0;
-   JetsJECdown_LeptonMask = 0;
-   JetsJECdown_MHTMask = 0;
-   JetsJECdown_muonEnergyFraction = 0;
-   JetsJECdown_partonFlavor = 0;
-   JetsJECup = 0;
-   JetsJECup_bDiscriminatorCSV = 0;
-   JetsJECup_bDiscriminatorMVA = 0;
-   JetsJECup_hadronFlavor = 0;
-   JetsJECup_HTMask = 0;
-   JetsJECup_ID = 0;
-   JetsJECup_ISRMask = 0;
-   JetsJECup_LeptonMask = 0;
-   JetsJECup_MHTMask = 0;
-   JetsJECup_muonEnergyFraction = 0;
-   JetsJECup_partonFlavor = 0;
-   JetsJERdown = 0;
-   JetsJERdown_bDiscriminatorCSV = 0;
-   JetsJERdown_bDiscriminatorMVA = 0;
-   JetsJERdown_hadronFlavor = 0;
-   JetsJERdown_HTMask = 0;
-   JetsJERdown_ID = 0;
-   JetsJERdown_ISRMask = 0;
-   JetsJERdown_LeptonMask = 0;
-   JetsJERdown_MHTMask = 0;
-   JetsJERdown_muonEnergyFraction = 0;
-   JetsJERdown_partonFlavor = 0;
-   JetsJERup = 0;
-   JetsJERup_bDiscriminatorCSV = 0;
-   JetsJERup_bDiscriminatorMVA = 0;
-   JetsJERup_hadronFlavor = 0;
-   JetsJERup_HTMask = 0;
-   JetsJERup_ID = 0;
-   JetsJERup_ISRMask = 0;
-   JetsJERup_LeptonMask = 0;
-   JetsJERup_MHTMask = 0;
-   JetsJERup_muonEnergyFraction = 0;
-   JetsJERup_partonFlavor = 0;
-   METDown = 0;
-   METPhiDown = 0;
-   METPhiUp = 0;
-   METUp = 0;
-   Muons = 0;
-   Muons_charge = 0;
-   Muons_MT2Activity = 0;
-   Muons_MTW = 0;
-   Muons_PTW = 0;
-   Muons_tightID = 0;
-   MuonsNoIso = 0;
-   MuonsNoIso_MiniIso = 0;
-   MuonsNoIso_MT2Activity = 0;
-   MuonsNoIso_MTW = 0;
-   MuonsNoIso_tightID = 0;
-   PDFids = 0;
-   PDFweights = 0;
-   ScaleWeights = 0;
-   TAPElectronTracks = 0;
-   TAPElectronTracks_activity = 0;
-   TAPElectronTracks_charge = 0;
-   TAPElectronTracks_mT = 0;
-   TAPElectronTracks_trkiso = 0;
-   TAPMuonTracks = 0;
-   TAPMuonTracks_activity = 0;
-   TAPMuonTracks_charge = 0;
-   TAPMuonTracks_mT = 0;
-   TAPMuonTracks_trkiso = 0;
-   TAPPionTracks = 0;
-   TAPPionTracks_activity = 0;
-   TAPPionTracks_charge = 0;
-   TAPPionTracks_mT = 0;
-   TAPPionTracks_trkiso = 0;
-   TriggerNames = 0;
-   TriggerPass = 0;
-   TriggerPrescales = 0;
 
    // Set branch addresses and branch pointers
    if (!tree) return;
@@ -740,7 +605,11 @@ void ApplyBaseline::Init(TTree *tree)
    fChain->SetBranchStatus("LumiBlockNum", 1);
    fChain->SetBranchStatus("EvtNum", 1);
    fChain->SetBranchStatus("BadChargedCandidateFilter", 1);
+   fChain->SetBranchStatus("BadGlobalMuon", 1);
+   fChain->SetBranchStatus("BadGlobalMuonLeadPt", 1);
    fChain->SetBranchStatus("BadPFMuonFilter", 1);
+   fChain->SetBranchStatus("BadTrkGlobalMuon", 1);
+   fChain->SetBranchStatus("BadTrkGlobalMuonLeadPt", 1);
    fChain->SetBranchStatus("BTags", 1);
    fChain->SetBranchStatus("BTagsJECdown", 1);
    fChain->SetBranchStatus("BTagsJECup", 1);
@@ -775,6 +644,8 @@ void ApplyBaseline::Init(TTree *tree)
    fChain->SetBranchStatus("DeltaPhi4JECup", 1);
    fChain->SetBranchStatus("DeltaPhi4JERdown", 1);
    fChain->SetBranchStatus("DeltaPhi4JERup", 1);
+   fChain->SetBranchStatus("DupGlobalMuon", 1);
+   fChain->SetBranchStatus("DupGlobalMuonLeadPt", 1);
    fChain->SetBranchStatus("EcalDeadCellTriggerPrimitiveFilter", 1);
    fChain->SetBranchStatus("eeBadScFilter", 1);
    fChain->SetBranchStatus("Electrons", 1);
@@ -822,8 +693,11 @@ void ApplyBaseline::Init(TTree *tree)
    fChain->SetBranchStatus("GenTaus_LeadRecoTrkIso", 1);
    fChain->SetBranchStatus("GenTaus_LeadTrk", 1);
    fChain->SetBranchStatus("GenTaus_MT2Activity", 1);
+   fChain->SetBranchStatus("GenTaus_NNeutralHadrons", 1);
    fChain->SetBranchStatus("GenTaus_NProngs", 1);
    fChain->SetBranchStatus("GenTaus_Nu", 1);
+   fChain->SetBranchStatus("GenTops", 1);
+   fChain->SetBranchStatus("GenTopWeight", 1);
    fChain->SetBranchStatus("globalTightHalo2016Filter", 1);
    fChain->SetBranchStatus("HBHEIsoNoiseFilter", 1);
    fChain->SetBranchStatus("HBHENoiseFilter", 1);
@@ -963,6 +837,7 @@ void ApplyBaseline::Init(TTree *tree)
    fChain->SetBranchStatus("PDFids", 1);
    fChain->SetBranchStatus("PDFweights", 1);
    fChain->SetBranchStatus("PFCaloMETRatio", 1);
+   fChain->SetBranchStatus("PmssmId", 1);
    fChain->SetBranchStatus("puSysDown", 1);
    fChain->SetBranchStatus("puSysUp", 1);
    fChain->SetBranchStatus("puWeight", 1);
@@ -994,7 +869,11 @@ void ApplyBaseline::Init(TTree *tree)
    fChain->SetBranchAddress("LumiBlockNum", &LumiBlockNum, &b_LumiBlockNum);
    fChain->SetBranchAddress("EvtNum", &EvtNum, &b_EvtNum);
    fChain->SetBranchAddress("BadChargedCandidateFilter", &BadChargedCandidateFilter, &b_BadChargedCandidateFilter);
+   fChain->SetBranchAddress("BadGlobalMuon", &BadGlobalMuon, &b_BadGlobalMuon);
+   fChain->SetBranchAddress("BadGlobalMuonLeadPt", &BadGlobalMuonLeadPt, &b_BadGlobalMuonLeadPt);
    fChain->SetBranchAddress("BadPFMuonFilter", &BadPFMuonFilter, &b_BadPFMuonFilter);
+   fChain->SetBranchAddress("BadTrkGlobalMuon", &BadTrkGlobalMuon, &b_BadTrkGlobalMuon);
+   fChain->SetBranchAddress("BadTrkGlobalMuonLeadPt", &BadTrkGlobalMuonLeadPt, &b_BadTrkGlobalMuonLeadPt);
    fChain->SetBranchAddress("BTags", &BTags, &b_BTags);
    fChain->SetBranchAddress("BTagsJECdown", &BTagsJECdown, &b_BTagsJECdown);
    fChain->SetBranchAddress("BTagsJECup", &BTagsJECup, &b_BTagsJECup);
@@ -1029,6 +908,8 @@ void ApplyBaseline::Init(TTree *tree)
    fChain->SetBranchAddress("DeltaPhi4JECup", &DeltaPhi4JECup, &b_DeltaPhi4JECup);
    fChain->SetBranchAddress("DeltaPhi4JERdown", &DeltaPhi4JERdown, &b_DeltaPhi4JERdown);
    fChain->SetBranchAddress("DeltaPhi4JERup", &DeltaPhi4JERup, &b_DeltaPhi4JERup);
+   fChain->SetBranchAddress("DupGlobalMuon", &DupGlobalMuon, &b_DupGlobalMuon);
+   fChain->SetBranchAddress("DupGlobalMuonLeadPt", &DupGlobalMuonLeadPt, &b_DupGlobalMuonLeadPt);
    fChain->SetBranchAddress("EcalDeadCellTriggerPrimitiveFilter", &EcalDeadCellTriggerPrimitiveFilter, &b_EcalDeadCellTriggerPrimitiveFilter);
    fChain->SetBranchAddress("eeBadScFilter", &eeBadScFilter, &b_eeBadScFilter);
    fChain->SetBranchAddress("Electrons", &Electrons, &b_Electrons);
@@ -1076,8 +957,11 @@ void ApplyBaseline::Init(TTree *tree)
    fChain->SetBranchAddress("GenTaus_LeadRecoTrkIso", &GenTaus_LeadRecoTrkIso, &b_GenTaus_LeadRecoTrkIso);
    fChain->SetBranchAddress("GenTaus_LeadTrk", &GenTaus_LeadTrk, &b_GenTaus_LeadTrk);
    fChain->SetBranchAddress("GenTaus_MT2Activity", &GenTaus_MT2Activity, &b_GenTaus_MT2Activity);
+   fChain->SetBranchAddress("GenTaus_NNeutralHadrons", &GenTaus_NNeutralHadrons, &b_GenTaus_NNeutralHadrons);
    fChain->SetBranchAddress("GenTaus_NProngs", &GenTaus_NProngs, &b_GenTaus_NProngs);
    fChain->SetBranchAddress("GenTaus_Nu", &GenTaus_Nu, &b_GenTaus_Nu);
+   fChain->SetBranchAddress("GenTops", &GenTops, &b_GenTops);
+   fChain->SetBranchAddress("GenTopWeight", &GenTopWeight, &b_GenTopWeight);
    fChain->SetBranchAddress("globalTightHalo2016Filter", &globalTightHalo2016Filter, &b_globalTightHalo2016Filter);
    fChain->SetBranchAddress("HBHEIsoNoiseFilter", &HBHEIsoNoiseFilter, &b_HBHEIsoNoiseFilter);
    fChain->SetBranchAddress("HBHENoiseFilter", &HBHENoiseFilter, &b_HBHENoiseFilter);
@@ -1217,6 +1101,7 @@ void ApplyBaseline::Init(TTree *tree)
    fChain->SetBranchAddress("PDFids", &PDFids, &b_PDFids);
    fChain->SetBranchAddress("PDFweights", &PDFweights, &b_PDFweights);
    fChain->SetBranchAddress("PFCaloMETRatio", &PFCaloMETRatio, &b_PFCaloMETRatio);
+   fChain->SetBranchAddress("PmssmId", &PmssmId, &b_PmssmId);
    fChain->SetBranchAddress("puSysDown", &puSysDown, &b_puSysDown);
    fChain->SetBranchAddress("puSysUp", &puSysUp, &b_puSysUp);
    fChain->SetBranchAddress("puWeight", &puWeight, &b_puWeight);

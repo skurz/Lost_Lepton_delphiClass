@@ -1,3 +1,6 @@
+#ifndef THEFF_H
+#define THEFF_H
+
 #include "SearchBins.h"
 
 #include <TChain.h>
@@ -822,3 +825,5 @@ void TH2Deff::saveResults(TDirectory* MainDirectory)
 	sanityDir->cd();
 	RefTH2D_->Write();
 }
+
+#endif

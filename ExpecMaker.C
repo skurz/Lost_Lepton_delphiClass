@@ -5,6 +5,7 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 #include "TSystem.h"
+#include <math.h>
 
 void ExpecMaker::Begin(TTree * /*tree*/)
 {
@@ -28,71 +29,82 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
   tExpectation_->Branch("BinQCD",&BinQCD_);
   //tExpectation_->Branch("madHT",&madHT);
   tExpectation_->Branch("NVtx",&NVtx);
+  tExpectation_->Branch("MTW",&mtw);  
   tExpectation_->Branch("DeltaPhi1",&DeltaPhi1);
   tExpectation_->Branch("DeltaPhi2",&DeltaPhi2);
   tExpectation_->Branch("DeltaPhi3",&DeltaPhi3);
   tExpectation_->Branch("DeltaPhi4",&DeltaPhi4);
   tExpectation_->Branch("Weight", &Weight);
   tExpectation_->Branch("MET",&MET);
-  tExpectation_->Branch("METUp",&METUp);
-  tExpectation_->Branch("METDown",&METDown);
-  tExpectation_->Branch("METPhi",&METPhi);
-  tExpectation_->Branch("MHTPhi",&MHTPhi);
-  tExpectation_->Branch("GenHT",&GenHT);
-  tExpectation_->Branch("GenMHT",&GenMHT);
   tExpectation_->Branch("GenMuonsNum",&GenMuonsNum_);
-  tExpectation_->Branch("GenMuons", "std::vector<TLorentzVector>", &GenMuons,32000,0);
-  //tExpectation_->Branch("GenMuDeltaRJet",&GenMuDeltaRJet_);
-  //tExpectation_->Branch("GenMuRelPTJet",&GenMuRelPTJet_);
-  tExpectation_->Branch("GenMuons_MT2Activity", &GenMuons_MT2Activity);
+  tExpectation_->Branch("GenMuonsPt",&GenMuonsPt);
+  tExpectation_->Branch("GenMuonsEta",&GenMuonsEta);
   tExpectation_->Branch("GenElectronsNum",&GenElectronsNum_);
-  tExpectation_->Branch("GenElectrons", "std::vector<TLorentzVector>", &GenElectrons, 32000, 0);
-  //tExpectation_->Branch("GenElecDeltaRJet", &GenElecDeltaRJet_);
-  //tExpectation_->Branch("GenElecRelPTJet", &GenElecRelPTJet_);
-  tExpectation_->Branch("GenElectrons_MT2Activity", &GenElectrons_MT2Activity);
-  tExpectation_->Branch("GenTausNum",&GenTausNum_);
-  tExpectation_->Branch("GenTaus", "std::vector<TLorentzVector>", &GenTaus, 32000, 0); 
-  tExpectation_->Branch("GenTaus_MT2Activity", &GenTaus_MT2Activity);
+  tExpectation_->Branch("GenElectronsPt",&GenElectronsPt);
+  tExpectation_->Branch("GenElectronsEta",&GenElectronsEta);
+  tExpectation_->Branch("MuonsNum",&MuonsNum_);
+  tExpectation_->Branch("ElectronsNum",&ElectronsNum_);
   tExpectation_->Branch("Expectation",&Expectation);  
   tExpectation_->Branch("ExpectationReductionIsoTrack",&ExpectationReductionIsoTrack);
-  tExpectation_->Branch("muAcc",&muAcc);  
-  tExpectation_->Branch("muReco",&muReco);  
-  tExpectation_->Branch("muIso",&muIso);  
-  tExpectation_->Branch("MTW",&mtw);  
-  tExpectation_->Branch("MTW_METup",&mtw_METup);  
-  tExpectation_->Branch("MTW_METdown",&mtw_METdown);  
-  tExpectation_->Branch("elecAcc",&elecAcc);  
-  tExpectation_->Branch("elecReco",&elecReco);  
-  tExpectation_->Branch("elecIso",&elecIso);   
-  tExpectation_->Branch("MuPurity",&MuPurity_); 
-  tExpectation_->Branch("ElecPurity",&ElecPurity_); 
-  tExpectation_->Branch("MuonsNum",&MuonsNum_);
-  tExpectation_->Branch("Muons", "std::vector<TLorentzVector>", &Muons, 32000, 0);
-  tExpectation_->Branch("MuonsPromptMatched", &MuonsPromptMatched);
-  tExpectation_->Branch("Muons_MT2Activity", &Muons_MT2Activity);
-  tExpectation_->Branch("MuonsNoIsoNum",&MuonsNoIsoNum_);
-  tExpectation_->Branch("MuonsNoIso", "std::vector<TLorentzVector>", &MuonsNoIso, 32000, 0);
-  tExpectation_->Branch("MuonsNoIso_MT2Activity", &MuonsNoIso_MT2Activity); 
-  tExpectation_->Branch("ElectronsNum",&ElectronsNum_);
-  tExpectation_->Branch("Electrons", "std::vector<TLorentzVector>", &Electrons, 32000, 0);
-  tExpectation_->Branch("ElectronsPromptMatched", &ElectronsPromptMatched);
-  tExpectation_->Branch("Electrons_MT2Activity", &Electrons_MT2Activity);
-  tExpectation_->Branch("ElectronsNoIsoNum",&ElectronsNoIsoNum_);
-  tExpectation_->Branch("ElectronsNoIso", "std::vector<TLorentzVector>", &ElectronsNoIso, 32000, 0);
-  tExpectation_->Branch("ElectronsNoIso_MT2Activity", &ElectronsNoIso_MT2Activity);
-  //tExpectation_->Branch("Jets_HTMask", &Jets_HTMask);
-  //tExpectation_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
-  tExpectation_->Branch("bTagProb", &bTagProb);
-  tExpectation_->Branch("cosDTT", &cosDTT);
-  tExpectation_->Branch("genCosDTT", &genCosDTT);
-  tExpectation_->Branch("PDFweights", &PDFweights);
-  tExpectation_->Branch("ScaleWeights", &ScaleWeights);
   tExpectation_->Branch("isoElectronTracksNum",&isoElectronTracksNum);   
   tExpectation_->Branch("isoMuonTracksNum",&isoMuonTracksNum);   
   tExpectation_->Branch("isoPionTracksNum",&isoPionTracksNum);
-  tExpectation_->Branch("isoElectronTracks", "std::vector<TLorentzVector>", &isoElectronTracks, 32000, 0);
-  tExpectation_->Branch("isoMuonTracks", "std::vector<TLorentzVector>", &isoMuonTracks, 32000, 0);  
-  tExpectation_->Branch("isoPionTracks", "std::vector<TLorentzVector>", &isoPionTracks, 32000, 0);
+
+  if(!fillEventSeperateBTags){
+    tExpectation_->Branch("METUp",&METUp);
+    tExpectation_->Branch("METDown",&METDown);
+    tExpectation_->Branch("METPhi",&METPhi);
+    tExpectation_->Branch("MHTPhi",&MHTPhi);
+    tExpectation_->Branch("GenHT",&GenHT);
+    tExpectation_->Branch("GenMHT",&GenMHT);
+    tExpectation_->Branch("GenMuons", "std::vector<TLorentzVector>", &GenMuons,32000,0);
+    tExpectation_->Branch("GenMuons_MT2Activity", &GenMuons_MT2Activity);  
+    tExpectation_->Branch("GenElectrons", "std::vector<TLorentzVector>", &GenElectrons, 32000, 0);
+    tExpectation_->Branch("GenElectrons_MT2Activity", &GenElectrons_MT2Activity);
+    //tExpectation_->Branch("GenMuDeltaRJet",&GenMuDeltaRJet_);
+    //tExpectation_->Branch("GenMuRelPTJet",&GenMuRelPTJet_);
+    //tExpectation_->Branch("GenElecDeltaRJet", &GenElecDeltaRJet_);
+    //tExpectation_->Branch("GenElecRelPTJet", &GenElecRelPTJet_);
+    tExpectation_->Branch("GenTausNum",&GenTausNum_);
+    tExpectation_->Branch("GenTaus", "std::vector<TLorentzVector>", &GenTaus, 32000, 0); 
+    tExpectation_->Branch("GenTaus_MT2Activity", &GenTaus_MT2Activity);
+    tExpectation_->Branch("muAcc",&muAcc);  
+    tExpectation_->Branch("muReco",&muReco);  
+    tExpectation_->Branch("muIso",&muIso);  
+    tExpectation_->Branch("MTW_METup",&mtw_METup);  
+    tExpectation_->Branch("MTW_METdown",&mtw_METdown);  
+    tExpectation_->Branch("elecAcc",&elecAcc);  
+    tExpectation_->Branch("elecReco",&elecReco);  
+    tExpectation_->Branch("elecIso",&elecIso);   
+    tExpectation_->Branch("MuPurity",&MuPurity_); 
+    tExpectation_->Branch("ElecPurity",&ElecPurity_); 
+    tExpectation_->Branch("Muons", "std::vector<TLorentzVector>", &Muons, 32000, 0);
+    tExpectation_->Branch("MuonsPromptMatched", &MuonsPromptMatched);
+    tExpectation_->Branch("Muons_MT2Activity", &Muons_MT2Activity);
+    //tExpectation_->Branch("MuonsNoIsoNum",&MuonsNoIsoNum_);
+    //tExpectation_->Branch("MuonsNoIso", "std::vector<TLorentzVector>", &MuonsNoIso, 32000, 0);
+    //tExpectation_->Branch("MuonsNoIso_MT2Activity", &MuonsNoIso_MT2Activity); 
+    tExpectation_->Branch("Electrons", "std::vector<TLorentzVector>", &Electrons, 32000, 0);
+    tExpectation_->Branch("ElectronsPromptMatched", &ElectronsPromptMatched);
+    tExpectation_->Branch("Electrons_MT2Activity", &Electrons_MT2Activity);
+    //tExpectation_->Branch("ElectronsNoIsoNum",&ElectronsNoIsoNum_);
+    //tExpectation_->Branch("ElectronsNoIso", "std::vector<TLorentzVector>", &ElectronsNoIso, 32000, 0);
+    //tExpectation_->Branch("ElectronsNoIso_MT2Activity", &ElectronsNoIso_MT2Activity);
+    tExpectation_->Branch("isoElectronTracks", "std::vector<TLorentzVector>", &isoElectronTracks, 32000, 0);
+    tExpectation_->Branch("isoMuonTracks", "std::vector<TLorentzVector>", &isoMuonTracks, 32000, 0);  
+    tExpectation_->Branch("isoPionTracks", "std::vector<TLorentzVector>", &isoPionTracks, 32000, 0);
+
+    //tExpectation_->Branch("Jets_HTMask", &Jets_HTMask);
+    //tExpectation_->Branch("Jets_hadronFlavor", &Jets_hadronFlavor);
+    tExpectation_->Branch("bTagProb", &bTagProb);
+    tExpectation_->Branch("cosDTT", &cosDTT);
+    tExpectation_->Branch("genCosDTT", &genCosDTT);
+    tExpectation_->Branch("PDFweights", &PDFweights);
+    tExpectation_->Branch("ScaleWeights", &ScaleWeights);
+    tExpectation_->Branch("ExpectationDiLep",&ExpectationDiLep_);
+    tExpectation_->Branch("MuDiLepControlSample",&MuDiLepControlSample_);
+    tExpectation_->Branch("ElecDiLepControlSample",&ElecDiLepControlSample_);
+  }
 
   if(doTAPtrees){
     tExpectation_->Branch("isoElectronTracks_activity", &isoElectronTracks_activity);
@@ -138,10 +150,6 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
     tExpectation_->Branch("GenTaus_NProngs", &GenTaus_NProngs);
     tExpectation_->Branch("GenTaus_Nu", "std::vector<TLorentzVector>", &GenTaus_Nu, 32000, 0);
   }
-    
-  tExpectation_->Branch("ExpectationDiLep",&ExpectationDiLep_);
-  tExpectation_->Branch("MuDiLepControlSample",&MuDiLepControlSample_);
-  tExpectation_->Branch("ElecDiLepControlSample",&ElecDiLepControlSample_);
 
     if(doIsoTrackStudies){
       tExpectation_->Branch("muIsoTrackMatchedToGenElec", &muIsoTrackMatchedToGenElec);
@@ -155,13 +163,15 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
       tExpectation_->Branch("pionIsoTrackMatchedToGenSingleProngTau", &pionIsoTrackMatchedToGenSingleProngTau);
     }
 
-  SearchBins_ = new SearchBins();
+  SearchBins_ = new SearchBins(false);
   SearchBinsQCD_ = new SearchBins(true); // QCD binning
   
   std::cout<<"DeltaPhi Cut: "<<useDeltaPhiCut<<std::endl;
   std::cout<<"----------------"<<std::endl;
   
   GetOutputList()->Add(tExpectation_);
+
+  fudgeFactors = {0.931355, 0.913146, 0.866418, 0.799251, 0.706555, 0.567275, 0.422828};
 }
 
 Bool_t ExpecMaker::Process(Long64_t entry)
@@ -172,6 +182,35 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 
 //  if(entry % 3 != 0) return kTRUE;
 
+  GenMuonsNum_ = GenMuons->size();
+  GenElectronsNum_ = GenElectrons->size();
+  GenTausNum_ = GenTaus->size();
+
+  MuonsNoIsoNum_ = MuonsNoIso->size();
+  MuonsNum_ = Muons->size();
+  ElectronsNoIsoNum_ = ElectronsNoIso->size();
+  ElectronsNum_ = Electrons->size();
+
+  if(GenElectronsNum_>0){
+    GenElectronsPt = GenElectrons->at(0).Pt();
+    GenElectronsEta = GenElectrons->at(0).Eta();
+  }
+  if(GenMuonsNum_>0){
+    GenMuonsPt = GenMuons->at(0).Pt();
+    GenMuonsEta = GenMuons->at(0).Eta();
+  }
+/*
+  if(GenElectronsNum_>0){
+  	if(GenElectronsPt > 300){
+  		if(std::abs(GenElectronsEta) < 1.4442) GenElectronsPt = GenElectronsPt * 0.8;
+      else GenElectronsPt = GenElectronsPt * 1.00;
+      double scaledPt = GenElectrons->at(0).Pt() - GenElectronsPt;
+  		double phiE = GenElectrons->at(0).Phi();
+  		HT = HT - scaledPt;
+  		MHT = sqrt((MHT*cos(MHTPhi)-scaledPt*cos(phiE))*(MHT*cos(MHTPhi)-scaledPt*cos(phiE))+(MHT*sin(MHTPhi)-scaledPt*sin(phiE))*(MHT*sin(MHTPhi)-scaledPt*sin(phiE)));
+  	}
+  }
+*/
   // genLevel HTcut
   if(HTgen_cut > 0.01) if(madHT > HTgen_cut) return kTRUE;
 
@@ -182,6 +221,13 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
 
+  Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
+  BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
+  //    std::cout << "Event falls in bin " << Bin_ << std::endl;
+  isoTracksNum = isoMuonTracksNum + isoPionTracksNum + isoElectronTracksNum;
+
+  if(!doTAPtrees) if(Bin_ > 900 && BinQCD_ > 900) return kTRUE;
+
   //if(useTrigger) if(!TriggerPass->at(34) && !TriggerPass->at(35) && !TriggerPass->at(36)) return kTRUE;
 
   if(doBTagCorrFullSim || doBTagCorrFastSim){
@@ -189,7 +235,30 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 
     if(currentTree != treeName){
       treeName = currentTree;
-
+/*
+      fudgeFactorWeight = 1;
+      
+      if((std::string(treeName.Data()).find(std::string("WJetsToLNu"))) != std::string::npos){
+        if((std::string(treeName.Data()).find(std::string("100to200"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(0);
+        }else if((std::string(treeName.Data()).find(std::string("200to400"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(1);
+        }else if((std::string(treeName.Data()).find(std::string("400to600"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(2);
+        }else if((std::string(treeName.Data()).find(std::string("600to800"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(3);
+        }else if((std::string(treeName.Data()).find(std::string("800to1200"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(4);
+        }else if((std::string(treeName.Data()).find(std::string("1200to2500"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(5);
+        }else if((std::string(treeName.Data()).find(std::string("2500toInf"))) != std::string::npos){
+          fudgeFactorWeight = fudgeFactors.at(6);
+        }else{
+          std::cout<<"FudgeFactor not found"<<std::endl;
+        }
+      }
+      std::cout<<"FudgeFactor: "<<fudgeFactorWeight<<std::endl;
+*/
       if(btagcorr!=0){
         delete btagcorr;
         btagcorr = 0;
@@ -222,28 +291,43 @@ Bool_t ExpecMaker::Process(Long64_t entry)
 
   //Account for efficiency of JetID since we cannot apply it on fastSim
   if(!applyJetID) Weight *= 0.99;
-  
-  Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
-  BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);
-  //    std::cout << "Event falls in bin " << Bin_ << std::endl;
-  isoTracksNum = isoMuonTracksNum + isoPionTracksNum + isoElectronTracksNum;
 
-  if(!doTAPtrees) if(Bin_ > 900 && BinQCD_ > 900) return kTRUE;
+  //Weight *= fudgeFactorWeight;
 
-  GenMuonsNum_ = GenMuons->size();
-  GenElectronsNum_ = GenElectrons->size();
-  GenTausNum_ = GenTaus->size();
-
-  MuonsNoIsoNum_ = MuonsNoIso->size();
-  MuonsNum_ = Muons->size();
-  ElectronsNoIsoNum_ = ElectronsNoIso->size();
-  ElectronsNum_ = Electrons->size();
+  if(MuonsNum_==1 && ElectronsNum_==0){
+  mtw =  Muons_MTW->at(0);
+  //mtw =  MTWCalculator(MET,METPhi, Muons->at(0).Pt(), Muons->at(0).Phi(), scaleMet);
+  mtw_METup = MTWCalculator(METUp->at(1),METPhiUp->at(1), Muons->at(0).Pt(), Muons->at(0).Phi(), scaleMet);
+  mtw_METdown = MTWCalculator(METDown->at(1),METPhiDown->at(1), Muons->at(0).Pt(), Muons->at(0).Phi(), scaleMet);
+  }
+  if(MuonsNum_==0 && ElectronsNum_==1){
+    mtw =  Electrons_MTW->at(0);
+ 	//mtw =  MTWCalculator(MET,METPhi, Electrons->at(0).Pt(), Electrons->at(0).Phi(), scaleMet);
+ 	mtw_METup = MTWCalculator(METUp->at(1),METPhiUp->at(1), Electrons->at(0).Pt(), Electrons->at(0).Phi(), scaleMet);
+ 	mtw_METdown = MTWCalculator(METDown->at(1),METPhiDown->at(1), Electrons->at(0).Pt(), Electrons->at(0).Phi(), scaleMet);
+  }
 
   // Muons
   if(GenMuonsNum_==1 && GenElectronsNum_==0){ 
     genCosDTT = 0.5 * (1. - GetCosDTT(GenMHT, GenMHTPhi, GenMuons->at(0).Pt(), GenMuons->at(0).Phi()));
     cosDTT = 0.5 * (1. - GetCosDTT(MHT, MHTPhi, GenMuons->at(0).Pt(), GenMuons->at(0).Phi()));
-    if ( GenMuons->at(0).Pt() < minMuPt_ || std::abs(GenMuons->at(0).Eta()) > maxMuEta_){
+    
+    bool outAcc = false;
+    if(GenMuons->at(0).Pt() < minMuPt_ || std::abs(GenMuons->at(0).Eta()) > maxMuEta_){
+      outAcc = true;
+    }
+    /*
+    if(outAcc){
+      for (UShort_t i=0; i<MuonsNoIsoNum_; i++){
+        if(deltaR(GenMuons->at(0).Eta(),GenMuons->at(0).Phi(),MuonsNoIso->at(i).Eta(),MuonsNoIso->at(i).Phi())<maxDeltaRGenToRecoMu_ && std::abs(GenMuons->at(0).Pt()-MuonsNoIso->at(i).Pt())/GenMuons->at(0).Pt() <maxDiffPtGenToRecoMu_){
+          outAcc = false;
+          break;
+        }
+      }
+    }
+    */  
+
+    if(outAcc){
       muAcc=0;
       Expectation=1;
     }else{
@@ -261,10 +345,6 @@ Bool_t ExpecMaker::Process(Long64_t entry)
               IsoNotMatched=false;
               muIso=2;
               Expectation=2;
-              //mtw =  MTWCalculator(MET,METPhi, Muons->at(ii).Pt(), Muons->at(ii).Phi(), scaleMet);
-              mtw = Muons_MTW->at(0);
-              mtw_METup = MTWCalculator(METUp->at(1),METPhiUp->at(1), Muons->at(ii).Pt(), Muons->at(ii).Phi(), scaleMet);
-              mtw_METdown = MTWCalculator(METDown->at(1),METPhiDown->at(1), Muons->at(ii).Pt(), Muons->at(ii).Phi(), scaleMet);
               MuDiLepControlSample_=2;
             }
           }
@@ -285,9 +365,25 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   if(GenMuonsNum_==0 && GenElectronsNum_==1){
     genCosDTT = 0.5 * (1. - GetCosDTT(GenMHT, GenMHTPhi, GenElectrons->at(0).Pt(), GenElectrons->at(0).Phi()));
     cosDTT = 0.5 * (1. - GetCosDTT(MHT, MHTPhi, GenElectrons->at(0).Pt(), GenElectrons->at(0).Phi()));
-    if( GenElectrons->at(0).Pt() < minElecPt_ || std::abs(GenElectrons->at(0).Eta()) > maxElecEta_){
-    elecAcc=0;
-    Expectation=1;
+
+    bool outAcc = false;
+    if(GenElectrons->at(0).Pt() < minElecPt_ || std::abs(GenElectrons->at(0).Eta()) > maxElecEta_){
+      outAcc = true;
+    }
+    /*
+    if(outAcc){
+      for (UShort_t i=0; i<ElectronsNoIsoNum_; i++){
+        if(deltaR(GenElectrons->at(0).Eta(),GenElectrons->at(0).Phi(),ElectronsNoIso->at(i).Eta(),ElectronsNoIso->at(i).Phi())<maxDeltaRGenToRecoElec_ && std::abs(GenElectrons->at(0).Pt()-ElectronsNoIso->at(i).Pt())/GenElectrons->at(0).Pt() <maxDiffPtGenToRecoElec_){
+          outAcc = false;
+          break;
+        }
+      }
+    }
+    */
+
+    if(outAcc){
+      elecAcc=0;
+      Expectation=1;
     }else{
       elecAcc=2;
       bool RecoNotMatched=true;
@@ -303,10 +399,6 @@ Bool_t ExpecMaker::Process(Long64_t entry)
               IsoNotMatched=false;
               elecIso=2;
               Expectation=2;
-              //mtw =  MTWCalculator(MET,METPhi, Electrons->at(ii).Pt(), Electrons->at(ii).Phi(), scaleMet);
-              mtw =  Electrons_MTW->at(0);
-              mtw_METup = MTWCalculator(METUp->at(1),METPhiUp->at(1), Electrons->at(ii).Pt(), Electrons->at(ii).Phi(), scaleMet);
-              mtw_METdown = MTWCalculator(METDown->at(1),METPhiDown->at(1), Electrons->at(ii).Pt(), Electrons->at(ii).Phi(), scaleMet);
               ElecDiLepControlSample_=2;
             }
           }
@@ -343,17 +435,9 @@ Bool_t ExpecMaker::Process(Long64_t entry)
       ExpectationDiLep_=1;
     }
     if(MuonsNum_==1 && ElectronsNum_==0){
-      mtw =  Muons_MTW->at(0);
-      //mtw =  MTWCalculator(MET,METPhi, Muons->at(0).Pt(), Muons->at(0).Phi(), scaleMet);
-      mtw_METup = MTWCalculator(METUp->at(1),METPhiUp->at(1), Muons->at(0).Pt(), Muons->at(0).Phi(), scaleMet);
-      mtw_METdown = MTWCalculator(METDown->at(1),METPhiDown->at(1), Muons->at(0).Pt(), Muons->at(0).Phi(), scaleMet);
       MuDiLepControlSample_=0;
     }
     if(MuonsNum_==0 && ElectronsNum_==1){
-      mtw =  Electrons_MTW->at(0);
-      //mtw =  MTWCalculator(MET,METPhi, Electrons->at(0).Pt(), Electrons->at(0).Phi(), scaleMet);
-      mtw_METup = MTWCalculator(METUp->at(1),METPhiUp->at(1), Electrons->at(0).Pt(), Electrons->at(0).Phi(), scaleMet);
-      mtw_METdown = MTWCalculator(METDown->at(1),METPhiDown->at(1), Electrons->at(0).Pt(), Electrons->at(0).Phi(), scaleMet);
       ElecDiLepControlSample_=0;
     }
   }
@@ -441,6 +525,22 @@ Bool_t ExpecMaker::Process(Long64_t entry)
         else Weight *= GetSF(h_muTrkLowPtSF, GenMuons->at(0).Eta());
       }
     }
+  }
+
+  if(fillEventSeperateBTags){
+    for(int i = 0; i < (NJets == 2 ? 3 : 4); i++){
+      Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,i);
+      BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,i);
+      BTags = i;
+
+      double storeWeight = Weight;
+      Weight *= bTagProb.at(i);
+
+      tExpectation_->Fill();
+
+      Weight = storeWeight;
+    }
+    return kTRUE;
   }
 
   // get isoTrack collection from full TAP collection
@@ -606,6 +706,11 @@ void ExpecMaker::Terminate()
 
 void ExpecMaker::resetValues()
 {
+  GenMuonsPt=0;
+  GenMuonsEta=0;
+  GenElectronsPt=0;
+  GenElectronsEta=0;
+
   Expectation=0;
   ExpectationReductionIsoTrack=0;
   muIso =1;
@@ -673,6 +778,7 @@ bool ExpecMaker::FiltersPass()
     if(HBHEIsoNoiseFilter!=1) result=false;
     if(EcalDeadCellTriggerPrimitiveFilter!=1) result=false;    
     if(eeBadScFilter!=1) result=false;
+    // Data only
     //if(!BadChargedCandidateFilter) result=false;
     //if(!BadPFMuonFilter) result=false;
     //if(globalTightHalo2016Filter!=1) result=false;
@@ -681,16 +787,19 @@ bool ExpecMaker::FiltersPass()
   // Preliminary filters
   if(PFCaloMETRatio>5) result=false;
 
+  // Do not apply on fastSim samples!
+  if(!JetID) result=false;
+
+  if(result)
   for(unsigned j = 0; j < Jets->size(); j++){
     if(TMath::IsNaN(Jets->at(j).Phi()-METPhi)) result=false;
-    if(Jets->at(j).Pt()>200 && Jets_muonEnergyFraction->at(j)>0.5 && (TVector2::Phi_mpi_pi(Jets->at(j).Phi()-METPhi)>(TMath::Pi()-0.4))){
+    else if(Jets->at(j).Pt()>200 && Jets_muonEnergyFraction->at(j)>0.5 && (TVector2::Phi_mpi_pi(Jets->at(j).Phi()-METPhi)>(TMath::Pi()-0.4))){
       //std::cout<<"found bad muon jet"<<std::endl;
       result=false;
     }
   }
 
-  // Do not apply on fastSim samples!
-  if(!JetID) result=false;
+  
   return result;
 }
 
