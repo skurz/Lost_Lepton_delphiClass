@@ -8,9 +8,9 @@ void saveHistograms(TFile* tf, bool combinedUnc = false, bool addCont = false);
 
 void PlotMaker(string InputPath_Expectation="Expectation.root",
 	string InputPath_Efficiencies="Efficiencies.root",
-	string InputPath_Prediction="Prediction_SF.root",
-	string InputPath_Prediction_Data="Prediction_data.root", // Use same path as above if pure MC prediction wanted
-	string OutputPath_Prediction="LLPrediction_SF.root"){
+	string InputPath_Prediction="Prediction.root",
+	string InputPath_Prediction_Data="Prediction_data_HT5.root", // Use same path as above if pure MC prediction wanted
+	string OutputPath_Prediction="LLPrediction_HT5_notCombined.root"){
 	
 	gSystem->Load("libPhysics.so");
 	gInterpreter->GenerateDictionary("vector<TLorentzVector>","TLorentzVector.h;vector");

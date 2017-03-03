@@ -19,12 +19,12 @@
 
 void SetBinLabel(TH1D* hist, SearchBins* SB, TString name = "");
 
-void SignalContamination()
+void SignalContamination(std::string input = "Prediction_Scan_T2tt.root", std::string output = "LLContamination_T2tt.root")
 {
 
   // General Settings
-  TString InputPath_Prediction("Prediction_Scan_genMHT_T2tt.root");
-  TString OutputPath_Prediction("LLContamination_genMHT_T2tt.root");
+  TString InputPath_Prediction(input);
+  TString OutputPath_Prediction(output);
 
 
   // Scale all MC weights by this factor
@@ -255,11 +255,11 @@ void SignalContamination()
 
     for(unsigned int i_hist = 0; i_hist < histVec.size(); i_hist++){
     	// T1tttt
-  //    if((abs(1-lspMass.at(i_hist)) < 0.1 && abs(1600-mothMass.at(i_hist)) < 0.1)
-  //      || (abs(400-lspMass.at(i_hist)) < 0.1 && abs(1600-mothMass.at(i_hist)) < 0.1)
-  //      || (abs(600-lspMass.at(i_hist)) < 0.1 && abs(1600-mothMass.at(i_hist)) < 0.1)
-  //      || (abs(800-lspMass.at(i_hist)) < 0.1 && abs(1200-mothMass.at(i_hist)) < 0.1)
-  //      || (abs(800-lspMass.at(i_hist)) < 0.1 && abs(1400-mothMass.at(i_hist)) < 0.1)){
+      if((abs(1-lspMass.at(i_hist)) < 0.1 && abs(1600-mothMass.at(i_hist)) < 0.1)
+        || (abs(400-lspMass.at(i_hist)) < 0.1 && abs(1600-mothMass.at(i_hist)) < 0.1)
+        || (abs(600-lspMass.at(i_hist)) < 0.1 && abs(1600-mothMass.at(i_hist)) < 0.1)
+        || (abs(800-lspMass.at(i_hist)) < 0.1 && abs(1200-mothMass.at(i_hist)) < 0.1)
+        || (abs(800-lspMass.at(i_hist)) < 0.1 && abs(1400-mothMass.at(i_hist)) < 0.1)){
 
       // T5qqqqVV
   //    if((abs(1-lspMass.at(i_hist)) < 0.1 && abs(1700-mothMass.at(i_hist)) < 0.1)
@@ -268,14 +268,14 @@ void SignalContamination()
   //      || (abs(800-lspMass.at(i_hist)) < 0.1 && abs(1000-mothMass.at(i_hist)) < 0.1)){
 
       // T2tt
-      if((abs(1-lspMass.at(i_hist)) < 0.1 && abs(800-mothMass.at(i_hist)) < 0.1)
-        || (abs(300-lspMass.at(i_hist)) < 0.1 && abs(800-mothMass.at(i_hist)) < 0.1)
-        || (abs(300-lspMass.at(i_hist)) < 0.1 && abs(600-mothMass.at(i_hist)) < 0.1)
-        || (abs(300-lspMass.at(i_hist)) < 0.1 && abs(400-mothMass.at(i_hist)) < 0.1)
-        || (abs(250-lspMass.at(i_hist)) < 0.1 && abs(450-mothMass.at(i_hist)) < 0.1)
-        || (abs(200-lspMass.at(i_hist)) < 0.1 && abs(300-mothMass.at(i_hist)) < 0.1)
-        || (abs(50-lspMass.at(i_hist)) < 0.1 && abs(700-mothMass.at(i_hist)) < 0.1)
-        || (abs(1-lspMass.at(i_hist)) < 0.1 && abs(175-mothMass.at(i_hist)) < 0.1)){
+  //    if((abs(1-lspMass.at(i_hist)) < 0.1 && abs(800-mothMass.at(i_hist)) < 0.1)
+  //      || (abs(300-lspMass.at(i_hist)) < 0.1 && abs(800-mothMass.at(i_hist)) < 0.1)
+  //      || (abs(300-lspMass.at(i_hist)) < 0.1 && abs(600-mothMass.at(i_hist)) < 0.1)
+  //      || (abs(300-lspMass.at(i_hist)) < 0.1 && abs(400-mothMass.at(i_hist)) < 0.1)
+  //      || (abs(250-lspMass.at(i_hist)) < 0.1 && abs(450-mothMass.at(i_hist)) < 0.1)
+  //      || (abs(200-lspMass.at(i_hist)) < 0.1 && abs(300-mothMass.at(i_hist)) < 0.1)
+  //      || (abs(50-lspMass.at(i_hist)) < 0.1 && abs(700-mothMass.at(i_hist)) < 0.1)
+  //      || (abs(1-lspMass.at(i_hist)) < 0.1 && abs(175-mothMass.at(i_hist)) < 0.1)){
 
         std::cout << histVec.at(i_hist)->GetName() << ": " << std::endl;
         double max = 0., maxBg = 0., maxSig =0.;

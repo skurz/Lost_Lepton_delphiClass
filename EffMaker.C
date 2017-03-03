@@ -34,6 +34,11 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuAccSearchBins_ = new TH1Eff("MuAccSearchBins","MuAccSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
   ElecAccSearchBins_ = new TH1Eff("ElecAccSearchBins","ElecAccSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
 
+  MuRecoSearchBins_ = new TH1Eff("MuRecoSearchBins","MuRecoSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  MuIsoSearchBins_ = new TH1Eff("MuIsoSearchBins","MuIsoSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecRecoSearchBins_ = new TH1Eff("ElecRecoSearchBins","ElecRecoSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecIsoSearchBins_ = new TH1Eff("ElecIsoSearchBins","ElecIsoSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+
   MuIsoTrackVetoSearchBins_ = new TH1Eff("MuIsoTrackVetoSearchBins","MuIsoTrackVetoSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
   ElecIsoTrackVetoSearchBins_ = new TH1Eff("ElecIsoTrackVetoSearchBins","ElecIsoTrackVetoSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
   PionIsoTrackVetoSearchBins_ = new TH1Eff("PionIsoTrackVetoSearchBins","PionIsoTrackVetoSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
@@ -462,7 +467,6 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecIsoNJets_ = new TH1Eff("ElecIsoNJets1D","ElecIsoNJets1D",oneDNJets_-1,OneDNJets_);
   ElecIsoHT_ = new TH1Eff("ElecIsoHT1D","ElecIsoHT1D",oneDHT_-1,OneDHT_);
   ElecIsoMHT_ = new TH1Eff("ElecIsoMHT1D","ElecIsoMHT1D",oneDMHT_-1,OneDMHT_);
-
   
   // mtw
   //muon
@@ -668,6 +672,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecRecoActivityPT_ = new TH2Eff("ElecRecoActivityPT","ElecRecoActivityPT", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
   MuRecoPTEta_ = new TH2Eff("MuRecoPTEta","MuRecoPTEta", twoDPT_-1,TwoDPT_, twoDEtaMu_-1,TwoDEtaMu_);
   ElecRecoPTEta_ = new TH2Eff("ElecRecoPTEta","ElecRecoPTEta", twoDPT_-1,TwoDPT_, twoDEtaElec_-1,TwoDEtaElec_);
+  MuIsoPTEta_ = new TH2Eff("MuIsoPTEta","MuIsoPTEta", twoDPT_-1,TwoDPT_, twoDEtaMu_-1,TwoDEtaMu_);
+  ElecIsoPTEta_ = new TH2Eff("ElecIsoPTEta","ElecIsoPTEta", twoDPT_-1,TwoDPT_, twoDEtaElec_-1,TwoDEtaElec_);
 
   MuRecoPTEtaBTags0_ = new TH2Eff("MuRecoPTEtaBTags0","MuRecoPTEtaBTags0", twoDPT_-1,TwoDPT_, twoDEtaMu_-1,TwoDEtaMu_);
   ElecRecoPTEtaBTags0_ = new TH2Eff("ElecRecoPTEtaBTags0","ElecRecoPTEtaBTags0", twoDPT_-1,TwoDPT_, twoDEtaElec_-1,TwoDEtaElec_);
@@ -677,6 +683,17 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecIsoActivityPTBTags0_ = new TH2Eff("ElecIsoActivityPTBTags0","ElecIsoActivityPTBTags0", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
   MuIsoActivityPTBTags1Inf_ = new TH2Eff("MuIsoActivityPTBTags1Inf","MuIsoActivityPTBTags1Inf", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
   ElecIsoActivityPTBTags1Inf_ = new TH2Eff("ElecIsoActivityPTBTags1Inf","ElecIsoActivityPTBTags1Inf", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
+
+  // NEW
+  MuRecoActivityPTBarrel_ = new TH2Eff("MuRecoActivityPTBarrel","MuRecoActivityPTBarrel", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
+  MuIsoActivityPTBarrel_ = new TH2Eff("MuIsoActivityPTBarrel","MuIsoActivityPTBarrel", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
+  ElecRecoActivityPTBarrel_ = new TH2Eff("ElecRecoActivityPTBarrel","ElecRecoActivityPTBarrel", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
+  ElecIsoActivityPTBarrel_ = new TH2Eff("ElecIsoActivityPTBarrel","ElecIsoActivityPTBarrel", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
+
+  MuRecoActivityPTDisk_ = new TH2Eff("MuRecoActivityPTDisk","MuRecoActivityPTDisk", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
+  MuIsoActivityPTDisk_ = new TH2Eff("MuIsoActivityPTDisk","MuIsoActivityPTDisk", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
+  ElecRecoActivityPTDisk_ = new TH2Eff("ElecRecoActivityPTDisk","ElecRecoActivityPTDisk", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
+  ElecIsoActivityPTDisk_ = new TH2Eff("ElecIsoActivityPTDisk","ElecIsoActivityPTDisk", twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
   
   // mtw 2d
   MuMTWPTActivity_ = new TH2Eff("MuMTWPTActivity","MuMTWPTActivity",twoDActivity_-1,TwoDActivity_,twoDPT_-1,TwoDPT_);
@@ -1507,6 +1524,14 @@ Bool_t EffMaker::Process(Long64_t entry)
       //MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,true);
       MuRecoPTEta_->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,true);
 
+      MuRecoSearchBins_->Fill(BinQCD, WeightBTagProb, true);
+
+      if(std::abs(GenMuons->at(0).Eta()) < 1.1){
+      	MuRecoActivityPTBarrel_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
+      }else{
+      	MuRecoActivityPTDisk_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
+      }
+
       if(BTags == 0){
       	MuRecoPTEtaBTags0_->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,true);
       }else{
@@ -1528,6 +1553,14 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuRecoActivityPT_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
       //MuRecoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,false);
       MuRecoPTEta_->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,false);
+
+      MuRecoSearchBins_->Fill(BinQCD, WeightBTagProb, false);
+
+      if(std::abs(GenMuons->at(0).Eta()) < 1.1){
+      	MuRecoActivityPTBarrel_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
+      }else{
+      	MuRecoActivityPTDisk_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
+      }
 
       if(BTags == 0){
       	MuRecoPTEtaBTags0_->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,false);
@@ -1552,6 +1585,14 @@ Bool_t EffMaker::Process(Long64_t entry)
       //ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,true);
       ElecRecoPTEta_->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,true);
 
+      ElecRecoSearchBins_->Fill(BinQCD, WeightBTagProb, true);
+
+      if(std::abs(GenElectrons->at(0).Eta()) < 1.442){
+      	ElecRecoActivityPTBarrel_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
+      }else if(std::abs(GenElectrons->at(0).Eta()) > 1.566){
+      	ElecRecoActivityPTDisk_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
+      }
+
       if(BTags == 0){
       	ElecRecoPTEtaBTags0_->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,true);
       }else{
@@ -1573,6 +1614,14 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecRecoActivityPT_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
       //ElecRecoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,false);
       ElecRecoPTEta_->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,false);
+
+      ElecRecoSearchBins_->Fill(BinQCD, WeightBTagProb, false);
+
+      if(std::abs(GenElectrons->at(0).Eta()) < 1.442){
+      	ElecRecoActivityPTBarrel_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
+      }else if(std::abs(GenElectrons->at(0).Eta()) > 1.566){
+      	ElecRecoActivityPTDisk_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
+      }
 
       if(BTags == 0){
       	ElecRecoPTEtaBTags0_->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,false);
@@ -1597,6 +1646,16 @@ Bool_t EffMaker::Process(Long64_t entry)
       MuIsoActivityPT_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
       //MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,true);
 
+      MuIsoPTEta_->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,true);
+
+      MuIsoSearchBins_->Fill(BinQCD, WeightBTagProb, true);
+
+      if(std::abs(GenMuons->at(0).Eta()) < 1.1){
+      	MuIsoActivityPTBarrel_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
+      }else{
+      	MuIsoActivityPTDisk_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
+      }
+
       if(BTags == 0){
       	MuIsoActivityPTBTags0_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
       }else{
@@ -1617,6 +1676,16 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       MuIsoActivityPT_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
       //MuIsoRelPTDeltaRJet_->Fill(GenMuRelPTJet->at(0),GenMuDeltaRJet->at(0),WeightBTagProb,false);
+
+      MuIsoPTEta_->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,false);
+
+      MuIsoSearchBins_->Fill(BinQCD, WeightBTagProb, false);
+
+      if(std::abs(GenMuons->at(0).Eta()) < 1.1){
+      	MuIsoActivityPTBarrel_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
+      }else{
+      	MuIsoActivityPTDisk_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
+      }
 
       if(BTags == 0){
       	MuIsoActivityPTBTags0_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
@@ -1640,6 +1709,16 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecIsoActivityPT_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
       //ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,true);
 
+      ElecIsoPTEta_->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,true);
+
+      ElecIsoSearchBins_->Fill(BinQCD, WeightBTagProb, true);
+
+      if(std::abs(GenElectrons->at(0).Eta()) < 1.442){
+      	ElecIsoActivityPTBarrel_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
+      }else if(std::abs(GenElectrons->at(0).Eta()) > 1.566){
+      	ElecIsoActivityPTDisk_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
+      }
+
       if(BTags == 0){
       	ElecIsoActivityPTBTags0_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
       }else{
@@ -1660,6 +1739,16 @@ Bool_t EffMaker::Process(Long64_t entry)
       //2D
       ElecIsoActivityPT_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
       //ElecIsoRelPTDeltaRJet_->Fill(GenElecRelPTJet->at(0),GenElecDeltaRJet->at(0),WeightBTagProb,false);
+
+      ElecIsoPTEta_->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,false);
+
+      ElecIsoSearchBins_->Fill(BinQCD, WeightBTagProb, false);
+
+      if(std::abs(GenElectrons->at(0).Eta()) < 1.442){
+      	ElecIsoActivityPTBarrel_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
+      }else if(std::abs(GenElectrons->at(0).Eta()) > 1.566){
+      	ElecIsoActivityPTDisk_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
+      }
 
       if(BTags == 0){
       	ElecIsoActivityPTBTags0_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
@@ -3254,6 +3343,11 @@ void EffMaker::Terminate()
   MuAccSearchBins_->SaveEff("#mu acc; SearchBins(QCD)", dEfficiencies);
   ElecAccSearchBins_->SaveEff("e acc; SearchBins(QCD)", dEfficiencies);
 
+  MuRecoSearchBins_->SaveEff("#mu reco; SearchBins(QCD)", dEfficiencies);
+  MuIsoSearchBins_->SaveEff("#mu iso; SearchBins(QCD)", dEfficiencies);
+  ElecRecoSearchBins_->SaveEff("e reco; SearchBins(QCD)", dEfficiencies);
+  ElecIsoSearchBins_->SaveEff("e iso; SearchBins(QCD)", dEfficiencies);
+
   MuIsoTrackVetoSearchBins_->SaveEff("#mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
   ElecIsoTrackVetoSearchBins_->SaveEff("e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
   PionIsoTrackVetoSearchBins_->SaveEff("#pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
@@ -3818,6 +3912,7 @@ void EffMaker::Terminate()
   MuMTWActivity_->SaveEff("#mu m_{T}^{W}; Activity", dEfficiencies, true);   
   MuIsoActivityPT_->SaveEff("#mu Iso; Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);   
   MuRecoPTEta_->SaveEff("#mu reco; p_{T}(#mu) [GeV]; #eta(#mu)", dEfficiencies, true);   
+  MuIsoPTEta_->SaveEff("#mu iso; p_{T}(#mu) [GeV]; #eta(#mu)", dEfficiencies, true);   
 
   MuIsoActivityPTBTags0_->SaveEff("#mu Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
   MuRecoPTEtaBTags0_->SaveEff("#mu reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
@@ -3838,11 +3933,23 @@ void EffMaker::Terminate()
   ElecMTWActivity_->SaveEff("e m_{T}^{W}; Activity", dEfficiencies, true);   
   ElecIsoActivityPT_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
   ElecRecoPTEta_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);  
+  ElecIsoPTEta_->SaveEff("e iso; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true); 
 
   ElecIsoActivityPTBTags0_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
   ElecRecoPTEtaBTags0_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
   ElecIsoActivityPTBTags1Inf_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
   ElecRecoPTEtaBTags1Inf_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
+
+  // NEW
+  MuRecoActivityPTBarrel_->SaveEff("#mu Reco (barrel); Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);
+  MuIsoActivityPTBarrel_->SaveEff("#mu Iso (barrel); Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);
+  ElecRecoActivityPTBarrel_->SaveEff("e Reco (barrel); Activity; p_{T}(e) [GeV]", dEfficiencies, true);
+  ElecIsoActivityPTBarrel_->SaveEff("e Iso (barrel); Activity; p_{T}(e) [GeV]", dEfficiencies, true);
+
+  MuRecoActivityPTDisk_->SaveEff("#mu Reco (disk); Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);
+  MuIsoActivityPTDisk_->SaveEff("#mu Iso (disk); Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);
+  ElecRecoActivityPTDisk_->SaveEff("e Reco (disk); Activity; p_{T}(e) [GeV]", dEfficiencies, true);
+  ElecIsoActivityPTDisk_->SaveEff("e Iso (disk); Activity; p_{T}(e) [GeV]", dEfficiencies, true);
 
 
   //Isotracks

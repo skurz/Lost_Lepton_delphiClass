@@ -517,14 +517,6 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   // check weather a background event according to plane lepton veto gets rejected by the isolated track veto with MT cut applied
   if(isoTracksNum>=1 && Expectation==1){
     ExpectationReductionIsoTrack=1;
-
-    // Correction for tracking inefficiency due to high luminosity
-    if(doMuIsoTrackTrackingCorrection){
-      if(isoTracksNum == isoMuonTracksNum && isoMuonTracksNum >= 1 && GenMuonsNum_ >= 1){
-        if(GenMuons->at(0).Pt() > 10) Weight *= GetSF(h_muTrkHighPtSF, GenMuons->at(0).Eta());
-        else Weight *= GetSF(h_muTrkLowPtSF, GenMuons->at(0).Eta());
-      }
-    }
   }
 
   if(fillEventSeperateBTags){
@@ -699,6 +691,8 @@ void ExpecMaker::Terminate()
     tExpectation_->Write();
     outPutFile->Close();
   }
+
+  outPutFile->Close();
 
   cout << "Saved output to " << fileName << endl;
 	

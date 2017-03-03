@@ -3,6 +3,9 @@
 
 #include "TVector2.h"
 #include "TH2.h"
+#include "TH1.h"
+#include "TMath.h"
+#include "TGraphAsymmErrors.h"
 #include <cmath>
 #include <iostream>
 #include <utility>
@@ -157,6 +160,54 @@ static double GetSFUnc(TH1 *hist, Double_t xVal, double addSys = 0.) {
 static double GetSF(TH1 *hist, Double_t xVal) {
   return EvalSF(hist, xVal).first;
 }
+
+
+// TGraph
+
+static std::pair<double,double> EvalSF(TGraphAsymmErrors *hist, Double_t xVal) {
+  // Dont use overflow bins!
+  if(xVal < TMath::MinElement(hist->GetN(),hist->GetX()) )
+    {
+      //std::cout<<"SF: Warning xVal: "<<xVal<<" is smaller than minimum of histo: "<<hist->GetName()<<std::endl;
+      xVal = TMath::MinElement(hist->GetN(),hist->GetX())+0.01;
+    }
+  else if(xVal > TMath::MaxElement(hist->GetN(),hist->GetX()) )
+    {
+      //std::cout<<"SF: Warning xVal: "<<xVal<<" is bigger than maximum of histo: "<<hist->GetName()<<" which is: "<<hist->GetXaxis()->GetXmax()<<std::endl;
+      xVal = TMath::MaxElement(hist->GetN(),hist->GetX())-0.01;
+    }
+  
+  Double_t xValueAsymm, resultAsymm, errUp_, errDown_;
+  int nxBin = 0;
+  for(; nxBin < hist->GetN(); nxBin++){
+    hist->GetPoint(nxBin, xValueAsymm, resultAsymm);
+    if(xVal < xValueAsymm+hist->GetErrorXhigh(nxBin) && xVal > xValueAsymm-hist->GetErrorXlow(nxBin)) break;
+  }
+
+    errUp_ = hist->GetErrorYhigh(nxBin);
+    errDown_ = hist->GetErrorYlow(nxBin);
+
+    //std::cout<<xVal<<">"<<xValueAsymm-hist->GetErrorXlow(nxBin)<<"_"<<xValueAsymm+hist->GetErrorXhigh(nxBin)<<": "<<resultAsymm<<"+"<<errUp_<<"-"<<errDown_<<std::endl;
+
+  return std::make_pair(resultAsymm, std::max(errUp_, errDown_));
+}
+
+static double GetSFUnc(TGraphAsymmErrors *hist, Double_t xVal, double addSys = 0.) {
+
+  std::pair<double, double> SFandUnc = EvalSF(hist, xVal);
+
+  double SF = 0.;
+
+  if(addSys > 0) SF = std::sqrt(SFandUnc.second*SFandUnc.second + addSys*addSys);
+  else SF = SFandUnc.second;
+
+  return SF;
+}
+
+static double GetSF(TGraphAsymmErrors *hist, Double_t xVal) {
+  return EvalSF(hist, xVal).first;
+}
+
 
 static double GetAccSF(std::vector<TH2D*> hists, Int_t NJets, Double_t xVal, Double_t yVal) {
   if(hists.size() != 7){

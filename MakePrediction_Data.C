@@ -18,22 +18,22 @@ void MakePrediction_Data()
 	bool useTProof = false;
 
 	TChain *Effchain = new TChain("tree");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_2016B.root");	
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_2016B.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_2016C.root");	
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_2016C.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_2016D.root");	
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_2016D.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_2016E.root");	
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_2016E.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_2016F.root");	
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_2016F.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_2016G.root");	
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_2016G.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_2016H2.root");	
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_2016H2.root");
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_2016H3.root");	
-	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_2016H3.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_re2016B.root");	
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_re2016B.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_re2016C.root");	
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_re2016C.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_re2016D.root");	
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_re2016D.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_re2016E.root");	
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_re2016E.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_re2016F.root");	
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_re2016F.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_re2016G.root");	
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_re2016G.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_re2016H2.root");	
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_re2016H2.root");
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLm/tree_MET_re2016H3.root");	
+	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_MET_re2016H3.root");
 
 //	TChain *Effchain = new TChain("TreeMaker2/PreSelection");
 //	Effchain->Add("/nfs/dust/cms/user/kurzsimo/LostLepton/data_v11/Run2016*.root");
@@ -45,7 +45,7 @@ void MakePrediction_Data()
     	Effchain->SetProof();     	
     }
 
-	Effchain->Process("Prediction_isoTrackFact.C++g", "Prediction_data.root");
+	Effchain->Process("Prediction_isoTrackFact.C++g", "Prediction_data_HT5.root");
 
     delete proof;
 }

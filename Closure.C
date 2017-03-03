@@ -234,6 +234,11 @@ void Closure(string InputPath_Expectation="Expectation.root",
   TH1D* totalPrediction_NJets_ = new TH1D("totalPrediction_NJets","totalPrediction_NJets", nNJetsbins, NJetsbins);
   TH1D* totalPrediction_BTags_ = new TH1D("totalPrediction_BTags","totalPrediction_BTags", 7, -0.5, 6.5);
 
+  TH1D* totalCS_HT_ = new TH1D("totalCS_HT","totalCS_HT", nHTbins, HTbins);
+  TH1D* totalCS_MHT_ = new TH1D("totalCS_MHT","totalCS_MHT", nMHTbins, MHTbins);
+  TH1D* totalCS_NJets_ = new TH1D("totalCS_NJets","totalCS_NJets", nNJetsbins, NJetsbins);
+  TH1D* totalCS_BTags_ = new TH1D("totalCS_BTags","totalCS_BTags", 7, -0.5, 6.5);
+
   TH1D* totalPrediction_HT_NJets2_ = new TH1D("totalPrediction_HT_NJets2","totalPrediction_HT_NJets2", nHTbins, HTbins);
   TH1D* totalPrediction_MHT_NJets2_ = new TH1D("totalPrediction_MHT_NJets2","totalPrediction_MHT_NJets2", nMHTbins, MHTbins);
   TH1D* totalPrediction_HT_NJets2_BTags0_ = new TH1D("totalPrediction_HT_NJets2_BTags0","totalPrediction_HT_NJets2_BTags0", nHTbins, HTbins);
@@ -802,6 +807,11 @@ void Closure(string InputPath_Expectation="Expectation.root",
         totalPrediction_NJets_->Fill(NJets, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
         totalPrediction_BTags_->Fill(BTags, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
 
+        totalCS_HT_->Fill(HT, scaleFactorWeightBtagProb/2);
+        totalCS_MHT_->Fill(MHT, scaleFactorWeightBtagProb/2);
+        totalCS_NJets_->Fill(NJets, scaleFactorWeightBtagProb/2);
+        totalCS_BTags_->Fill(BTags, scaleFactorWeightBtagProb/2);
+
         if(NJets < 2.5){
         	totalPrediction_HT_NJets2_->Fill(HT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
           totalPrediction_MHT_NJets2_->Fill(MHT, totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb/2);
@@ -884,6 +894,11 @@ void Closure(string InputPath_Expectation="Expectation.root",
 	      totalPrediction_NJets_->Fill(NJets, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
 	      totalPrediction_BTags_->Fill(i, totalWeight_BTags->at(i)*scaleFactorWeightBtagProb/2);
 
+	      totalCS_HT_->Fill(HT, Weight*scaleFactorWeightBtagProb);
+	      totalCS_MHT_->Fill(MHT, Weight*scaleFactorWeightBtagProb);
+	      totalCS_NJets_->Fill(NJets, Weight*scaleFactorWeightBtagProb);
+	      totalCS_BTags_->Fill(i, Weight*scaleFactorWeightBtagProb);
+
         if(MuonsNum==1){
           totalPredictionMuMTW_->Fill(Bin_bTags.at(i), totalWeight_BTags_MTW->at(i)*scaleFactorWeightBtagProb);
         }
@@ -959,14 +974,14 @@ void Closure(string InputPath_Expectation="Expectation.root",
 		}
 	}
           if(MuonsNum == 1){
-            totalPredictionMu_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb);
-            totalPredictionMuWoIso_->Fill(Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb);
+            totalPredictionMu_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionMuWoIso_->Fill(Bin_bTags.at(i), totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb);
 
-            totalPreMu+=totalWeightDiLep*scaleFactorWeightBtagProb;
-            totalPreMuError+= totalWeightDiLep*scaleFactorWeightBtagProb*totalWeightDiLep*scaleFactorWeightBtagProb;
+            totalPreMu+=totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb;
+            totalPreMuError+= totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb*totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb;
             // isotrackveto applied
-            totalPreIsoTrackMu+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb;
-            totalPreIsoTrackMuError+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb*totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb;
+            totalPreIsoTrackMu+=totalWeight_BTags->at(i)*scaleFactorWeightBtagProb;
+            totalPreIsoTrackMuError+=totalWeight_BTags->at(i)*scaleFactorWeightBtagProb*totalWeight_BTags->at(i)*scaleFactorWeightBtagProb;
 
 
             totalPredictionMuCSMuAcc_->Fill(Bin_bTags.at(i), totalWeight_BTags_MuAcc_->at(i)*scaleFactorWeightBtagProb);
@@ -1014,14 +1029,14 @@ void Closure(string InputPath_Expectation="Expectation.root",
             totalPreMuElecIso+=totalWeight_BTags_ElecIso_->at(i)*scaleFactorWeightBtagProb;
 
           }if(ElectronsNum == 1){
-            totalPredictionElec_->Fill(Bin_bTags.at(i), totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb);
-            totalPredictionElecWoIso_->Fill(Bin_bTags.at(i), totalWeightDiLep*scaleFactorWeightBtagProb);
+            totalPredictionElec_->Fill(Bin_bTags.at(i), totalWeight_BTags->at(i)*scaleFactorWeightBtagProb);
+            totalPredictionElecWoIso_->Fill(Bin_bTags.at(i), totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb);
 
-            totalPreElec+=totalWeightDiLep*scaleFactorWeightBtagProb;
-            totalPreElecError+= totalWeightDiLep*scaleFactorWeightBtagProb*totalWeightDiLep*scaleFactorWeightBtagProb;
+            totalPreElec+=totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb;
+            totalPreElecError+= totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb*totalWeight_BTags_noIsoTrack->at(i)*scaleFactorWeightBtagProb;
             // isotrackveto applied
-            totalPreIsoTrackElec+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb;
-            totalPreIsoTrackElecError+=totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb*totalWeightDiLepIsoTrackReducedCombined*scaleFactorWeightBtagProb;
+            totalPreIsoTrackElec+=totalWeight_BTags->at(i)*scaleFactorWeightBtagProb;
+            totalPreIsoTrackElecError+=totalWeight_BTags->at(i)*scaleFactorWeightBtagProb*totalWeight_BTags->at(i)*scaleFactorWeightBtagProb;
 
 
             totalPredictionElecCSElecAcc_->Fill(Bin_bTags.at(i), totalWeight_BTags_ElecAcc_->at(i)*scaleFactorWeightBtagProb);
@@ -1104,6 +1119,21 @@ void Closure(string InputPath_Expectation="Expectation.root",
   totalPredictionMu_->Write();
   totalPredictionElec_->Write();
   totalPrediction_HT_->Write();
+  totalPrediction_MHT_->Write();
+  totalPrediction_NJets_->Write();
+  totalPrediction_BTags_->Write();
+  totalCS_HT_->Write();
+  totalCS_MHT_->Write();
+  totalCS_NJets_->Write();
+  totalCS_BTags_->Write();
+
+  outPutFile->mkdir("avgWeight");
+  TDirectory *davgWeight = (TDirectory*)outPutFile->Get("avgWeight");
+
+  SaveClosure(totalCS_HT_, totalPrediction_HT_, davgWeight);    
+  SaveClosure(totalCS_MHT_, totalPrediction_MHT_, davgWeight);    
+  SaveClosure(totalCS_NJets_, totalPrediction_NJets_, davgWeight);    
+  SaveClosure(totalCS_BTags_, totalPrediction_BTags_, davgWeight);
 
   outPutFile->mkdir("Closures");
   TDirectory *dClosures = (TDirectory*)outPutFile->Get("Closures");
@@ -1111,6 +1141,11 @@ void Closure(string InputPath_Expectation="Expectation.root",
   SaveClosure(totalPrediction_, totalExpectation_, dClosures);
   SaveClosure(totalPredictionMu_, totalExpectation_, dClosures);
   SaveClosure(totalPredictionElec_, totalExpectation_, dClosures);
+
+  TH1D* totalPredictionMuonElectronRatio = (TH1D*) totalPredictionMu_->Clone("totalPredictionMuonElectronRatio");
+  totalPredictionMuonElectronRatio->SetTitle("totalPredictionMuonElectronRatio");
+  totalPredictionMuonElectronRatio->Divide(totalPredictionMu_, totalPredictionElec_);
+  totalPredictionMuonElectronRatio->Write();
 
   SaveClosure(totalPredictionWoIso_, totalExpectationWoIso_, dClosures);
   SaveClosure(totalPredictionMuWoIso_, totalExpectationWoIso_, dClosures);
@@ -1314,6 +1349,8 @@ void SaveClosure(TH1D* h1, TH1D* h2, TDirectory* Folder)
   if(Closure->GetNbinsX()==190) SetBinLabel(Closure);
   Folder->cd();
   Closure->Write();
+
+  //std::cout<<"Saved "<<Folder->GetName()<<"/"<<h1->GetName()<<std::endl;
 }
 
 void SetBinLabel(TH1D* hist){

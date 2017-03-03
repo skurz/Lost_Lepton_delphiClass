@@ -18,8 +18,8 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <TSelector.h>
-#include <TH2F.h>
-#include <TH1F.h>
+#include <TH2.h>
+#include <TH1.h>
 #include "TVector2.h"
 #include <cmath>
 #include "TCanvas.h"
@@ -59,9 +59,6 @@ const bool doIsoTrackStudies = false;
 // Write some variables to tree for Jack's isotrack studies
 const bool doTAPtrees = false;
 
-// Correction for tracking inefficiency due to high luminosity
-const bool doMuIsoTrackTrackingCorrection = false;
-
 //////////////////////
 //// IMPORTANT: running on signal not fully implemented yet (e.g. get x-sec/weight from txt file)
 // If needed, look up at Prediction.C
@@ -89,13 +86,11 @@ const bool applyFilters_=true;
 
 // bTag corrections
 const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_");
+
 const string path_bTagCalib("btag/CSVv2_Moriond17_B_H_mod.csv");
 const string path_bTagCalibFastSim("btag/fastsim_csvv2_ttbar_26_1_2017.csv");
 
-// Muon tracking inefficiency
-const TString path_muonTrk("SFs/general_tracks_and_early_general_tracks_corr_ratio.root");
-const TString hist_muonTrkHighPt("mutrksfptg10");
-const TString hist_muonTrkLowPt("mutrksfptl10");
+const TString path_puHist("PU/PileupHistograms_0121_69p2mb_pm4p6.root");
 
 ////////////////////////
 //////// Don't change anything below
@@ -177,8 +172,9 @@ public :
   TH1* puhist = 0;
   Double_t w_pu;
 
-  TH1D * h_muTrkLowPtSF = 0;
-  TH1D * h_muTrkHighPtSF = 0;
+  TH1D * h_genMus = 0;
+  TH1D * h_genEls = 0;
+  TH1D * h_genMuElRatio = 0;
 
   BTagCorrector *btagcorr = 0;
   std::vector<double> bTagProb;
@@ -535,14 +531,9 @@ void ExpecMaker::Init(TTree *tree)
   std::cout << "Saving file to: " << fileName << std::endl;
 
   if(doPUreweighting){
-    pufile = TFile::Open("PU/PileupHistograms_1117.root","READ");
-    puhist = (TH1*)pufile->Get("pu_weights_central");
+    pufile = TFile::Open(path_puHist,"READ");
+    puhist = (TH1*)pufile->Get("pu_weights_down");
   }
-
-  // Open histograms for SFs
-  TFile *muTrkSF_histFile = TFile::Open(path_muonTrk, "READ");
-  h_muTrkLowPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkLowPt)->Clone();
-  h_muTrkHighPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkHighPt)->Clone();
 
   fChain->SetBranchStatus("*",0);
 

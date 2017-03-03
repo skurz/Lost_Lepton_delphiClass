@@ -30,6 +30,7 @@ void Prediction_isoTrackFact::SlaveBegin(TTree * /*tree*/)
   MuIsoActivityPT_ = new TH2Eff("MuIsoActivityPT", EffInputFolder);
   MuRecoActivityPT_= new TH2Eff("MuRecoActivityPT", EffInputFolder);
   MuRecoPTEta_= new TH2Eff("MuRecoPTEta", EffInputFolder);
+  MuIsoPTEta_= new TH2Eff("MuIsoPTEta", EffInputFolder);
 
   MuPurityMHTNJets_ = new TH2Eff("MuonPurityMHTNJet", EffInputFolder); 
   //MuPurityHTMHT_ = new TH2Eff("MuonPurityHTMHT", EffInputFolder); 
@@ -39,6 +40,7 @@ void Prediction_isoTrackFact::SlaveBegin(TTree * /*tree*/)
   ElecIsoActivityPT_ = new TH2Eff("ElecIsoActivityPT", EffInputFolder);
   ElecRecoActivityPT_= new TH2Eff("ElecRecoActivityPT", EffInputFolder);
   ElecRecoPTEta_= new TH2Eff("ElecRecoPTEta", EffInputFolder);
+  ElecIsoPTEta_= new TH2Eff("ElecIsoPTEta", EffInputFolder);
   
   ElecPurityMHTNJets_ = new TH2Eff("ElecPurityMHTNJet", EffInputFolder);
   //ElecPurityHTMHT_ = new TH2Eff("ElecPurityHTMHT", EffInputFolder); 
@@ -48,6 +50,16 @@ void Prediction_isoTrackFact::SlaveBegin(TTree * /*tree*/)
   ElecDiLepCRNJets_ = new TH1Eff("ElecDiLepCRNJets1D", EffInputFolder);
   ElecDiLepCRMHTNJets_ = new TH2Eff("ElecDiLepCRMHTNJets", EffInputFolder);
   ElecDiLepCRNJetsBTags_ = new TH2Eff("ElecDiLepCRNJetsBTags", EffInputFolder);
+
+  MuRecoActivityPTBarrel_ = new TH2Eff("MuRecoActivityPTBarrel", EffInputFolder);
+  MuIsoActivityPTBarrel_ = new TH2Eff("MuIsoActivityPTBarrel", EffInputFolder);
+  ElecRecoActivityPTBarrel_ = new TH2Eff("ElecRecoActivityPTBarrel", EffInputFolder);
+  ElecIsoActivityPTBarrel_ = new TH2Eff("ElecIsoActivityPTBarrel", EffInputFolder);
+
+  MuRecoActivityPTDisk_ = new TH2Eff("MuRecoActivityPTDisk", EffInputFolder);
+  MuIsoActivityPTDisk_ = new TH2Eff("MuIsoActivityPTDisk", EffInputFolder);
+  ElecRecoActivityPTDisk_ = new TH2Eff("ElecRecoActivityPTDisk", EffInputFolder);
+  ElecIsoActivityPTDisk_ = new TH2Eff("ElecIsoActivityPTDisk", EffInputFolder);
 
 /*
   MuMTWNJets_ = new TH1Eff("MuMTWNJets1D", EffInputFolder);
@@ -730,6 +742,7 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
       muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(BinQCD_, useAsymmErrors);      
       //muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);      
 
+      //muIsoEffVec_ = MuIsoPTEta_->GetEff(Muons->at(0).Pt(),Muons->at(0).Eta(), useAsymmErrors);
       muIsoEffVec_ = MuIsoActivityPT_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
       muRecoEffVec_ = MuRecoPTEta_->GetEff(Muons->at(0).Pt(),Muons->at(0).Eta(), useAsymmErrors);
       //muRecoEffVec_ = MuRecoActivityPT_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
@@ -739,8 +752,25 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
       elecRecoEffVec_ = ElecRecoPTEta_->GetEff(Muons->at(0).Pt(), Muons->at(0).Eta(), useAsymmErrors);
       //elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
+      //elecIsoEffVec_ = ElecIsoPTEta_->GetEff(Muons->at(0).Pt(), Muons->at(0).Eta(), useAsymmErrors);
       elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
+/*
+      if(std::abs(Muons->at(0).Eta()) < 1.1){
+        muRecoEffVec_ = MuRecoActivityPTBarrel_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
+        muIsoEffVec_ = MuIsoActivityPTBarrel_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
+      }else{
+        muRecoEffVec_ = MuRecoActivityPTDisk_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
+        muIsoEffVec_ = MuIsoActivityPTDisk_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
+      }
 
+      if(std::abs(Muons->at(0).Eta()) < 1.442){
+        elecRecoEffVec_ = ElecRecoActivityPTBarrel_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
+        elecIsoEffVec_ = ElecIsoActivityPTBarrel_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
+      }else if(std::abs(Muons->at(0).Eta()) > 1.566){
+        elecRecoEffVec_ = ElecRecoActivityPTDisk_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
+        elecIsoEffVec_ = ElecIsoActivityPTDisk_->GetEff(Muons_MT2Activity->at(0), Muons->at(0).Pt(), useAsymmErrors);
+      }
+*/
       //for compatibility
       muPurityEff_ = muPurityEffVec_.eff;
       muMTWEff_ = muMTWEffVec_.eff;
@@ -794,6 +824,11 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
       double muTotalFrac = 1. / (muIsoEff_ * muRecoEff_ * muAccEff_);
       totalMuons_ = mtwDiLepCorrectedWeight_ * muTotalFrac;
+
+      if(correctGenFraction){
+        genLepRatio = h_genRatio->GetBinContent(BinQCD_);
+        muTotalFrac /= genLepRatio;
+      }
 
       double elecAccFrac = muTotalFrac * (1 - elecAccEff_);
       double elecRecoFrac = muTotalFrac * (elecAccEff_ * (1-elecRecoEff_));
@@ -972,35 +1007,37 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
       // Calculate weights if they do depend on the number of BTags:
       if(!runOnData){
         // BTags == 0
+        BinBTag = SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0);
+
         muPurityEffVec_ =  MuPurityNJetsBTags_->GetEff(NJets, 0, useAsymmErrors);
         muPurityEff_ = muPurityEffVec_.eff;
 
-        muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
-        elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
+        muAccEffVec_ = MuAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
+        elecAccEffVec_ = ElecAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
 
         muAccEff_ = muAccEffVec_.eff;
         elecAccEff_ = elecAccEffVec_.eff;
 
-        muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
+        muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(BinBTag, useAsymmErrors);
         muDiLepCREff_ = muDiLepCREffVec_.eff;
-        muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);      
-        muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
+        muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(BinBTag, useAsymmErrors);      
+        muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(BinBTag, useAsymmErrors);
         muDiLepSREff_ = muDiLepSREffVec_.eff;
         muDiLepSRwoVetoEff_ = muDiLepSRwoVetoEffVec_.eff;
 
-        muMTWEffVec_ = MuMTWSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
+        muMTWEffVec_ = MuMTWSearchBins_->GetEff(BinBTag, useAsymmErrors);
         muMTWEff_ = muMTWEffVec_.eff;
 
-        isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
-        isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
-        isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
+        isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(BinBTag, useAsymmErrors);
+        isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(BinBTag, useAsymmErrors);
+        isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(BinBTag, useAsymmErrors);
         isotrkMuAccEff_ = isotrkMuAccEffVec_.eff;
         isotrkMuIDEff_ = isotrkMuIDEffVec_.eff;
         isotrkMuIsoEff_ = isotrkMuIsoEffVec_.eff;
 
-        isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
-        isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
-        isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
+        isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(BinBTag, useAsymmErrors);
+        isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(BinBTag, useAsymmErrors);
+        isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(BinBTag, useAsymmErrors);
         isotrkElecAccEff_ = isotrkElecAccEffVec_.eff;
         isotrkElecIDEff_ = isotrkElecIDEffVec_.eff;
         isotrkElecIsoEff_ = isotrkElecIsoEffVec_.eff;
@@ -1014,6 +1051,11 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
         muAccFrac = 1. / muIsoEff_ * 1. / muRecoEff_ * (1-muAccEff_)/muAccEff_;
 
         muTotalFrac = 1. / (muIsoEff_ * muRecoEff_ * muAccEff_);
+
+        if(correctGenFraction){
+          genLepRatio = h_genRatio->GetBinContent(BinBTag);
+          muTotalFrac /= genLepRatio;
+        }
 
         elecAccFrac = muTotalFrac * (1 - elecAccEff_);
         elecRecoFrac = muTotalFrac * (elecAccEff_ * (1-elecRecoEff_));
@@ -1031,35 +1073,37 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
 
         // BTags == 1
+        BinBTag = SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1);
+
         muPurityEffVec_ =  MuPurityNJetsBTags_->GetEff(NJets, 1, useAsymmErrors);
         muPurityEff_ = muPurityEffVec_.eff;
 
-        muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
-        elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
+        muAccEffVec_ = MuAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
+        elecAccEffVec_ = ElecAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
 
         muAccEff_ = muAccEffVec_.eff;
         elecAccEff_ = elecAccEffVec_.eff;
 
-        muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
+        muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(BinBTag, useAsymmErrors);
         muDiLepCREff_ = muDiLepCREffVec_.eff;
-        muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);      
-        muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
+        muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(BinBTag, useAsymmErrors);      
+        muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(BinBTag, useAsymmErrors);
         muDiLepSREff_ = muDiLepSREffVec_.eff;
         muDiLepSRwoVetoEff_ = muDiLepSRwoVetoEffVec_.eff;
 
-        muMTWEffVec_ = MuMTWSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
+        muMTWEffVec_ = MuMTWSearchBins_->GetEff(BinBTag, useAsymmErrors);
         muMTWEff_ = muMTWEffVec_.eff;
 
-        isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
-        isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
-        isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
+        isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(BinBTag, useAsymmErrors);
+        isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(BinBTag, useAsymmErrors);
+        isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(BinBTag, useAsymmErrors);
         isotrkMuAccEff_ = isotrkMuAccEffVec_.eff;
         isotrkMuIDEff_ = isotrkMuIDEffVec_.eff;
         isotrkMuIsoEff_ = isotrkMuIsoEffVec_.eff;
 
-        isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
-        isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
-        isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
+        isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(BinBTag, useAsymmErrors);
+        isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(BinBTag, useAsymmErrors);
+        isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(BinBTag, useAsymmErrors);
         isotrkElecAccEff_ = isotrkElecAccEffVec_.eff;
         isotrkElecIDEff_ = isotrkElecIDEffVec_.eff;
         isotrkElecIsoEff_ = isotrkElecIsoEffVec_.eff;
@@ -1073,6 +1117,11 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
         muAccFrac = 1. / muIsoEff_ * 1. / muRecoEff_ * (1-muAccEff_)/muAccEff_;
 
         muTotalFrac = 1. / (muIsoEff_ * muRecoEff_ * muAccEff_);
+
+        if(correctGenFraction){
+          genLepRatio = h_genRatio->GetBinContent(BinBTag);
+          muTotalFrac /= genLepRatio;
+        }
 
         elecAccFrac = muTotalFrac * (1 - elecAccEff_);
         elecRecoFrac = muTotalFrac * (elecAccEff_ * (1-elecRecoEff_));
@@ -1090,35 +1139,37 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
 
         // BTags == 2
+        BinBTag = SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2);
+
         muPurityEffVec_ =  MuPurityNJetsBTags_->GetEff(NJets, 2, useAsymmErrors);
         muPurityEff_ = muPurityEffVec_.eff;
 
-        muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
-        elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
+        muAccEffVec_ = MuAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
+        elecAccEffVec_ = ElecAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
 
         muAccEff_ = muAccEffVec_.eff;
         elecAccEff_ = elecAccEffVec_.eff;
 
-        muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
+        muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(BinBTag, useAsymmErrors);
         muDiLepCREff_ = muDiLepCREffVec_.eff;
-        muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);      
-        muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
+        muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(BinBTag, useAsymmErrors);      
+        muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(BinBTag, useAsymmErrors);
         muDiLepSREff_ = muDiLepSREffVec_.eff;
         muDiLepSRwoVetoEff_ = muDiLepSRwoVetoEffVec_.eff;
 
-        muMTWEffVec_ = MuMTWSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
+        muMTWEffVec_ = MuMTWSearchBins_->GetEff(BinBTag, useAsymmErrors);
         muMTWEff_ = muMTWEffVec_.eff;
 
-        isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
-        isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
-        isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
+        isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(BinBTag, useAsymmErrors);
+        isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(BinBTag, useAsymmErrors);
+        isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(BinBTag, useAsymmErrors);
         isotrkMuAccEff_ = isotrkMuAccEffVec_.eff;
         isotrkMuIDEff_ = isotrkMuIDEffVec_.eff;
         isotrkMuIsoEff_ = isotrkMuIsoEffVec_.eff;
 
-        isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
-        isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
-        isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
+        isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(BinBTag, useAsymmErrors);
+        isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(BinBTag, useAsymmErrors);
+        isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(BinBTag, useAsymmErrors);
         isotrkElecAccEff_ = isotrkElecAccEffVec_.eff;
         isotrkElecIDEff_ = isotrkElecIDEffVec_.eff;
         isotrkElecIsoEff_ = isotrkElecIsoEffVec_.eff;
@@ -1132,6 +1183,11 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
         muAccFrac = 1. / muIsoEff_ * 1. / muRecoEff_ * (1-muAccEff_)/muAccEff_;
 
         muTotalFrac = 1. / (muIsoEff_ * muRecoEff_ * muAccEff_);
+
+        if(correctGenFraction){
+          genLepRatio = h_genRatio->GetBinContent(BinBTag);
+          muTotalFrac /= genLepRatio;
+        }
 
         elecAccFrac = muTotalFrac * (1 - elecAccEff_);
         elecRecoFrac = muTotalFrac * (elecAccEff_ * (1-elecRecoEff_));
@@ -1150,35 +1206,37 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
         // BTags >= 3
         if(NJets > 2){
+          BinBTag = SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3);
+
           muPurityEffVec_ =  MuPurityNJetsBTags_->GetEff(NJets, 3, useAsymmErrors);
           muPurityEff_ = muPurityEffVec_.eff;
 
-          muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
-          elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+          muAccEffVec_ = MuAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
+          elecAccEffVec_ = ElecAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
 
           muAccEff_ = muAccEffVec_.eff;
           elecAccEff_ = elecAccEffVec_.eff;
 
-          muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+          muDiLepCREffVec_ = MuDiLepCRSearchBins_->GetEff(BinBTag, useAsymmErrors);
           muDiLepCREff_ = muDiLepCREffVec_.eff;
-          muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);      
-          muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+          muDiLepSREffVec_ = MuDiLepSRSearchBins_->GetEff(BinBTag, useAsymmErrors);      
+          muDiLepSRwoVetoEffVec_ = MuDiLepSRwoVetoSearchBins_->GetEff(BinBTag, useAsymmErrors);
           muDiLepSREff_ = muDiLepSREffVec_.eff;
           muDiLepSRwoVetoEff_ = muDiLepSRwoVetoEffVec_.eff;
 
-          muMTWEffVec_ = MuMTWSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+          muMTWEffVec_ = MuMTWSearchBins_->GetEff(BinBTag, useAsymmErrors);
           muMTWEff_ = muMTWEffVec_.eff;
 
-          isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
-          isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
-          isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+          isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(BinBTag, useAsymmErrors);
+          isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(BinBTag, useAsymmErrors);
+          isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(BinBTag, useAsymmErrors);
           isotrkMuAccEff_ = isotrkMuAccEffVec_.eff;
           isotrkMuIDEff_ = isotrkMuIDEffVec_.eff;
           isotrkMuIsoEff_ = isotrkMuIsoEffVec_.eff;
 
-          isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
-          isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
-          isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+          isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(BinBTag, useAsymmErrors);
+          isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(BinBTag, useAsymmErrors);
+          isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(BinBTag, useAsymmErrors);
           isotrkElecAccEff_ = isotrkElecAccEffVec_.eff;
           isotrkElecIDEff_ = isotrkElecIDEffVec_.eff;
           isotrkElecIsoEff_ = isotrkElecIsoEffVec_.eff;
@@ -1192,6 +1250,11 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
           muAccFrac = 1. / muIsoEff_ * 1. / muRecoEff_ * (1-muAccEff_)/muAccEff_;
 
           muTotalFrac = 1. / (muIsoEff_ * muRecoEff_ * muAccEff_);
+
+          if(correctGenFraction){
+            genLepRatio = h_genRatio->GetBinContent(BinBTag);
+            muTotalFrac /= genLepRatio;
+          }
 
           elecAccFrac = muTotalFrac * (1 - elecAccEff_);
           elecRecoFrac = muTotalFrac * (elecAccEff_ * (1-elecRecoEff_));
@@ -1245,8 +1308,10 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
       elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(BinQCD_, useAsymmErrors);      
       //elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoNJetsBTags_->GetEff(NJets, BTags, useAsymmErrors);      
 
+
+      //muIsoEffVec_ = MuIsoPTEta_->GetEff(Electrons->at(0).Pt(),Electrons->at(0).Eta(), useAsymmErrors);
       muIsoEffVec_ = MuIsoActivityPT_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
-      muRecoEffVec_ = MuRecoPTEta_->GetEff(Electrons->at(0).Pt(), Electrons->at(0).Eta(), useAsymmErrors);
+      muRecoEffVec_ = MuRecoPTEta_->GetEff(Electrons->at(0).Pt(),Electrons->at(0).Eta(), useAsymmErrors);
       //muRecoEffVec_ = MuRecoActivityPT_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
 
       muAccEffVec_ = MuAccSearchBins_->GetEff(BinQCD_, useAsymmErrors);
@@ -1254,7 +1319,25 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
       elecRecoEffVec_ = ElecRecoPTEta_->GetEff(Electrons->at(0).Pt(), Electrons->at(0).Eta(), useAsymmErrors);
       //elecRecoEffVec_ = ElecRecoActivityPT_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
+      //elecIsoEffVec_ = ElecIsoPTEta_->GetEff(Electrons->at(0).Pt(), Electrons->at(0).Eta(), useAsymmErrors);
       elecIsoEffVec_ = ElecIsoActivityPT_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
+/*
+      if(std::abs(Electrons->at(0).Eta()) < 1.1){
+        muRecoEffVec_ = MuRecoActivityPTBarrel_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
+        muIsoEffVec_ = MuIsoActivityPTBarrel_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
+      }else{
+        muRecoEffVec_ = MuRecoActivityPTDisk_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
+        muIsoEffVec_ = MuIsoActivityPTDisk_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
+      }
+
+      if(std::abs(Electrons->at(0).Eta()) < 1.442){
+        elecRecoEffVec_ = ElecRecoActivityPTBarrel_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
+        elecIsoEffVec_ = ElecIsoActivityPTBarrel_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
+      }else if(std::abs(Electrons->at(0).Eta()) > 1.566){
+        elecRecoEffVec_ = ElecRecoActivityPTDisk_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
+        elecIsoEffVec_ = ElecIsoActivityPTDisk_->GetEff(Electrons_MT2Activity->at(0), Electrons->at(0).Pt(), useAsymmErrors);
+      }
+*/
 
       //for compatibility
       elecPurityEff_ = elecPurityEffVec_.eff;
@@ -1307,6 +1390,11 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
       double elecTotalFrac = 1. / ( elecIsoEff_ * elecRecoEff_ * elecAccEff_);
       totalMuons_ = mtwDiLepCorrectedWeight_ * elecTotalFrac;
+
+      if(correctGenFraction){
+        genLepRatio = h_genRatio->GetBinContent(BinQCD_);
+        elecTotalFrac *= genLepRatio;
+      }
 
       double muAccFrac = elecTotalFrac * (1 - muAccEff_);
       double muRecoFrac = elecTotalFrac * (muAccEff_ * (1-muRecoEff_));
@@ -1484,35 +1572,37 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
       // Calculate weights if they do depend on the number of BTags:
       if(!runOnData){
         // BTags == 0
+        BinBTag = SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0);
+
         elecPurityEffVec_ =  ElecPurityNJetsBTags_->GetEff(NJets, 0, useAsymmErrors);
         elecPurityEff_ = elecPurityEffVec_.eff;
 
-        muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
-        elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
+        muAccEffVec_ = MuAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
+        elecAccEffVec_ = ElecAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
 
         muAccEff_ = muAccEffVec_.eff;
         elecAccEff_ = elecAccEffVec_.eff;
 
-        elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
+        elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(BinBTag, useAsymmErrors);
         elecDiLepCREff_ = elecDiLepCREffVec_.eff;
-        elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);      
-        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
+        elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(BinBTag, useAsymmErrors);      
+        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(BinBTag, useAsymmErrors);
         elecDiLepSREff_ = elecDiLepSREffVec_.eff;
         elecDiLepSRwoVetoEff_ = elecDiLepSRwoVetoEffVec_.eff;
 
-        elecMTWEffVec_ = ElecMTWSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
+        elecMTWEffVec_ = ElecMTWSearchBins_->GetEff(BinBTag, useAsymmErrors);
         elecMTWEff_ = elecMTWEffVec_.eff;
 
-        isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
-        isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
-        isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
+        isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(BinBTag, useAsymmErrors);
+        isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(BinBTag, useAsymmErrors);
+        isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(BinBTag, useAsymmErrors);
         isotrkMuAccEff_ = isotrkMuAccEffVec_.eff;
         isotrkMuIDEff_ = isotrkMuIDEffVec_.eff;
         isotrkMuIsoEff_ = isotrkMuIsoEffVec_.eff;
 
-        isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
-        isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
-        isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,0), useAsymmErrors);
+        isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(BinBTag, useAsymmErrors);
+        isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(BinBTag, useAsymmErrors);
+        isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(BinBTag, useAsymmErrors);
         isotrkElecAccEff_ = isotrkElecAccEffVec_.eff;
         isotrkElecIDEff_ = isotrkElecIDEffVec_.eff;
         isotrkElecIsoEff_ = isotrkElecIsoEffVec_.eff;
@@ -1526,6 +1616,11 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
         elecAccFrac = 1. / elecIsoEff_ * 1. / elecRecoEff_ * (1-elecAccEff_)/elecAccEff_;
 
         elecTotalFrac = 1. / ( elecIsoEff_ * elecRecoEff_ * elecAccEff_);
+
+        if(correctGenFraction){
+          genLepRatio = h_genRatio->GetBinContent(BinBTag);
+          elecTotalFrac *= genLepRatio;
+        }
 
         muAccFrac = elecTotalFrac * (1 - muAccEff_);
         muRecoFrac = elecTotalFrac * (muAccEff_ * (1-muRecoEff_));
@@ -1543,35 +1638,37 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
 
         // BTags == 1
+        BinBTag = SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1);
+
         elecPurityEffVec_ =  ElecPurityNJetsBTags_->GetEff(NJets, 1, useAsymmErrors);
         elecPurityEff_ = elecPurityEffVec_.eff;
 
-        muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
-        elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
+        muAccEffVec_ = MuAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
+        elecAccEffVec_ = ElecAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
 
         muAccEff_ = muAccEffVec_.eff;
         elecAccEff_ = elecAccEffVec_.eff;
 
-        elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
+        elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(BinBTag, useAsymmErrors);
         elecDiLepCREff_ = elecDiLepCREffVec_.eff;
-        elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);      
-        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
+        elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(BinBTag, useAsymmErrors);      
+        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(BinBTag, useAsymmErrors);
         elecDiLepSREff_ = elecDiLepSREffVec_.eff;
         elecDiLepSRwoVetoEff_ = elecDiLepSRwoVetoEffVec_.eff;
 
-        elecMTWEffVec_ = ElecMTWSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
+        elecMTWEffVec_ = ElecMTWSearchBins_->GetEff(BinBTag, useAsymmErrors);
         elecMTWEff_ = elecMTWEffVec_.eff;
 
-        isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
-        isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
-        isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
+        isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(BinBTag, useAsymmErrors);
+        isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(BinBTag, useAsymmErrors);
+        isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(BinBTag, useAsymmErrors);
         isotrkMuAccEff_ = isotrkMuAccEffVec_.eff;
         isotrkMuIDEff_ = isotrkMuIDEffVec_.eff;
         isotrkMuIsoEff_ = isotrkMuIsoEffVec_.eff;
 
-        isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
-        isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
-        isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,1), useAsymmErrors);
+        isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(BinBTag, useAsymmErrors);
+        isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(BinBTag, useAsymmErrors);
+        isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(BinBTag, useAsymmErrors);
         isotrkElecAccEff_ = isotrkElecAccEffVec_.eff;
         isotrkElecIDEff_ = isotrkElecIDEffVec_.eff;
         isotrkElecIsoEff_ = isotrkElecIsoEffVec_.eff;
@@ -1585,6 +1682,11 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
         elecAccFrac = 1. / elecIsoEff_ * 1. / elecRecoEff_ * (1-elecAccEff_)/elecAccEff_;
 
         elecTotalFrac = 1. / ( elecIsoEff_ * elecRecoEff_ * elecAccEff_);
+
+        if(correctGenFraction){
+          genLepRatio = h_genRatio->GetBinContent(BinBTag);
+          elecTotalFrac *= genLepRatio;
+        }
 
         muAccFrac = elecTotalFrac * (1 - muAccEff_);
         muRecoFrac = elecTotalFrac * (muAccEff_ * (1-muRecoEff_));
@@ -1602,35 +1704,37 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
 
         // BTags == 2
+        BinBTag = SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2);
+
         elecPurityEffVec_ =  ElecPurityNJetsBTags_->GetEff(NJets, 2, useAsymmErrors);
         elecPurityEff_ = elecPurityEffVec_.eff;
 
-        muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
-        elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
+        muAccEffVec_ = MuAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
+        elecAccEffVec_ = ElecAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
 
         muAccEff_ = muAccEffVec_.eff;
         elecAccEff_ = elecAccEffVec_.eff;
 
-        elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
+        elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(BinBTag, useAsymmErrors);
         elecDiLepCREff_ = elecDiLepCREffVec_.eff;
-        elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);      
-        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
+        elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(BinBTag, useAsymmErrors);      
+        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(BinBTag, useAsymmErrors);
         elecDiLepSREff_ = elecDiLepSREffVec_.eff;
         elecDiLepSRwoVetoEff_ = elecDiLepSRwoVetoEffVec_.eff;
 
-        elecMTWEffVec_ = ElecMTWSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
+        elecMTWEffVec_ = ElecMTWSearchBins_->GetEff(BinBTag, useAsymmErrors);
         elecMTWEff_ = elecMTWEffVec_.eff;
 
-        isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
-        isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
-        isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
+        isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(BinBTag, useAsymmErrors);
+        isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(BinBTag, useAsymmErrors);
+        isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(BinBTag, useAsymmErrors);
         isotrkMuAccEff_ = isotrkMuAccEffVec_.eff;
         isotrkMuIDEff_ = isotrkMuIDEffVec_.eff;
         isotrkMuIsoEff_ = isotrkMuIsoEffVec_.eff;
 
-        isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
-        isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
-        isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,2), useAsymmErrors);
+        isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(BinBTag, useAsymmErrors);
+        isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(BinBTag, useAsymmErrors);
+        isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(BinBTag, useAsymmErrors);
         isotrkElecAccEff_ = isotrkElecAccEffVec_.eff;
         isotrkElecIDEff_ = isotrkElecIDEffVec_.eff;
         isotrkElecIsoEff_ = isotrkElecIsoEffVec_.eff;
@@ -1644,6 +1748,11 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
         elecAccFrac = 1. / elecIsoEff_ * 1. / elecRecoEff_ * (1-elecAccEff_)/elecAccEff_;
 
         elecTotalFrac = 1. / ( elecIsoEff_ * elecRecoEff_ * elecAccEff_);
+
+        if(correctGenFraction){
+          genLepRatio = h_genRatio->GetBinContent(BinBTag);
+          elecTotalFrac *= genLepRatio;
+        }
 
         muAccFrac = elecTotalFrac * (1 - muAccEff_);
         muRecoFrac = elecTotalFrac * (muAccEff_ * (1-muRecoEff_));
@@ -1662,35 +1771,37 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
 
         // BTags >= 3
         if(NJets > 2){
+          BinBTag = SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3);
+
           elecPurityEffVec_ =  ElecPurityNJetsBTags_->GetEff(NJets, 3, useAsymmErrors);
           elecPurityEff_ = elecPurityEffVec_.eff;
 
-          muAccEffVec_ = MuAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
-          elecAccEffVec_ = ElecAccSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+          muAccEffVec_ = MuAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
+          elecAccEffVec_ = ElecAccSearchBins_->GetEff(BinBTag, useAsymmErrors);
 
           muAccEff_ = muAccEffVec_.eff;
           elecAccEff_ = elecAccEffVec_.eff;
 
-          elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+          elecDiLepCREffVec_ = ElecDiLepCRSearchBins_->GetEff(BinBTag, useAsymmErrors);
         elecDiLepCREff_ = elecDiLepCREffVec_.eff;
-        elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);      
-        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+        elecDiLepSREffVec_ = ElecDiLepSRSearchBins_->GetEff(BinBTag, useAsymmErrors);      
+        elecDiLepSRwoVetoEffVec_ = ElecDiLepSRwoVetoSearchBins_->GetEff(BinBTag, useAsymmErrors);
         elecDiLepSREff_ = elecDiLepSREffVec_.eff;
         elecDiLepSRwoVetoEff_ = elecDiLepSRwoVetoEffVec_.eff;
 
-          elecMTWEffVec_ = ElecMTWSearchBins_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+          elecMTWEffVec_ = ElecMTWSearchBins_->GetEff(BinBTag, useAsymmErrors);
           elecMTWEff_ = elecMTWEffVec_.eff;
 
-          isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
-          isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
-          isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+          isotrkMuAccEffVec_ = IsoTrackVetoSearchBinsMuAcc_->GetEff(BinBTag, useAsymmErrors);
+          isotrkMuIDEffVec_= IsoTrackVetoSearchBinsMuID_->GetEff(BinBTag, useAsymmErrors);
+          isotrkMuIsoEffVec_= IsoTrackVetoSearchBinsMuIso_->GetEff(BinBTag, useAsymmErrors);
           isotrkMuAccEff_ = isotrkMuAccEffVec_.eff;
           isotrkMuIDEff_ = isotrkMuIDEffVec_.eff;
           isotrkMuIsoEff_ = isotrkMuIsoEffVec_.eff;
 
-          isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
-          isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
-          isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(SearchBinsEff_->GetBinNumber(HT,MHT,NJets,3), useAsymmErrors);
+          isotrkElecAccEffVec_= IsoTrackVetoSearchBinsElecAcc_->GetEff(BinBTag, useAsymmErrors);
+          isotrkElecIDEffVec_= IsoTrackVetoSearchBinsElecID_->GetEff(BinBTag, useAsymmErrors);
+          isotrkElecIsoEffVec_= IsoTrackVetoSearchBinsElecIso_->GetEff(BinBTag, useAsymmErrors);
           isotrkElecAccEff_ = isotrkElecAccEffVec_.eff;
           isotrkElecIDEff_ = isotrkElecIDEffVec_.eff;
           isotrkElecIsoEff_ = isotrkElecIsoEffVec_.eff;
@@ -1704,6 +1815,11 @@ Bool_t Prediction_isoTrackFact::Process(Long64_t entry)
           elecAccFrac = 1. / elecIsoEff_ * 1. / elecRecoEff_ * (1-elecAccEff_)/elecAccEff_;
 
           elecTotalFrac = 1. / ( elecIsoEff_ * elecRecoEff_ * elecAccEff_);
+
+          if(correctGenFraction){
+            genLepRatio = h_genRatio->GetBinContent(BinBTag);
+            elecTotalFrac *= genLepRatio;
+          }
 
           muAccFrac = elecTotalFrac * (1 - muAccEff_);
           muRecoFrac = elecTotalFrac * (muAccEff_ * (1-muRecoEff_));
@@ -2159,6 +2275,7 @@ bool Prediction_isoTrackFact::FiltersPass()
       if(!BadChargedCandidateFilter) result=false;
       if(!BadPFMuonFilter) result=false;
       if(globalTightHalo2016Filter!=1) result=false;
+      if(HT5/HT>2.0) result=false;
     }    
   }
   if(NVtx<=0) result=false;
@@ -2167,7 +2284,7 @@ bool Prediction_isoTrackFact::FiltersPass()
   if(!runOnSignalMC) if(!JetID) result=false;
 
   // Preliminary filters
-  if(PFCaloMETRatio>5) result=false;
+  if(PFCaloMETRatio>5.0) result=false;
 
   // Check efficiency of filter
   

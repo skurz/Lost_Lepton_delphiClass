@@ -32,9 +32,9 @@ const bool doBtagProbabilities = true;
 const bool doAdditionalPlots = true;
 
 // Muon tracking inefficiency
-const TString path_muonTrk("SFs_ICHEP16/general_tracks_and_early_general_tracks_corr_ratio.root");
-const TString hist_muonTrkHighPt("mutrksfptg10");
-const TString hist_muonTrkLowPt("mutrksfptl10");
+const TString path_muonTrk("SFs_Moriond17/Tracking_EfficienciesAndSF_BCDEFGH.root");
+const TString hist_muonTrkHighPt("ratio_eff_eta3_dr030e030_corr");
+const TString hist_muonTrkLowPt("ratio_eff_eta3_tk0_dr030e030_corr");
 
 // Electron tracking inefficiency
 const TString path_elecTrk("SFs_Moriond17/egamma_tracking.root");
@@ -130,8 +130,8 @@ class EffMaker : public TSelector {
   
   TTree          *fChain;
 
-  TH1D * h_muTrkLowPtSF = 0;
-  TH1D * h_muTrkHighPtSF = 0;
+  TGraphAsymmErrors * h_muTrkLowPtSF = 0;
+  TGraphAsymmErrors * h_muTrkHighPtSF = 0;
   TH2F * h_elecTrkSF = 0;
 
   TString fileName;
@@ -327,6 +327,21 @@ class EffMaker : public TSelector {
   TH2Eff *ElecIsoTrackVetoPtEtaElecIso_;
   TH2Eff *PionIsoTrackVetoPtEtaElecIso_;
   TH2Eff *IsoTrackVetoPtEtaElecIso_;
+
+  TH1Eff *MuRecoSearchBins_;
+  TH1Eff *MuIsoSearchBins_;
+  TH1Eff *ElecRecoSearchBins_;
+  TH1Eff *ElecIsoSearchBins_;
+
+  TH2Eff *MuRecoActivityPTBarrel_;
+  TH2Eff *MuIsoActivityPTBarrel_;
+  TH2Eff *ElecRecoActivityPTBarrel_;
+  TH2Eff *ElecIsoActivityPTBarrel_;
+
+  TH2Eff *MuRecoActivityPTDisk_;
+  TH2Eff *MuIsoActivityPTDisk_;
+  TH2Eff *ElecRecoActivityPTDisk_;
+  TH2Eff *ElecIsoActivityPTDisk_;
 
 
   //purity
@@ -565,7 +580,6 @@ class EffMaker : public TSelector {
   TH2Eff *MuRecoPTEta_;
   TH2Eff *MuRecoPTEtaBTags0_;
   TH2Eff *MuRecoPTEtaBTags1Inf_;
-
   
   // elec
   //1D
@@ -601,6 +615,8 @@ class EffMaker : public TSelector {
   TH2Eff *MuIsoActivityPTBTags0_;
   TH2Eff *MuIsoActivityPTBTags1Inf_;
   TH2Eff *MuIsoRelPTDeltaRJet_;
+
+  TH2Eff *MuIsoPTEta_;
   
   // elec
   //1D
@@ -617,6 +633,8 @@ class EffMaker : public TSelector {
   TH2Eff *ElecIsoActivityPTBTags0_;
   TH2Eff *ElecIsoActivityPTBTags1Inf_;
   TH2Eff *ElecIsoRelPTDeltaRJet_; 
+
+  TH2Eff *ElecIsoPTEta_;
 
   
   // MTW
@@ -1238,8 +1256,8 @@ void EffMaker::Init(TTree *tree)
 
 
   TFile *muTrkSF_histFile = TFile::Open(path_muonTrk, "READ");
-  h_muTrkLowPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkLowPt)->Clone();
-  h_muTrkHighPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkHighPt)->Clone();
+  h_muTrkLowPtSF = (TGraphAsymmErrors*) muTrkSF_histFile->Get(hist_muonTrkLowPt)->Clone();
+  h_muTrkHighPtSF = (TGraphAsymmErrors*) muTrkSF_histFile->Get(hist_muonTrkHighPt)->Clone();
 
   TFile *elecTrkSF_histFile = TFile::Open(path_elecTrk, "READ");
   h_elecTrkSF = (TH2F*) elecTrkSF_histFile->Get(hist_elecTrk)->Clone();

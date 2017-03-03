@@ -20,8 +20,6 @@
 #include <fstream>
 #include "isr_corrections/ISRCorrector.h"
 #include "btag/BTagCorrector.h"
-#include "eventFilter/EventListFilter.h"
-
 
 ////////////////////////
 //////// Options
@@ -39,7 +37,7 @@ const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims (bTag reweighting)
 // Does not matter for Data
-const bool runOnNtuples = true;
+const bool runOnNtuples = false;
 const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_");
 
 // Useful for T2tt corridor studies
@@ -55,8 +53,11 @@ const bool fillEventSeperateBTags = false;
 // For testing only: force application of SFs in MC
 const bool forceSFs = false;
 
+// For testing only
+const bool correctGenFraction = false;
+
 // PU
-const TString path_puHist("PU/PileupHistograms_0721_63mb_pm5.root");
+const TString path_puHist("PU/PileupHistograms_0121_69p2mb_pm4p6.root");
 // bTag corrections
 const string path_bTagCalib("btag/CSVv2_Moriond17_B_H_mod.csv");
 const string path_bTagCalibFastSim("btag/fastsim_csvv2_ttbar_26_1_2017.csv");
@@ -85,13 +86,17 @@ const TString path_MTWunc("MTWUncertainty/MTWuncertainty.root");
 const TString path_isoTrackunc("IsoTrackUncertainty/NJets_uncertainty.root");
 
 // Muon tracking inefficiency
-const TString path_muonTrk("SFs_ICHEP16/general_tracks_and_early_general_tracks_corr_ratio.root");
-const TString hist_muonTrkHighPt("mutrksfptg10");
-const TString hist_muonTrkLowPt("mutrksfptl10");
+const TString path_muonTrk("SFs_Moriond17/Tracking_EfficienciesAndSF_BCDEFGH.root");
+const TString hist_muonTrkHighPt("ratio_eff_eta3_dr030e030_corr");
+const TString hist_muonTrkLowPt("ratio_eff_eta3_tk0_dr030e030_corr");
 
 // Electron tracking inefficiency
 const TString path_elecTrk("SFs_Moriond17/egamma_tracking.root");
 const TString hist_elecTrk("EGamma_SF2D");
+
+// GenRatio
+const TString path_genRatio("genRatio.root");
+const TString hist_genRatio("genMuElRatio");
 
 
 ////////////////////////
@@ -224,8 +229,8 @@ class Prediction_isoTrackFact : public TSelector {
   TFile* pufile = 0;
   TH1* puhist = 0;
 
-  TH1D * h_muTrkLowPtSF = 0;
-  TH1D * h_muTrkHighPtSF = 0;
+  TGraphAsymmErrors * h_muTrkLowPtSF = 0;
+  TGraphAsymmErrors * h_muTrkHighPtSF = 0;
   TH2F * h_elecTrkSF = 0;
 
   vector<double> fudgeFactors;
@@ -256,13 +261,16 @@ class Prediction_isoTrackFact : public TSelector {
   Double_t		  trackingSF;
   Double_t      WeightCorr;
   Double_t      WeightTrackingCorr;
-  Double_t		  topPtSF;
+  Double_t      topPtSF;
+  Double_t		  genLepRatio;
   std::vector<double> topPt;
 
   TH2F* h_muIDSF = 0;
   TH2F* h_muIsoSF = 0;
   TH2F* h_elecIsoSF = 0;
   TH2F* h_elecIDSF = 0;
+
+  TH1D* h_genRatio = 0;
 
   std::vector<TH2D*> h_muAccPDF_up;
   std::vector<TH2D*> h_elecAccPDF_up;
@@ -438,7 +446,7 @@ class Prediction_isoTrackFact : public TSelector {
 
   std::vector<int> ptw_bins;
   
-  UShort_t Bin_, BinQCD_;
+  UShort_t Bin_, BinQCD_, BinBTag;
   
   //NEW
   TH1Eff *MuAccSearchBins_=0;
@@ -476,6 +484,8 @@ class Prediction_isoTrackFact : public TSelector {
   TH2Eff *MuIsoActivityPT_=0;
   TH2Eff *MuRecoActivityPT_=0;
   TH2Eff *MuRecoPTEta_=0;
+  TH2Eff *MuIsoPTEta_=0;
+
   TH2Eff *MuPurityMHTNJets_=0; 
   TH2Eff *MuPurityHTMHT_=0; 
   TH2Eff *MuPurityNJetsBTags_=0; 
@@ -484,6 +494,7 @@ class Prediction_isoTrackFact : public TSelector {
   TH2Eff *ElecIsoActivityPT_=0;
   TH2Eff *ElecRecoActivityPT_=0;
   TH2Eff *ElecRecoPTEta_=0;
+  TH2Eff *ElecIsoPTEta_=0;
 
   TH2Eff *ElecPurityMHTNJets_=0;
   TH2Eff *ElecPurityHTMHT_=0;
@@ -614,6 +625,16 @@ class Prediction_isoTrackFact : public TSelector {
   TH2Eff *PionIsoTrackVetoActivityPtElecIso_=0;
   TH2Eff *IsoTrackVetoActivityPtElecIso_=0;
 
+  TH2Eff *MuRecoActivityPTBarrel_=0;
+  TH2Eff *MuIsoActivityPTBarrel_=0;
+  TH2Eff *ElecRecoActivityPTBarrel_=0;
+  TH2Eff *ElecIsoActivityPTBarrel_=0;
+
+  TH2Eff *MuRecoActivityPTDisk_=0;
+  TH2Eff *MuIsoActivityPTDisk_=0;
+  TH2Eff *ElecRecoActivityPTDisk_=0;
+  TH2Eff *ElecIsoActivityPTDisk_=0;
+
 
   
   // Declaration of leaf types
@@ -637,6 +658,7 @@ class Prediction_isoTrackFact : public TSelector {
   Int_t          HBHENoiseFilter;
   Int_t          HBHEIsoNoiseFilter;
   Double_t        HT;
+  Double_t        HT5;
   Double_t        GenHT;
   Double_t        GenMHT;
   std::vector<TLorentzVector> *GenJets=0;
@@ -706,6 +728,7 @@ class Prediction_isoTrackFact : public TSelector {
   TBranch        *b_HBHENoiseFilter=0;   //!
   TBranch        *b_HBHEIsoNoiseFilter=0;   //!
   TBranch        *b_HT=0;   //!
+  TBranch        *b_HT5=0;   //!
   TBranch        *b_GenHT=0;   //!
   TBranch        *b_GenMHT=0;   //!
   TBranch        *b_GenJets=0;   //!
@@ -808,7 +831,7 @@ void Prediction_isoTrackFact::Init(TTree *tree)
   //if(runOnStandardModelMC) useTriggerEffWeight = true; // not derived yet
   if(runOnSignalMC && !useGenHTMHT) useTriggerEffWeight = true;
   // Do PU reweighting. true for signal scan
-  if(runOnSignalMC) doPUreweighting = true;
+  //if(runOnSignalMC) doPUreweighting = true;
   //if(runOnStandardModelMC) doPUreweighting = true;
   // bTag corrections. Use for signal scan
   if(!runOnData) doBTagCorr = true;
@@ -1002,11 +1025,14 @@ void Prediction_isoTrackFact::Init(TTree *tree)
 
 
   TFile *muTrkSF_histFile = TFile::Open(path_muonTrk, "READ");
-  h_muTrkLowPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkLowPt)->Clone();
-  h_muTrkHighPtSF = (TH1D*) muTrkSF_histFile->Get(hist_muonTrkHighPt)->Clone();
+  h_muTrkLowPtSF = (TGraphAsymmErrors*) muTrkSF_histFile->Get(hist_muonTrkLowPt)->Clone();
+  h_muTrkHighPtSF = (TGraphAsymmErrors*) muTrkSF_histFile->Get(hist_muonTrkHighPt)->Clone();
 
   TFile *elecTrkSF_histFile = TFile::Open(path_elecTrk, "READ");
-  h_elecTrkSF = (TH2F*) elecTrkSF_histFile->Get(hist_elecTrk)->Clone();  
+  h_elecTrkSF = (TH2F*) elecTrkSF_histFile->Get(hist_elecTrk)->Clone(); 
+
+  TFile *genRatio_histFile = TFile::Open(path_genRatio, "READ");
+  h_genRatio = (TH1D*) genRatio_histFile->Get(hist_genRatio)->Clone();  
 
   if(runOnSignalMC){
     // ISR setup
@@ -1016,7 +1042,7 @@ void Prediction_isoTrackFact::Init(TTree *tree)
 
   if(doPUreweighting){
     pufile = TFile::Open(path_puHist,"READ");
-    puhist = (TH1*)pufile->Get("pu_weights_central");
+    puhist = (TH1*)pufile->Get("pu_weights_down");
   }
 
   fChain->SetBranchStatus("*",0);
@@ -1040,6 +1066,7 @@ void Prediction_isoTrackFact::Init(TTree *tree)
       fChain->SetBranchStatus("globalTightHalo2016Filter", 1);
       fChain->SetBranchStatus("BadChargedCandidateFilter", 1);
       fChain->SetBranchStatus("BadPFMuonFilter", 1);
+      fChain->SetBranchStatus("HT5", 1);
     }
   }
   fChain->SetBranchStatus("Electrons", 1);
@@ -1123,6 +1150,7 @@ void Prediction_isoTrackFact::Init(TTree *tree)
       fChain->SetBranchAddress("globalTightHalo2016Filter", &globalTightHalo2016Filter, &b_globalTightHalo2016Filter);
       fChain->SetBranchAddress("BadChargedCandidateFilter", &BadChargedCandidateFilter, &b_BadChargedCandidateFilter);
       fChain->SetBranchAddress("BadPFMuonFilter", &BadPFMuonFilter, &b_BadPFMuonFilter);
+      fChain->SetBranchAddress("HT5", &HT5, &b_HT5);
     }
   }
   fChain->SetBranchAddress("HT", &HT, &b_HT);
