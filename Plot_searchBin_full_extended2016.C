@@ -330,8 +330,8 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   EstHist_Normalize_Clone->SetFillColor(kWhite);
   EstHist_Normalize_Clone->Draw("esame");
 
-  GenHist->Print("all");
-  EstHist->Print("all");
+  //GenHist->Print("all");
+  //EstHist->Print("all");
   
   //
   // Re-draw to have "expectation" on top of "prediction"
@@ -349,7 +349,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
     
   writeExtraText = true;  
   if(doDataVsMC) extraText   = "        Preliminary";
-  else extraText   = "        Simulation";
+  else extraText   = "        Simulation Preliminary";
   //float extraTextFont = 52;  // default is helvetica-italics
 
   // text sizes and text offsets with respect to the top frame
@@ -580,6 +580,16 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       	  numerator_fullstaterr->Add(One_NoError,-1.);                        // Expectation/Prediction-1
 //      }
 
+      	double Rmax = 1., Rmin = 1., RerrMax = 1., RerrMin = 1.;
+        for (int ibin=1;ibin<=numerator->GetNbinsX();ibin++){
+        	double R = numerator->GetBinContent(ibin);
+        	double Rerr = numerator->GetBinError(ibin);
+        	if(R > Rmax) Rmax = R;
+        	if(R < Rmin) Rmin = R;
+        	if(R > 1 && R - Rerr > RerrMax) RerrMax = R - Rerr;
+        	if(R < 1 && R + Rerr < RerrMin) RerrMin = R + Rerr;
+		}
+		std::cout<<"Range of ratio ["<<Rmin<<";"<<Rmax<<"] -> including error bars ["<<RerrMin<<";"<<RerrMax<<"]"<<std::endl;
 
 
       // draw bottom figure
@@ -649,7 +659,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
           numerator_fullstaterr->SetBinError(ibin,0.);
         }
 
-        numerator_fullstaterr->Print("all");
+        //numerator_fullstaterr->Print("all");
         
         numerator_fullstaterr->GetXaxis()->SetLabelSize(font_size_dw);
         numerator_fullstaterr->GetXaxis()->SetTitleSize(font_size_dw);
@@ -699,9 +709,9 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       ex1->Draw();
       numerator->DrawCopy("same");
 
-      numerator->Print("all");
-      denominator->Print("all");
-      numerator_fullstaterr->Print("all");
+      //numerator->Print("all");
+      //denominator->Print("all");
+      //numerator_fullstaterr->Print("all");
 
       //
       // Drawing lines

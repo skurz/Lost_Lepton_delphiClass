@@ -692,8 +692,6 @@ void ExpecMaker::Terminate()
     outPutFile->Close();
   }
 
-  outPutFile->Close();
-
   cout << "Saved output to " << fileName << endl;
 	
 }
