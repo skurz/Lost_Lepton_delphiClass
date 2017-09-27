@@ -229,7 +229,7 @@
     const bool doTrackingCorrection = true;
     ```
 
-   - Lepton SF Uncertainties: Somethimes an additional systematic has to be added on top of what is stored in the histogram. This has to be set directly in Prediction.C when calling the function
+  - Lepton SF Uncertainties: Somethimes an additional systematic has to be added on top of what is stored in the histogram. This has to be set directly in Prediction.C when calling the function
 
     ```
     GetSFUnc(TH2 *hist, Double_t xVal, Double_t yVal, double addSys = 0.)
@@ -267,9 +267,9 @@
     
 4. Derivation of the uncertainties on the acceptance and MTW cut efficiency (Expectation.root needed, see step 1)
 
-    - MTW cut efficiency: Run VaryMet.C
+  - MTW cut efficiency: Run VaryMet.C
 
-    - Acceptance efficiency: Run VaryPDFs.C, and VaryQ2.C TWICE and adjust the following lines (asymmetric uncertainty)
+  - Acceptance efficiency: Run VaryPDFs.C, and VaryQ2.C TWICE and adjust the following lines (asymmetric uncertainty)
 
     ```
     TString outName("AcceptanceUncertainty/PDFuncertainty_up.root");
