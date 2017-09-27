@@ -358,6 +358,45 @@ TH1D* totalCS_LL_LepPt_Elec_ = 0;
 TH1D* totalCS_LL_LepPt_Mu_MC_ = 0;
 TH1D* totalCS_LL_LepPt_Elec_MC_ = 0;
 
+TH1D* totalCSCombined_LL_ = 0;
+TH1D* totalCSCombined_LL_MC_ = 0;
+TH1D* totalCSCombined_LL_HT_ = 0;
+TH1D* totalCSCombined_LL_HT_MC_ = 0;
+TH1D* totalCSCombined_LL_MHT_ = 0;
+TH1D* totalCSCombined_LL_MHT_MC_ = 0;
+TH1D* totalCSCombined_LL_MET_ = 0;
+TH1D* totalCSCombined_LL_MET_MC_ = 0;
+TH1D* totalCSCombined_LL_NJets_ = 0;
+TH1D* totalCSCombined_LL_NJets_MC_ = 0;
+TH1D* totalCSCombined_LL_NBTags_ = 0;
+TH1D* totalCSCombined_LL_NBTags_MC_ = 0;
+
+TH1D* totalExpCombined_LL_ = 0;
+TH1D* totalExpCombined_LL_MC_ = 0;
+TH1D* totalExpCombined_LL_HT_ = 0;
+TH1D* totalExpCombined_LL_HT_MC_ = 0;
+TH1D* totalExpCombined_LL_MHT_ = 0;
+TH1D* totalExpCombined_LL_MHT_MC_ = 0;
+TH1D* totalExpCombined_LL_MET_ = 0;
+TH1D* totalExpCombined_LL_MET_MC_ = 0;
+TH1D* totalExpCombined_LL_NJets_ = 0;
+TH1D* totalExpCombined_LL_NJets_MC_ = 0;
+TH1D* totalExpCombined_LL_NBTags_ = 0;
+TH1D* totalExpCombined_LL_NBTags_MC_ = 0;
+
+TH1D* totalPreCombined_LL_ = 0;
+TH1D* totalPreCombined_LL_MC_ = 0;
+TH1D* totalPreCombined_LL_HT_ = 0;
+TH1D* totalPreCombined_LL_HT_MC_ = 0;
+TH1D* totalPreCombined_LL_MHT_ = 0;
+TH1D* totalPreCombined_LL_MHT_MC_ = 0;
+TH1D* totalPreCombined_LL_MET_ = 0;
+TH1D* totalPreCombined_LL_MET_MC_ = 0;
+TH1D* totalPreCombined_LL_NJets_ = 0;
+TH1D* totalPreCombined_LL_NJets_MC_ = 0;
+TH1D* totalPreCombined_LL_NBTags_ = 0;
+TH1D* totalPreCombined_LL_NBTags_MC_ = 0;
+
 // Add some of the uncertainties in quadrature (easier for integration)
 TH1D* totalPredDiLepContributionStatUp_LL_ = 0;
 TH1D* totalPredDiLepContributionStatDown_LL_ = 0;

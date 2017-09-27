@@ -313,8 +313,8 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   //GenHist_Normalize->GetListOfFunctions()->Add(ex1);
   GenHist_Normalize->DrawCopy("e");
 
-  EstHist->SetFillStyle(3144);
-  EstHist->SetFillColor(kRed-10);
+  EstHist->SetFillStyle(1001);
+  EstHist->SetFillColor(kRed-9);
   EstHist->SetMarkerStyle(20);
   EstHist->SetMarkerSize(0.0001);
   TH1D * EstHist_Normalize = static_cast<TH1D*>(EstHist->Clone("EstHist_Normalize"));
@@ -348,8 +348,10 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   int iPos=0;
     
   writeExtraText = true;  
-  if(doDataVsMC) extraText   = "        Preliminary";
-  else extraText   = "        Simulation Preliminary";
+  //if(doDataVsMC) extraText   = "        Preliminary";
+  //else extraText   = "        Simulation Preliminary";
+  if(doDataVsMC) extraText   = "       ";
+  else extraText   = "        Simulation";
   //float extraTextFont = 52;  // default is helvetica-italics
 
   // text sizes and text offsets with respect to the top frame
@@ -619,7 +621,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       // Setting style
       //numerator->SetMaximum(1.4);
       //numerator->GetXaxis()->SetLabelFont(42);
-      //numerator->GetXaxis()->SetLabelOffset(0.007);
+      numerator->GetXaxis()->SetLabelOffset(0.03);
       numerator->GetXaxis()->SetLabelSize(0.18*0.045/0.06);
       numerator->GetXaxis()->SetTitleSize(0.18);
       numerator->GetXaxis()->SetTitleOffset(0.9);
@@ -629,7 +631,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       numerator->GetYaxis()->SetLabelSize(0.18*0.045/0.06);
       numerator->GetYaxis()->SetTitleSize(0.18);
       //numerator->GetYaxis()->SetTitleOffset(0.5);
-      numerator->GetYaxis()->SetTitleOffset(0.25);
+      numerator->GetYaxis()->SetTitleOffset(0.5);
       numerator->GetYaxis()->SetTitleFont(42);
 
       numerator->GetXaxis()->SetTitle(xtitlename);

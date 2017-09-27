@@ -57,8 +57,6 @@ const TString path_puHist("PU/PileupHistograms_0721_63mb_pm5.root");
 // bTag corrections
 const string path_bTagCalib("btag/CSVv2_Moriond17_B_H_mod.csv");
 const string path_bTagCalibFastSim("btag/fastsim_csvv2_ttbar_26_1_2017.csv");
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// ISR corrections: NOT RECOMMENDED FOR JAMBOREE -> Might change for Moriond! Just uncomment in Prediction::Init(Tree*) of this file
 const TString path_ISRcorr("isr_corrections/ISRWeights.root");
 // Signal x-sec: "dict_xsec.txt" for gluino pair prod; "dict_xsec_T2.txt" for (anti)stop pair prod.
 const string path_xsecT1T5("xsec/dict_xsec.txt");
@@ -71,10 +69,7 @@ const TString hist_elecIso("MVAVLooseElectronToMini");
 
 const TString path_muID("SFs/TnP_MuonID_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root");
 const TString hist_muID("pt_abseta_PLOT_pair_probeMultiplicity_bin0");
-// for muons: add 3% systematic to uncertainty -> set boolean to true in GetSF function
 const TString path_muIso("SFs/TnP_MuonID_NUM_MiniIsoTight_DENOM_MediumID_VAR_map_pt_eta.root");
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// muIso: still binned in pt/eta since this was recommended! Has to be changed for Moriond (also in Prediction.C when getting the uncertainties)!
 const TString hist_muIso("pt_abseta_PLOT_pair_probeMultiplicity_bin0_&_Medium2016_pass");
 
 //Uncertainty maps

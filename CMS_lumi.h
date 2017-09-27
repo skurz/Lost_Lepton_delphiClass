@@ -26,6 +26,12 @@ float relPosX    = 0.045;
 float relPosY    = 0.035;
 float relExtraDY = 1.2;
 
+// for the new script
+float relX1    = 0;
+float relX2    = 0;
+float relX3    = 0;
+
+
 // ratio of "CMS" and extra text size
 float extraOverCmsTextSize  = 0.76;
 
