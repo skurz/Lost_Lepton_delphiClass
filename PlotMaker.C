@@ -99,12 +99,80 @@ void PlotMaker(string InputPath_Expectation="Expectation.root",
 		    	totalExp_LL_->Fill(Bin_bTags.at(i), scaledWeight);
 		    	nEvtsExp_LL_->Fill(Bin_bTags.at(i));
 
-				totalExpCombined_LL_MC_->Fill(Bin_bTags.at(i), scaledWeight);
-				totalExpCombined_LL_HT_MC_->Fill(HT, scaledWeight);
-				totalExpCombined_LL_MHT_MC_->Fill(MHT, scaledWeight);
-				totalExpCombined_LL_MET_MC_->Fill(MET, scaledWeight);
-				totalExpCombined_LL_NJets_MC_->Fill(NJets, scaledWeight);
-				totalExpCombined_LL_NBTags_MC_->Fill(i, scaledWeight);
+		    	if(muAcc == 0){
+		    		totalAccMu_->Fill(Bin_bTags.at(i), std::abs(scaledWeight));
+					totalAccMu_HT_->Fill(HT, std::abs(scaledWeight));
+					totalAccMu_MHT_->Fill(MHT, std::abs(scaledWeight));
+					totalAccMu_NJets_->Fill(NJets, std::abs(scaledWeight));
+					totalAccMu_NBTags_->Fill(i, std::abs(scaledWeight));
+					totalFractionNormMu_->Fill(Bin_bTags.at(i), std::abs(scaledWeight));
+					totalFractionNormMu_HT_->Fill(HT, std::abs(scaledWeight));
+					totalFractionNormMu_MHT_->Fill(MHT, std::abs(scaledWeight));
+					totalFractionNormMu_NJets_->Fill(NJets, std::abs(scaledWeight));
+					totalFractionNormMu_NBTags_->Fill(i, std::abs(scaledWeight));
+		    	}
+				if(elecAcc == 0){
+					totalAccElec_->Fill(Bin_bTags.at(i), std::abs(scaledWeight));
+					totalAccElec_HT_->Fill(HT, std::abs(scaledWeight));
+					totalAccElec_MHT_->Fill(MHT, std::abs(scaledWeight));
+					totalAccElec_NJets_->Fill(NJets, std::abs(scaledWeight));
+					totalAccElec_NBTags_->Fill(i, std::abs(scaledWeight));
+					totalFractionNormElec_->Fill(Bin_bTags.at(i), std::abs(scaledWeight));
+					totalFractionNormElec_HT_->Fill(HT, std::abs(scaledWeight));
+					totalFractionNormElec_MHT_->Fill(MHT, std::abs(scaledWeight));
+					totalFractionNormElec_NJets_->Fill(NJets, std::abs(scaledWeight));
+					totalFractionNormElec_NBTags_->Fill(i, std::abs(scaledWeight));
+				}
+
+				if(muReco == 0){
+		    		totalRecoMu_->Fill(Bin_bTags.at(i), std::abs(scaledWeight));
+					totalRecoMu_HT_->Fill(HT, std::abs(scaledWeight));
+					totalRecoMu_MHT_->Fill(MHT, std::abs(scaledWeight));
+					totalRecoMu_NJets_->Fill(NJets, std::abs(scaledWeight));
+					totalRecoMu_NBTags_->Fill(i, std::abs(scaledWeight));
+					totalFractionNormMu_->Fill(Bin_bTags.at(i), std::abs(scaledWeight));
+					totalFractionNormMu_HT_->Fill(HT, std::abs(scaledWeight));
+					totalFractionNormMu_MHT_->Fill(MHT, std::abs(scaledWeight));
+					totalFractionNormMu_NJets_->Fill(NJets, std::abs(scaledWeight));
+					totalFractionNormMu_NBTags_->Fill(i, std::abs(scaledWeight));
+		    	}
+				if(elecReco == 0){
+					totalRecoElec_->Fill(Bin_bTags.at(i), std::abs(scaledWeight));
+					totalRecoElec_HT_->Fill(HT, std::abs(scaledWeight));
+					totalRecoElec_MHT_->Fill(MHT, std::abs(scaledWeight));
+					totalRecoElec_NJets_->Fill(NJets, std::abs(scaledWeight));
+					totalRecoElec_NBTags_->Fill(i, std::abs(scaledWeight));
+					totalFractionNormElec_->Fill(Bin_bTags.at(i), std::abs(scaledWeight));
+					totalFractionNormElec_HT_->Fill(HT, std::abs(scaledWeight));
+					totalFractionNormElec_MHT_->Fill(MHT, std::abs(scaledWeight));
+					totalFractionNormElec_NJets_->Fill(NJets, std::abs(scaledWeight));
+					totalFractionNormElec_NBTags_->Fill(i, std::abs(scaledWeight));
+				}
+
+				if(muIso == 0){
+		    		totalIsoMu_->Fill(Bin_bTags.at(i), std::abs(scaledWeight));
+					totalIsoMu_HT_->Fill(HT, std::abs(scaledWeight));
+					totalIsoMu_MHT_->Fill(MHT, std::abs(scaledWeight));
+					totalIsoMu_NJets_->Fill(NJets, std::abs(scaledWeight));
+					totalIsoMu_NBTags_->Fill(i, std::abs(scaledWeight));
+					totalFractionNormMu_->Fill(Bin_bTags.at(i), std::abs(scaledWeight));
+					totalFractionNormMu_HT_->Fill(HT, std::abs(scaledWeight));
+					totalFractionNormMu_MHT_->Fill(MHT, std::abs(scaledWeight));
+					totalFractionNormMu_NJets_->Fill(NJets, std::abs(scaledWeight));
+					totalFractionNormMu_NBTags_->Fill(i, std::abs(scaledWeight));
+		    	}
+				if(elecIso == 0){
+					totalIsoElec_->Fill(Bin_bTags.at(i), std::abs(scaledWeight));
+					totalIsoElec_HT_->Fill(HT, std::abs(scaledWeight));
+					totalIsoElec_MHT_->Fill(MHT, std::abs(scaledWeight));
+					totalIsoElec_NJets_->Fill(NJets, std::abs(scaledWeight));
+					totalIsoElec_NBTags_->Fill(i, std::abs(scaledWeight));
+					totalFractionNormElec_->Fill(Bin_bTags.at(i), std::abs(scaledWeight));
+					totalFractionNormElec_HT_->Fill(HT, std::abs(scaledWeight));
+					totalFractionNormElec_MHT_->Fill(MHT, std::abs(scaledWeight));
+					totalFractionNormElec_NJets_->Fill(NJets, std::abs(scaledWeight));
+					totalFractionNormElec_NBTags_->Fill(i, std::abs(scaledWeight));
+				}
 			}
 		}
 	}
@@ -1155,6 +1223,219 @@ void saveHistograms(TFile* tf, bool combinedUnc, bool addCont){
 		totalCS_LL_NBTags_Elec_->Write();
 		totalCS_LL_LepPt_Elec_->Write();
 
+		tf->cd();
+		tf->mkdir("PlotsThesis");
+		TDirectory *dPlotsThesis = (TDirectory*)tf->Get("PlotsThesis");
+		dPlotsThesis->cd();
+
+		dPlotsThesis->mkdir("Source");
+		TDirectory *dPlotsThesisSource = (TDirectory*)dPlotsThesis->Get("Source");
+		dPlotsThesisSource->cd();
+
+		setTDRStyle();
+		gStyle->SetPalette(1);
+
+		//SetBinLabel(totalAccMu_);
+		totalAccMu_->Divide(totalFractionNormMu_);
+		totalAccMu_HT_->Divide(totalFractionNormMu_HT_);
+		totalAccMu_MHT_->Divide(totalFractionNormMu_MHT_);
+		totalAccMu_NJets_->Divide(totalFractionNormMu_NJets_);
+		totalAccMu_NBTags_->Divide(totalFractionNormMu_NBTags_);
+		totalAccMu_->Write();
+		totalAccMu_HT_->Write();
+		totalAccMu_MHT_->Write();
+		totalAccMu_NJets_->Write();
+		totalAccMu_NBTags_->Write();
+
+		//SetBinLabel(totalRecoMu_);
+		totalRecoMu_->Divide(totalFractionNormMu_);
+		totalRecoMu_HT_->Divide(totalFractionNormMu_HT_);
+		totalRecoMu_MHT_->Divide(totalFractionNormMu_MHT_);
+		totalRecoMu_NJets_->Divide(totalFractionNormMu_NJets_);
+		totalRecoMu_NBTags_->Divide(totalFractionNormMu_NBTags_);
+		totalRecoMu_->Write();
+		totalRecoMu_HT_->Write();
+		totalRecoMu_MHT_->Write();
+		totalRecoMu_NJets_->Write();
+		totalRecoMu_NBTags_->Write();
+
+		//SetBinLabel(totalIsoMu_);
+		totalIsoMu_->Divide(totalFractionNormMu_);
+		totalIsoMu_HT_->Divide(totalFractionNormMu_HT_);
+		totalIsoMu_MHT_->Divide(totalFractionNormMu_MHT_);
+		totalIsoMu_NJets_->Divide(totalFractionNormMu_NJets_);
+		totalIsoMu_NBTags_->Divide(totalFractionNormMu_NBTags_);
+		totalIsoMu_->Write();
+		totalIsoMu_HT_->Write();
+		totalIsoMu_MHT_->Write();
+		totalIsoMu_NJets_->Write();
+		totalIsoMu_NBTags_->Write();
+
+		//SetBinLabel(totalAccElec_);
+		totalAccElec_->Divide(totalFractionNormElec_);
+		totalAccElec_HT_->Divide(totalFractionNormElec_HT_);
+		totalAccElec_MHT_->Divide(totalFractionNormElec_MHT_);
+		totalAccElec_NJets_->Divide(totalFractionNormElec_NJets_);
+		totalAccElec_NBTags_->Divide(totalFractionNormElec_NBTags_);
+		totalAccElec_->Write();
+		totalAccElec_HT_->Write();
+		totalAccElec_MHT_->Write();
+		totalAccElec_NJets_->Write();
+		totalAccElec_NBTags_->Write();
+
+		//SetBinLabel(totalRecoElec_);
+		totalRecoElec_->Divide(totalFractionNormElec_);
+		totalRecoElec_HT_->Divide(totalFractionNormElec_HT_);
+		totalRecoElec_MHT_->Divide(totalFractionNormElec_MHT_);
+		totalRecoElec_NJets_->Divide(totalFractionNormElec_NJets_);
+		totalRecoElec_NBTags_->Divide(totalFractionNormElec_NBTags_);
+		totalRecoElec_->Write();
+		totalRecoElec_HT_->Write();
+		totalRecoElec_MHT_->Write();
+		totalRecoElec_NJets_->Write();
+		totalRecoElec_NBTags_->Write();
+
+		//SetBinLabel(totalIsoElec_);
+		totalIsoElec_->Divide(totalFractionNormElec_);
+		totalIsoElec_HT_->Divide(totalFractionNormElec_HT_);
+		totalIsoElec_MHT_->Divide(totalFractionNormElec_MHT_);
+		totalIsoElec_NJets_->Divide(totalFractionNormElec_NJets_);
+		totalIsoElec_NBTags_->Divide(totalFractionNormElec_NBTags_);
+		totalIsoElec_->Write();
+		totalIsoElec_HT_->Write();
+		totalIsoElec_MHT_->Write();
+		totalIsoElec_NJets_->Write();
+		totalIsoElec_NBTags_->Write();
+
+		dPlotsThesis->cd();
+
+		totalAccMu_->SetLineColor(kBlack);
+		totalAccMu_HT_->SetLineColor(kBlack);
+		totalAccMu_MHT_->SetLineColor(kBlack);
+		totalAccMu_NJets_->SetLineColor(kBlack);
+		totalAccMu_NBTags_->SetLineColor(kBlack);
+		totalRecoMu_->SetLineColor(kBlack);
+		totalRecoMu_HT_->SetLineColor(kBlack);
+		totalRecoMu_MHT_->SetLineColor(kBlack);
+		totalRecoMu_NJets_->SetLineColor(kBlack);
+		totalRecoMu_NBTags_->SetLineColor(kBlack);
+		totalIsoMu_->SetLineColor(kBlack);
+		totalIsoMu_HT_->SetLineColor(kBlack);
+		totalIsoMu_MHT_->SetLineColor(kBlack);
+		totalIsoMu_NJets_->SetLineColor(kBlack);
+		totalIsoMu_NBTags_->SetLineColor(kBlack);
+		totalAccElec_->SetLineColor(kBlack);
+		totalAccElec_HT_->SetLineColor(kBlack);
+		totalAccElec_MHT_->SetLineColor(kBlack);
+		totalAccElec_NJets_->SetLineColor(kBlack);
+		totalAccElec_NBTags_->SetLineColor(kBlack);
+		totalRecoElec_->SetLineColor(kBlack);
+		totalRecoElec_HT_->SetLineColor(kBlack);
+		totalRecoElec_MHT_->SetLineColor(kBlack);
+		totalRecoElec_NJets_->SetLineColor(kBlack);
+		totalRecoElec_NBTags_->SetLineColor(kBlack);
+		totalIsoElec_->SetLineColor(kBlack);
+		totalIsoElec_HT_->SetLineColor(kBlack);
+		totalIsoElec_MHT_->SetLineColor(kBlack);
+		totalIsoElec_NJets_->SetLineColor(kBlack);
+		totalIsoElec_NBTags_->SetLineColor(kBlack);
+
+		totalAccMu_->SetFillColor(kRed);
+		totalFractionMu_->Add(totalAccMu_);
+		totalAccMu_HT_->SetFillColor(kRed);
+		totalFractionMu_HT_->Add(totalAccMu_HT_);
+		totalAccMu_MHT_->SetFillColor(kRed);
+		totalFractionMu_MHT_->Add(totalAccMu_MHT_);
+		totalAccMu_NJets_->SetFillColor(kRed);
+		totalFractionMu_NJets_->Add(totalAccMu_NJets_);
+		totalAccMu_NBTags_->SetFillColor(kRed);
+		totalFractionMu_NBTags_->Add(totalAccMu_NBTags_);
+
+		totalRecoMu_->SetFillColor(kBlue);
+		totalFractionMu_->Add(totalRecoMu_);
+		totalRecoMu_HT_->SetFillColor(kBlue);
+		totalFractionMu_HT_->Add(totalRecoMu_HT_);
+		totalRecoMu_MHT_->SetFillColor(kBlue);
+		totalFractionMu_MHT_->Add(totalRecoMu_MHT_);
+		totalRecoMu_NJets_->SetFillColor(kBlue);
+		totalFractionMu_NJets_->Add(totalRecoMu_NJets_);
+		totalRecoMu_NBTags_->SetFillColor(kBlue);
+		totalFractionMu_NBTags_->Add(totalRecoMu_NBTags_);
+
+		totalIsoMu_->SetFillColor(kGreen);
+		totalFractionMu_->Add(totalIsoMu_);
+		totalIsoMu_HT_->SetFillColor(kGreen);
+		totalFractionMu_HT_->Add(totalIsoMu_HT_);
+		totalIsoMu_MHT_->SetFillColor(kGreen);
+		totalFractionMu_MHT_->Add(totalIsoMu_MHT_);
+		totalIsoMu_NJets_->SetFillColor(kGreen);
+		totalFractionMu_NJets_->Add(totalIsoMu_NJets_);
+		totalIsoMu_NBTags_->SetFillColor(kGreen);
+		totalFractionMu_NBTags_->Add(totalIsoMu_NBTags_);
+
+		totalAccElec_->SetFillColor(kRed);
+		totalFractionElec_->Add(totalAccElec_);
+		totalAccElec_HT_->SetFillColor(kRed);
+		totalFractionElec_HT_->Add(totalAccElec_HT_);
+		totalAccElec_MHT_->SetFillColor(kRed);
+		totalFractionElec_MHT_->Add(totalAccElec_MHT_);
+		totalAccElec_NJets_->SetFillColor(kRed);
+		totalFractionElec_NJets_->Add(totalAccElec_NJets_);
+		totalAccElec_NBTags_->SetFillColor(kRed);
+		totalFractionElec_NBTags_->Add(totalAccElec_NBTags_);
+
+		totalRecoElec_->SetFillColor(kBlue);
+		totalFractionElec_->Add(totalRecoElec_);
+		totalRecoElec_HT_->SetFillColor(kBlue);
+		totalFractionElec_HT_->Add(totalRecoElec_HT_);
+		totalRecoElec_MHT_->SetFillColor(kBlue);
+		totalFractionElec_MHT_->Add(totalRecoElec_MHT_);
+		totalRecoElec_NJets_->SetFillColor(kBlue);
+		totalFractionElec_NJets_->Add(totalRecoElec_NJets_);
+		totalRecoElec_NBTags_->SetFillColor(kBlue);
+		totalFractionElec_NBTags_->Add(totalRecoElec_NBTags_);
+
+		totalIsoElec_->SetFillColor(kGreen);
+		totalFractionElec_->Add(totalIsoElec_);
+		totalIsoElec_HT_->SetFillColor(kGreen);
+		totalFractionElec_HT_->Add(totalIsoElec_HT_);
+		totalIsoElec_MHT_->SetFillColor(kGreen);
+		totalFractionElec_MHT_->Add(totalIsoElec_MHT_);
+		totalIsoElec_NJets_->SetFillColor(kGreen);
+		totalFractionElec_NJets_->Add(totalIsoElec_NJets_);
+		totalIsoElec_NBTags_->SetFillColor(kGreen);
+		totalFractionElec_NBTags_->Add(totalIsoElec_NBTags_);
+
+		totalFractionMu_HT_->Write();
+		totalFractionElec_HT_->Write();
+		totalFractionMu_MHT_->Write();
+		totalFractionElec_MHT_->Write();
+		totalFractionMu_NJets_->Write();
+		totalFractionElec_NJets_->Write();
+		totalFractionMu_NBTags_->Write();
+		totalFractionElec_NBTags_->Write();
+		totalFractionMu_->Write();
+		totalFractionElec_->Write();
+
+		char xtitlename[200];
+  		char ytitlename[200];
+  		sprintf(ytitlename,"Fraction of Events");
+  		sprintf(xtitlename,"H_{T} [GeV]");
+		PlotFraction("", totalFractionMu_HT_, true, xtitlename, ytitlename);
+		PlotFraction("", totalFractionElec_HT_, false, xtitlename, ytitlename);
+		sprintf(xtitlename,"H_{T}^{miss} [GeV]");
+		PlotFraction("", totalFractionMu_MHT_, true, xtitlename, ytitlename);
+		PlotFraction("", totalFractionElec_MHT_, false, xtitlename, ytitlename);
+		sprintf(xtitlename,"N_{jet}");
+		PlotFraction("", totalFractionMu_NJets_, true, xtitlename, ytitlename);
+		PlotFraction("", totalFractionElec_NJets_, false, xtitlename, ytitlename);
+		sprintf(xtitlename,"N_{b-jet}");
+		PlotFraction("", totalFractionMu_NBTags_, true, xtitlename, ytitlename);
+		PlotFraction("", totalFractionElec_NBTags_, false, xtitlename, ytitlename);
+		sprintf(xtitlename,"Search region bin number");
+		PlotFraction("", totalFractionMu_, true, xtitlename, ytitlename);
+		PlotFraction("", totalFractionElec_, false, xtitlename, ytitlename);
+
 		dAddPlots->mkdir("DoubleRatio");
 		TDirectory *dAddPlots2 = (TDirectory*)dAddPlots->Get("DoubleRatio");
 		dAddPlots2->cd();
@@ -1164,7 +1445,7 @@ void saveHistograms(TFile* tf, bool combinedUnc, bool addCont){
 		TH1D* totalCS_DR_MHT = new TH1D("totalCS_DR_MHT", "totalCS_DR_MHT", 20, 250, 1500);
 		TH1D* totalCS_DR_MET = new TH1D("totalCS_DR_MET", "totalCS_DR_MET", 22, 125, 1500);
 		TH1D* totalCS_DR_NJets = new TH1D("totalCS_DR_NJets", "totalCS_DR_NJets", 9, 1.5, 10.5);
-		TH1D* totalCS_DR_NBTags = new TH1D("totalCS_DR_NBTags", "totalCS_DR_NBTags", 3, -0.5, 2.5);
+		TH1D* totalCS_DR_NBTags = new TH1D("totalCS_DR_NBTags", "totalCS_DR_NBTags", 4, -0.5, 3.5);
 		TH1D* totalCS_DR_LepPt = new TH1D("totalCS_DR_LepPt", "totalCS_DR_LepPt", 25, 0, 500);
 
 		totalCS_LL_Mu_->Divide(totalCS_LL_Mu_MC_);
@@ -1445,15 +1726,70 @@ void initHistograms(Int_t nBins){
 	totalCS_LL_NJets_Mu_MC_ = new TH1D("totalCS_LL_NJets_Mu_MC","totalCS_LL_NJets_Mu_MC", 9, 1.5, 10.5);
 	totalCS_LL_NJets_Elec_MC_ = new TH1D("totalCS_LL_NJets_Elec_MC","totalCS_LL_NJets_Elec_MC", 9, 1.5, 10.5);
 
-	totalCS_LL_NBTags_Mu_ = new TH1D("totalCS_LL_NBTags_Mu","totalCS_LL_NBTags_Mu", 3, -0.5, 2.5);
-	totalCS_LL_NBTags_Elec_ = new TH1D("totalCS_LL_NBTags_Elec","totalCS_LL_NBTags_Elec", 3, -0.5, 2.5);
-	totalCS_LL_NBTags_Mu_MC_ = new TH1D("totalCS_LL_NBTags_Mu_MC","totalCS_LL_NBTags_Mu_MC", 3, -0.5, 2.5);
-	totalCS_LL_NBTags_Elec_MC_ = new TH1D("totalCS_LL_NBTags_Elec_MC","totalCS_LL_NBTags_Elec_MC", 3, -0.5, 2.5);
+	totalCS_LL_NBTags_Mu_ = new TH1D("totalCS_LL_NBTags_Mu","totalCS_LL_NBTags_Mu", 4, -0.5, 3.5);
+	totalCS_LL_NBTags_Elec_ = new TH1D("totalCS_LL_NBTags_Elec","totalCS_LL_NBTags_Elec", 4, -0.5, 3.5);
+	totalCS_LL_NBTags_Mu_MC_ = new TH1D("totalCS_LL_NBTags_Mu_MC","totalCS_LL_NBTags_Mu_MC", 4, -0.5, 3.5);
+	totalCS_LL_NBTags_Elec_MC_ = new TH1D("totalCS_LL_NBTags_Elec_MC","totalCS_LL_NBTags_Elec_MC", 4, -0.5, 3.5);
 
 	totalCS_LL_LepPt_Mu_ = new TH1D("totalCS_LL_LepPt_Mu","totalCS_LL_LepPt_Mu", 25, 0, 500);
 	totalCS_LL_LepPt_Elec_ = new TH1D("totalCS_LL_LepPt_Elec","totalCS_LL_LepPt_Elec", 25, 0, 500);
 	totalCS_LL_LepPt_Mu_MC_ = new TH1D("totalCS_LL_LepPt_Mu_MC","totalCS_LL_LepPt_Mu_MC", 25, 0, 500);
 	totalCS_LL_LepPt_Elec_MC_ = new TH1D("totalCS_LL_LepPt_Elec_MC","totalCS_LL_LepPt_Elec_MC", 25, 0, 500);
+
+	totalFractionMu_HT_ = new THStack("totalFractionMu_HT", "totalFractionMu_HT");
+	totalFractionElec_HT_ = new THStack("totalFractionElec_HT", "totalFractionElec_HT");
+	totalFractionMu_MHT_ = new THStack("totalFractionMu_MHT", "totalFractionMu_MHT");
+	totalFractionElec_MHT_ = new THStack("totalFractionElec_MHT", "totalFractionElec_MHT");
+	totalFractionMu_NJets_ = new THStack("totalFractionMu_NJets", "totalFractionMu_NJets");
+	totalFractionElec_NJets_ = new THStack("totalFractionElec_NJets", "totalFractionElec_NJets");
+	totalFractionMu_NBTags_ = new THStack("totalFractionMu_NBTags", "totalFractionMu_NBTags");
+	totalFractionElec_NBTags_ = new THStack("totalFractionElec_NBTags", "totalFractionElec_NBTags");
+	totalFractionMu_ = new THStack("totalFractionMu", "totalFractionMu");
+	totalFractionElec_ = new THStack("totalFractionElec", "totalFractionElec");
+
+	totalFractionNormMu_ = new TH1D("totalFractionNormMu","totalFractionNormMu", nBins, 0.5, nBins+0.5);
+	totalFractionNormElec_ = new TH1D("totalFractionNormElec","totalFractionNormElec", nBins, 0.5, nBins+0.5);
+	totalFractionNormMu_HT_ = new TH1D("totalFractionNorm_HT_Mu","totalFractionNorm_HT_Mu", 16, 250, 2250);
+	totalFractionNormElec_HT_ = new TH1D("totalFractionNorm_HT_Elec","totalFractionNorm_HT_Elec", 16, 250, 2250);
+	totalFractionNormMu_MHT_ = new TH1D("totalFractionNorm_MHT_Mu","totalFractionNorm_MHT_Mu", 12, 250, 1000);
+	totalFractionNormElec_MHT_ = new TH1D("totalFractionNorm_MHT_Elec","totalFractionNorm_MHT_Elec", 12, 250, 1000);
+	totalFractionNormMu_NJets_ = new TH1D("totalFractionNorm_NJets_Mu","totalFractionNorm_NJets_Mu", 9, 1.5, 10.5);
+	totalFractionNormElec_NJets_ = new TH1D("totalFractionNorm_NJets_Elec","totalFractionNorm_NJets_Elec", 9, 1.5, 10.5);
+	totalFractionNormMu_NBTags_ = new TH1D("totalFractionNorm_NBTags_Mu","totalFractionNorm_NBTags_Mu", 4, -0.5, 3.5);
+	totalFractionNormElec_NBTags_ = new TH1D("totalFractionNorm_NBTags_Elec","totalFractionNorm_NBTags_Elec", 4, -0.5, 3.5);
+
+	totalAccMu_ = new TH1D("totalAccMu","totalAccMu", nBins, 0.5, nBins+0.5);
+	totalAccElec_ = new TH1D("totalAccElec","totalAccElec", nBins, 0.5, nBins+0.5);
+	totalAccMu_HT_ = new TH1D("totalAcc_HT_Mu","totalAcc_HT_Mu", 16, 250, 2250);
+	totalAccElec_HT_ = new TH1D("totalAcc_HT_Elec","totalAcc_HT_Elec", 16, 250, 2250);
+	totalAccMu_MHT_ = new TH1D("totalAcc_MHT_Mu","totalAcc_MHT_Mu", 12, 250, 1000);
+	totalAccElec_MHT_ = new TH1D("totalAcc_MHT_Elec","totalAcc_MHT_Elec", 12, 250, 1000);
+	totalAccMu_NJets_ = new TH1D("totalAcc_NJets_Mu","totalAcc_NJets_Mu", 9, 1.5, 10.5);
+	totalAccElec_NJets_ = new TH1D("totalAcc_NJets_Elec","totalAcc_NJets_Elec", 9, 1.5, 10.5);
+	totalAccMu_NBTags_ = new TH1D("totalAcc_NBTags_Mu","totalAcc_NBTags_Mu", 4, -0.5, 3.5);
+	totalAccElec_NBTags_ = new TH1D("totalAcc_NBTags_Elec","totalAcc_NBTags_Elec", 4, -0.5, 3.5);
+
+	totalRecoMu_ = new TH1D("totalRecoMu","totalRecoMu", nBins, 0.5, nBins+0.5);
+	totalRecoElec_ = new TH1D("totalRecoElec","totalRecoElec", nBins, 0.5, nBins+0.5);
+	totalRecoMu_HT_ = new TH1D("totalReco_HT_Mu","totalReco_HT_Mu", 16, 250, 2250);
+	totalRecoElec_HT_ = new TH1D("totalReco_HT_Elec","totalReco_HT_Elec", 16, 250, 2250);
+	totalRecoMu_MHT_ = new TH1D("totalReco_MHT_Mu","totalReco_MHT_Mu", 12, 250, 1000);
+	totalRecoElec_MHT_ = new TH1D("totalReco_MHT_Elec","totalReco_MHT_Elec", 12, 250, 1000);
+	totalRecoMu_NJets_ = new TH1D("totalReco_NJets_Mu","totalReco_NJets_Mu", 9, 1.5, 10.5);
+	totalRecoElec_NJets_ = new TH1D("totalReco_NJets_Elec","totalReco_NJets_Elec", 9, 1.5, 10.5);
+	totalRecoMu_NBTags_ = new TH1D("totalReco_NBTags_Mu","totalReco_NBTags_Mu", 4, -0.5, 3.5);
+	totalRecoElec_NBTags_ = new TH1D("totalReco_NBTags_Elec","totalReco_NBTags_Elec", 4, -0.5, 3.5);
+
+	totalIsoMu_ = new TH1D("totalIsoMu","totalIsoMu", nBins, 0.5, nBins+0.5);
+	totalIsoElec_ = new TH1D("totalIsoElec","totalIsoElec", nBins, 0.5, nBins+0.5);
+	totalIsoMu_HT_ = new TH1D("totalIso_HT_Mu","totalIso_HT_Mu", 16, 250, 2250);
+	totalIsoElec_HT_ = new TH1D("totalIso_HT_Elec","totalIso_HT_Elec", 16, 250, 2250);
+	totalIsoMu_MHT_ = new TH1D("totalIso_MHT_Mu","totalIso_MHT_Mu", 12, 250, 1000);
+	totalIsoElec_MHT_ = new TH1D("totalIso_MHT_Elec","totalIso_MHT_Elec", 12, 250, 1000);
+	totalIsoMu_NJets_ = new TH1D("totalIso_NJets_Mu","totalIso_NJets_Mu", 9, 1.5, 10.5);
+	totalIsoElec_NJets_ = new TH1D("totalIso_NJets_Elec","totalIso_NJets_Elec", 9, 1.5, 10.5);
+	totalIsoMu_NBTags_ = new TH1D("totalIso_NBTags_Mu","totalIso_NBTags_Mu", 4, -0.5, 3.5);
+	totalIsoElec_NBTags_ = new TH1D("totalIso_NBTags_Elec","totalIso_NBTags_Elec", 4, -0.5, 3.5);
 
 	totalCSCombined_LL_ = new TH1D("totalCSCombined_LL","totalCSCombined_LL", nBins, 0.5, nBins+0.5);
 	totalCSCombined_LL_MC_ = new TH1D("totalCSCombined_LL_MC","totalCSCombined_LL_MC", nBins, 0.5, nBins+0.5);

@@ -45,7 +45,7 @@ void MakePrediction_Data()
     	Effchain->SetProof();     	
     }
 
-	Effchain->Process("Prediction_isoTrackFact.C++g", "Prediction_data_HT5.root");
+	Effchain->Process("Prediction_isoTrackFact.C++g", "Prediction_data.root");
 
     delete proof;
 }

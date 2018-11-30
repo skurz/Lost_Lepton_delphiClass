@@ -31,13 +31,21 @@ void shift_bin(TH1* input, TH1* output){
 
 }
 
-void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string option="QCD"
+void Plot_searchBin_stepByStep(string option="", int pull=0){ // string option="QCD"
 
   // Use option="QCD" to produce plots in QCD binning
 
   char tempname[200];
   // Open root file
-  sprintf(tempname,"LLPrediction.root");
+  sprintf(tempname,"Closure.root");
+
+  char CRname[200];
+  sprintf(CRname,"MuCS");
+  char SRname[200];
+  sprintf(SRname,"MuAcc");
+
+  char legendName[200];
+  sprintf(legendName,"Out-of-acceptance muons");
 
   // true: do closure test (MC prediction vs MC truth)
   // false: do data driven prediction and compare to MC truth
@@ -47,7 +55,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   // Non-closure systematic not included yet!
   bool showSystematics = false;
 
-  bool doClosurewoIsoTrackVeto = true;
+  bool doClosurewoIsoTrackVeto = false;
 
   ///////////////////////////////////////////////////////////////////////////////////////////
   ////Some cosmetic work for official documents.
@@ -190,13 +198,15 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   double search_x_min=1.-0.5;
 
   TDirectory *dPre = 0;
-  TDirectory *dExp = (TDirectory*)LLFile->Get("Expectation");
+  TDirectory *dExp = (TDirectory*)LLFile->Get("Closures");
 
   if(doDataVsMC){
-    dPre = (TDirectory*)LLFile->Get("Prediction_data");
+    dPre = (TDirectory*)LLFile->Get("Closures");
   }else{
-    dPre = (TDirectory*)LLFile->Get("Prediction_MC");
+    dPre = (TDirectory*)LLFile->Get("Closures");
   }  
+
+  std::cout<<"TotalLostLeptonPrediction"+TString(CRname)+TString(SRname)<<std::endl;
 
   if(doDataVsMC){    
       EstHistTemp=(TH1D*) dPre->Get("totalPred_LL")->Clone();
@@ -206,18 +216,19 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       EstHistTemp=(TH1D*) dPre->Get("totalPred_woIsoTrack_LL_MC")->Clone();
       EstHistDTemp=(TH1D*) dPre->Get("totalPred_woIsoTrack_LL_MC")->Clone();
     }else{
-      EstHistTemp=(TH1D*) dPre->Get("totalPred_LL_MC")->Clone();
-      EstHistDTemp=(TH1D*) dPre->Get("totalPred_LL_MC")->Clone();
+      EstHistTemp=(TH1D*) dPre->Get("TotalLostLeptonPrediction"+TString(CRname)+TString(SRname))->Clone();
+      EstHistDTemp=(TH1D*) dPre->Get("TotalLostLeptonPrediction"+TString(CRname)+TString(SRname))->Clone();
     }
   }
 
+  std::cout<<"TotalLostLeptonExpectation"+TString(SRname)<<std::endl;
 
   if(doClosurewoIsoTrackVeto){
       GenHistTemp=(TH1D*) dExp->Get("totalExp_woIsoTrack_LL")->Clone();
       GenHistDTemp=(TH1D*) dExp->Get("totalExp_woIsoTrack_LL")->Clone();;
   }else{
-      GenHistTemp=(TH1D*) dExp->Get("totalExp_LL")->Clone();
-      GenHistDTemp=(TH1D*) dExp->Get("totalExp_LL")->Clone();
+      GenHistTemp=(TH1D*) dExp->Get("TotalLostLeptonExpectation"+TString(SRname))->Clone();
+      GenHistDTemp=(TH1D*) dExp->Get("TotalLostLeptonExpectation"+TString(SRname))->Clone();
   }
 
   if(showSystematics){
@@ -228,6 +239,8 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       EstSystematics=(TH1D*) dSys->Get("totalPropSysUp_LL_MC")->Clone();
     }
   }
+
+  std::cout<<"Done"<<std::endl;
 
   if(EstHistTemp->GetNbinsX() != GenHistTemp->GetNbinsX()) std::cout<<"NbinsX of Expectation and Prediction don't agree!"<<std::endl;
 
@@ -314,7 +327,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   GenHist_Normalize->DrawCopy("e");
 
   EstHist->SetFillStyle(1001);
-  EstHist->SetFillColor(kRed-9);
+  EstHist->SetFillColor(kBlue-9);
   EstHist->SetMarkerStyle(20);
   EstHist->SetMarkerSize(0.0001);
   TH1D * EstHist_Normalize = static_cast<TH1D*>(EstHist->Clone("EstHist_Normalize"));
@@ -537,8 +550,8 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   }
 
   // Legend & texts
-  sprintf(tempname,"Lost-lepton background");
-  catLeg1->SetHeader(tempname);
+  //sprintf(tempname,"Lost-lepton background");
+  catLeg1->SetHeader(legendName);
   //sprintf(tempname,"#tau_{hadronic} BG expectation (MC truth)");
   sprintf(tempname,"Direct from simulation");
   catLeg1->AddEntry(GenHist,tempname,"pe");
@@ -798,17 +811,17 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   CMS_lumi(canvas, iPeriod, iPos, lumi_sqrtS);
 
   if(doDataVsMC){
-    sprintf(tempname,"DataMC_Full_Plot.pdf");
-    if (pull==1)    sprintf(tempname,"DataMCPull_Full_Plot.pdf");
+    sprintf(tempname,"StepByStep/DataMC_Full_Plot.pdf");
+    if (pull==1)    sprintf(tempname,"StepByStep/DataMCPull_Full_Plot.pdf");
   }else{
     if(doClosurewoIsoTrackVeto){
-      if(option.find("QCD")!=string::npos) sprintf(tempname,"Closure_QCD_HDP_woIsoTrack_Full_Plot.pdf");
-        else sprintf(tempname,"Closure_woIsoTrack_Full_Plot.pdf");
-      if (pull==1)    sprintf(tempname,"ClosurePull_woIsoTrack_Full_Plot.pdf");
+      if(option.find("QCD")!=string::npos) sprintf(tempname,"StepByStep/Closure_QCD_HDP_woIsoTrack_Full_Plot.pdf");
+        else sprintf(tempname,"StepByStep/Closure_woIsoTrack_Full_Plot.pdf");
+      if (pull==1)    sprintf(tempname,"StepByStep/ClosurePull_woIsoTrack_Full_Plot.pdf");
     }else{
-      if(option.find("QCD")!=string::npos) sprintf(tempname,"Closure_QCD_HDP_Full_Plot.pdf");
-        else sprintf(tempname,"Closure_Full_Plot.pdf");
-      if (pull==1)    sprintf(tempname,"ClosurePull_Full_Plot.pdf");
+      if(option.find("QCD")!=string::npos) sprintf(tempname,"StepByStep/Closure_QCD_HDP_Full_Plot.pdf");
+        else sprintf(tempname,"StepByStep/StepByStep_%s%s.pdf", CRname, SRname);
+      if (pull==1)    sprintf(tempname,"StepByStep/StepByStepPull_%s%s.pdf", CRname, SRname);
     }
   }
 
@@ -842,7 +855,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   //c1->SetLogy();
   c1->cd();
   h_ratioDist->Draw();
-  c1->SaveAs(name_+".pdf");
+  c1->SaveAs("StepByStep/"+name_+".pdf");
   delete c1;
   gROOT->SetBatch(false);
 

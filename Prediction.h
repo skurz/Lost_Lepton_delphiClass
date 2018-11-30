@@ -50,7 +50,7 @@ const bool topPTreweight = false;
 
 // Fill event seperately to the tree for each bTag multiplicity (size x4!). Mainly useful for plotting
 // Not fully implemented yet! Only working for CS not for prediction!
-const bool fillEventSeperateBTags = false;
+const bool fillEventSeperateBTags = true;
 
 // PU
 const TString path_puHist("PU/PileupHistograms_0721_63mb_pm5.root");

@@ -5,6 +5,7 @@
 #include <TTree.h>
 #include <TH2F.h>
 #include <TH1D.h>
+#include <THStack.h>
 #include <TProfile.h>
 #include "TVector2.h"
 #include <cmath>
@@ -17,6 +18,9 @@
 #include "LLTools.h"
 #include "THEff.h"
 #include "TROOT.h"
+#include "TLegend.h"
+#include "tdrstyle2.C"
+#include "CMS_lumi.C"
 
 //needed to write vector<TLorentzVector> to tree
 #ifdef __CINT__
@@ -26,6 +30,7 @@
 void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder);
 void SaveFraction(TH1D* Num, TH1D* Denom, TDirectory* dir, TString name = "", TString correlation = "");
 void SetBinLabel(TH1D* hist, TString name = "");
+void PlotFraction(const char* title, THStack* hstack, bool muon, const char* xtitle = "", const char* ytitle = "");
 void addUncertainties(TH1D* total, std::vector<TH1D*> uncertainties, bool upperUnc);
 void setBranchesExpectation(TTree *tree);
 void setBranchesPrediction(TTree *tree, bool isData=false);
@@ -67,6 +72,10 @@ Float_t         totalWeightDiLepIsoTrackReduced;
 Float_t         totalWeightDiLepIsoTrackReducedCombined;
 std::vector<Float_t>*         totalWeight_BTags=0;
 std::vector<Float_t>*         totalWeight_BTags_noIsoTrack=0;
+
+// Additional plots for thesis
+UShort_t muIso, muReco, muAcc;
+UShort_t elecIso, elecReco, elecAcc;
 
 // Uncertainties
 Float_t isoTrackMuAccStatUp;
@@ -322,6 +331,64 @@ TH1D* totalPredElecAccStatDown_LL_MC_ = 0;
 TH1D* totalPropSysUp_LL_MC_ = 0;
 TH1D* totalPropSysDown_LL_MC_ = 0;
 
+// Additional Plots for the thesis
+THStack* totalFractionMu_HT_ = 0;
+THStack* totalFractionElec_HT_ = 0;
+THStack* totalFractionMu_MHT_ = 0;
+THStack* totalFractionElec_MHT_ = 0;
+THStack* totalFractionMu_NJets_ = 0;
+THStack* totalFractionElec_NJets_ = 0;
+THStack* totalFractionMu_NBTags_ = 0;
+THStack* totalFractionElec_NBTags_ = 0;
+THStack* totalFractionMu_ = 0;
+THStack* totalFractionElec_ = 0;
+
+TH1D* totalFractionNormMu_HT_ = 0;
+TH1D* totalFractionNormElec_HT_ = 0;
+TH1D* totalFractionNormMu_MHT_ = 0;
+TH1D* totalFractionNormElec_MHT_ = 0;
+TH1D* totalFractionNormMu_NJets_ = 0;
+TH1D* totalFractionNormElec_NJets_ = 0;
+TH1D* totalFractionNormMu_NBTags_ = 0;
+TH1D* totalFractionNormElec_NBTags_ = 0;
+TH1D* totalFractionNormMu_ = 0;
+TH1D* totalFractionNormElec_ = 0;
+
+TH1D* totalAccMu_HT_ = 0;
+TH1D* totalRecoMu_HT_ = 0;
+TH1D* totalIsoMu_HT_ = 0;
+TH1D* totalAccElec_HT_ = 0;
+TH1D* totalRecoElec_HT_ = 0;
+TH1D* totalIsoElec_HT_ = 0;
+
+TH1D* totalAccMu_MHT_ = 0;
+TH1D* totalRecoMu_MHT_ = 0;
+TH1D* totalIsoMu_MHT_ = 0;
+TH1D* totalAccElec_MHT_ = 0;
+TH1D* totalRecoElec_MHT_ = 0;
+TH1D* totalIsoElec_MHT_ = 0;
+
+TH1D* totalAccMu_NJets_ = 0;
+TH1D* totalRecoMu_NJets_ = 0;
+TH1D* totalIsoMu_NJets_ = 0;
+TH1D* totalAccElec_NJets_ = 0;
+TH1D* totalRecoElec_NJets_ = 0;
+TH1D* totalIsoElec_NJets_ = 0;
+
+TH1D* totalAccMu_NBTags_ = 0;
+TH1D* totalRecoMu_NBTags_ = 0;
+TH1D* totalIsoMu_NBTags_ = 0;
+TH1D* totalAccElec_NBTags_ = 0;
+TH1D* totalRecoElec_NBTags_ = 0;
+TH1D* totalIsoElec_NBTags_ = 0;
+
+TH1D* totalAccMu_ = 0;
+TH1D* totalRecoMu_ = 0;
+TH1D* totalIsoMu_ = 0;
+TH1D* totalAccElec_ = 0;
+TH1D* totalRecoElec_ = 0;
+TH1D* totalIsoElec_ = 0;
+
 // Additional Plots
 TH1D* totalCS_LL_Mu_ = 0;
 TH1D* totalCS_LL_Elec_ = 0;
@@ -433,6 +500,108 @@ void SetBinLabel(TH1D* hist, TString name){
   }
 
   hist -> GetXaxis() -> LabelsOption("v");
+}
+
+void PlotFraction(const char* title, THStack* hstack, bool muon, const char* xtitle, const char* ytitle)
+{
+  TString name = TString(hstack->GetTitle());
+  hstack->SetTitle(TString("Simulation, #sqrt{s}=13 TeV ") + TString(title));
+  //hstack->SetTitle(TString("Simulation, L=3 fb^{-1}, #sqrt{s}=13 TeV ") + TString(title));
+  //hstack->SetMarkerSize(2.0);
+  //hstack->UseCurrentStyle();
+  gROOT->SetBatch(true);
+
+  int W = 1000;
+  int W_ref = 1000;
+  int H_ref = 1000;
+  int H = 800;
+  float T = 0.10*H_ref;
+  float B = 0.12*H_ref;
+  float L = 0.16*W_ref;
+  float R = 0.08*W_ref;
+
+  TCanvas *c1 = new TCanvas(hstack->GetTitle(),hstack->GetTitle(),10,10,W,H);
+  c1->SetFillColor(0);
+  c1->SetBorderMode(0);
+  c1->SetFrameFillStyle(0);
+  c1->SetFrameBorderMode(0);
+  c1->SetLeftMargin( L/W );
+  c1->SetRightMargin( R/W );
+  c1->SetTopMargin( T/H );
+  c1->SetBottomMargin( B/H );
+
+  c1->cd();
+  hstack->Draw();
+  c1->Clear("D");
+  gStyle->SetHistTopMargin(0.);
+
+  hstack->GetYaxis()->SetRangeUser(0.001, 1.001);
+  if(hstack->GetXaxis()->GetNbins() < 5) hstack->GetXaxis()->SetNdivisions(205);
+  if(hstack->GetXaxis()->GetNbins() > 10) hstack->GetXaxis()->SetNdivisions(505);
+  if(hstack->GetXaxis()->GetNbins() > 100) hstack->GetXaxis()->SetNdivisions(510);
+  hstack->GetXaxis()->SetTitle(xtitle);
+  hstack->GetYaxis()->SetTitle(ytitle);
+  hstack->Draw("hist");
+
+  hstack->GetXaxis()->SetTitleSize(0.06);
+  hstack->GetXaxis()->SetTitleOffset(1.2);
+
+  char tempname[200];
+  TLegend* catLeg1 = new TLegend(.20,.19,.52,.45);
+  catLeg1->SetTextSize(0.038);
+  catLeg1->SetTextFont(42);
+  catLeg1->SetFillColor(0);
+  catLeg1->SetLineColor(1);
+  catLeg1->SetBorderSize(1);
+
+  if(muon) sprintf(tempname,"Lost-muon events");
+  else sprintf(tempname,"Lost-electron events");
+  catLeg1->SetHeader(tempname);
+
+  THStack* hstackCopy = (THStack*) hstack->Clone(TString(hstack->GetTitle())+TString("_copy"));
+  int cl = 0;
+  for(const auto&& obj: *hstackCopy->GetHists()){
+    //((TH1D*) obj)->SetFillColor(kGray);
+    //((TH1D*) obj)->SetFillStyle(3244);
+    if(cl == 0) sprintf(tempname,"Out of acceptance");
+    if(cl == 1) sprintf(tempname,"Not identified");
+    if(cl == 2) sprintf(tempname,"Not isolated");
+    catLeg1->AddEntry(((TH1D*) obj),tempname);
+    cl++;
+  }  
+  //hstackCopy->Draw("e2,same");
+
+  double lumi = 35.9;
+  TString line = "";
+  sprintf(tempname,"%8.1f",lumi);
+  line+=tempname;
+  line+=" fb^{-1} (13 TeV)";
+  
+  int iPeriod = 0;
+  int iPos = 0;
+    
+  TString lumi_sqrtS = line;
+
+  writeExtraText = true;
+  extraOverCmsTextSize = 0.6;
+  extraText   = "        Simulation ";
+
+  lumiTextSize = 0.4;
+  cmsTextSize = 0.6;
+
+  //relX1 = 0.16;
+  relX1 = -0.16;
+  relX2 = 0.22;
+  //relX3 = 0.97;
+  relX3 = 0.91;
+
+  CMS_lumi(c1, iPeriod, iPos, lumi_sqrtS);
+
+  catLeg1->Draw();
+
+  c1->SaveAs("Ratios/"+name+".pdf");
+  delete c1;
+  gROOT->SetBatch(false);
 }
 
 void SaveClosure(TH1D* prediction, TH1D* expectation, TDirectory* Folder) // prediction durch expectation
@@ -602,6 +771,21 @@ void setBranchesExpectation(TTree* tree){
 
   tree->SetBranchStatus("bTagProb",1);
   tree->SetBranchAddress("bTagProb",&bTagProb);
+
+  tree->SetBranchStatus("muIso",1);
+  tree->SetBranchAddress("muIso",&muIso);
+  tree->SetBranchStatus("muReco",1);
+  tree->SetBranchAddress("muReco",&muReco);
+  tree->SetBranchStatus("muAcc",1);
+  tree->SetBranchAddress("muAcc",&muAcc);
+
+  tree->SetBranchStatus("elecIso",1);
+  tree->SetBranchAddress("elecIso",&elecIso);
+  tree->SetBranchStatus("elecReco",1);
+  tree->SetBranchAddress("elecReco",&elecReco);
+  tree->SetBranchStatus("elecAcc",1);
+  tree->SetBranchAddress("elecAcc",&elecAcc);
+
 }
 
 void setBranchesPrediction(TTree *tree, bool isData){

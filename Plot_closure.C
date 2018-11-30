@@ -5,7 +5,7 @@
 #include <TStyle.h>
 #include <vector>
 #include <cstdio>
-#include <tdrstyle2.C>
+#include "tdrstyle2.C"
 #include "CMS_lumi.C"
 
 using namespace std;
@@ -58,7 +58,7 @@ root.exe -b -q 'Plot_closure.C("J46_HT5001200_MHT500750","DelPhi4","stacked","El
 
 // option="ExpVsPre" (= closure)
 // option="ExpVsCS"
-void Plot_closure(string cutname="baseline", string histname="MHT",string option="ExpVsPre",bool zoom=true, bool debug=false){
+void Plot_closure(string cutname="baseline", string histname="search",string option="ExpVsCS",bool zoom=true, bool debug=false){
 
   //
   ///////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ void Plot_closure(string cutname="baseline", string histname="MHT",string option
   float T = 0.10*H_ref;
   float B = 0.06*H_ref;
   float L = 0.16*W_ref;
-  float R = 0.08*W_ref;
+  float R = 0.8*W_ref;
 
   //
   // Various vertical line coordinates
@@ -120,21 +120,21 @@ void Plot_closure(string cutname="baseline", string histname="MHT",string option
   char xtitlename[200];
   char ytitlename[200];
   
-  sprintf(tempname,"LLPrediction.root");
+  sprintf(tempname,"LLPrediction_Plotting.root");
   TFile * LLFile = new TFile(tempname,"R");
   printf("Opened %s\n",tempname);
 
   //
   // Define legend
   //
-  Float_t legendX1 = .55; //.50;
+  Float_t legendX1 = .50; //.50;
   Float_t legendX2 = .93; //.70;
   Float_t legendY1 = .73; //.65;
   Float_t legendY2 = .91;
 
 
   TLegend* catLeg1 = new TLegend(legendX1,legendY1,legendX2,legendY2);
-  catLeg1->SetTextSize(0.038);
+  catLeg1->SetTextSize(0.042);
   catLeg1->SetTextFont(42);
   catLeg1->SetFillColor(0);
   catLeg1->SetLineColor(1);
@@ -169,7 +169,7 @@ void Plot_closure(string cutname="baseline", string histname="MHT",string option
   double dw_correction = 1.25; // please tune so that the smaller canvas size will work in your environment
   double font_size_dw  = 0.1;  // please tune the font size parameter for bottom figure
   double dw_height     = (1. - up_height) * dw_correction;
-  double dw_height_offset = 0.04; // KH, added to put the bottom one closer to the top panel
+  double dw_height_offset = 0.042; // KH, added to put the bottom one closer to the top panel
  
   // set pad size
   canvas_up->SetPad(0., 1 - up_height,    1., 0.94);
@@ -179,10 +179,14 @@ void Plot_closure(string cutname="baseline", string histname="MHT",string option
   canvas_up->SetFillColor(0);
   canvas_dw->SetFillColor(0);
   canvas_dw->SetFrameFillColor(0);
-  canvas_dw->SetBottomMargin(0.3);
+  canvas_dw->SetBottomMargin(0.4);
   
   // set top margin 0 for bottom figure
   canvas_dw->SetTopMargin(0);
+  
+  // make sure that axis labels are not cut off
+  canvas_up->SetRightMargin(0.04);
+  canvas_dw->SetRightMargin(0.04);
   
   // draw top figure
   canvas_up->cd();
@@ -228,7 +232,7 @@ void Plot_closure(string cutname="baseline", string histname="MHT",string option
     EstHist=(TH1D*) dExp->Get("totalExpCombined_LL_MC")->Clone();
     sprintf(tempname,"total%sCombined_LL_MC",tempnameString.data());
     GenHist=(TH1D*) dPre->Get(tempname)->Clone();
-    sprintf(xtitlename,"search bins");
+    sprintf(xtitlename,"Search region bin number");
     sprintf(ytitlename,"Events");
     GenHist->SetMaximum(2000);
     GenHist->SetMinimum(0.);
@@ -260,7 +264,7 @@ void Plot_closure(string cutname="baseline", string histname="MHT",string option
     //y_legend = 500.;
     ymax_top = 300000.;
     ymin_top = 0.2;
-    sprintf(xtitlename,"#slash{H}_{T} [GeV]");
+    sprintf(xtitlename,"H_{T}^{miss} [GeV]");
     sprintf(ytitlename,"Events / 125 GeV");
     GenHist->SetMaximum(ymax_top);
     GenHist->SetMinimum(ymin_top);
@@ -414,8 +418,8 @@ void Plot_closure(string cutname="baseline", string histname="MHT",string option
   //GenHist->GetYaxis()->SetLabelOffset(0.007);
   //GenHist->GetYaxis()->SetLabelSize(0.04);
   GenHist->GetYaxis()->SetLabelSize(0.045*1.15);
-  GenHist->GetYaxis()->SetTitleSize(0.06*1.15*0.7);
-  GenHist->GetYaxis()->SetTitleOffset(1.5);
+  GenHist->GetYaxis()->SetTitleSize(0.06*1.15*0.7*1.2);
+  GenHist->GetYaxis()->SetTitleOffset(1.2);
   GenHist->GetYaxis()->SetTitleFont(42);
 
   //EstHist->GetXaxis()->SetLabelFont(42);
@@ -488,9 +492,9 @@ void Plot_closure(string cutname="baseline", string histname="MHT",string option
   }else if(option.find("ExpVsCS")!=string::npos){
     sprintf(tempname,"Lost-lepton background");
     catLeg1->SetHeader(tempname);
-    sprintf(tempname,"MC: lost-lepton events");
+    sprintf(tempname,"MC: control region (e+#mu)");
     catLeg1->AddEntry(GenHist,tempname,"pe");
-    sprintf(tempname,"MC: control sample (e+#mu)");
+    sprintf(tempname,"MC: lost-lepton events");
     catLeg1->AddEntry(EstHist,tempname);
   }
   catLeg1->Draw();
@@ -540,7 +544,7 @@ void Plot_closure(string cutname="baseline", string histname="MHT",string option
       TLine *tline = 0;
 
       if(histname=="search"){
-        sprintf(xtitlename,"Search bin");
+        sprintf(xtitlename,"Search region bin number");
         numerator->GetXaxis()->SetRangeUser(search_x_min,search_x_max);
         tline = new TLine(search_x_min,1.,search_x_max,1.);
       }
@@ -550,7 +554,7 @@ void Plot_closure(string cutname="baseline", string histname="MHT",string option
         tline = new TLine(HT_x_min,1.,HT_x_max,1.);
       }
       if(histname=="MHT"){
-        sprintf(xtitlename,"#slash{H}_{T} [GeV]");
+        sprintf(xtitlename,"H_{T}^{miss} [GeV]");
         numerator->GetXaxis()->SetRangeUser(MHT_x_min,MHT_x_max);
         tline = new TLine(MHT_x_min,1.,MHT_x_max,1.);
       }   
@@ -602,25 +606,25 @@ void Plot_closure(string cutname="baseline", string histname="MHT",string option
       //
       // Common to all bottom plots
       //
-      if(option.find("ExpVsPre")!=string::npos) sprintf(ytitlename,"#frac{Expectation}{Prediction} ");
-      if(option.find("ExpVsCS")!=string::npos) sprintf(ytitlename,"#frac{Expectation}{ControlSample} ");
+      if(option.find("ExpVsPre")!=string::npos) sprintf(ytitlename," #frac{Expectation}{Prediction} ");
+      if(option.find("ExpVsCS")!=string::npos) sprintf(ytitlename,"  #frac{ControlRegion}{SignalRegion}");
 
       numerator->SetMaximum(ymax_bottom);
       numerator->SetMinimum(ymin_bottom);
 
       // Setting style
       //numerator->SetMaximum(1.4);
-      //numerator->GetXaxis()->SetLabelFont(42);
+      numerator->GetXaxis()->SetLabelFont(42);
       numerator->GetXaxis()->SetLabelOffset(0.03);
-      //numerator->GetXaxis()->SetLabelSize(0.04);
-      numerator->GetXaxis()->SetTitleSize(0.12);
+      numerator->GetXaxis()->SetLabelSize(0.12);
+      numerator->GetXaxis()->SetTitleSize(0.16);
       numerator->GetXaxis()->SetTitleOffset(1.2);
       numerator->GetXaxis()->SetTitleFont(42);
-      //numerator->GetYaxis()->SetLabelFont(42);
-      //numerator->GetYaxis()->SetLabelOffset(0.007);
-      //numerator->GetYaxis()->SetLabelSize(0.04);
-      numerator->GetYaxis()->SetTitleSize(0.13);
-      numerator->GetYaxis()->SetTitleOffset(0.5);
+      numerator->GetYaxis()->SetLabelFont(42);
+      numerator->GetYaxis()->SetLabelOffset(0.007);
+      numerator->GetYaxis()->SetLabelSize(0.11);
+      numerator->GetYaxis()->SetTitleSize(0.12);
+      numerator->GetYaxis()->SetTitleOffset(0.6);
       numerator->GetYaxis()->SetTitleFont(42);
 
       numerator->GetXaxis()->SetTitle(xtitlename);
@@ -652,7 +656,7 @@ void Plot_closure(string cutname="baseline", string histname="MHT",string option
   //}
   
 
-        TString line = "";
+  TString line = "";
   sprintf(tempname,"%8.1f",lumi);
   line+=tempname;
   line+=" fb^{-1} (13 TeV)";

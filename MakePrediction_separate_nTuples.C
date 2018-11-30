@@ -85,11 +85,11 @@ void MakePrediction_separate_nTuples()
   for(Int_t i=0; i<nChains; i++){ // i<nChains
     std::cout<<"Processing Tree: "<<i<<std::endl;
     if(i>2){ //2
-      Effchain[i]->Process("Prediction_isoTrackFact", TString::Format("Prediction_separate/Prediction_%d.root",i)); // folder already has to exist for the time beeing...
+      Effchain[i]->Process("Prediction_isoTrackFact", TString::Format("/nfs/dust/cms/user/kurzsimo/LostLeptonExpectation_bTagPlotting/separate_nTuple/Prediction_%d.root",i)); // folder already has to exist for the time beeing...
       //Effchain[i]->Process("Prediction_isoTrackFact", TString::Format("Prediction_separate/Prediction_%d_1.root",i), 1000000, 0);
       //Effchain[i]->Process("Prediction_isoTrackFact", TString::Format("Prediction_separate/Prediction_%d_2.root",i), TChain::kBigNumber, 1000001);
     }else{
-      Effchain[i]->Process("Prediction_isoTrackFact", TString::Format("Prediction_separate/Prediction_%d.root, 600",i));
+      Effchain[i]->Process("Prediction_isoTrackFact", TString::Format("/nfs/dust/cms/user/kurzsimo/LostLeptonExpectation_bTagPlotting/separate_nTuple/Prediction_%d.root, 600",i));
       //Effchain[i]->Process("Prediction_isoTrackFact", TString::Format("Prediction_separate/Prediction_%d_1.root, 600",i), 1000000, 0);
       //Effchain[i]->Process("Prediction_isoTrackFact", TString::Format("Prediction_separate/Prediction_%d_2.root, 600",i), TChain::kBigNumber, 1000001);
     }

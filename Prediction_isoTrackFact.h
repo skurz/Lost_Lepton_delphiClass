@@ -37,7 +37,7 @@ const bool runOnSignalMC = false;  //<-check------------------------
 
 // Only needed if running on full nTuples not on Skims (bTag reweighting)
 // Does not matter for Data
-const bool runOnNtuples = false;
+const bool runOnNtuples = true;
 const string path_toSkims("/nfs/dust/cms/user/kurzsimo/LostLepton/skims_v12/SLe/tree_");
 
 // Useful for T2tt corridor studies
@@ -48,7 +48,7 @@ const bool topPTreweight = false;
 
 // Fill event seperately to the tree for each bTag multiplicity (size x4!). Mainly useful for plotting
 // Not fully implemented yet! Only working for CS not for prediction!
-const bool fillEventSeperateBTags = false;
+const bool fillEventSeperateBTags = true;
 
 // For testing only: force application of SFs in MC
 const bool forceSFs = false;

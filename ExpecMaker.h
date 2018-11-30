@@ -72,7 +72,7 @@ const bool doBTagCorrFastSim = false;
 
 // Fill event seperately to the tree for each bTag multiplicity (size x4!). Mainly useful for plotting
 // Not fully implemented yet! Only working for SR not for prediction!
-const bool fillEventSeperateBTags = false;
+const bool fillEventSeperateBTags = true;
 
 
 // scaleMet = 0: keep things the way they are
@@ -198,6 +198,7 @@ public :
   UShort_t ExpectationReductionIsoTrack;
   UShort_t GenMuonsNum_, GenElectronsNum_, GenTausNum_;
   Float_t GenMuonsPt, GenElectronsPt, GenMuonsEta, GenElectronsEta;
+  Float_t MuonsPt, ElectronsPt, MuonsEta, ElectronsEta;
   UShort_t muIso, muReco, muAcc, muMTW, muTotal;
   UShort_t elecIso, elecReco, elecAcc;
   std::vector<UShort_t> muIsoTrackMatchedToGenMu, elecIsoTrackMatchedToGenMu, pionIsoTrackMatchedToGenMu;

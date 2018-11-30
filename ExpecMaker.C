@@ -104,6 +104,11 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
     tExpectation_->Branch("ExpectationDiLep",&ExpectationDiLep_);
     tExpectation_->Branch("MuDiLepControlSample",&MuDiLepControlSample_);
     tExpectation_->Branch("ElecDiLepControlSample",&ElecDiLepControlSample_);
+  }else{
+    tExpectation_->Branch("MuonsPt",&MuonsPt);
+    tExpectation_->Branch("MuonsEta",&MuonsEta);
+    tExpectation_->Branch("ElectronsPt",&ElectronsPt);
+    tExpectation_->Branch("ElectronsEta",&ElectronsEta);
   }
 
   if(doTAPtrees){
@@ -134,21 +139,21 @@ void ExpecMaker::SlaveBegin(TTree * /*tree*/)
     tExpectation_->Branch("TAPPionTracks_charge", &TAPPionTracks_charge);
     tExpectation_->Branch("TAPPionTracks_mT", &TAPPionTracks_mT);
     tExpectation_->Branch("TAPPionTracks_trkiso", &TAPPionTracks_trkiso);
-    tExpectation_->Branch("GenElectrons_fromTau", &GenElectrons_fromTau);
-    tExpectation_->Branch("GenElectrons_RecoTrkAct", &GenElectrons_RecoTrkAct);
-    tExpectation_->Branch("GenElectrons_RecoTrkd3", &GenElectrons_RecoTrkd3);
-    tExpectation_->Branch("GenElectrons_RecoTrkIso", &GenElectrons_RecoTrkIso);
-    tExpectation_->Branch("GenMuons_fromTau", &GenMuons_fromTau);
-    tExpectation_->Branch("GenMuons_RecoTrkAct", &GenMuons_RecoTrkAct);
-    tExpectation_->Branch("GenMuons_RecoTrkd3", &GenMuons_RecoTrkd3);
-    tExpectation_->Branch("GenMuons_RecoTrkIso", &GenMuons_RecoTrkIso);
-    tExpectation_->Branch("GenTaus_had", &GenTaus_had);
-    tExpectation_->Branch("GenTaus_LeadRecoTrkAct", &GenTaus_LeadRecoTrkAct);
-    tExpectation_->Branch("GenTaus_LeadRecoTrkd3", &GenTaus_LeadRecoTrkd3);
-    tExpectation_->Branch("GenTaus_LeadRecoTrkIso", &GenTaus_LeadRecoTrkIso);
-    tExpectation_->Branch("GenTaus_LeadTrk", "std::vector<TLorentzVector>", &GenTaus_LeadTrk, 32000, 0);
-    tExpectation_->Branch("GenTaus_NProngs", &GenTaus_NProngs);
-    tExpectation_->Branch("GenTaus_Nu", "std::vector<TLorentzVector>", &GenTaus_Nu, 32000, 0);
+    // tExpectation_->Branch("GenElectrons_fromTau", &GenElectrons_fromTau);
+    // tExpectation_->Branch("GenElectrons_RecoTrkAct", &GenElectrons_RecoTrkAct);
+    // tExpectation_->Branch("GenElectrons_RecoTrkd3", &GenElectrons_RecoTrkd3);
+    // tExpectation_->Branch("GenElectrons_RecoTrkIso", &GenElectrons_RecoTrkIso);
+    // tExpectation_->Branch("GenMuons_fromTau", &GenMuons_fromTau);
+    // tExpectation_->Branch("GenMuons_RecoTrkAct", &GenMuons_RecoTrkAct);
+    // tExpectation_->Branch("GenMuons_RecoTrkd3", &GenMuons_RecoTrkd3);
+    // tExpectation_->Branch("GenMuons_RecoTrkIso", &GenMuons_RecoTrkIso);
+    // tExpectation_->Branch("GenTaus_had", &GenTaus_had);
+    // tExpectation_->Branch("GenTaus_LeadRecoTrkAct", &GenTaus_LeadRecoTrkAct);
+    // tExpectation_->Branch("GenTaus_LeadRecoTrkd3", &GenTaus_LeadRecoTrkd3);
+    // tExpectation_->Branch("GenTaus_LeadRecoTrkIso", &GenTaus_LeadRecoTrkIso);
+    // tExpectation_->Branch("GenTaus_LeadTrk", "std::vector<TLorentzVector>", &GenTaus_LeadTrk, 32000, 0);
+    // tExpectation_->Branch("GenTaus_NProngs", &GenTaus_NProngs);
+    // tExpectation_->Branch("GenTaus_Nu", "std::vector<TLorentzVector>", &GenTaus_Nu, 32000, 0);
   }
 
     if(doIsoTrackStudies){
@@ -199,6 +204,14 @@ Bool_t ExpecMaker::Process(Long64_t entry)
     GenMuonsPt = GenMuons->at(0).Pt();
     GenMuonsEta = GenMuons->at(0).Eta();
   }
+  if(ElectronsNum_>0){
+    ElectronsPt = Electrons->at(0).Pt();
+    ElectronsEta = Electrons->at(0).Eta();
+  }
+  if(MuonsNum_>0){
+    MuonsPt = Muons->at(0).Pt();
+    MuonsEta = Muons->at(0).Eta();
+  }
 /*
   if(GenElectronsNum_>0){
   	if(GenElectronsPt > 300){
@@ -220,6 +233,9 @@ Bool_t ExpecMaker::Process(Long64_t entry)
   if(useDeltaPhiCut == -1) if(!(DeltaPhi1 < deltaPhi1_ || DeltaPhi2 < deltaPhi2_ || DeltaPhi3 < deltaPhi3_ || DeltaPhi4 < deltaPhi4_)) return kTRUE;
 
   if(applyFilters_ &&  !FiltersPass() ) return kTRUE;
+
+  //if(GenMuonsNum_ + MuonsNum_ > 0) return kTRUE;
+  //if(GenElectronsNum_ + ElectronsNum_ > 0) return kTRUE;
 
   Bin_ = SearchBins_->GetBinNumber(HT,MHT,NJets,BTags);
   BinQCD_ = SearchBinsQCD_->GetBinNumber(HT,MHT,NJets,BTags);

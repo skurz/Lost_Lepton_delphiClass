@@ -28,8 +28,13 @@ using std::cerr;
 using std::endl;
 const bool doBtagProbabilities = true;
 
+// Only use for that purpose! Turn of if actually doing background prediction
+const bool nicePublication = true;
+
 // Do some additional plots, like composition of LL background, isotrack pT distribution...
 const bool doAdditionalPlots = true;
+const bool doPlotsForSam = false;
+const bool doTAPplots = true;
 
 // Muon tracking inefficiency
 const TString path_muonTrk("SFs_Moriond17/Tracking_EfficienciesAndSF_BCDEFGH.root");
@@ -63,6 +68,8 @@ const int oneDPTRel_=7;
 double OneDPTRel_[oneDPTRel_]={0, 0.2 ,0.4 ,0.6 ,0.8 ,1.0 , 10.0};
 const int oneDPT_=24;
 double OneDPT_[oneDPT_]={10,11,12,13.5,15,17.5,20,25,30,40,50,60,70,80,90,100,120,140,170,200,250,300,400,10000};
+const int oneDPTtrk_=29;
+double OneDPTtrk_[oneDPTtrk_]={5,6,7,8,9,10,11,12,13.5,15,17.5,20,25,30,40,50,60,70,80,90,100,120,140,170,200,250,300,400,10000};
 const int oneDActivity_=11;
 double OneDActivity_[oneDActivity_]={0, 0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.4, 0.6, 1., 100.};
 const int oneDEtaElec_=11;
@@ -88,6 +95,8 @@ const int twoDPTRel_=7;
 double TwoDPTRel_[twoDPTRel_]={0, 0.2, 0.4, 0.6, 0.8, 1.0, 10.0};
 const int twoDPT_=8;
 double TwoDPT_[twoDPT_]={10,12.5,15,20,30,50,80,10000};
+const int twoDPTlow_=10;
+double TwoDPTlow_[twoDPTlow_]={5,7.5,10,12.5,15,20,30,50,80,10000};
 //const int twoDPT_=12;
 //double TwoDPT_[twoDPT_]={10,12.5,15,20,25,30,35,40,50,60,90,10000};
 const int twoDActivity_=11;
@@ -124,6 +133,21 @@ double ThreeDMHT_coarse_[threeDMHT_coarse_] = {250,300,350,500,750,10000};
 const int threeDMHT_bin_=6;
 double ThreeDMHT_bin_[threeDMHT_bin_] = {250,300,350,500,750,10000};
 
+// Sam
+const double maxDeltaRGenToRecoMu_ =0.3;
+const double maxDiffPtGenToRecoMu_ =0.5;
+const double maxDeltaRRecoToIsoMu_ =0.1;
+const double maxDiffPtRecoToIsoMu_ =0.1;
+const double maxDeltaRIsoToGenMu_ = 0.3;
+const double maxDiffPtIsoToGenMu_ = 0.5;
+
+const double maxDeltaRGenToRecoElec_ =0.3;
+const double maxDiffPtGenToRecoElec_ =0.3;
+const double maxDeltaRRecoToIsoElec_ =0.1;
+const double maxDiffPtRecoToIsoElec_ =0.1;
+const double maxDeltaRIsoToGenElec_ = 0.3;
+const double maxDiffPtIsoToGenElec_ = 0.3;
+
 
 class EffMaker : public TSelector {
  public :
@@ -136,6 +160,25 @@ class EffMaker : public TSelector {
 
   TString fileName;
   SearchBins* SearchBins_ = 0;
+
+  // Some additional stuff for thesis
+  TH2Eff *TrackIsolationPTActivity_;
+  TH2Eff *MuTrackIsolationPTActivity_;
+  TH2Eff *ElecTrackIsolationPTActivity_;
+  TH2Eff *PionTrackIsolationPTActivity_;
+
+  TH2Eff *IsoTrackFractionPTActivity_;
+  TH2Eff *MuIsoTrackFractionPTActivity_;
+  TH2Eff *ElecIsoTrackFractionPTActivity_;
+  TH2Eff *PionIsoTrackFractionPTActivity_;
+
+  // Some plots for Sam
+  TH2Eff *recoLepOverAccMu;
+  TH2Eff *recoTrackOverAccMu;
+  TH2Eff *recoOverAccMu;
+  TH2Eff *recoLepOverAccEl;
+  TH2Eff *recoTrackOverAccEl;
+  TH2Eff *recoOverAccEl;
 
   // NEW
   TH1Eff *MuAccSearchBins_;
@@ -165,6 +208,12 @@ class EffMaker : public TSelector {
 
   TH1Eff *MuDiLepSRwoVetoSearchBins_;
   TH1Eff *ElecDiLepSRwoVetoSearchBins_;
+
+  TH1Eff *MuDiLepSRSearchBinsEff_;
+  TH1Eff *ElecDiLepSRSearchBinsEff_;
+
+  TH1Eff *MuDiLepSRwoVetoSearchBinsEff_;
+  TH1Eff *ElecDiLepSRwoVetoSearchBinsEff_;
 
 
   TH1Eff *MuIsoTrackVetoSearchBinsLowPt_;
@@ -803,6 +852,34 @@ class EffMaker : public TSelector {
   TH2Eff *ElecDiLepSRwoVetoMHTNJets_;
   TH2Eff *ElecDiLepSRwoVetoNJetsBTags_;
   
+  TH1Eff *MuDiLepSRBTagEff_;
+  TH1Eff *MuDiLepSRNJetsEff_;
+  TH1Eff *MuDiLepSRHTEff_;
+  TH1Eff *MuDiLepSRMHTEff_;
+  TH2Eff *MuDiLepSRMHTNJetsEff_;
+  TH2Eff *MuDiLepSRNJetsBTagsEff_;
+  
+  TH1Eff *ElecDiLepSRBTagEff_;
+  TH1Eff *ElecDiLepSRNJetsEff_;
+  TH1Eff *ElecDiLepSRHTEff_;
+  TH1Eff *ElecDiLepSRMHTEff_;
+  TH2Eff *ElecDiLepSRMHTNJetsEff_;
+  TH2Eff *ElecDiLepSRNJetsBTagsEff_;
+
+  TH1Eff *MuDiLepSRwoVetoBTagEff_;
+  TH1Eff *MuDiLepSRwoVetoNJetsEff_;
+  TH1Eff *MuDiLepSRwoVetoHTEff_;
+  TH1Eff *MuDiLepSRwoVetoMHTEff_;
+  TH2Eff *MuDiLepSRwoVetoMHTNJetsEff_;
+  TH2Eff *MuDiLepSRwoVetoNJetsBTagsEff_;
+  
+  TH1Eff *ElecDiLepSRwoVetoBTagEff_;
+  TH1Eff *ElecDiLepSRwoVetoNJetsEff_;
+  TH1Eff *ElecDiLepSRwoVetoHTEff_;
+  TH1Eff *ElecDiLepSRwoVetoMHTEff_;
+  TH2Eff *ElecDiLepSRwoVetoMHTNJetsEff_;
+  TH2Eff *ElecDiLepSRwoVetoNJetsBTagsEff_;
+  
 
   // single isolated track from mu or electron
   TH1Eff *ExpectationReductionIsoTrackBTagEff_;
@@ -847,6 +924,7 @@ class EffMaker : public TSelector {
   TH2Eff *MuIsoTrackReductionMHTNJets_;
   TH2Eff *MuIsoTrackReductionBTagNJets_;
   TH2Eff *MuIsoTrackReductionPTActivity_;
+
   TH2Eff *MuIsoTrackReductionHTMHT_NJets24_;
   TH2Eff *MuIsoTrackReductionHTMHT_NJets56_;
   TH2Eff *MuIsoTrackReductionHTMHT_NJets7Inf_;
@@ -877,6 +955,7 @@ class EffMaker : public TSelector {
   TH2Eff *ElecIsoTrackReductionMHTNJets_;
   TH2Eff *ElecIsoTrackReductionBTagNJets_;
   TH2Eff *ElecIsoTrackReductionPTActivity_;
+
   TH2Eff *ElecIsoTrackReductionHTMHT_NJets24_;
   TH2Eff *ElecIsoTrackReductionHTMHT_NJets56_;
   TH2Eff *ElecIsoTrackReductionHTMHT_NJets7Inf_;
@@ -914,6 +993,7 @@ class EffMaker : public TSelector {
   TH2Eff *PionIsoTrackReductionMHTNJets_;
   TH2Eff *PionIsoTrackReductionBTagNJets_;
   TH2Eff *PionIsoTrackReductionPTActivity_;
+
   TH2Eff *PionIsoTrackReductionHTMHT_NJets24_;
   TH2Eff *PionIsoTrackReductionHTMHT_NJets56_;
   TH2Eff *PionIsoTrackReductionHTMHT_NJets7Inf_;
@@ -927,6 +1007,11 @@ class EffMaker : public TSelector {
 
 
   // Additional Plots
+  TH1D *MuIsoTrackVetoPt_;
+  TH1D *ElecIsoTrackVetoPt_;
+  TH1D *PionIsoTrackVetoPt_;
+  TH1D *IsoTrackVetoPt_;
+
   TH1D *MuIsoTrackVetoPtAcc_;
   TH1D *ElecIsoTrackVetoPtAcc_;
   TH1D *PionIsoTrackVetoPtAcc_;
@@ -1127,6 +1212,25 @@ class EffMaker : public TSelector {
   UShort_t        ElecDiLepControlSample;
   Double_t        cosDTT;
 
+  Int_t TAPElectronTracksNum;
+  vector<TLorentzVector> *TAPElectronTracks = 0;
+  vector<double>  *TAPElectronTracks_activity = 0;
+  vector<int>     *TAPElectronTracks_charge = 0;
+  vector<double>  *TAPElectronTracks_mT = 0;
+  vector<double>  *TAPElectronTracks_trkiso = 0;
+  Int_t TAPMuonTracksNum;
+  vector<TLorentzVector> *TAPMuonTracks = 0;
+  vector<double>  *TAPMuonTracks_activity = 0;
+  vector<int>     *TAPMuonTracks_charge = 0;
+  vector<double>  *TAPMuonTracks_mT = 0;
+  vector<double>  *TAPMuonTracks_trkiso = 0;
+  Int_t TAPPionTracksNum;
+  vector<TLorentzVector> *TAPPionTracks = 0;
+  vector<double>  *TAPPionTracks_activity = 0;
+  vector<int>     *TAPPionTracks_charge = 0;
+  vector<double>  *TAPPionTracks_mT = 0;
+  vector<double>  *TAPPionTracks_trkiso = 0;
+
   // List of branches
   TBranch        *b_EvtNum=0;   //!
   TBranch        *b_HT=0;   //!
@@ -1201,6 +1305,22 @@ class EffMaker : public TSelector {
   TBranch        *b_MuDiLepControlSample=0;   //!
   TBranch        *b_ElecDiLepControlSample=0;   //!
   TBranch        *b_cosDTT=0;   //!
+  TBranch        *b_TAPElectronTracks=0;   //!
+  TBranch        *b_TAPElectronTracks_activity=0;   //!
+  TBranch        *b_TAPElectronTracks_charge=0;   //!
+  TBranch        *b_TAPElectronTracks_mT=0;   //!
+  TBranch        *b_TAPElectronTracks_trkiso=0;   //!
+  TBranch        *b_TAPMuonTracks=0;   //!
+  TBranch        *b_TAPMuonTracks_activity=0;   //!
+  TBranch        *b_TAPMuonTracks_charge=0;   //!
+  TBranch        *b_TAPMuonTracks_mT=0;   //!
+  TBranch        *b_TAPMuonTracks_trkiso=0;   //!
+  TBranch        *b_TAPPionTracks=0;   //!
+  TBranch        *b_TAPPionTracks_activity=0;   //!
+  TBranch        *b_TAPPionTracks_charge=0;   //!
+  TBranch        *b_TAPPionTracks_mT=0;   //!
+  TBranch        *b_TAPPionTracks_trkiso=0;   //!
+
   
 
  EffMaker(TTree * /*tree*/ =0) : fChain(0) { }
@@ -1401,6 +1521,47 @@ void EffMaker::Init(TTree *tree)
   fChain->SetBranchAddress("cosDTT", &cosDTT, &b_cosDTT);
   fChain->SetBranchStatus("bTagProb",1);
   fChain->SetBranchAddress("bTagProb",&bTagProb);
+  if(doPlotsForSam){
+    fChain->SetBranchStatus("TAPMuonTracks",1);
+    fChain->SetBranchAddress("TAPMuonTracks",&TAPMuonTracks, &b_TAPMuonTracks);
+    fChain->SetBranchStatus("TAPElectronTracks",1);
+    fChain->SetBranchAddress("TAPElectronTracks",&TAPElectronTracks, &b_TAPElectronTracks);
+    fChain->SetBranchStatus("TAPPionTracks",1);
+    fChain->SetBranchAddress("TAPPionTracks",&TAPPionTracks, &b_TAPPionTracks);
+  }
+  if(doTAPplots){
+      fChain->SetBranchStatus("TAPElectronTracks", 1);
+      fChain->SetBranchStatus("TAPElectronTracks_activity", 1);
+      fChain->SetBranchStatus("TAPElectronTracks_charge", 1);
+      fChain->SetBranchStatus("TAPElectronTracks_mT", 1);
+      fChain->SetBranchStatus("TAPElectronTracks_trkiso", 1);
+      fChain->SetBranchStatus("TAPMuonTracks", 1);
+      fChain->SetBranchStatus("TAPMuonTracks_activity", 1);
+      fChain->SetBranchStatus("TAPMuonTracks_charge", 1);
+      fChain->SetBranchStatus("TAPMuonTracks_mT", 1);
+      fChain->SetBranchStatus("TAPMuonTracks_trkiso", 1);
+      fChain->SetBranchStatus("TAPPionTracks", 1);
+      fChain->SetBranchStatus("TAPPionTracks_activity", 1);
+      fChain->SetBranchStatus("TAPPionTracks_charge", 1);
+      fChain->SetBranchStatus("TAPPionTracks_mT", 1);
+      fChain->SetBranchStatus("TAPPionTracks_trkiso", 1);
+
+      fChain->SetBranchAddress("TAPElectronTracks", &TAPElectronTracks, &b_TAPElectronTracks);
+      fChain->SetBranchAddress("TAPElectronTracks_activity", &TAPElectronTracks_activity, &b_TAPElectronTracks_activity);
+      fChain->SetBranchAddress("TAPElectronTracks_charge", &TAPElectronTracks_charge, &b_TAPElectronTracks_charge);
+      fChain->SetBranchAddress("TAPElectronTracks_mT", &TAPElectronTracks_mT, &b_TAPElectronTracks_mT);
+      fChain->SetBranchAddress("TAPElectronTracks_trkiso", &TAPElectronTracks_trkiso, &b_TAPElectronTracks_trkiso);
+      fChain->SetBranchAddress("TAPMuonTracks", &TAPMuonTracks, &b_TAPMuonTracks);
+      fChain->SetBranchAddress("TAPMuonTracks_activity", &TAPMuonTracks_activity, &b_TAPMuonTracks_activity);
+      fChain->SetBranchAddress("TAPMuonTracks_charge", &TAPMuonTracks_charge, &b_TAPMuonTracks_charge);
+      fChain->SetBranchAddress("TAPMuonTracks_mT", &TAPMuonTracks_mT, &b_TAPMuonTracks_mT);
+      fChain->SetBranchAddress("TAPMuonTracks_trkiso", &TAPMuonTracks_trkiso, &b_TAPMuonTracks_trkiso);
+      fChain->SetBranchAddress("TAPPionTracks", &TAPPionTracks, &b_TAPPionTracks);
+      fChain->SetBranchAddress("TAPPionTracks_activity", &TAPPionTracks_activity, &b_TAPPionTracks_activity);
+      fChain->SetBranchAddress("TAPPionTracks_charge", &TAPPionTracks_charge, &b_TAPPionTracks_charge);
+      fChain->SetBranchAddress("TAPPionTracks_mT", &TAPPionTracks_mT, &b_TAPPionTracks_mT);
+      fChain->SetBranchAddress("TAPPionTracks_trkiso", &TAPPionTracks_trkiso, &b_TAPPionTracks_trkiso);
+  }
 
 }
 

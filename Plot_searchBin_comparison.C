@@ -31,23 +31,25 @@ void shift_bin(TH1* input, TH1* output){
 
 }
 
-void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string option="QCD"
+void Plot_searchBin_comparison(string option="", int pull=0){ // string option="QCD"
 
   // Use option="QCD" to produce plots in QCD binning
 
   char tempname[200];
+  char tempnameAvg[200];
   // Open root file
-  sprintf(tempname,"LLPrediction.root");
+  sprintf(tempname,"./../Lost_Lepton_delphiClass/LLPrediction.root");
+  sprintf(tempnameAvg,"/nfs/dust/cms/user/kurzsimo/Lost_Lepton_PUweights/Lost_Lepton_delphiClass/LLPrediction.root");
 
   // true: do closure test (MC prediction vs MC truth)
   // false: do data driven prediction and compare to MC truth
-  bool doDataVsMC = false;
+  bool doData = true;
 
   // Add systematics in quadrature to stat. uncertainty on prediction
   // Non-closure systematic not included yet!
   bool showSystematics = false;
 
-  bool doClosurewoIsoTrackVeto = true;
+  bool doClosurewoIsoTrackVeto = false;
 
   ///////////////////////////////////////////////////////////////////////////////////////////
   ////Some cosmetic work for official documents.
@@ -104,6 +106,9 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
 
   TFile * LLFile = new TFile(tempname,"R");
   printf("Opened %s\n",tempname);
+
+  TFile * LLFileAvg = new TFile(tempnameAvg,"R");
+  printf("Opened %s\n",tempnameAvg);
 
   //
   // Define legend
@@ -190,15 +195,15 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   double search_x_min=1.-0.5;
 
   TDirectory *dPre = 0;
-  TDirectory *dExp = (TDirectory*)LLFile->Get("Expectation");
+  TDirectory *dExp = (TDirectory*)LLFileAvg->Get("Prediction_data");
 
-  if(doDataVsMC){
+  if(doData){
     dPre = (TDirectory*)LLFile->Get("Prediction_data");
   }else{
     dPre = (TDirectory*)LLFile->Get("Prediction_MC");
   }  
 
-  if(doDataVsMC){    
+  if(doData){    
       EstHistTemp=(TH1D*) dPre->Get("totalPred_LL")->Clone();
       EstHistDTemp=(TH1D*) dPre->Get("totalPred_LL")->Clone();
   }else{
@@ -216,13 +221,13 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       GenHistTemp=(TH1D*) dExp->Get("totalExp_woIsoTrack_LL")->Clone();
       GenHistDTemp=(TH1D*) dExp->Get("totalExp_woIsoTrack_LL")->Clone();;
   }else{
-      GenHistTemp=(TH1D*) dExp->Get("totalExp_LL")->Clone();
-      GenHistDTemp=(TH1D*) dExp->Get("totalExp_LL")->Clone();
+      GenHistTemp=(TH1D*) dExp->Get("totalPred_LL")->Clone();
+      GenHistDTemp=(TH1D*) dExp->Get("totalPred_LL")->Clone();
   }
 
   if(showSystematics){
     TDirectory *dSys = (TDirectory*)LLFile->Get("AdditionalContent");
-    if(doDataVsMC){
+    if(doData){
       EstSystematics=(TH1D*) dSys->Get("totalPropSysUp_LL")->Clone();
     }else{
       EstSystematics=(TH1D*) dSys->Get("totalPropSysUp_LL_MC")->Clone();
@@ -313,8 +318,8 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   //GenHist_Normalize->GetListOfFunctions()->Add(ex1);
   GenHist_Normalize->DrawCopy("e");
 
-  EstHist->SetFillStyle(1001);
-  EstHist->SetFillColor(kRed-9);
+  EstHist->SetFillStyle(3144);
+  EstHist->SetFillColor(kRed-10);
   EstHist->SetMarkerStyle(20);
   EstHist->SetMarkerSize(0.0001);
   TH1D * EstHist_Normalize = static_cast<TH1D*>(EstHist->Clone("EstHist_Normalize"));
@@ -330,8 +335,8 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   EstHist_Normalize_Clone->SetFillColor(kWhite);
   EstHist_Normalize_Clone->Draw("esame");
 
-  //GenHist->Print("all");
-  //EstHist->Print("all");
+  GenHist->Print("all");
+  EstHist->Print("all");
   
   //
   // Re-draw to have "expectation" on top of "prediction"
@@ -348,9 +353,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   int iPos=0;
     
   writeExtraText = true;  
-  //if(doDataVsMC) extraText   = "        Preliminary";
-  //else extraText   = "        Simulation Preliminary";
-  if(doDataVsMC) extraText   = "       ";
+  if(doData) extraText   = "        Preliminary";
   else extraText   = "        Simulation";
   //float extraTextFont = 52;  // default is helvetica-italics
 
@@ -537,14 +540,14 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
   }
 
   // Legend & texts
-  sprintf(tempname,"Lost-lepton background");
+  if(doData) sprintf(tempname,"Prediction from data");
+  else sprintf(tempname,"Prediction from MC");
   catLeg1->SetHeader(tempname);
   //sprintf(tempname,"#tau_{hadronic} BG expectation (MC truth)");
-  sprintf(tempname,"Direct from simulation");
+  sprintf(tempname,"PU weights applied");
   catLeg1->AddEntry(GenHist,tempname,"pe");
   //sprintf(tempname,"Prediction from MC");
-  if(doDataVsMC) sprintf(tempname,"Prediction from data");
-  else sprintf(tempname,"Treat simulation like data");
+  sprintf(tempname,"No PU reweighting");
   catLeg1->AddEntry(EstHist,tempname);
   catLeg1->Draw();
 
@@ -582,16 +585,6 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       	  numerator_fullstaterr->Add(One_NoError,-1.);                        // Expectation/Prediction-1
 //      }
 
-      	double Rmax = 1., Rmin = 1., RerrMax = 1., RerrMin = 1.;
-        for (int ibin=1;ibin<=numerator->GetNbinsX();ibin++){
-        	double R = numerator->GetBinContent(ibin);
-        	double Rerr = numerator->GetBinError(ibin);
-        	if(R > Rmax) Rmax = R;
-        	if(R < Rmin) Rmin = R;
-        	if(R > 1 && R - Rerr > RerrMax) RerrMax = R - Rerr;
-        	if(R < 1 && R + Rerr < RerrMin) RerrMin = R + Rerr;
-		}
-		std::cout<<"Range of ratio ["<<Rmin<<";"<<Rmax<<"] -> including error bars ["<<RerrMin<<";"<<RerrMax<<"]"<<std::endl;
 
 
       // draw bottom figure
@@ -611,7 +604,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       // Common to all bottom plots
       //
       //sprintf(ytitlename,"#frac{Estimate - #tau_{had} BG}{#tau_{had} BG} ");
-      sprintf(ytitlename,"#frac{Direct}{Prediction} ");
+      sprintf(ytitlename,"#frac{PU}{no PU} ");
       numerator->SetMaximum(ymax_bottom);
       numerator->SetMinimum(ymin_bottom);
 
@@ -621,7 +614,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       // Setting style
       //numerator->SetMaximum(1.4);
       //numerator->GetXaxis()->SetLabelFont(42);
-      numerator->GetXaxis()->SetLabelOffset(0.03);
+      //numerator->GetXaxis()->SetLabelOffset(0.007);
       numerator->GetXaxis()->SetLabelSize(0.18*0.045/0.06);
       numerator->GetXaxis()->SetTitleSize(0.18);
       numerator->GetXaxis()->SetTitleOffset(0.9);
@@ -629,9 +622,9 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       //numerator->GetYaxis()->SetLabelFont(42);
       //numerator->GetYaxis()->SetLabelOffset(0.007);
       numerator->GetYaxis()->SetLabelSize(0.18*0.045/0.06);
-      numerator->GetYaxis()->SetTitleSize(0.18);
+      numerator->GetYaxis()->SetTitleSize(0.15);
       //numerator->GetYaxis()->SetTitleOffset(0.5);
-      numerator->GetYaxis()->SetTitleOffset(0.25);
+      numerator->GetYaxis()->SetTitleOffset(0.28);
       numerator->GetYaxis()->SetTitleFont(42);
 
       numerator->GetXaxis()->SetTitle(xtitlename);
@@ -643,7 +636,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       if (pull==1){
 
         //sprintf(ytitlename,"#frac{Exp - Pre}{Stat Error} ");
-        sprintf(ytitlename,"pull(Dir.#minusPred.)");
+        sprintf(ytitlename,"pull(TF/EbyE)");
         numerator_fullstaterr->SetMaximum(3.9);
         numerator_fullstaterr->SetMinimum(-3.9);
         
@@ -661,7 +654,7 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
           numerator_fullstaterr->SetBinError(ibin,0.);
         }
 
-        //numerator_fullstaterr->Print("all");
+        numerator_fullstaterr->Print("all");
         
         numerator_fullstaterr->GetXaxis()->SetLabelSize(font_size_dw);
         numerator_fullstaterr->GetXaxis()->SetTitleSize(font_size_dw);
@@ -711,9 +704,9 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
       ex1->Draw();
       numerator->DrawCopy("same");
 
-      //numerator->Print("all");
-      //denominator->Print("all");
-      //numerator_fullstaterr->Print("all");
+      numerator->Print("all");
+      denominator->Print("all");
+      numerator_fullstaterr->Print("all");
 
       //
       // Drawing lines
@@ -797,18 +790,18 @@ void Plot_searchBin_full_extended2016(string option="", int pull=0){ // string o
 
   CMS_lumi(canvas, iPeriod, iPos, lumi_sqrtS);
 
-  if(doDataVsMC){
-    sprintf(tempname,"DataMC_Full_Plot.pdf");
-    if (pull==1)    sprintf(tempname,"DataMCPull_Full_Plot.pdf");
+  if(doData){
+    sprintf(tempname,"Comparison_Data_Full_Plot.pdf");
+    if (pull==1)    sprintf(tempname,"Comparison_DataPull_Full_Plot.pdf");
   }else{
     if(doClosurewoIsoTrackVeto){
-      if(option.find("QCD")!=string::npos) sprintf(tempname,"Closure_QCD_HDP_woIsoTrack_Full_Plot.pdf");
-        else sprintf(tempname,"Closure_woIsoTrack_Full_Plot.pdf");
-      if (pull==1)    sprintf(tempname,"ClosurePull_woIsoTrack_Full_Plot.pdf");
+      if(option.find("QCD")!=string::npos) sprintf(tempname,"Comparison_QCD_HDP_woIsoTrack_Full_Plot.pdf");
+        else sprintf(tempname,"Comparison_woIsoTrack_Full_Plot.pdf");
+      if (pull==1)    sprintf(tempname,"ComparisonPull_woIsoTrack_Full_Plot.pdf");
     }else{
-      if(option.find("QCD")!=string::npos) sprintf(tempname,"Closure_QCD_HDP_Full_Plot.pdf");
-        else sprintf(tempname,"Closure_Full_Plot.pdf");
-      if (pull==1)    sprintf(tempname,"ClosurePull_Full_Plot.pdf");
+      if(option.find("QCD")!=string::npos) sprintf(tempname,"Comparison_QCD_HDP_Full_Plot.pdf");
+        else sprintf(tempname,"Comparison_Full_Plot.pdf");
+      if (pull==1)    sprintf(tempname,"ComparisonPull_Full_Plot.pdf");
     }
   }
 

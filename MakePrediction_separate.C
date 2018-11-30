@@ -103,8 +103,8 @@ void MakePrediction_separate()
   for(Int_t i=0; i<nChains; i++){ //i<nChains i>2
     std::cout<<"Processing Tree: "<<i<<std::endl;
     if(i>2)
-        Effchain[i]->Process("Prediction_isoTrackFact", TString::Format("Prediction_separate/Prediction_%d.root",i));
-    else    Effchain[i]->Process("Prediction_isoTrackFact", TString::Format("Prediction_separate/Prediction_%d.root, 600",i)); // folder already has to exist for the time beeing...
+        Effchain[i]->Process("Prediction_isoTrackFact", TString::Format("/nfs/dust/cms/user/kurzsimo/LostLeptonExpectation_bTagPlotting/separate/Prediction_%d.root",i));
+    else    Effchain[i]->Process("Prediction_isoTrackFact", TString::Format("/nfs/dust/cms/user/kurzsimo/LostLeptonExpectation_bTagPlotting/separate/Prediction_%d.root, 600",i)); // folder already has to exist for the time beeing...
     
   }
 }

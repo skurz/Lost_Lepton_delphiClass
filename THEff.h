@@ -19,6 +19,8 @@
 #include "TGraphAsymmErrors.h"
 #include <iostream>
 #include <iomanip> 
+#include <TStyle.h> 
+#include <TPaveText.h> 
 
 struct effVec{
 	double eff;
@@ -70,6 +72,9 @@ public:
 		PassTH1D_->SetTitle(title_);
 		TotalTH1D_->SetTitle(title_);
 	}
+	TH1D* GetTotalTH1(){
+		return TotalTH1D_;
+	}
 	void Fill(Double_t x, Double_t Weight, bool passOrFail);
 	void FillFrac(Double_t x, Double_t Weight, bool passOrFail);
 	void SaveEff(TDirectory* MainDirectory){ SaveEff(title_, MainDirectory); }
@@ -113,23 +118,62 @@ void TH1Eff::SaveEff(const char* title, TDirectory* MainDirectory, bool xlog, bo
 	TDirectory *effDir = (TDirectory*)MainDirectory->Get(name_);
 	effDir->cd();
 
+	TString TITLE(title);
+	while(!TITLE.BeginsWith(";")){
+		TITLE.Remove(0,1);
+	}
+
 	RatioTH1D_->Divide(PassTH1D_, TotalTH1D_, 1, 1, "B");
 	RatioTH1D_->SetName(name_);
-	RatioTH1D_->SetTitle(TString("Simulation, L=3 fb^{-1}, #sqrt{s}=13 TeV ") + TString(title));
-	RatioTH1D_->SetMarkerSize(2.0);
+	RatioTH1D_->SetTitle(TITLE);
   	RatioTH1D_->UseCurrentStyle();
+	RatioTH1D_->SetTitleOffset(0.9, "X");
+	RatioTH1D_->SetTitleOffset(0.8, "Y");
+	RatioTH1D_->SetTitleSize(0.06, "X");
+	RatioTH1D_->SetTitleSize(0.06, "Y");
+
+	RatioTH1D_->SetMarkerStyle(20);
+	RatioTH1D_->SetMarkerSize(0.8);
+
+	TPaveText *pt = new TPaveText(.15,.96,.35,.95, "NDC");
+	pt->SetBorderSize(0);
+	pt->SetFillColor(0);
+	pt->SetTextFont(42);
+	pt->SetTextAlign(31);
+	pt->SetTextSize(0.04);
+	pt->SetMargin(0.);
+	pt->AddText("Simulation");
+
+	TPaveText *pt2 = new TPaveText(.80,.96,.90,.95, "NDC");
+	pt2->SetBorderSize(0);
+	pt2->SetFillColor(0);
+	pt2->SetTextFont(42);
+	pt2->SetTextAlign(31);
+	pt2->SetTextSize(0.04);
+	pt2->SetMargin(0.);
+	pt2->AddText("(13 TeV)");
 
   	gROOT->SetBatch(true);	  
 	TCanvas *c1 = new TCanvas(name_,title_,1);
+	c1->SetTopMargin(0.06);
+	c1->SetBottomMargin(0.12);
+	c1->SetLeftMargin(0.12);
 	c1->cd();
-	if (xlog) {
+
+	if(xlog) {
 	  c1->SetLogx();
 	  RatioTH1D_->GetXaxis()->SetRangeUser(0.001, 10*RatioTH1D_->GetBinLowEdge(RatioTH1D_->GetNbinsX()+1));
 	}
 	if (ylog) c1->SetLogy();
 	if(RatioTH1D_->GetXaxis()->GetBinCenter(RatioTH1D_->GetXaxis()->GetNbins()) > 500) c1->SetLogx();
-	RatioTH1D_->GetYaxis()->SetRangeUser(0.001, 1.05);
-	RatioTH1D_->Draw("ColZ,Text,E");
+	RatioTH1D_->GetYaxis()->SetRangeUser(0.001, 1.099);
+
+	if(RatioTH1D_->GetXaxis()->GetNbins() < 100) RatioTH1D_->GetXaxis()->SetNdivisions(210);
+
+	//RatioTH1D_->Draw("ColZ,Text,E");
+	RatioTH1D_->Draw("ColZ,E1");
+	pt->Draw();
+	pt2->Draw();
 	c1->SaveAs("Efficiencies/"+name_+".pdf");
 	delete c1;
 	gROOT->SetBatch(false);
@@ -267,10 +311,13 @@ public:
 		PassTH2D_->SetTitle(title_);
 		TotalTH2D_->SetTitle(title_);
 	}
+	TH2D* GetTotalTH2(){
+		return TotalTH2D_;
+	}
 	void Fill(Double_t x, Double_t y, Double_t Weight, bool passOrFail);
 	void FillFrac(Double_t x, Double_t y, Double_t Weight, bool passOrFail);
 	void SaveEff(TDirectory* MainDirectory){ SaveEff(title_, MainDirectory); }
-	void SaveEff(const char* title, TDirectory* MainDirectory, bool xlog=false, bool ylog=false);
+	void SaveEff(const char* title, TDirectory* MainDirectory, bool xlog=false, bool ylog=false, bool doFraction=false);
 	void OpenEff(const char* name, TDirectory* MainDirectory);
 	effVec GetEff(double xValue, double yValue){ return GetEff(xValue, yValue, false); }
 	effVec GetEff(double xValue, double yValue, bool asymm);
@@ -332,28 +379,95 @@ void TH2Eff::FillFrac(Double_t x, Double_t y, Double_t Weight, bool passOrFail)
 	}
 }
 
-void TH2Eff::SaveEff(const char* title, TDirectory* MainDirectory, bool xlog, bool ylog)
+void TH2Eff::SaveEff(const char* title, TDirectory* MainDirectory, bool xlog, bool ylog, bool doFraction)
 {
 	MainDirectory->cd();
 	MainDirectory->mkdir(name_);
 	TDirectory *effDir = (TDirectory*)MainDirectory->Get(name_);
 	effDir->cd();
 
+	TString TITLE(title);
+	while(!TITLE.BeginsWith(";")){
+		TITLE.Remove(0,1);
+	}
+
 	RatioTH2D_->Divide(PassTH2D_, TotalTH2D_, 1, 1, "B");
 	RatioTH2D_->SetName(name_);
-	RatioTH2D_->SetTitle(TString("Simulation, L=3 fb^{-1}, #sqrt{s}=13 TeV ") + TString(title));
-	RatioTH2D_->SetMarkerSize(2.0);
+	RatioTH2D_->SetTitle(TITLE);
   	RatioTH2D_->UseCurrentStyle();
+  	RatioTH2D_->SetTitleOffset(0.9, "X");
+	RatioTH2D_->SetTitleOffset(0.8, "Y");
+	RatioTH2D_->SetTitleOffset(0.7, "Z");
+	RatioTH2D_->SetTitleSize(0.06, "X");
+	RatioTH2D_->SetTitleSize(0.06, "Y");
+	RatioTH2D_->SetTitleSize(0.06, "Z");
+
+	TPaveText *pt = new TPaveText(.15,.96,.35,.95, "NDC");
+	pt->SetBorderSize(0);
+	pt->SetFillColor(0);
+	pt->SetTextFont(42);
+	pt->SetTextAlign(31);
+	pt->SetTextSize(0.04);
+	pt->SetMargin(0.);
+	pt->AddText("Simulation");
+
+	TPaveText *pt2 = new TPaveText(.75,.96,.85,.95, "NDC");
+	pt2->SetBorderSize(0);
+	pt2->SetFillColor(0);
+	pt2->SetTextFont(42);
+	pt2->SetTextAlign(31);
+	pt2->SetTextSize(0.04);
+	pt2->SetMargin(0.);
+	pt2->AddText("(13 TeV)");	
 
   	gROOT->SetBatch(true);	  
 	TCanvas *c1 = new TCanvas(name_,title_,1);
+	c1->SetTopMargin(0.06);
+	c1->SetBottomMargin(0.12);
+	c1->SetRightMargin(0.15);
+	c1->SetLeftMargin(0.12);
 	c1->cd();
 	if (xlog) c1->SetLogx();
 	if (ylog) c1->SetLogy();
-	if(RatioTH2D_->GetXaxis()->GetBinCenter(RatioTH2D_->GetXaxis()->GetNbins()) > 100) c1->SetLogx();
-	if(RatioTH2D_->GetYaxis()->GetBinCenter(RatioTH2D_->GetYaxis()->GetNbins()) > 100) c1->SetLogy();
-	RatioTH2D_->GetZaxis()->SetRangeUser(0., 1.5);
-	RatioTH2D_->Draw("ColZ,Text,E");
+	if(RatioTH2D_->GetXaxis()->GetBinUpEdge(RatioTH2D_->GetXaxis()->GetNbins()) > 50){
+		c1->SetLogx();
+	}
+	if(RatioTH2D_->GetYaxis()->GetBinUpEdge(RatioTH2D_->GetYaxis()->GetNbins()) > 50){
+		c1->SetLogy();
+	}
+
+	if(RatioTH2D_->GetXaxis()->GetNbins() < 100) RatioTH2D_->GetXaxis()->SetNdivisions(210);
+	if(RatioTH2D_->GetYaxis()->GetNbins() < 100) RatioTH2D_->GetYaxis()->SetNdivisions(210);
+/*
+	double xmin, xmax, ymin, ymax;
+	xmin = RatioTH2D_->GetXaxis()->GetBinLowEdge(1);
+	ymin = RatioTH2D_->GetYaxis()->GetBinLowEdge(1);
+	if(RatioTH2D_->GetXaxis()->GetBinUpEdge(RatioTH2D_->GetXaxis()->GetNbins()) > 50){
+		xmax = RatioTH2D_->GetXaxis()->GetBinUpEdge(RatioTH2D_->GetXaxis()->GetNbins())/10.;
+	}else if(RatioTH2D_->GetXaxis()->GetBinUpEdge(RatioTH2D_->GetXaxis()->GetNbins()) > 15){
+		xmax = 15.5;
+	}
+	if(RatioTH2D_->GetYaxis()->GetBinUpEdge(RatioTH2D_->GetYaxis()->GetNbins()) > 50){
+		ymax = RatioTH2D_->GetYaxis()->GetBinUpEdge(RatioTH2D_->GetXaxis()->GetNbins())/10.;
+	}else if(RatioTH2D_->GetYaxis()->GetBinUpEdge(RatioTH2D_->GetYaxis()->GetNbins()) > 15){
+		ymax = 15.5;
+	}
+
+	gPad->DrawFrame(xmin,ymin,xmax,ymax);
+	gPad->Update();
+*/
+	if(doFraction){
+		RatioTH2D_->Scale(100.);
+		RatioTH2D_->GetZaxis()->SetRangeUser(0., 10.);
+		RatioTH2D_->Draw("ColZ,Text");
+	}else{
+		RatioTH2D_->GetZaxis()->SetRangeUser(0., 1.0);
+		//RatioTH2D_->GetZaxis()->SetRangeUser(0., 1.5);
+		RatioTH2D_->Draw("ColZ,Text,E");
+	}
+	
+	pt->Draw();
+	pt2->Draw();
 	c1->SaveAs("Efficiencies/"+name_+".pdf");
 	delete c1;
 	gROOT->SetBatch(false);

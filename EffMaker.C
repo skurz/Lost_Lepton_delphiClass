@@ -20,6 +20,39 @@ void EffMaker::Begin(TTree * /*tree*/)
 
   gSystem->mkdir("Efficiencies");
 
+  if(nicePublication){
+    OneDHT_[(sizeof(OneDHT_)/sizeof(OneDHT_[0]))-1] = 5000.;
+    OneDMHT_[(sizeof(OneDMHT_)/sizeof(OneDMHT_[0]))-1] = 5000.;
+    OneDPT_[(sizeof(OneDPT_)/sizeof(OneDPT_[0]))-1] = 1000.;
+    OneDPTtrk_[(sizeof(OneDPTtrk_)/sizeof(OneDPTtrk_[0]))-1] = 1000.;
+    OneDActivity_[(sizeof(OneDActivity_)/sizeof(OneDActivity_[0]))-1] = 10.;
+    OneDNJets_[(sizeof(OneDNJets_)/sizeof(OneDNJets_[0]))-1] = 15.5;
+    OneDPT_[0] = 9.99;
+    OneDPTtrk_[0] = 4.99;
+  }
+
+  if(nicePublication){
+    TwoDHT_[(sizeof(TwoDHT_)/sizeof(TwoDHT_[0]))-1] = 5000.;
+    TwoDMHT_[(sizeof(TwoDMHT_)/sizeof(TwoDMHT_[0]))-1] = 5000.;
+    TwoDPT_[(sizeof(TwoDPT_)/sizeof(TwoDPT_[0]))-1] = 200.;
+    TwoDPTlow_[(sizeof(TwoDPTlow_)/sizeof(TwoDPTlow_[0]))-1] = 200.;
+    TwoDActivity_[(sizeof(TwoDActivity_)/sizeof(TwoDActivity_[0]))-1] = 10.;
+    TwoDNJets_[(sizeof(TwoDNJets_)/sizeof(TwoDNJets_[0]))-1] = 15.5;
+    TwoDPT_[0] = 9.99;
+    TwoDPTlow_[0] = 4.99;
+  }
+
+  if(nicePublication){
+    ThreeDHT_[(sizeof(ThreeDHT_)/sizeof(ThreeDHT_[0]))-1] = 5000.;
+    ThreeDHT_fine_[(sizeof(ThreeDHT_fine_)/sizeof(ThreeDHT_fine_[0]))-1] = 5000.;
+    ThreeDHT_coarse_[(sizeof(ThreeDHT_coarse_)/sizeof(ThreeDHT_coarse_[0]))-1] = 5000.;
+    ThreeDHT_bin_[(sizeof(ThreeDHT_bin_)/sizeof(ThreeDHT_bin_[0]))-1] = 5000.;
+    ThreeDMHT_[(sizeof(ThreeDMHT_)/sizeof(ThreeDMHT_[0]))-1] = 5000.;
+    ThreeDMHT_fine_[(sizeof(ThreeDMHT_fine_)/sizeof(ThreeDMHT_fine_[0]))-1] = 5000.;
+    ThreeDMHT_coarse_[(sizeof(ThreeDMHT_coarse_)/sizeof(ThreeDMHT_coarse_[0]))-1] = 5000.;
+    ThreeDMHT_bin_[(sizeof(ThreeDMHT_bin_)/sizeof(ThreeDMHT_bin_[0]))-1] = 5000.;
+  } 
+
 }
 
 void EffMaker::SlaveBegin(TTree * /*tree*/)
@@ -28,7 +61,29 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   TH1::SetDefaultSumw2();
 
   gSystem->mkdir("Efficiencies"); 
-  SearchBins_ = new SearchBins(true);
+
+  if(nicePublication){
+    std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<std::endl;
+    std::cout<<"!Option for nice plotting enabled! You cannot use Efficiencies.root, as bins might be cut off etc!"<<std::endl;
+    std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"<<std::endl;
+  }
+
+  SearchBins_ = new SearchBins(!nicePublication);
+
+  // additional stuff for thesis
+  IsoTrackFractionPTActivity_ = new TH2Eff("IsoTrackFractionPTActivity","IsoTrackFractionPTActivity", twoDActivity_-1, TwoDActivity_,twoDPTlow_-1,TwoDPTlow_);
+  MuIsoTrackFractionPTActivity_ = new TH2Eff("MuIsoTrackFractionPTActivity","MuIsoTrackFractionPTActivity", twoDActivity_-1, TwoDActivity_,twoDPTlow_-1,TwoDPTlow_);
+  ElecIsoTrackFractionPTActivity_ = new TH2Eff("ElecIsoTrackFractionPTActivity","ElecIsoTrackFractionPTActivity", twoDActivity_-1, TwoDActivity_,twoDPTlow_-1,TwoDPTlow_);
+  PionIsoTrackFractionPTActivity_ = new TH2Eff("PionIsoTrackFractionPTActivity","PionIsoTrackFractionPTActivity", twoDActivity_-1, TwoDActivity_,twoDPTlow_-1,TwoDPTlow_);
+
+
+  // Sam
+  recoLepOverAccMu = new TH2Eff("recoLepOverAccMu", "recoLepOverAccMu", twoDPTlow_-1,TwoDPTlow_, twoDEtaMu_-1,TwoDEtaMu_);
+  recoTrackOverAccMu = new TH2Eff("recoTrackOverAccMu", "recoTrackOverAccMu", twoDPTlow_-1,TwoDPTlow_, twoDEtaMu_-1,TwoDEtaMu_);
+  recoOverAccMu = new TH2Eff("recoOverAccMu", "recoOverAccMu", twoDPTlow_-1,TwoDPTlow_, twoDEtaMu_-1,TwoDEtaMu_);
+  recoLepOverAccEl = new TH2Eff("recoLepOverAccEl", "recoLepOverAccEl", twoDPTlow_-1,TwoDPTlow_, twoDEtaElec_-1,TwoDEtaElec_);
+  recoTrackOverAccEl = new TH2Eff("recoTrackOverAccEl", "recoTrackOverAccEl", twoDPTlow_-1,TwoDPTlow_, twoDEtaElec_-1,TwoDEtaElec_);
+  recoOverAccEl = new TH2Eff("recoOverAccEl", "recoOverAccEl", twoDPTlow_-1,TwoDPTlow_, twoDEtaElec_-1,TwoDEtaElec_);
 
   // NEW
   MuAccSearchBins_ = new TH1Eff("MuAccSearchBins","MuAccSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
@@ -63,6 +118,12 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
 
   MuDiLepSRwoVetoSearchBins_ = new TH1Eff("MuDiLepSRwoVetoSearchBins","MuDiLepSRwoVetoSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
   ElecDiLepSRwoVetoSearchBins_ = new TH1Eff("ElecDiLepSRwoVetoSearchBins","ElecDiLepSRwoVetoSearchBins", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+
+  MuDiLepSRSearchBinsEff_ = new TH1Eff("MuDiLepSRSearchBinsEff","MuDiLepSRSearchBinsEff", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecDiLepSRSearchBinsEff_ = new TH1Eff("ElecDiLepSRSearchBinsEff","ElecDiLepSRSearchBinsEff", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+
+  MuDiLepSRwoVetoSearchBinsEff_ = new TH1Eff("MuDiLepSRwoVetoSearchBinsEff","MuDiLepSRwoVetoSearchBinsEff", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
+  ElecDiLepSRwoVetoSearchBinsEff_ = new TH1Eff("ElecDiLepSRwoVetoSearchBinsEff","ElecDiLepSRwoVetoSearchBinsEff", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
 
   MuIsoTrackVetoSearchBinsLowPt_ = new TH1Eff("MuIsoTrackVetoSearchBinsLowPt","MuIsoTrackVetoSearchBinsLowPt", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
   ElecIsoTrackVetoSearchBinsLowPt_ = new TH1Eff("ElecIsoTrackVetoSearchBinsLowPt","ElecIsoTrackVetoSearchBinsLowPt", SearchBins_->GetNbins(), 0.5, SearchBins_->GetNbins()+0.5);
@@ -611,6 +672,26 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecDiLepSRMHTNJets_ = new TH2Eff("ElecDiLepSRMHTNJets","ElecDiLepSRMHTNJets",twoDMHT_-1,TwoDMHT_,twoDNJets_-1,TwoDNJets_);
   ElecDiLepSRNJetsBTags_ = new TH2Eff("ElecDiLepSRNJetsBTags","ElecDiLepSRNJetsBTags",twoDNJets_-1,TwoDNJets_,twoDBJets_-1,TwoDBJets_);
 
+  //muon
+  //1D
+  MuDiLepSRBTagEff_ = new TH1Eff("MuDiLepSRBTagEff1D","MuDiLepSRBTagEff1D",oneDBJets_-1,OneDBJets_);
+  MuDiLepSRNJetsEff_ = new TH1Eff("MuDiLepSRNJetsEff1D","MuDiLepSRNJetsEff1D",oneDNJets_-1,OneDNJets_);
+  MuDiLepSRHTEff_ = new TH1Eff("MuDiLepSRHTEff1D","MuDiLepSRHTEff1D",oneDHT_-1,OneDHT_);
+  MuDiLepSRMHTEff_ = new TH1Eff("MuDiLepSRMHTEff1D","MuDiLepSRMHTEff1D",oneDMHT_-1,OneDMHT_);
+  MuDiLepSRMHTNJetsEff_ = new TH2Eff("MuDiLepSRMHTNJetsEff","MuDiLepSRMHTNJetsEff",twoDMHT_-1,TwoDMHT_,twoDNJets_-1,TwoDNJets_);
+  MuDiLepSRNJetsBTagsEff_ = new TH2Eff("MuDiLepSRNJetsBTagsEff","MuDiLepSRNJetsBTagsEff",twoDNJets_-1,TwoDNJets_,twoDBJets_-1,TwoDBJets_);
+
+  
+  //electron
+  //1D
+  ElecDiLepSRBTagEff_ = new TH1Eff("ElecDiLepSRBTagEff1D","ElecDiLepSRBTagEff1D",oneDBJets_-1,OneDBJets_);
+  ElecDiLepSRNJetsEff_ = new TH1Eff("ElecDiLepSRNJetsEff1D","ElecDiLepSRNJetsEff1D",oneDNJets_-1,OneDNJets_);
+  ElecDiLepSRHTEff_ = new TH1Eff("ElecDiLepSRHTEff1D","ElecDiLepSRHTEff1D",oneDHT_-1,OneDHT_);
+  ElecDiLepSRMHTEff_ = new TH1Eff("ElecDiLepSRMHTEff1D","ElecDiLepSRMHTEff1D",oneDMHT_-1,OneDMHT_);
+  ElecDiLepSRMHTNJetsEff_ = new TH2Eff("ElecDiLepSRMHTNJetsEff","ElecDiLepSRMHTNJetsEff",twoDMHT_-1,TwoDMHT_,twoDNJets_-1,TwoDNJets_);
+  ElecDiLepSRNJetsBTagsEff_ = new TH2Eff("ElecDiLepSRNJetsBTagsEff","ElecDiLepSRNJetsBTagsEff",twoDNJets_-1,TwoDNJets_,twoDBJets_-1,TwoDBJets_);
+
+
 
   //muon
   //1D
@@ -630,6 +711,25 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecDiLepSRwoVetoMHT_ = new TH1Eff("ElecDiLepSRwoVetoMHT1D","ElecDiLepSRwoVetoMHT1D",oneDMHT_-1,OneDMHT_);
   ElecDiLepSRwoVetoMHTNJets_ = new TH2Eff("ElecDiLepSRwoVetoMHTNJets","ElecDiLepSRwoVetoMHTNJets",twoDMHT_-1,TwoDMHT_,twoDNJets_-1,TwoDNJets_);
   ElecDiLepSRwoVetoNJetsBTags_ = new TH2Eff("ElecDiLepSRwoVetoNJetsBTags","ElecDiLepSRwoVetoNJetsBTags",twoDNJets_-1,TwoDNJets_,twoDBJets_-1,TwoDBJets_);
+
+  //muon
+  //1D
+  MuDiLepSRwoVetoBTagEff_ = new TH1Eff("MuDiLepSRwoVetoBTagEff1D","MuDiLepSRwoVetoBTagEff1D",oneDBJets_-1,OneDBJets_);
+  MuDiLepSRwoVetoNJetsEff_ = new TH1Eff("MuDiLepSRwoVetoNJetsEff1D","MuDiLepSRwoVetoNJetsEff1D",oneDNJets_-1,OneDNJets_);
+  MuDiLepSRwoVetoHTEff_ = new TH1Eff("MuDiLepSRwoVetoHTEff1D","MuDiLepSRwoVetoHTEff1D",oneDHT_-1,OneDHT_);
+  MuDiLepSRwoVetoMHTEff_ = new TH1Eff("MuDiLepSRwoVetoMHTEff1D","MuDiLepSRwoVetoMHTEff1D",oneDMHT_-1,OneDMHT_);
+  MuDiLepSRwoVetoMHTNJetsEff_ = new TH2Eff("MuDiLepSRwoVetoMHTNJetsEff","MuDiLepSRwoVetoMHTNJetsEff",twoDMHT_-1,TwoDMHT_,twoDNJets_-1,TwoDNJets_);
+  MuDiLepSRwoVetoNJetsBTagsEff_ = new TH2Eff("MuDiLepSRwoVetoNJetsBTagsEff","MuDiLepSRwoVetoNJetsBTagsEff",twoDNJets_-1,TwoDNJets_,twoDBJets_-1,TwoDBJets_);
+
+  
+  //electron
+  //Eff1D
+  ElecDiLepSRwoVetoBTagEff_ = new TH1Eff("ElecDiLepSRwoVetoBTagEff1D","ElecDiLepSRwoVetoBTagEff1D",oneDBJets_-1,OneDBJets_);
+  ElecDiLepSRwoVetoNJetsEff_ = new TH1Eff("ElecDiLepSRwoVetoNJetsEff1D","ElecDiLepSRwoVetoNJetsEff1D",oneDNJets_-1,OneDNJets_);
+  ElecDiLepSRwoVetoHTEff_ = new TH1Eff("ElecDiLepSRwoVetoHTEff1D","ElecDiLepSRwoVetoHTEff1D",oneDHT_-1,OneDHT_);
+  ElecDiLepSRwoVetoMHTEff_ = new TH1Eff("ElecDiLepSRwoVetoMHTEff1D","ElecDiLepSRwoVetoMHTEff1D",oneDMHT_-1,OneDMHT_);
+  ElecDiLepSRwoVetoMHTNJetsEff_ = new TH2Eff("ElecDiLepSRwoVetoMHTNJetsEff","ElecDiLepSRwoVetoMHTNJetsEff",twoDMHT_-1,TwoDMHT_,twoDNJets_-1,TwoDNJets_);
+  ElecDiLepSRwoVetoNJetsBTagsEff_ = new TH2Eff("ElecDiLepSRwoVetoNJetsBTagsEff","ElecDiLepSRwoVetoNJetsBTagsEff",twoDNJets_-1,TwoDNJets_,twoDBJets_-1,TwoDBJets_);
 
   
   // acitivity and pt
@@ -720,7 +820,7 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   IsoTrackReductionHTMHT_NJets9Inf_ = new TH2Eff("IsoTrackReductionHTMHT_NJets9Inf","IsoTrackReductionHTMHT_NJets9Inf", threeDHT_bin_-1,ThreeDHT_bin_, threeDMHT_bin_-1,ThreeDMHT_bin_);
   IsoTrackReductionMHTNJets_ = new TH2Eff("IsoTrackReductionMHTNJets","IsoTrackReductionMHTNJets",threeDMHT_-1,ThreeDMHT_, twoDNJets_-1, TwoDNJets_);
   IsoTrackReductionBTagNJets_ = new TH2Eff("IsoTrackReductionBTagNJets","IsoTrackReductionBTagNJets",twoDBJets_-1,TwoDBJets_, twoDNJets_-1, TwoDNJets_);
-  IsoTrackReductionPTActivity_ = new TH2Eff("IsoTrackReductionPTActivity","IsoTrackReductionPTActivity", twoDActivity_-1, TwoDActivity_,twoDPT_-1,TwoDPT_);
+  IsoTrackReductionPTActivity_ = new TH2Eff("IsoTrackReductionPTActivity","IsoTrackReductionPTActivity", twoDActivity_-1, TwoDActivity_,twoDPTlow_-1,TwoDPTlow_);
 
   IsoTrackReductionHTMHT_NJets24_BTags0_ = new TH2Eff("IsoTrackReductionHTMHT_NJets24_BTags0","IsoTrackReductionHTMHT_NJets24_BTags0", threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
   IsoTrackReductionHTMHT_NJets56_BTags0_ = new TH2Eff("IsoTrackReductionHTMHT_NJets56_BTags0","IsoTrackReductionHTMHT_NJets56_BTags0", threeDHT_-1,ThreeDHT_, threeDMHT_-1,ThreeDMHT_);
@@ -741,7 +841,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   MuIsoTrackReductionHTNJets_ = new TH2Eff("MuIsoTrackReductionHTNJets","MuIsoTrackReductionHTNJets",threeDHT_-1,ThreeDHT_, twoDNJets_-1, TwoDNJets_);
   MuIsoTrackReductionMHTNJets_ = new TH2Eff("MuIsoTrackReductionMHTNJets","MuIsoTrackReductionMHTNJets",threeDMHT_-1,ThreeDMHT_, twoDNJets_-1, TwoDNJets_);
   MuIsoTrackReductionBTagNJets_ = new TH2Eff("MuIsoTrackReductionBTagNJets","MuIsoTrackReductionBTagNJets",twoDBJets_-1,TwoDBJets_, twoDNJets_-1, TwoDNJets_);
-  MuIsoTrackReductionPTActivity_ = new TH2Eff("MuIsoTrackReductionPTActivity","MuIsoTrackReductionPTActivity", twoDActivity_-1, TwoDActivity_,twoDPT_-1,TwoDPT_);
+  MuIsoTrackReductionPTActivity_ = new TH2Eff("MuIsoTrackReductionPTActivity","MuIsoTrackReductionPTActivity", twoDActivity_-1, TwoDActivity_,twoDPTlow_-1,TwoDPTlow_);
+  
   MuIsoTrackReductionHTMHT_NJets24_ = new TH2Eff("MuIsoTrackReductionHTMHT_NJets24","MuIsoTrackReductionHTMHT_NJets24", threeDHT_bin_-1,ThreeDHT_bin_, threeDMHT_bin_-1,ThreeDMHT_bin_);
   MuIsoTrackReductionHTMHT_NJets56_ = new TH2Eff("MuIsoTrackReductionHTMHT_NJets56","MuIsoTrackReductionHTMHT_NJets56", threeDHT_bin_-1,ThreeDHT_bin_, threeDMHT_bin_-1,ThreeDMHT_bin_);
   MuIsoTrackReductionHTMHT_NJets7Inf_ = new TH2Eff("MuIsoTrackReductionHTMHT_NJets7Inf","MuIsoTrackReductionHTMHT_NJets7Inf", threeDHT_bin_-1,ThreeDHT_bin_, threeDMHT_bin_-1,ThreeDMHT_bin_);
@@ -772,7 +873,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecIsoTrackReductionHTNJets_ = new TH2Eff("ElecIsoTrackReductionHTNJets","ElecIsoTrackReductionHTNJets",threeDHT_-1,ThreeDHT_, twoDNJets_-1, TwoDNJets_);
   ElecIsoTrackReductionMHTNJets_ = new TH2Eff("ElecIsoTrackReductionMHTNJets","ElecIsoTrackReductionMHTNJets",threeDMHT_-1,ThreeDMHT_, twoDNJets_-1, TwoDNJets_);
   ElecIsoTrackReductionBTagNJets_ = new TH2Eff("ElecIsoTrackReductionBTagNJets","ElecIsoTrackReductionBTagNJets",twoDBJets_-1,TwoDBJets_, twoDNJets_-1, TwoDNJets_);
-  ElecIsoTrackReductionPTActivity_ = new TH2Eff("ElecIsoTrackReductionPTActivity","ElecIsoTrackReductionPTActivity", twoDActivity_-1, TwoDActivity_,twoDPT_-1,TwoDPT_);
+  ElecIsoTrackReductionPTActivity_ = new TH2Eff("ElecIsoTrackReductionPTActivity","ElecIsoTrackReductionPTActivity", twoDActivity_-1, TwoDActivity_,twoDPTlow_-1,TwoDPTlow_);
+  
   ElecIsoTrackReductionHTMHT_NJets24_ = new TH2Eff("ElecIsoTrackReductionHTMHT_NJets24","ElecIsoTrackReductionHTMHT_NJets24", threeDHT_bin_-1,ThreeDHT_bin_, threeDMHT_bin_-1,ThreeDMHT_bin_);
   ElecIsoTrackReductionHTMHT_NJets56_ = new TH2Eff("ElecIsoTrackReductionHTMHT_NJets56","ElecIsoTrackReductionHTMHT_NJets56", threeDHT_bin_-1,ThreeDHT_bin_, threeDMHT_bin_-1,ThreeDMHT_bin_);
   ElecIsoTrackReductionHTMHT_NJets7Inf_ = new TH2Eff("ElecIsoTrackReductionHTMHT_NJets7Inf","ElecIsoTrackReductionHTMHT_NJets7Inf", threeDHT_bin_-1,ThreeDHT_bin_, threeDMHT_bin_-1,ThreeDMHT_bin_);
@@ -803,7 +905,8 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   PionIsoTrackReductionHTNJets_ = new TH2Eff("PionIsoTrackReductionHTNJets","PionIsoTrackReductionHTNJets",threeDHT_-1,ThreeDHT_, twoDNJets_-1, TwoDNJets_);
   PionIsoTrackReductionMHTNJets_ = new TH2Eff("PionIsoTrackReductionMHTNJets","PionIsoTrackReductionMHTNJets",threeDMHT_-1,ThreeDMHT_, twoDNJets_-1, TwoDNJets_);
   PionIsoTrackReductionBTagNJets_ = new TH2Eff("PionIsoTrackReductionBTagNJets","PionIsoTrackReductionBTagNJets",twoDBJets_-1,TwoDBJets_, twoDNJets_-1, TwoDNJets_);
-  PionIsoTrackReductionPTActivity_ = new TH2Eff("PionIsoTrackReductionPTActivity","PionIsoTrackReductionPTActivity", twoDActivity_-1, TwoDActivity_,twoDPT_-1,TwoDPT_);
+  PionIsoTrackReductionPTActivity_ = new TH2Eff("PionIsoTrackReductionPTActivity","PionIsoTrackReductionPTActivity", twoDActivity_-1, TwoDActivity_,twoDPTlow_-1,TwoDPTlow_);
+  
   PionIsoTrackReductionHTMHT_NJets24_ = new TH2Eff("PionIsoTrackReductionHTMHT_NJets24","PionIsoTrackReductionHTMHT_NJets24", threeDHT_bin_-1,ThreeDHT_bin_, threeDMHT_bin_-1,ThreeDMHT_bin_);
   PionIsoTrackReductionHTMHT_NJets56_ = new TH2Eff("PionIsoTrackReductionHTMHT_NJets56","PionIsoTrackReductionHTMHT_NJets56", threeDHT_bin_-1,ThreeDHT_bin_, threeDMHT_bin_-1,ThreeDMHT_bin_);
   PionIsoTrackReductionHTMHT_NJets7Inf_ = new TH2Eff("PionIsoTrackReductionHTMHT_NJets7Inf","PionIsoTrackReductionHTMHT_NJets7Inf", threeDHT_bin_-1,ThreeDHT_bin_, threeDMHT_bin_-1,ThreeDMHT_bin_);
@@ -837,6 +940,11 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecRecoRelPTDeltaRJet_ = new TH2Eff("ElecRecoRelPTDeltaRJet","ElecRecoRelPTDeltaRJet",oneDPTRel_-1,OneDPTRel_,oneDDeltaR_-1,OneDDeltaR_);
 
   // Additional Plots
+  IsoTrackVetoPt_ = new TH1D("IsoTrackVetoPt","IsoTrackVetoPt", 80., 0., 200.);
+  MuIsoTrackVetoPt_ = new TH1D("MuIsoTrackVetoPt","MuIsoTrackVetoPt", 80., 0., 200.);
+  ElecIsoTrackVetoPt_ = new TH1D("ElecIsoTrackVetoPt","ElecIsoTrackVetoPt", 80., 0., 200.);
+  PionIsoTrackVetoPt_ = new TH1D("PionIsoTrackVetoPt","PionIsoTrackVetoPt", 80., 0., 200.);
+
   IsoTrackVetoPtAcc_ = new TH1D("IsoTrackVetoPtAcc","IsoTrackVetoPtAcc", 80., 0., 200.);
   MuIsoTrackVetoPtAcc_ = new TH1D("MuIsoTrackVetoPtAcc","MuIsoTrackVetoPtAcc", 80., 0., 200.);
   ElecIsoTrackVetoPtAcc_ = new TH1D("ElecIsoTrackVetoPtAcc","ElecIsoTrackVetoPtAcc", 80., 0., 200.);
@@ -948,6 +1056,12 @@ void EffMaker::SlaveBegin(TTree * /*tree*/)
   ElecAccWoVetoFracBTags_ = new TH1D("ElecAccWoVetoFracBTags", "ElecAccWoVetoFracBTags", 6, -0.5, 5.5);
   ElecRecoWoVetoFracBTags_ = new TH1D("ElecRecoWoVetoFracBTags", "ElecRecoWoVetoFracBTags", 6, -0.5, 5.5);
   ElecIsoWoVetoFracBTags_ = new TH1D("ElecIsoWoVetoFracBTags", "ElecIsoWoVetoFracBTags", 6, -0.5, 5.5);
+
+  // TAP studies
+  TrackIsolationPTActivity_ = new TH2Eff("TrackIsolationPTActivity","TrackIsolationPTActivity", twoDActivity_-1, TwoDActivity_,twoDPTlow_-1,TwoDPTlow_);
+  MuTrackIsolationPTActivity_ = new TH2Eff("MuTrackIsolationPTActivity","MuTrackIsolationPTActivity", twoDActivity_-1, TwoDActivity_,twoDPTlow_-1,TwoDPTlow_);
+  ElecTrackIsolationPTActivity_ = new TH2Eff("ElecTrackIsolationPTActivity","ElecTrackIsolationPTActivity", twoDActivity_-1, TwoDActivity_,twoDPTlow_-1,TwoDPTlow_);
+  PionTrackIsolationPTActivity_ = new TH2Eff("PionTrackIsolationPTActivity","PionTrackIsolationPTActivity", twoDActivity_-1, TwoDActivity_,twoDPTlow_-1,TwoDPTlow_);
 
   // MHT?PTW histograms
   for (unsigned int inj(0); inj<3; inj++) {
@@ -1505,6 +1619,80 @@ Bool_t EffMaker::Process(Long64_t entry)
           }
         }
       }
+  }
+
+  //Sam
+  if(doPlotsForSam){
+    if(GenMuons->size() == 1 && GenMuons->at(0).Pt() > 5. && std::abs(GenMuons->at(0).Eta()) < 2.4){
+      if(muReco==2){
+        recoLepOverAccMu->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,true);
+        recoOverAccMu->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,true);
+
+        recoTrackOverAccMu->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,false);
+      }else{
+        recoLepOverAccMu->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,false);
+
+        bool matchedIsoTrack = false;
+        for (UShort_t i=0; i<TAPMuonTracks->size(); i++){
+          if(TAPMuonTracks->at(i).Pt() > 5 && deltaR(GenMuons->at(0).Eta(),GenMuons->at(0).Phi(),TAPMuonTracks->at(i).Eta(),TAPMuonTracks->at(i).Phi())<maxDeltaRGenToRecoMu_ && std::abs(GenMuons->at(0).Pt()-TAPMuonTracks->at(i).Pt())/GenMuons->at(0).Pt() <maxDiffPtGenToRecoMu_){
+            matchedIsoTrack = true;
+            break;
+          }
+        }
+
+        if(!matchedIsoTrack){
+          for (UShort_t i=0; i<TAPPionTracks->size(); i++){
+            if(TAPPionTracks->at(i).Pt() > 10 && deltaR(GenMuons->at(0).Eta(),GenMuons->at(0).Phi(),TAPPionTracks->at(i).Eta(),TAPPionTracks->at(i).Phi())<maxDeltaRGenToRecoMu_ && std::abs(GenMuons->at(0).Pt()-TAPPionTracks->at(i).Pt())/GenMuons->at(0).Pt() <maxDiffPtGenToRecoMu_){
+              matchedIsoTrack = true;
+              break;
+            }
+          }
+        }
+
+        if(matchedIsoTrack){
+          recoOverAccMu->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,true);
+          recoTrackOverAccMu->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,true);
+        }else{
+          recoOverAccMu->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,false);
+          recoTrackOverAccMu->Fill(GenMuons->at(0).Pt(),GenMuons->at(0).Eta(),WeightBTagProb,false);
+        }
+      }
+    }
+    if(GenElectrons->size() == 1 && GenElectrons->at(0).Pt() > 5. && std::abs(GenElectrons->at(0).Eta()) < 2.5){
+      if(elecReco==2){
+        recoLepOverAccEl->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,true);
+        recoOverAccEl->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,true);
+
+        recoTrackOverAccEl->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,false);
+      }else{
+        recoLepOverAccEl->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,false);
+
+        bool matchedIsoTrack = false;
+        for (UShort_t i=0; i<TAPElectronTracks->size(); i++){
+          if(TAPElectronTracks->at(i).Pt() > 5 && deltaR(GenElectrons->at(0).Eta(),GenElectrons->at(0).Phi(),TAPElectronTracks->at(i).Eta(),TAPElectronTracks->at(i).Phi())<maxDeltaRGenToRecoElec_ && std::abs(GenElectrons->at(0).Pt()-TAPElectronTracks->at(i).Pt())/GenElectrons->at(0).Pt() <maxDiffPtGenToRecoElec_){
+            matchedIsoTrack = true;
+            break;
+          }
+        }
+
+        if(!matchedIsoTrack){
+          for (UShort_t i=0; i<TAPPionTracks->size(); i++){
+            if(TAPPionTracks->at(i).Pt() > 10 && deltaR(GenElectrons->at(0).Eta(),GenElectrons->at(0).Phi(),TAPPionTracks->at(i).Eta(),TAPPionTracks->at(i).Phi())<maxDeltaRGenToRecoElec_ && std::abs(GenElectrons->at(0).Pt()-TAPPionTracks->at(i).Pt())/GenElectrons->at(0).Pt() <maxDiffPtGenToRecoElec_){
+              matchedIsoTrack = true;
+              break;
+            }
+          }
+        }
+
+        if(matchedIsoTrack){
+          recoOverAccEl->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,true);
+          recoTrackOverAccEl->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,true);
+        }else{
+          recoOverAccEl->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,false);
+          recoTrackOverAccEl->Fill(GenElectrons->at(0).Pt(),GenElectrons->at(0).Eta(),WeightBTagProb,false);
+        }
+      }
+    }
   }
   
   // reconstruction
@@ -2075,6 +2263,42 @@ Bool_t EffMaker::Process(Long64_t entry)
     }
   }
 
+    if(MuDiLepControlSample==0){
+      MuDiLepSRBTagEff_->FillFrac(BTags,WeightBTagProb,false);
+      MuDiLepSRNJetsEff_->FillFrac(NJets,WeightBTagProb,false);
+      MuDiLepSRHTEff_->FillFrac(HT,WeightBTagProb,false);
+      MuDiLepSRMHTEff_->FillFrac(MHT,WeightBTagProb,false);
+      MuDiLepSRMHTNJetsEff_->FillFrac(MHT,NJets,WeightBTagProb,false);
+      MuDiLepSRNJetsBTagsEff_->FillFrac(NJets,BTags,WeightBTagProb,false);
+      MuDiLepSRSearchBinsEff_->FillFrac(BinQCD,WeightBTagProb,false);
+
+      MuDiLepSRwoVetoBTagEff_->FillFrac(BTags,WeightBTagProb,false);
+      MuDiLepSRwoVetoNJetsEff_->FillFrac(NJets,WeightBTagProb,false);
+      MuDiLepSRwoVetoHTEff_->FillFrac(HT,WeightBTagProb,false);
+      MuDiLepSRwoVetoMHTEff_->FillFrac(MHT,WeightBTagProb,false);
+      MuDiLepSRwoVetoMHTNJetsEff_->FillFrac(MHT,NJets,WeightBTagProb,false);
+      MuDiLepSRwoVetoNJetsBTagsEff_->FillFrac(NJets,BTags,WeightBTagProb,false);
+      MuDiLepSRwoVetoSearchBinsEff_->FillFrac(BinQCD,WeightBTagProb,false);
+    }
+
+    if(ElecDiLepControlSample==0){
+      ElecDiLepSRBTagEff_->FillFrac(BTags,WeightBTagProb,false);
+      ElecDiLepSRNJetsEff_->FillFrac(NJets,WeightBTagProb,false);
+      ElecDiLepSRHTEff_->FillFrac(HT,WeightBTagProb,false);
+      ElecDiLepSRMHTEff_->FillFrac(MHT,WeightBTagProb,false);
+      ElecDiLepSRMHTNJetsEff_->FillFrac(MHT,NJets,WeightBTagProb,false);
+      ElecDiLepSRNJetsBTagsEff_->FillFrac(NJets,BTags,WeightBTagProb,false);
+      ElecDiLepSRSearchBinsEff_->FillFrac(BinQCD,WeightBTagProb,false);
+
+      ElecDiLepSRwoVetoBTagEff_->FillFrac(BTags,WeightBTagProb,false);
+      ElecDiLepSRwoVetoNJetsEff_->FillFrac(NJets,WeightBTagProb,false);
+      ElecDiLepSRwoVetoHTEff_->FillFrac(HT,WeightBTagProb,false);
+      ElecDiLepSRwoVetoMHTEff_->FillFrac(MHT,WeightBTagProb,false);
+      ElecDiLepSRwoVetoMHTNJetsEff_->FillFrac(MHT,NJets,WeightBTagProb,false);
+      ElecDiLepSRwoVetoNJetsBTagsEff_->FillFrac(NJets,BTags,WeightBTagProb,false);
+      ElecDiLepSRwoVetoSearchBinsEff_->FillFrac(BinQCD,WeightBTagProb,false);   
+    }
+
   if(Expectation==1 && ExpectationDiLep==1){
 
     if(ExpectationReductionIsoTrack==0){
@@ -2111,7 +2335,43 @@ Bool_t EffMaker::Process(Long64_t entry)
       ElecDiLepSRwoVetoMHT_->FillFrac(MHT,WeightBTagProb,true);
       ElecDiLepSRwoVetoMHTNJets_->FillFrac(MHT,NJets,WeightBTagProb,true);
       ElecDiLepSRwoVetoNJetsBTags_->FillFrac(NJets,BTags,WeightBTagProb,true);
-      ElecDiLepSRwoVetoSearchBins_->FillFrac(BinQCD,WeightBTagProb,true);      
+      ElecDiLepSRwoVetoSearchBins_->FillFrac(BinQCD,WeightBTagProb,true);
+
+    if(ExpectationReductionIsoTrack==0){
+      // Dilep evt in SR (passed isotrack veto)
+      MuDiLepSRBTagEff_->FillFrac(BTags,WeightBTagProb,true);
+      MuDiLepSRNJetsEff_->FillFrac(NJets,WeightBTagProb,true);
+      MuDiLepSRHTEff_->FillFrac(HT,WeightBTagProb,true);
+      MuDiLepSRMHTEff_->FillFrac(MHT,WeightBTagProb,true);
+      MuDiLepSRMHTNJetsEff_->FillFrac(MHT,NJets,WeightBTagProb,true);
+      MuDiLepSRNJetsBTagsEff_->FillFrac(NJets,BTags,WeightBTagProb,true);
+      MuDiLepSRSearchBinsEff_->FillFrac(BinQCD,WeightBTagProb,true);
+
+      ElecDiLepSRBTagEff_->FillFrac(BTags,WeightBTagProb,true);
+      ElecDiLepSRNJetsEff_->FillFrac(NJets,WeightBTagProb,true);
+      ElecDiLepSRHTEff_->FillFrac(HT,WeightBTagProb,true);
+      ElecDiLepSRMHTEff_->FillFrac(MHT,WeightBTagProb,true);
+      ElecDiLepSRMHTNJetsEff_->FillFrac(MHT,NJets,WeightBTagProb,true);
+      ElecDiLepSRNJetsBTagsEff_->FillFrac(NJets,BTags,WeightBTagProb,true);
+      ElecDiLepSRSearchBinsEff_->FillFrac(BinQCD,WeightBTagProb,true);
+    }
+
+      // Dilep evt in SR (ignores isotrack veto)
+      MuDiLepSRwoVetoBTagEff_->FillFrac(BTags,WeightBTagProb,true);
+      MuDiLepSRwoVetoNJetsEff_->FillFrac(NJets,WeightBTagProb,true);
+      MuDiLepSRwoVetoHTEff_->FillFrac(HT,WeightBTagProb,true);
+      MuDiLepSRwoVetoMHTEff_->FillFrac(MHT,WeightBTagProb,true);
+      MuDiLepSRwoVetoMHTNJetsEff_->FillFrac(MHT,NJets,WeightBTagProb,true);
+      MuDiLepSRwoVetoNJetsBTagsEff_->FillFrac(NJets,BTags,WeightBTagProb,true);
+      MuDiLepSRwoVetoSearchBinsEff_->FillFrac(BinQCD,WeightBTagProb,true);
+
+      ElecDiLepSRwoVetoBTagEff_->FillFrac(BTags,WeightBTagProb,true);
+      ElecDiLepSRwoVetoNJetsEff_->FillFrac(NJets,WeightBTagProb,true);
+      ElecDiLepSRwoVetoHTEff_->FillFrac(HT,WeightBTagProb,true);
+      ElecDiLepSRwoVetoMHTEff_->FillFrac(MHT,WeightBTagProb,true);
+      ElecDiLepSRwoVetoMHTNJetsEff_->FillFrac(MHT,NJets,WeightBTagProb,true);
+      ElecDiLepSRwoVetoNJetsBTagsEff_->FillFrac(NJets,BTags,WeightBTagProb,true);
+      ElecDiLepSRwoVetoSearchBinsEff_->FillFrac(BinQCD,WeightBTagProb,true);    
   }
     
   // ExpectationReductionIsoTrack
@@ -2163,10 +2423,13 @@ Bool_t EffMaker::Process(Long64_t entry)
 
       if(GenMuonsNum>0){
           IsoTrackReductionPTActivity_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
+          MuIsoTrackReductionPTActivity_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,false);
       }else if(GenElectronsNum>0){
           IsoTrackReductionPTActivity_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
+          ElecIsoTrackReductionPTActivity_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,false);
       }else if(GenTausNum>0){
           IsoTrackReductionPTActivity_->Fill(GenTaus_MT2Activity->at(0),GenTaus->at(0).Pt(),WeightBTagProb,false);
+          if(GenTaus->at(0).Pt() > 10.) PionIsoTrackReductionPTActivity_->Fill(GenTaus_MT2Activity->at(0),GenTaus->at(0).Pt(),WeightBTagProb,false);
       }
 
       //NEW
@@ -2218,10 +2481,85 @@ Bool_t EffMaker::Process(Long64_t entry)
 
     if(isoMuonTracksNum>0 && GenMuonsNum>0){
         IsoTrackReductionPTActivity_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
+        MuIsoTrackReductionPTActivity_->Fill(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
+
+        IsoTrackFractionPTActivity_->FillFrac(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
+        MuIsoTrackFractionPTActivity_->FillFrac(GenMuons_MT2Activity->at(0),GenMuons->at(0).Pt(),WeightBTagProb,true);
+        //easy norm
+        int isotrackActBin = IsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->FindBin(GenMuons_MT2Activity->at(0));
+        int isotrackPtBin = IsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->FindBin(GenMuons->at(0).Pt());
+        int muIsotrackActBin = MuIsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->FindBin(GenMuons_MT2Activity->at(0));
+        int muIsotrackPtBin = MuIsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->FindBin(GenMuons->at(0).Pt());
+        if(isotrackActBin > 0 && isotrackActBin < IsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetNbins()+1
+          && isotrackPtBin > 0 && isotrackPtBin < IsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetNbins()+1){
+          for(int xBin = 0; xBin <= IsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetNbins()+1; xBin++){
+            for(int yBin = 0; yBin <= IsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetNbins()+1; yBin++){
+              IsoTrackFractionPTActivity_->FillFrac(IsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetBinCenter(xBin),IsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetBinCenter(yBin),WeightBTagProb,false);
+            }
+          }
+        }
+        if(muIsotrackActBin > 0 && muIsotrackActBin < MuIsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetNbins()+1
+          && muIsotrackPtBin > 0 && muIsotrackPtBin < MuIsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetNbins()+1){    
+          for(int xBin = 0; xBin <= MuIsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetNbins()+1; xBin++){
+            for(int yBin = 0; yBin <= MuIsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetNbins()+1; yBin++){
+              MuIsoTrackFractionPTActivity_->FillFrac(MuIsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetBinCenter(xBin),MuIsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetBinCenter(yBin),WeightBTagProb,false);
+            }
+          }
+        }
     }else if(isoElectronTracksNum>0 && GenElectronsNum>0){
         IsoTrackReductionPTActivity_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
+        ElecIsoTrackReductionPTActivity_->Fill(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
+
+        IsoTrackFractionPTActivity_->FillFrac(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
+        ElecIsoTrackFractionPTActivity_->FillFrac(GenElectrons_MT2Activity->at(0),GenElectrons->at(0).Pt(),WeightBTagProb,true);
+        //easy norm
+        int isotrackActBin = IsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->FindBin(GenElectrons_MT2Activity->at(0));
+        int isotrackPtBin = IsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->FindBin(GenElectrons->at(0).Pt());
+        int elecIsotrackActBin = ElecIsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->FindBin(GenElectrons_MT2Activity->at(0));
+        int elecIsotrackPtBin = ElecIsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->FindBin(GenElectrons->at(0).Pt());
+        if(isotrackActBin > 0 && isotrackActBin < IsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetNbins()+1
+          && isotrackPtBin > 0 && isotrackPtBin < IsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetNbins()+1){
+          for(int xBin = 0; xBin <= IsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetNbins()+1; xBin++){
+            for(int yBin = 0; yBin <= IsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetNbins()+1; yBin++){
+              IsoTrackFractionPTActivity_->FillFrac(IsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetBinCenter(xBin),IsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetBinCenter(yBin),WeightBTagProb,false);
+            }
+          }
+        }
+        if(elecIsotrackActBin > 0 && elecIsotrackActBin < ElecIsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetNbins()+1
+          && elecIsotrackPtBin > 0 && elecIsotrackPtBin < ElecIsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetNbins()+1){ 
+          for(int xBin = 0; xBin <= ElecIsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetNbins()+1; xBin++){
+            for(int yBin = 0; yBin <= ElecIsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetNbins()+1; yBin++){
+              ElecIsoTrackFractionPTActivity_->FillFrac(ElecIsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetBinCenter(xBin),ElecIsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetBinCenter(yBin),WeightBTagProb,false);
+            }
+          }
+        }
     }else if(isoPionTracksNum>0 && GenTausNum>0){
         IsoTrackReductionPTActivity_->Fill(GenTaus_MT2Activity->at(0),GenTaus->at(0).Pt(),WeightBTagProb,true);
+        if(GenTaus->at(0).Pt() > 10.) PionIsoTrackReductionPTActivity_->Fill(GenTaus_MT2Activity->at(0),GenTaus->at(0).Pt(),WeightBTagProb,true);
+
+        IsoTrackFractionPTActivity_->FillFrac(GenTaus_MT2Activity->at(0),GenTaus->at(0).Pt(),WeightBTagProb,true);
+        if(GenTaus->at(0).Pt()>10.) PionIsoTrackFractionPTActivity_->FillFrac(GenTaus_MT2Activity->at(0),GenTaus->at(0).Pt(),WeightBTagProb,true);
+        //easy norm
+        int isotrackActBin = IsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->FindBin(GenTaus_MT2Activity->at(0));
+        int isotrackPtBin = IsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->FindBin(GenTaus->at(0).Pt());
+        int pionIsotrackActBin = PionIsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->FindBin(GenTaus_MT2Activity->at(0));
+        int pionIsotrackPtBin = PionIsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->FindBin(GenTaus->at(0).Pt());
+        if(isotrackActBin > 0 && isotrackActBin < IsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetNbins()+1
+          && isotrackPtBin > 0 && isotrackPtBin < IsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetNbins()+1){
+          for(int xBin = 0; xBin <= IsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetNbins()+1; xBin++){
+            for(int yBin = 0; yBin <= IsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetNbins()+1; yBin++){
+              if(GenTaus->at(0).Pt()>10.) IsoTrackFractionPTActivity_->FillFrac(IsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetBinCenter(xBin),IsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetBinCenter(yBin),WeightBTagProb,false);
+            }
+          }
+        }
+        if(pionIsotrackActBin > 0 && pionIsotrackActBin < PionIsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetNbins()+1
+          && pionIsotrackPtBin > 0 && pionIsotrackPtBin < PionIsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetNbins()+1){
+          for(int xBin = 0; xBin <= PionIsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetNbins()+1; xBin++){
+            for(int yBin = 0; yBin <= PionIsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetNbins()+1; yBin++){
+              if(GenTaus->at(0).Pt()>10.) PionIsoTrackFractionPTActivity_->FillFrac(PionIsoTrackFractionPTActivity_->GetTotalTH2()->GetXaxis()->GetBinCenter(xBin),PionIsoTrackFractionPTActivity_->GetTotalTH2()->GetYaxis()->GetBinCenter(yBin),WeightBTagProb,false);
+            }
+          }
+        }
     }
 
     //NEW
@@ -2990,7 +3328,76 @@ Bool_t EffMaker::Process(Long64_t entry)
           }
         }
 
+        if(doTAPplots){
+          if(muAcc==0 || elecAcc==0 || muReco==0 || elecReco==0 || muIso==0 || elecIso==0){
+            for(unsigned i=0; i< TAPMuonTracks->size(); i++){
+              if(GenMuonsNum > 0){
+                for(unsigned j=0; j< GenMuons->size(); j++){
+                  if(TAPMuonTracks_mT->at(i) < 100. && deltaR(GenMuons->at(j).Eta(),GenMuons->at(j).Phi(),TAPMuonTracks->at(i).Eta(),TAPMuonTracks->at(i).Phi())<maxDeltaRGenToRecoMu_){
+                    if(TAPMuonTracks_trkiso->at(i) < 0.2){
+                      TrackIsolationPTActivity_->Fill(TAPMuonTracks_activity->at(i), TAPMuonTracks->at(i).Pt(),WeightBTagProb,true);
+                      MuTrackIsolationPTActivity_->Fill(TAPMuonTracks_activity->at(i), TAPMuonTracks->at(i).Pt(),WeightBTagProb,true);
+                    }else{
+                      TrackIsolationPTActivity_->Fill(TAPMuonTracks_activity->at(i), TAPMuonTracks->at(i).Pt(),WeightBTagProb,false);
+                      MuTrackIsolationPTActivity_->Fill(TAPMuonTracks_activity->at(i), TAPMuonTracks->at(i).Pt(),WeightBTagProb,false);
+                    }
+                  }
+                }
+              }
+            }
+
+            for(unsigned i=0; i< TAPElectronTracks->size(); i++){
+              if(GenElectronsNum > 0){
+                for(unsigned j=0; j< GenElectrons->size(); j++){
+                  if(TAPElectronTracks_mT->at(i) < 100. && deltaR(GenElectrons->at(j).Eta(),GenElectrons->at(j).Phi(),TAPElectronTracks->at(i).Eta(),TAPElectronTracks->at(i).Phi())<maxDeltaRGenToRecoMu_){
+                    if(TAPElectronTracks_trkiso->at(i) < 0.2){
+                      TrackIsolationPTActivity_->Fill(TAPElectronTracks_activity->at(i), TAPElectronTracks->at(i).Pt(),WeightBTagProb,true);
+                      ElecTrackIsolationPTActivity_->Fill(TAPElectronTracks_activity->at(i), TAPElectronTracks->at(i).Pt(),WeightBTagProb,true);
+                    }else{
+                      TrackIsolationPTActivity_->Fill(TAPElectronTracks_activity->at(i), TAPElectronTracks->at(i).Pt(),WeightBTagProb,false);
+                      ElecTrackIsolationPTActivity_->Fill(TAPElectronTracks_activity->at(i), TAPElectronTracks->at(i).Pt(),WeightBTagProb,false);
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          // end of if(muAcc==0 || elecAcc==0 || muReco==0 || elecReco==0 || muIso==0 || elecIso==0)
+          for(unsigned i=0; i< TAPPionTracks->size(); i++){
+            if(GenTausNum > 0){
+              for(unsigned j=0; j< GenTaus->size(); j++){
+                if(TAPPionTracks_mT->at(i) < 100. && TAPPionTracks->at(i).Pt() > 10.  && deltaR(GenTaus->at(j).Eta(),GenTaus->at(j).Phi(),TAPPionTracks->at(i).Eta(),TAPPionTracks->at(i).Phi())<maxDeltaRGenToRecoMu_){
+                  // actually pion track isolation is < 0.1
+                  if(TAPPionTracks_trkiso->at(i) < 0.2){
+                    TrackIsolationPTActivity_->Fill(TAPPionTracks_activity->at(i), TAPPionTracks->at(i).Pt(),WeightBTagProb,true);
+                    PionTrackIsolationPTActivity_->Fill(TAPPionTracks_activity->at(i), TAPPionTracks->at(i).Pt(),WeightBTagProb,true);
+                  }else{
+                    TrackIsolationPTActivity_->Fill(TAPPionTracks_activity->at(i), TAPPionTracks->at(i).Pt(),WeightBTagProb,false);
+                    PionTrackIsolationPTActivity_->Fill(TAPPionTracks_activity->at(i), TAPPionTracks->at(i).Pt(),WeightBTagProb,false);
+                  }
+                }
+              }
+            }
+          }
+        }
+
         if(doAdditionalPlots){
+          if(muAcc==0 || elecAcc==0 || muReco==0 || elecReco==0 || muIso==0 || elecIso==0){
+            if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
+              MuIsoTrackVetoPt_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+              IsoTrackVetoPt_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
+            }
+            if(isoElectronTracksNum>0 && isoTrack_highestPt==2){
+              ElecIsoTrackVetoPt_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+              IsoTrackVetoPt_->Fill(isoElectronTracks->at(0).Pt(), WeightBTagProb*36300);
+            }
+            if(isoPionTracksNum>0 && isoTrack_highestPt==3){
+              PionIsoTrackVetoPt_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+              IsoTrackVetoPt_->Fill(isoPionTracks->at(0).Pt(), WeightBTagProb*36300);
+            }
+          }
+
           if(muAcc==0 || elecAcc==0){
             if(isoMuonTracksNum>0 && isoTrack_highestPt==1){
               MuIsoTrackVetoPtAcc_->Fill(isoMuonTracks->at(0).Pt(), WeightBTagProb*36300);
@@ -3334,749 +3741,843 @@ void EffMaker::Terminate()
   gStyle->SetStatW(0.1);
   gStyle->SetStatH(0.1);
   gStyle->SetStatY(202);
-  gStyle->SetTitleYOffset(1.3);
 
-  gStyle->SetPalette(56);
-  gStyle->SetMarkerSize(1.3);
+  //Double_t stops[9] = { 0.0000, 0.1250, 0.2500, 0.3750, 0.5000, 0.6250, 0.7500, 0.8750, 1.0000};
+  //Double_t stops[8] = { 0.0000, 0.1429, 0.2857, 0.4286, 0.5714, 0.7143, 0.8571, 1.0000};
+  Double_t stops[7] = { 0.0000, 0.1667, 0.3333, 0.5000, 0.6667, 0.8333, 1.0000};
+
+  // kBird, noBlue
+  //Double_t red[8]   = { 0.0592, 0.0780, 0.0232, 0.1802, 0.5301, 0.8186, 0.9956, 0.9764};
+  //Double_t green[8] = { 0.3599, 0.5041, 0.6419, 0.7178, 0.7492, 0.7328, 0.7862, 0.9832};
+  //Double_t blue[8]  = { 0.8684, 0.8385, 0.7914, 0.6425, 0.4662, 0.3499, 0.1968, 0.0539};
+
+  // kBird, test
+  //Double_t red[8]   = { 46./255., 49./255., 11./255., 71./255., 165./255., 220./255., 254./255., 249./255.};
+  //Double_t green[8] = { 118./255., 155./255., 200./255., 209./255., 207./255., 203./255., 213./255., 252./255.};
+  //Double_t blue[8]  = { 241./255., 236./255., 248./255., 190./255., 154./255., 129./255., 101./255., 64./255.};
+
+  // kBird, test2
+  //Double_t red[8]   = { 46./255., 49./255., 11./255., 0.1802, 0.5301, 0.8186, 0.9956, 0.9764};
+  //Double_t green[8] = { 118./255., 155./255., 200./255., 0.7178, 0.7492, 0.7328, 0.7862, 0.9832};
+  //Double_t blue[8]  = { 241./255., 236./255., 248./255., 0.6425, 0.4662, 0.3499, 0.1968, 0.0539};
+
+  // kBlackBody, noRed
+  //Double_t red[8]   = { 243./255., 240./255., 240./255., 241./255., 239./255., 186./255., 151./255., 129./255.};
+  //Double_t green[8] = { 46./255.,  99./255., 149./255., 194./255., 220./255., 183./255., 166./255., 147./255.};
+  //Double_t blue[8]  = { 8./255., 36./255., 91./255., 169./255., 235./255., 246./255., 240./255., 233./255.};
+  //TColor::InvertPalette();
+
+  // kBlackBody, noRed x2
+  //Double_t red[7]   = { 240./255., 240./255., 241./255., 239./255., 186./255., 151./255., 129./255.};
+  //Double_t green[7] = { 99./255., 149./255., 194./255., 220./255., 183./255., 166./255., 147./255.};
+  //Double_t blue[7]  = { 36./255., 91./255., 169./255., 235./255., 246./255., 240./255., 233./255.};
+  //TColor::InvertPalette();
+
+  // kLightTemperature, noRed, noBlue
+  Double_t red[7]   = {   71./255., 123./255., 160./255., 210./255., 222./255., 214./255., 199./255.};
+  Double_t green[7] = {  117./255., 171./255., 211./255., 231./255., 220./255., 190./255., 132./255.};
+  Double_t blue[7]  = {  214./255., 228./255., 222./255., 210./255., 160./255., 105./255., 60./255. };
+
+  TColor::CreateGradientColorTable(7, stops, red, green, blue, 255);
+
+//  gStyle->SetPalette(57, 0);
+  gStyle->SetMarkerSize(1.0);
+  gStyle->SetNumberContours(255);
+
+  gStyle->SetTextFont(42);
+  gStyle->SetTitleFont(42, "XYZ");
+  gStyle->SetLabelFont(42, "XYZ");
+  gStyle->SetStatFont(42);
+
   
   // NEW
-  MuAccSearchBins_->SaveEff("#mu acc; SearchBins(QCD)", dEfficiencies);
-  ElecAccSearchBins_->SaveEff("e acc; SearchBins(QCD)", dEfficiencies);
+  MuAccSearchBins_->SaveEff("#mu acc; Search region bin number; #varepsilon_{Acc}^{#mu}", dEfficiencies);
+  ElecAccSearchBins_->SaveEff("e acc; Search region bin number; #varepsilon_{Acc}^{e}", dEfficiencies);
 
-  MuRecoSearchBins_->SaveEff("#mu reco; SearchBins(QCD)", dEfficiencies);
-  MuIsoSearchBins_->SaveEff("#mu iso; SearchBins(QCD)", dEfficiencies);
-  ElecRecoSearchBins_->SaveEff("e reco; SearchBins(QCD)", dEfficiencies);
-  ElecIsoSearchBins_->SaveEff("e iso; SearchBins(QCD)", dEfficiencies);
+  MuRecoSearchBins_->SaveEff("#mu reco; Search region bin number; #varepsilon_{Id}^{#mu}", dEfficiencies);
+  MuIsoSearchBins_->SaveEff("#mu iso; Search region bin number; #varepsilon_{Iso}^{#mu}", dEfficiencies);
+  ElecRecoSearchBins_->SaveEff("e reco; Search region bin number; #varepsilon_{Id}^{e}", dEfficiencies);
+  ElecIsoSearchBins_->SaveEff("e iso; Search region bin number; #varepsilon_{Iso}^{e}", dEfficiencies);
 
-  MuIsoTrackVetoSearchBins_->SaveEff("#mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBins_->SaveEff("e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBins_->SaveEff("#pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  IsoTrackVetoSearchBins_->SaveEff("iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  MuIsoTrackVetoSearchBins_->SaveEff("#mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}", dEfficiencies);
+  ElecIsoTrackVetoSearchBins_->SaveEff("e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}", dEfficiencies);
+  PionIsoTrackVetoSearchBins_->SaveEff("#pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}", dEfficiencies);
+  IsoTrackVetoSearchBins_->SaveEff("iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}", dEfficiencies);
 
-  MuIsoTrackVetoSearchBinsSF_->SaveEff("#mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsSF_->SaveEff("e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsSF_->SaveEff("#pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  IsoTrackVetoSearchBinsSF_->SaveEff("iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  MuIsoTrackVetoSearchBinsSF_->SaveEff("#mu iso track expec. reduction; Search region bin number", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsSF_->SaveEff("e iso track expec. reduction; Search region bin number", dEfficiencies);
+  PionIsoTrackVetoSearchBinsSF_->SaveEff("#pi iso track expec. reduction; Search region bin number", dEfficiencies);
+  IsoTrackVetoSearchBinsSF_->SaveEff("iso track expec. reduction; Search region bin number", dEfficiencies);
 
-  MuIsoTrackVetoSearchBinsLowPt_->SaveEff("#mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsLowPt_->SaveEff("e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsLowPt_->SaveEff("#pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  IsoTrackVetoSearchBinsLowPt_->SaveEff("iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  MuIsoTrackVetoSearchBinsLowPt_->SaveEff("#mu iso track expec. reduction; Search region bin number", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsLowPt_->SaveEff("e iso track expec. reduction; Search region bin number", dEfficiencies);
+  PionIsoTrackVetoSearchBinsLowPt_->SaveEff("#pi iso track expec. reduction; Search region bin number", dEfficiencies);
+  IsoTrackVetoSearchBinsLowPt_->SaveEff("iso track expec. reduction; Search region bin number", dEfficiencies);
 
-  MuIsoTrackVetoSearchBinsHighPt_->SaveEff("#mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsHighPt_->SaveEff("e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsHighPt_->SaveEff("#pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  IsoTrackVetoSearchBinsHighPt_->SaveEff("iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  MuIsoTrackVetoSearchBinsHighPt_->SaveEff("#mu iso track expec. reduction; Search region bin number", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsHighPt_->SaveEff("e iso track expec. reduction; Search region bin number", dEfficiencies);
+  PionIsoTrackVetoSearchBinsHighPt_->SaveEff("#pi iso track expec. reduction; Search region bin number", dEfficiencies);
+  IsoTrackVetoSearchBinsHighPt_->SaveEff("iso track expec. reduction; Search region bin number", dEfficiencies);
 
-  IsoTrackVetoSearchBinsAcc_->SaveEff("!acc iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsAcc_->SaveEff("!acc #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsAcc_->SaveEff("!acc e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsAcc_->SaveEff("!acc #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsAcc_->SaveEff("!acc iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}^{#slash{Acc}}", dEfficiencies);
+  MuIsoTrackVetoSearchBinsAcc_->SaveEff("!acc #mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}^{#slash{Acc}}", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsAcc_->SaveEff("!acc e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}^{#slash{Acc}}", dEfficiencies);
+  PionIsoTrackVetoSearchBinsAcc_->SaveEff("!acc #pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}^{#slash{Acc}}", dEfficiencies);
 
-  IsoTrackVetoSearchBinsIDIso_->SaveEff("!id/!iso iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsIDIso_->SaveEff("!id/!iso #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsIDIso_->SaveEff("!id/!iso e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsIDIso_->SaveEff("!id/!iso #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsIDIso_->SaveEff("!id/!iso iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}^{#slash{Id}/#slash{Iso}}", dEfficiencies);
+  MuIsoTrackVetoSearchBinsIDIso_->SaveEff("!id/!iso #mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}^{#slash{Id}/#slash{Iso}}", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsIDIso_->SaveEff("!id/!iso e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}^{#slash{Id}/#slash{Iso}}", dEfficiencies);
+  PionIsoTrackVetoSearchBinsIDIso_->SaveEff("!id/!iso #pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}^{#slash{Id}/#slash{Iso}}", dEfficiencies);
 
-  IsoTrackVetoSearchBinsID_->SaveEff("!id iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsID_->SaveEff("!id #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsID_->SaveEff("!id e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsID_->SaveEff("!id #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsID_->SaveEff("!id iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}^{#slash{Id}}", dEfficiencies);
+  MuIsoTrackVetoSearchBinsID_->SaveEff("!id #mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}^{#slash{Id}}", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsID_->SaveEff("!id e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}^{#slash{Id}}", dEfficiencies);
+  PionIsoTrackVetoSearchBinsID_->SaveEff("!id #pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}^{#slash{Id}}", dEfficiencies);
 
-  IsoTrackVetoSearchBinsIso_->SaveEff("!iso iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsIso_->SaveEff("!iso #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsIso_->SaveEff("!iso e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsIso_->SaveEff("!iso #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsIso_->SaveEff("!iso iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}^{#slash{Id}}", dEfficiencies);
+  MuIsoTrackVetoSearchBinsIso_->SaveEff("!iso #mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}^{#slash{Id}}", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsIso_->SaveEff("!iso e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}^{#slash{Id}}", dEfficiencies);
+  PionIsoTrackVetoSearchBinsIso_->SaveEff("!iso #pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}^{#slash{Id}}", dEfficiencies);
 
-  IsoTrackVetoSearchBinsMuAcc_->SaveEff("mu !acc iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsMuAcc_->SaveEff("mu !acc #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsMuAcc_->SaveEff("mu !acc e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsMuAcc_->SaveEff("mu !acc #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsMuAcc_->SaveEff("mu !acc iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}^{#slash{Acc},#mu}", dEfficiencies);
+  MuIsoTrackVetoSearchBinsMuAcc_->SaveEff("mu !acc #mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}^{#slash{Acc},#mu}", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsMuAcc_->SaveEff("mu !acc e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}^{#slash{Acc},#mu}", dEfficiencies);
+  PionIsoTrackVetoSearchBinsMuAcc_->SaveEff("mu !acc #pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}^{#slash{Acc},#mu}", dEfficiencies);
 
-  IsoTrackVetoSearchBinsMuIDIso_->SaveEff("mu !id/!iso iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsMuIDIso_->SaveEff("mu !id/!iso #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsMuIDIso_->SaveEff("mu !id/!iso e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsMuIDIso_->SaveEff("mu !id/!iso #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsMuIDIso_->SaveEff("mu !id/!iso iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}^{#slash{Id}/#slash{Iso},#mu}", dEfficiencies);
+  MuIsoTrackVetoSearchBinsMuIDIso_->SaveEff("mu !id/!iso #mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}^{#slash{Id}/#slash{Iso},#mu}", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsMuIDIso_->SaveEff("mu !id/!iso e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}^{#slash{Id}/#slash{Iso},#mu}", dEfficiencies);
+  PionIsoTrackVetoSearchBinsMuIDIso_->SaveEff("mu !id/!iso #pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}^{#slash{Id}/#slash{Iso},#mu}", dEfficiencies);
 
-  IsoTrackVetoSearchBinsMuID_->SaveEff("mu !id iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsMuID_->SaveEff("mu !id #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsMuID_->SaveEff("mu !id e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsMuID_->SaveEff("mu !id #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsMuID_->SaveEff("mu !id iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}^{#slash{Id},#mu}", dEfficiencies);
+  MuIsoTrackVetoSearchBinsMuID_->SaveEff("mu !id #mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}^{#slash{Id},#mu}", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsMuID_->SaveEff("mu !id e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}^{#slash{Id},#mu}", dEfficiencies);
+  PionIsoTrackVetoSearchBinsMuID_->SaveEff("mu !id #pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}^{#slash{Id},#mu}", dEfficiencies);
 
-  IsoTrackVetoSearchBinsMuIso_->SaveEff("mu !iso iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsMuIso_->SaveEff("mu !iso #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsMuIso_->SaveEff("mu !iso e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsMuIso_->SaveEff("mu !iso #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsMuIso_->SaveEff("mu !iso iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}^{#slash{Iso},#mu}", dEfficiencies);
+  MuIsoTrackVetoSearchBinsMuIso_->SaveEff("mu !iso #mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}^{#slash{Iso},#mu}", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsMuIso_->SaveEff("mu !iso e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}^{#slash{Iso},#mu}", dEfficiencies);
+  PionIsoTrackVetoSearchBinsMuIso_->SaveEff("mu !iso #pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}^{#slash{Iso},#mu}", dEfficiencies);
 
-  IsoTrackVetoSearchBinsElecAcc_->SaveEff("e !acc iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsElecAcc_->SaveEff("e !acc #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsElecAcc_->SaveEff("e !acc e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsElecAcc_->SaveEff("e !acc #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsElecAcc_->SaveEff("e !acc iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}^{#slash{Acc},e}", dEfficiencies);
+  MuIsoTrackVetoSearchBinsElecAcc_->SaveEff("e !acc #mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}^{#slash{Acc},e}", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsElecAcc_->SaveEff("e !acc e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}^{#slash{Acc},e}", dEfficiencies);
+  PionIsoTrackVetoSearchBinsElecAcc_->SaveEff("e !acc #pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}^{#slash{Acc},e}", dEfficiencies);
 
-  IsoTrackVetoSearchBinsElecIDIso_->SaveEff("e !id/!iso iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsElecIDIso_->SaveEff("e !id/!iso #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsElecIDIso_->SaveEff("e !id/!iso e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsElecIDIso_->SaveEff("e !id/!iso #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsElecIDIso_->SaveEff("e !id/!iso iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}^{#slash{Id}/#slash{Iso},e}", dEfficiencies);
+  MuIsoTrackVetoSearchBinsElecIDIso_->SaveEff("e !id/!iso #mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}^{#slash{Id}/#slash{Iso},e}", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsElecIDIso_->SaveEff("e !id/!iso e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}^{#slash{Id}/#slash{Iso},e}", dEfficiencies);
+  PionIsoTrackVetoSearchBinsElecIDIso_->SaveEff("e !id/!iso #pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}^{#slash{Id}/#slash{Iso},e}", dEfficiencies);
 
-  IsoTrackVetoSearchBinsElecID_->SaveEff("e !id iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsElecID_->SaveEff("e !id #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsElecID_->SaveEff("e !id e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsElecID_->SaveEff("e !id #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsElecID_->SaveEff("e !id iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}^{#slash{Id},e}", dEfficiencies);
+  MuIsoTrackVetoSearchBinsElecID_->SaveEff("e !id #mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}^{#slash{Id},e}", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsElecID_->SaveEff("e !id e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}^{#slash{Id},e}", dEfficiencies);
+  PionIsoTrackVetoSearchBinsElecID_->SaveEff("e !id #pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}^{#slash{Id},e}", dEfficiencies);
 
-  IsoTrackVetoSearchBinsElecIso_->SaveEff("e !iso iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsElecIso_->SaveEff("e !iso #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsElecIso_->SaveEff("e !iso e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsElecIso_->SaveEff("e !iso #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsElecIso_->SaveEff("e !iso iso track expec. reduction; Search region bin number; #varepsilon_{isotrk}^{#slash{Iso},e}", dEfficiencies);
+  MuIsoTrackVetoSearchBinsElecIso_->SaveEff("e !iso #mu iso track expec. reduction; Search region bin number; #varepsilon_{#mu isotrk}^{#slash{Iso},e}", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsElecIso_->SaveEff("e !iso e iso track expec. reduction; Search region bin number; #varepsilon_{e isotrk}^{#slash{Iso},e}", dEfficiencies);
+  PionIsoTrackVetoSearchBinsElecIso_->SaveEff("e !iso #pi iso track expec. reduction; Search region bin number; #varepsilon_{#pi isotrk}^{#slash{Iso},e}", dEfficiencies);
 
-  IsoTrackVetoSearchBinsMuAccSF_->SaveEff("mu !acc iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsMuAccSF_->SaveEff("mu !acc #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsMuAccSF_->SaveEff("mu !acc e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsMuAccSF_->SaveEff("mu !acc #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsMuAccSF_->SaveEff("mu !acc iso track expec. reduction; Search region bin number", dEfficiencies);
+  MuIsoTrackVetoSearchBinsMuAccSF_->SaveEff("mu !acc #mu iso track expec. reduction; Search region bin number", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsMuAccSF_->SaveEff("mu !acc e iso track expec. reduction; Search region bin number", dEfficiencies);
+  PionIsoTrackVetoSearchBinsMuAccSF_->SaveEff("mu !acc #pi iso track expec. reduction; Search region bin number", dEfficiencies);
 
-  IsoTrackVetoSearchBinsMuIDSF_->SaveEff("mu !id iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsMuIDSF_->SaveEff("mu !id #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsMuIDSF_->SaveEff("mu !id e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsMuIDSF_->SaveEff("mu !id #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsMuIDSF_->SaveEff("mu !id iso track expec. reduction; Search region bin number", dEfficiencies);
+  MuIsoTrackVetoSearchBinsMuIDSF_->SaveEff("mu !id #mu iso track expec. reduction; Search region bin number", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsMuIDSF_->SaveEff("mu !id e iso track expec. reduction; Search region bin number", dEfficiencies);
+  PionIsoTrackVetoSearchBinsMuIDSF_->SaveEff("mu !id #pi iso track expec. reduction; Search region bin number", dEfficiencies);
 
-  IsoTrackVetoSearchBinsMuIsoSF_->SaveEff("mu !iso iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsMuIsoSF_->SaveEff("mu !iso #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsMuIsoSF_->SaveEff("mu !iso e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsMuIsoSF_->SaveEff("mu !iso #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsMuIsoSF_->SaveEff("mu !iso iso track expec. reduction; Search region bin number", dEfficiencies);
+  MuIsoTrackVetoSearchBinsMuIsoSF_->SaveEff("mu !iso #mu iso track expec. reduction; Search region bin number", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsMuIsoSF_->SaveEff("mu !iso e iso track expec. reduction; Search region bin number", dEfficiencies);
+  PionIsoTrackVetoSearchBinsMuIsoSF_->SaveEff("mu !iso #pi iso track expec. reduction; Search region bin number", dEfficiencies);
 
-  IsoTrackVetoSearchBinsElecAccSF_->SaveEff("e !acc iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsElecAccSF_->SaveEff("e !acc #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsElecAccSF_->SaveEff("e !acc e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsElecAccSF_->SaveEff("e !acc #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsElecAccSF_->SaveEff("e !acc iso track expec. reduction; Search region bin number", dEfficiencies);
+  MuIsoTrackVetoSearchBinsElecAccSF_->SaveEff("e !acc #mu iso track expec. reduction; Search region bin number", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsElecAccSF_->SaveEff("e !acc e iso track expec. reduction; Search region bin number", dEfficiencies);
+  PionIsoTrackVetoSearchBinsElecAccSF_->SaveEff("e !acc #pi iso track expec. reduction; Search region bin number", dEfficiencies);
 
-  IsoTrackVetoSearchBinsElecIDSF_->SaveEff("e !id iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsElecIDSF_->SaveEff("e !id #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsElecIDSF_->SaveEff("e !id e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsElecIDSF_->SaveEff("e !id #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsElecIDSF_->SaveEff("e !id iso track expec. reduction; Search region bin number", dEfficiencies);
+  MuIsoTrackVetoSearchBinsElecIDSF_->SaveEff("e !id #mu iso track expec. reduction; Search region bin number", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsElecIDSF_->SaveEff("e !id e iso track expec. reduction; Search region bin number", dEfficiencies);
+  PionIsoTrackVetoSearchBinsElecIDSF_->SaveEff("e !id #pi iso track expec. reduction; Search region bin number", dEfficiencies);
 
-  IsoTrackVetoSearchBinsElecIsoSF_->SaveEff("e !iso iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  MuIsoTrackVetoSearchBinsElecIsoSF_->SaveEff("e !iso #mu iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  ElecIsoTrackVetoSearchBinsElecIsoSF_->SaveEff("e !iso e iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
-  PionIsoTrackVetoSearchBinsElecIsoSF_->SaveEff("e !iso #pi iso track expec. reduction; SearchBins(QCD)", dEfficiencies);
+  IsoTrackVetoSearchBinsElecIsoSF_->SaveEff("e !iso iso track expec. reduction; Search region bin number", dEfficiencies);
+  MuIsoTrackVetoSearchBinsElecIsoSF_->SaveEff("e !iso #mu iso track expec. reduction; Search region bin number", dEfficiencies);
+  ElecIsoTrackVetoSearchBinsElecIsoSF_->SaveEff("e !iso e iso track expec. reduction; Search region bin number", dEfficiencies);
+  PionIsoTrackVetoSearchBinsElecIsoSF_->SaveEff("e !iso #pi iso track expec. reduction; Search region bin number", dEfficiencies);
 
-  IsoTrackVetoActivityPtMuIDIso_->SaveEff("mu !id/!iso iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  MuIsoTrackVetoActivityPtMuIDIso_->SaveEff("mu !id/!iso #mu iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  ElecIsoTrackVetoActivityPtMuIDIso_->SaveEff("mu !id/!iso e iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  PionIsoTrackVetoActivityPtMuIDIso_->SaveEff("mu !id/!iso #pi iso track expec. reduction; Activity; pT", dEfficiencies, true);
+  IsoTrackVetoActivityPtMuIDIso_->SaveEff("mu !id/!iso iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  MuIsoTrackVetoActivityPtMuIDIso_->SaveEff("mu !id/!iso #mu iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  ElecIsoTrackVetoActivityPtMuIDIso_->SaveEff("mu !id/!iso e iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  PionIsoTrackVetoActivityPtMuIDIso_->SaveEff("mu !id/!iso #pi iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
 
-  IsoTrackVetoActivityPtMuID_->SaveEff("mu !id iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  MuIsoTrackVetoActivityPtMuID_->SaveEff("mu !id #mu iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  ElecIsoTrackVetoActivityPtMuID_->SaveEff("mu !id e iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  PionIsoTrackVetoActivityPtMuID_->SaveEff("mu !id #pi iso track expec. reduction; Activity; pT", dEfficiencies, true);
+  IsoTrackVetoActivityPtMuID_->SaveEff("mu !id iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  MuIsoTrackVetoActivityPtMuID_->SaveEff("mu !id #mu iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  ElecIsoTrackVetoActivityPtMuID_->SaveEff("mu !id e iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  PionIsoTrackVetoActivityPtMuID_->SaveEff("mu !id #pi iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
 
-  IsoTrackVetoActivityPtMuIso_->SaveEff("mu !iso iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  MuIsoTrackVetoActivityPtMuIso_->SaveEff("mu !iso #mu iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  ElecIsoTrackVetoActivityPtMuIso_->SaveEff("mu !iso e iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  PionIsoTrackVetoActivityPtMuIso_->SaveEff("mu !iso #pi iso track expec. reduction; Activity; pT", dEfficiencies, true);
+  IsoTrackVetoActivityPtMuIso_->SaveEff("mu !iso iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  MuIsoTrackVetoActivityPtMuIso_->SaveEff("mu !iso #mu iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  ElecIsoTrackVetoActivityPtMuIso_->SaveEff("mu !iso e iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  PionIsoTrackVetoActivityPtMuIso_->SaveEff("mu !iso #pi iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
 
-  IsoTrackVetoActivityPtElecIDIso_->SaveEff("e !id/!iso iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  MuIsoTrackVetoActivityPtElecIDIso_->SaveEff("e !id/!iso #mu iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  ElecIsoTrackVetoActivityPtElecIDIso_->SaveEff("e !id/!iso e iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  PionIsoTrackVetoActivityPtElecIDIso_->SaveEff("e !id/!iso #pi iso track expec. reduction; Activity; pT", dEfficiencies, true);
+  IsoTrackVetoActivityPtElecIDIso_->SaveEff("e !id/!iso iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  MuIsoTrackVetoActivityPtElecIDIso_->SaveEff("e !id/!iso #mu iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  ElecIsoTrackVetoActivityPtElecIDIso_->SaveEff("e !id/!iso e iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  PionIsoTrackVetoActivityPtElecIDIso_->SaveEff("e !id/!iso #pi iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
 
-  IsoTrackVetoActivityPtElecID_->SaveEff("e !id iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  MuIsoTrackVetoActivityPtElecID_->SaveEff("e !id #mu iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  ElecIsoTrackVetoActivityPtElecID_->SaveEff("e !id e iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  PionIsoTrackVetoActivityPtElecID_->SaveEff("e !id #pi iso track expec. reduction; Activity; pT", dEfficiencies, true);
+  IsoTrackVetoActivityPtElecID_->SaveEff("e !id iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  MuIsoTrackVetoActivityPtElecID_->SaveEff("e !id #mu iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  ElecIsoTrackVetoActivityPtElecID_->SaveEff("e !id e iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  PionIsoTrackVetoActivityPtElecID_->SaveEff("e !id #pi iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
 
-  IsoTrackVetoActivityPtElecIso_->SaveEff("e !iso iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  MuIsoTrackVetoActivityPtElecIso_->SaveEff("e !iso #mu iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  ElecIsoTrackVetoActivityPtElecIso_->SaveEff("e !iso e iso track expec. reduction; Activity; pT", dEfficiencies, true);
-  PionIsoTrackVetoActivityPtElecIso_->SaveEff("e !iso #pi iso track expec. reduction; Activity; pT", dEfficiencies, true);
+  IsoTrackVetoActivityPtElecIso_->SaveEff("e !iso iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  MuIsoTrackVetoActivityPtElecIso_->SaveEff("e !iso #mu iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  ElecIsoTrackVetoActivityPtElecIso_->SaveEff("e !iso e iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
+  PionIsoTrackVetoActivityPtElecIso_->SaveEff("e !iso #pi iso track expec. reduction; Activity; p_{T}", dEfficiencies, true);
 
-  IsoTrackVetoPtEtaMuIDIso_->SaveEff("mu !id/!iso iso track expec. reduction; pT; eta", dEfficiencies, true);
-  MuIsoTrackVetoPtEtaMuIDIso_->SaveEff("mu !id/!iso #mu iso track expec. reduction; pT; eta", dEfficiencies, true);
-  ElecIsoTrackVetoPtEtaMuIDIso_->SaveEff("mu !id/!iso e iso track expec. reduction; pT; eta", dEfficiencies, true);
-  PionIsoTrackVetoPtEtaMuIDIso_->SaveEff("mu !id/!iso #pi iso track expec. reduction; pT; eta", dEfficiencies, true);
+  IsoTrackVetoPtEtaMuIDIso_->SaveEff("mu !id/!iso iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  MuIsoTrackVetoPtEtaMuIDIso_->SaveEff("mu !id/!iso #mu iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  ElecIsoTrackVetoPtEtaMuIDIso_->SaveEff("mu !id/!iso e iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  PionIsoTrackVetoPtEtaMuIDIso_->SaveEff("mu !id/!iso #pi iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
 
-  IsoTrackVetoPtEtaMuID_->SaveEff("mu !id iso track expec. reduction; pT; eta", dEfficiencies, true);
-  MuIsoTrackVetoPtEtaMuID_->SaveEff("mu !id #mu iso track expec. reduction; pT; eta", dEfficiencies, true);
-  ElecIsoTrackVetoPtEtaMuID_->SaveEff("mu !id e iso track expec. reduction; pT; eta", dEfficiencies, true);
-  PionIsoTrackVetoPtEtaMuID_->SaveEff("mu !id #pi iso track expec. reduction; pT; eta", dEfficiencies, true);
+  IsoTrackVetoPtEtaMuID_->SaveEff("mu !id iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  MuIsoTrackVetoPtEtaMuID_->SaveEff("mu !id #mu iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  ElecIsoTrackVetoPtEtaMuID_->SaveEff("mu !id e iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  PionIsoTrackVetoPtEtaMuID_->SaveEff("mu !id #pi iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
 
-  IsoTrackVetoPtEtaMuIso_->SaveEff("mu !iso iso track expec. reduction; pT; eta", dEfficiencies, true);
-  MuIsoTrackVetoPtEtaMuIso_->SaveEff("mu !iso #mu iso track expec. reduction; pT; eta", dEfficiencies, true);
-  ElecIsoTrackVetoPtEtaMuIso_->SaveEff("mu !iso e iso track expec. reduction; pT; eta", dEfficiencies, true);
-  PionIsoTrackVetoPtEtaMuIso_->SaveEff("mu !iso #pi iso track expec. reduction; pT; eta", dEfficiencies, true);
+  IsoTrackVetoPtEtaMuIso_->SaveEff("mu !iso iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  MuIsoTrackVetoPtEtaMuIso_->SaveEff("mu !iso #mu iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  ElecIsoTrackVetoPtEtaMuIso_->SaveEff("mu !iso e iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  PionIsoTrackVetoPtEtaMuIso_->SaveEff("mu !iso #pi iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
 
-  IsoTrackVetoPtEtaElecIDIso_->SaveEff("e !id/!iso iso track expec. reduction; pT; eta", dEfficiencies, true);
-  MuIsoTrackVetoPtEtaElecIDIso_->SaveEff("e !id/!iso #mu iso track expec. reduction; pT; eta", dEfficiencies, true);
-  ElecIsoTrackVetoPtEtaElecIDIso_->SaveEff("e !id/!iso e iso track expec. reduction; pT; eta", dEfficiencies, true);
-  PionIsoTrackVetoPtEtaElecIDIso_->SaveEff("e !id/!iso #pi iso track expec. reduction; pT; eta", dEfficiencies, true);
+  IsoTrackVetoPtEtaElecIDIso_->SaveEff("e !id/!iso iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  MuIsoTrackVetoPtEtaElecIDIso_->SaveEff("e !id/!iso #mu iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  ElecIsoTrackVetoPtEtaElecIDIso_->SaveEff("e !id/!iso e iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  PionIsoTrackVetoPtEtaElecIDIso_->SaveEff("e !id/!iso #pi iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
 
-  IsoTrackVetoPtEtaElecID_->SaveEff("e !id iso track expec. reduction; pT; eta", dEfficiencies, true);
-  MuIsoTrackVetoPtEtaElecID_->SaveEff("e !id #mu iso track expec. reduction; pT; eta", dEfficiencies, true);
-  ElecIsoTrackVetoPtEtaElecID_->SaveEff("e !id e iso track expec. reduction; pT; eta", dEfficiencies, true);
-  PionIsoTrackVetoPtEtaElecID_->SaveEff("e !id #pi iso track expec. reduction; pT; eta", dEfficiencies, true);
+  IsoTrackVetoPtEtaElecID_->SaveEff("e !id iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  MuIsoTrackVetoPtEtaElecID_->SaveEff("e !id #mu iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  ElecIsoTrackVetoPtEtaElecID_->SaveEff("e !id e iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  PionIsoTrackVetoPtEtaElecID_->SaveEff("e !id #pi iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
 
-  IsoTrackVetoPtEtaElecIso_->SaveEff("e !iso iso track expec. reduction; pT; eta", dEfficiencies, true);
-  MuIsoTrackVetoPtEtaElecIso_->SaveEff("e !iso #mu iso track expec. reduction; pT; eta", dEfficiencies, true);
-  ElecIsoTrackVetoPtEtaElecIso_->SaveEff("e !iso e iso track expec. reduction; pT; eta", dEfficiencies, true);
-  PionIsoTrackVetoPtEtaElecIso_->SaveEff("e !iso #pi iso track expec. reduction; pT; eta", dEfficiencies, true);
+  IsoTrackVetoPtEtaElecIso_->SaveEff("e !iso iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  MuIsoTrackVetoPtEtaElecIso_->SaveEff("e !iso #mu iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  ElecIsoTrackVetoPtEtaElecIso_->SaveEff("e !iso e iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
+  PionIsoTrackVetoPtEtaElecIso_->SaveEff("e !iso #pi iso track expec. reduction; p_{T}; #eta", dEfficiencies, true);
 
 
-  MuMTWSearchBins_->SaveEff("#mu m_{T}^{W}; SearchBins(QCD)", dEfficiencies);  
-  ElecMTWSearchBins_->SaveEff("e m_{T}^{W}; SearchBins(QCD)", dEfficiencies);  
+  MuMTWSearchBins_->SaveEff("#mu m_{T}^{W}; Search region bin number; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);  
+  ElecMTWSearchBins_->SaveEff("e m_{T}^{W}; Search region bin number; #varepsilon_{m_{T}}^{e}", dEfficiencies);  
 
-  MuPuritySearchBins_->SaveEff("#mu purity; SearchBins(QCD)", dEfficiencies);  
-  ElecPuritySearchBins_->SaveEff("e purity; SearchBins(QCD)", dEfficiencies);
+  MuPuritySearchBins_->SaveEff("#mu purity; Search region bin number; #beta^{#mu}", dEfficiencies);  
+  ElecPuritySearchBins_->SaveEff("e purity; Search region bin number; #beta^{e}", dEfficiencies);
 
-  MuDiLepCRSearchBins_->SaveEff("#mu dilep purity; SearchBins(QCD)", dEfficiencies);   
-  ElecDiLepCRSearchBins_->SaveEff("e dilep purity; SearchBins(QCD)", dEfficiencies);   
+  MuDiLepCRSearchBins_->SaveEff("#mu dilep purity; Search region bin number; #beta_{1l}^{#mu}", dEfficiencies);   
+  ElecDiLepCRSearchBins_->SaveEff("e dilep purity; Search region bin number; #beta_{1l}^{e}", dEfficiencies);   
 
   // old purity
   //1D
-  MuPurityOldBTag_->SaveEff("#mu purity; B_{Tags}", dEfficiencies);
-  MuPurityOldNJets_->SaveEff("#mu purity; N_{Jets}", dEfficiencies);   
-  MuPurityOldHT_->SaveEff("#mu purity; H_{T} [GeV]", dEfficiencies);   
-  MuPurityOldMHT_->SaveEff("#mu purity; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuonPurityOldMHTNJet_->SaveEff("#mu purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  MuonPurityOldNJetsBTags_->SaveEff("#mu purity; N_{Jets}; B_{Tags}", dEfficiencies);
+  MuPurityOldBTag_->SaveEff("#mu purity; N_{b-jet}; #beta^{#mu}_{old}", dEfficiencies);
+  MuPurityOldNJets_->SaveEff("#mu purity; N_{jet}; #beta^{#mu}_{old}", dEfficiencies);   
+  MuPurityOldHT_->SaveEff("#mu purity; H_{T} [GeV]; #beta^{#mu}_{old}", dEfficiencies);   
+  MuPurityOldMHT_->SaveEff("#mu purity; H_{T}^{miss} [GeV]; #beta^{#mu}_{old}", dEfficiencies);   
+  MuonPurityOldMHTNJet_->SaveEff("#mu purity; H_{T}^{miss} [GeV]; N_{jet}; #beta^{#mu}_{old}", dEfficiencies);   
+  MuonPurityOldNJetsBTags_->SaveEff("#mu purity; N_{jet}; N_{b-jet}; #beta^{#mu}_{old}", dEfficiencies);
   //1D
-  ElecPurityOldBTag_->SaveEff("e purity; B_{Tags}", dEfficiencies);
-  ElecPurityOldNJets_->SaveEff("e purity; N_{Jets}", dEfficiencies);   
-  ElecPurityOldHT_->SaveEff("e purity; H_{T} [GeV]", dEfficiencies);   
-  ElecPurityOldMHT_->SaveEff("e purity; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecPurityOldMHTNJet_->SaveEff("e purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  ElecPurityOldNJetsBTags_->SaveEff("e purity; N_{Jets}; B_{Tags}", dEfficiencies);
+  ElecPurityOldBTag_->SaveEff("e purity; N_{b-jet}; #beta^{e}_{old}", dEfficiencies);
+  ElecPurityOldNJets_->SaveEff("e purity; N_{jet}; #beta^{e}_{old}", dEfficiencies);   
+  ElecPurityOldHT_->SaveEff("e purity; H_{T} [GeV]; #beta^{e}_{old}", dEfficiencies);   
+  ElecPurityOldMHT_->SaveEff("e purity; H_{T}^{miss} [GeV]; #beta^{e}_{old}", dEfficiencies);   
+  ElecPurityOldMHTNJet_->SaveEff("e purity; H_{T}^{miss} [GeV]; N_{jet}; #beta^{e}_{old}", dEfficiencies);   
+  ElecPurityOldNJetsBTags_->SaveEff("e purity; N_{jet}; N_{b-jet}; #beta^{e}_{old}", dEfficiencies);
 
   // new purity
   //muon
-  MuPurityBTag_->SaveEff("#mu purity; B_{Tags}", dEfficiencies);   
-  MuPurityNJets_->SaveEff("#mu purity; N_{Jets}", dEfficiencies);   
-  MuPurityHT_->SaveEff("#mu purity; H_{T} [GeV]", dEfficiencies);   
-  MuPurityMHT_->SaveEff("#mu purity; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuonPurityMHTNJet_->SaveEff("#mu purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
-  MuonPurityNJetsBTags_->SaveEff("#mu purity; N_{Jets}; B_{Tags}", dEfficiencies);
-  MuonPurityMHTBTags_->SaveEff("#mu purity; #slash{H}_{T} [GeV]; B_{Tags}", dEfficiencies);
-  MuonPurityHTMHT_->SaveEff("#mu purity; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuPurityBTag_->SaveEff("#mu purity; N_{b-jet}; #beta^{#mu}", dEfficiencies);   
+  MuPurityNJets_->SaveEff("#mu purity; N_{jet}; #beta^{#mu}", dEfficiencies);   
+  MuPurityHT_->SaveEff("#mu purity; H_{T} [GeV]; #beta^{#mu}", dEfficiencies);   
+  MuPurityMHT_->SaveEff("#mu purity; H_{T}^{miss} [GeV]; #beta^{#mu}", dEfficiencies);   
+  MuonPurityMHTNJet_->SaveEff("#mu purity; H_{T}^{miss} [GeV]; N_{jet}; #beta^{#mu}", dEfficiencies);
+  MuonPurityNJetsBTags_->SaveEff("#mu purity; N_{jet}; N_{b-jet}; #beta^{#mu}", dEfficiencies);
+  MuonPurityMHTBTags_->SaveEff("#mu purity; H_{T}^{miss} [GeV]; N_{b-jet}; #beta^{#mu}", dEfficiencies);
+  MuonPurityHTMHT_->SaveEff("#mu purity; H_{T} [GeV]; H_{T}^{miss} [GeV]; #beta^{#mu}", dEfficiencies);
 
   //elec
   //1D
-  ElecPurityBTag_->SaveEff("e purity; B_{Tags}", dEfficiencies);   
-  ElecPurityNJets_->SaveEff("e purity; N_{Jets}", dEfficiencies);   
-  ElecPurityHT_->SaveEff("e purity; H_{T} [GeV]", dEfficiencies);   
-  ElecPurityMHT_->SaveEff("e purity; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecPurityMHTNJet_->SaveEff("e purity; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
-  ElecPurityNJetsBTags_->SaveEff("e purity; N_{Jets}; B_{Tags}", dEfficiencies);
-  ElecPurityMHTBTags_->SaveEff("e purity; #slash{H}_{T} [GeV]; B_{Tags}", dEfficiencies);
-  ElecPurityHTMHT_->SaveEff("e purity; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecPurityBTag_->SaveEff("e purity; N_{b-jet}; #beta^{e}", dEfficiencies);   
+  ElecPurityNJets_->SaveEff("e purity; N_{jet}; #beta^{e}", dEfficiencies);   
+  ElecPurityHT_->SaveEff("e purity; H_{T} [GeV]; #beta^{e}", dEfficiencies);   
+  ElecPurityMHT_->SaveEff("e purity; H_{T}^{miss} [GeV]; #beta^{e}", dEfficiencies);   
+  ElecPurityMHTNJet_->SaveEff("e purity; H_{T}^{miss} [GeV]; N_{jet}; #beta^{e}", dEfficiencies);
+  ElecPurityNJetsBTags_->SaveEff("e purity; N_{jet}; N_{b-jet}; #beta^{e}", dEfficiencies);
+  ElecPurityMHTBTags_->SaveEff("e purity; H_{T}^{miss} [GeV]; N_{b-jet}; #beta^{e}", dEfficiencies);
+  ElecPurityHTMHT_->SaveEff("e purity; H_{T} [GeV]; H_{T}^{miss} [GeV]; #beta^{e}", dEfficiencies);
 
 
   // acc
   //muon
   //1D
-  MuAccBTag_->SaveEff("#mu acc; B_{Tags}", dEfficiencies);   
-  MuAccNJets_->SaveEff("#mu acc; N_{Jets}", dEfficiencies);   
-  MuAccHT_->SaveEff("#mu acc; H_{T} [GeV]", dEfficiencies);   
-  MuAccMHT_->SaveEff("#mu acc; #slash{H}_{T} [GeV]", dEfficiencies); 
-  MuAccDTT_->SaveEff("#mu acc; 0.5*(1-cosDTT)", dEfficiencies);
+  MuAccBTag_->SaveEff("#mu acc; N_{b-jet}; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccNJets_->SaveEff("#mu acc; N_{jet}; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHT_->SaveEff("#mu acc; H_{T} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccMHT_->SaveEff("#mu acc; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies); 
+  MuAccDTT_->SaveEff("#mu acc; 0.5*(1-cosDTT); #varepsilon_{Acc}^{#mu}", dEfficiencies);
   // 2D 
-  MuAccHTNJets_->SaveEff("#mu acc; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  MuAccHTMHT_->SaveEff("#mu acc; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccMHTNJets_->SaveEff("#mu acc; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  MuAccBTagNJets_->SaveEff("#mu acc; B_{Tags}; N_{Jets}", dEfficiencies);   
-  MuAccMHTNJetsB0_->SaveEff("#mu acc B_{Tags}=0; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  MuAccMHTNJetsB1_Inf_->SaveEff("#mu acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);    
-  MuAccHTMHT_NJets26_->SaveEff("#mu acc N_{Jets}=2-6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets2_->SaveEff("#mu acc N_{Jets}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets3_->SaveEff("#mu acc N_{Jets}=3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets4_->SaveEff("#mu acc N_{Jets}=4;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets5_->SaveEff("#mu acc N_{Jets}=5;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets6_->SaveEff("#mu acc N_{Jets}=6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets78_->SaveEff("#mu acc N_{Jets}=7-8;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets9Inf_->SaveEff("#mu acc N_{Jets}=9+;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets7Inf_->SaveEff("#mu acc N_{Jets}#geq7;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHTB0_->SaveEff("#mu acc B_{Tags}=0;H_{T} [GeV] ; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHTB1_Inf_->SaveEff("#mu acc B_{Tags}#geq1; H_{T} [GeV]; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
+  MuAccHTNJets_->SaveEff("#mu acc; H_{T} [GeV]; N_{jet}; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_->SaveEff("#mu acc; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccMHTNJets_->SaveEff("#mu acc; H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccBTagNJets_->SaveEff("#mu acc; N_{b-jet}; N_{jet}; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccMHTNJetsB0_->SaveEff("#mu acc N_{b-jet}=0; H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccMHTNJetsB1_Inf_->SaveEff("#mu acc N_{b-jet}#geq1; H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{Acc}^{#mu}", dEfficiencies);    
+  MuAccHTMHT_NJets26_->SaveEff("#mu acc N_{jet}=2-6;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets2_->SaveEff("#mu acc N_{jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets3_->SaveEff("#mu acc N_{jet}=3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets4_->SaveEff("#mu acc N_{jet}=4;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets5_->SaveEff("#mu acc N_{jet}=5;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets6_->SaveEff("#mu acc N_{jet}=6;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets78_->SaveEff("#mu acc N_{jet}=7-8;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets9Inf_->SaveEff("#mu acc N_{jet}=9+;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets7Inf_->SaveEff("#mu acc N_{jet}#geq7;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHTB0_->SaveEff("#mu acc N_{b-jet}=0;H_{T} [GeV] ; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHTB1_Inf_->SaveEff("#mu acc N_{b-jet}#geq1; H_{T} [GeV]; H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{Acc}^{#mu}", dEfficiencies);
 
-  MuAccHTMHT_NJets2_BTags0_->SaveEff("#mu acc N_{Jets}=2, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets3_BTags0_->SaveEff("#mu acc N_{Jets}=3, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets4_BTags0_->SaveEff("#mu acc N_{Jets}=4, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets5_BTags0_->SaveEff("#mu acc N_{Jets}=5, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets6_BTags0_->SaveEff("#mu acc N_{Jets}=6, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets78_BTags0_->SaveEff("#mu acc N_{Jets}=7-8, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets9Inf_BTags0_->SaveEff("#mu acc N_{Jets}=9+, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuAccHTMHT_NJets7Inf_BTags0_->SaveEff("#mu acc N_{Jets}=7+, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuAccHTMHT_NJets2_BTags1Inf_->SaveEff("#mu acc N_{Jets}=2, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets3_BTags1Inf_->SaveEff("#mu acc N_{Jets}=3, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets4_BTags1Inf_->SaveEff("#mu acc N_{Jets}=4, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets5_BTags1Inf_->SaveEff("#mu acc N_{Jets}=5, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets6_BTags1Inf_->SaveEff("#mu acc N_{Jets}=6, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets78_BTags1Inf_->SaveEff("#mu acc N_{Jets}=7-8, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets9Inf_BTags1Inf_->SaveEff("#mu acc N_{Jets}=9+, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
-  MuAccHTMHT_NJets7Inf_BTags1Inf_->SaveEff("#mu acc N_{Jets}=7+, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuAccHTMHT_NJets2_BTags1_->SaveEff("#mu acc N_{Jets}=2, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets3_BTags1_->SaveEff("#mu acc N_{Jets}=3, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets4_BTags1_->SaveEff("#mu acc N_{Jets}=4, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets5_BTags1_->SaveEff("#mu acc N_{Jets}=5, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets6_BTags1_->SaveEff("#mu acc N_{Jets}=6, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets78_BTags1_->SaveEff("#mu acc N_{Jets}=7-8, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets9Inf_BTags1_->SaveEff("#mu acc N_{Jets}=9+, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
-  MuAccHTMHT_NJets7Inf_BTags1_->SaveEff("#mu acc N_{Jets}=7+, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuAccHTMHT_NJets2_BTags2Inf_->SaveEff("#mu acc N_{Jets}=2, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets3_BTags2Inf_->SaveEff("#mu acc N_{Jets}=3, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets4_BTags2Inf_->SaveEff("#mu acc N_{Jets}=4, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets5_BTags2Inf_->SaveEff("#mu acc N_{Jets}=5, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets6_BTags2Inf_->SaveEff("#mu acc N_{Jets}=6, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets78_BTags2Inf_->SaveEff("#mu acc N_{Jets}=7-8, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets9Inf_BTags2Inf_->SaveEff("#mu acc N_{Jets}=9+, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
-  MuAccHTMHT_NJets7Inf_BTags2Inf_->SaveEff("#mu acc N_{Jets}=7+, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuAccHTMHT_NJets3_BTags2_->SaveEff("#mu acc N_{Jets}=3, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets4_BTags2_->SaveEff("#mu acc N_{Jets}=4, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets5_BTags2_->SaveEff("#mu acc N_{Jets}=5, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets6_BTags2_->SaveEff("#mu acc N_{Jets}=6, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets78_BTags2_->SaveEff("#mu acc N_{Jets}=7-8, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets9Inf_BTags2_->SaveEff("#mu acc N_{Jets}=9+, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
-  MuAccHTMHT_NJets7Inf_BTags2_->SaveEff("#mu acc N_{Jets}=7+, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
-  MuAccHTMHT_NJets3_BTags3Inf_->SaveEff("#mu acc N_{Jets}=3, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets4_BTags3Inf_->SaveEff("#mu acc N_{Jets}=4, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets5_BTags3Inf_->SaveEff("#mu acc N_{Jets}=5, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets6_BTags3Inf_->SaveEff("#mu acc N_{Jets}=6, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets78_BTags3Inf_->SaveEff("#mu acc N_{Jets}=7-8, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuAccHTMHT_NJets9Inf_BTags3Inf_->SaveEff("#mu acc N_{Jets}=9+, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
-  MuAccHTMHT_NJets7Inf_BTags3Inf_->SaveEff("#mu acc N_{Jets}=7+, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
+  MuAccHTMHT_NJets2_BTags0_->SaveEff("#mu acc N_{jet}=2, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets3_BTags0_->SaveEff("#mu acc N_{jet}=3, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets4_BTags0_->SaveEff("#mu acc N_{jet}=4, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets5_BTags0_->SaveEff("#mu acc N_{jet}=5, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets6_BTags0_->SaveEff("#mu acc N_{jet}=6, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets78_BTags0_->SaveEff("#mu acc N_{jet}=7-8, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets9Inf_BTags0_->SaveEff("#mu acc N_{jet}=9+, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);
+  MuAccHTMHT_NJets7Inf_BTags0_->SaveEff("#mu acc N_{jet}=7+, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);
+  MuAccHTMHT_NJets2_BTags1Inf_->SaveEff("#mu acc N_{jet}=2, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets3_BTags1Inf_->SaveEff("#mu acc N_{jet}=3, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets4_BTags1Inf_->SaveEff("#mu acc N_{jet}=4, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets5_BTags1Inf_->SaveEff("#mu acc N_{jet}=5, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets6_BTags1Inf_->SaveEff("#mu acc N_{jet}=6, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets78_BTags1Inf_->SaveEff("#mu acc N_{jet}=7-8, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets9Inf_BTags1Inf_->SaveEff("#mu acc N_{jet}=9+, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies); 
+  MuAccHTMHT_NJets7Inf_BTags1Inf_->SaveEff("#mu acc N_{jet}=7+, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);
+  MuAccHTMHT_NJets2_BTags1_->SaveEff("#mu acc N_{jet}=2, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets3_BTags1_->SaveEff("#mu acc N_{jet}=3, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets4_BTags1_->SaveEff("#mu acc N_{jet}=4, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets5_BTags1_->SaveEff("#mu acc N_{jet}=5, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets6_BTags1_->SaveEff("#mu acc N_{jet}=6, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets78_BTags1_->SaveEff("#mu acc N_{jet}=7-8, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets9Inf_BTags1_->SaveEff("#mu acc N_{jet}=9+, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies); 
+  MuAccHTMHT_NJets7Inf_BTags1_->SaveEff("#mu acc N_{jet}=7+, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);
+  MuAccHTMHT_NJets2_BTags2Inf_->SaveEff("#mu acc N_{jet}=2, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets3_BTags2Inf_->SaveEff("#mu acc N_{jet}=3, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets4_BTags2Inf_->SaveEff("#mu acc N_{jet}=4, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets5_BTags2Inf_->SaveEff("#mu acc N_{jet}=5, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets6_BTags2Inf_->SaveEff("#mu acc N_{jet}=6, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets78_BTags2Inf_->SaveEff("#mu acc N_{jet}=7-8, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets9Inf_BTags2Inf_->SaveEff("#mu acc N_{jet}=9+, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies); 
+  MuAccHTMHT_NJets7Inf_BTags2Inf_->SaveEff("#mu acc N_{jet}=7+, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);
+  MuAccHTMHT_NJets3_BTags2_->SaveEff("#mu acc N_{jet}=3, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets4_BTags2_->SaveEff("#mu acc N_{jet}=4, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets5_BTags2_->SaveEff("#mu acc N_{jet}=5, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets6_BTags2_->SaveEff("#mu acc N_{jet}=6, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets78_BTags2_->SaveEff("#mu acc N_{jet}=7-8, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets9Inf_BTags2_->SaveEff("#mu acc N_{jet}=9+, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies); 
+  MuAccHTMHT_NJets7Inf_BTags2_->SaveEff("#mu acc N_{jet}=7+, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies); 
+  MuAccHTMHT_NJets3_BTags3Inf_->SaveEff("#mu acc N_{jet}=3, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets4_BTags3Inf_->SaveEff("#mu acc N_{jet}=4, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets5_BTags3Inf_->SaveEff("#mu acc N_{jet}=5, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets6_BTags3Inf_->SaveEff("#mu acc N_{jet}=6, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets78_BTags3Inf_->SaveEff("#mu acc N_{jet}=7-8, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccHTMHT_NJets9Inf_BTags3Inf_->SaveEff("#mu acc N_{jet}=9+, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies); 
+  MuAccHTMHT_NJets7Inf_BTags3Inf_->SaveEff("#mu acc N_{jet}=7+, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies); 
 
   //elec
   //1D
-  ElecAccBTag_->SaveEff("e acc; B_{Tags}", dEfficiencies);   
-  ElecAccNJets_->SaveEff("e acc; N_{Jets}", dEfficiencies);   
-  ElecAccHT_->SaveEff("e acc; H_{T} [GeV]", dEfficiencies);   
-  ElecAccMHT_->SaveEff("e acc; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecAccDTT_->SaveEff("e acc; 0.5*(1-cosDTT)", dEfficiencies);
+  ElecAccBTag_->SaveEff("e acc; N_{b-jet}; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccNJets_->SaveEff("e acc; N_{jet}; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHT_->SaveEff("e acc; H_{T} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccMHT_->SaveEff("e acc; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);
+  ElecAccDTT_->SaveEff("e acc; 0.5*(1-cosDTT); #varepsilon_{Acc}^{e}", dEfficiencies);
 
   // 2D 
-  ElecAccHTNJets_->SaveEff("e acc; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  ElecAccHTMHT_->SaveEff("e acc; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccMHTNJets_->SaveEff("e acc; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  ElecAccBTagNJets_->SaveEff("e acc; B_{Tags}; N_{Jets}", dEfficiencies);   
-  ElecAccMHTNJetsB0_->SaveEff("e acc B_{Tags}=0; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  ElecAccMHTNJetsB1_Inf_->SaveEff("e acc B_{Tags}#geq1; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  ElecAccHTMHT_NJets26_->SaveEff("e acc N_{Jets}=2-6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets2_->SaveEff("e acc N_{Jets}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets3_->SaveEff("e acc N_{Jets}=3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets4_->SaveEff("e acc N_{Jets}=4;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets5_->SaveEff("e acc N_{Jets}=5;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets6_->SaveEff("e acc N_{Jets}=6;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets78_->SaveEff("e acc N_{Jets}=7-8;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets9Inf_->SaveEff("e acc N_{Jets}=9+;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets7Inf_->SaveEff("e acc N_{Jets}#geq7;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHTB0_->SaveEff("e acc B_{Tags}=0;H_{T} [GeV] ; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHTB1_Inf_->SaveEff("e acc B_{Tags}#geq1; H_{T} [GeV]; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies); 
+  ElecAccHTNJets_->SaveEff("e acc; H_{T} [GeV]; N_{jet}; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_->SaveEff("e acc; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccMHTNJets_->SaveEff("e acc; H_{T}^{miss} [GeV]; N_{jet}", dEfficiencies);   
+  ElecAccBTagNJets_->SaveEff("e acc; N_{b-jet}; N_{jet}; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccMHTNJetsB0_->SaveEff("e acc N_{b-jet}=0; H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccMHTNJetsB1_Inf_->SaveEff("e acc N_{b-jet}#geq1; H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets26_->SaveEff("e acc N_{jet}=2-6;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets2_->SaveEff("e acc N_{jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets3_->SaveEff("e acc N_{jet}=3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets4_->SaveEff("e acc N_{jet}=4;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets5_->SaveEff("e acc N_{jet}=5;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets6_->SaveEff("e acc N_{jet}=6;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets78_->SaveEff("e acc N_{jet}=7-8;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets9Inf_->SaveEff("e acc N_{jet}=9+;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets7Inf_->SaveEff("e acc N_{jet}#geq7;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHTB0_->SaveEff("e acc N_{b-jet}=0;H_{T} [GeV] ; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHTB1_Inf_->SaveEff("e acc N_{b-jet}#geq1; H_{T} [GeV]; H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{Acc}^{e}", dEfficiencies); 
 
-  ElecAccHTMHT_NJets2_BTags0_->SaveEff("e acc N_{Jets}=2, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets3_BTags0_->SaveEff("e acc N_{Jets}=3, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets4_BTags0_->SaveEff("e acc N_{Jets}=4, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets5_BTags0_->SaveEff("e acc N_{Jets}=5, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets6_BTags0_->SaveEff("e acc N_{Jets}=6, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets78_BTags0_->SaveEff("e acc N_{Jets}=7-8, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets9Inf_BTags0_->SaveEff("e acc N_{Jets}=9+, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecAccHTMHT_NJets7Inf_BTags0_->SaveEff("e acc N_{Jets}=7+, B_{Tags}=0;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecAccHTMHT_NJets2_BTags1Inf_->SaveEff("e acc N_{Jets}=2, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets3_BTags1Inf_->SaveEff("e acc N_{Jets}=3, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets4_BTags1Inf_->SaveEff("e acc N_{Jets}=4, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets5_BTags1Inf_->SaveEff("e acc N_{Jets}=5, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets6_BTags1Inf_->SaveEff("e acc N_{Jets}=6, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets78_BTags1Inf_->SaveEff("e acc N_{Jets}=7-8, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets9Inf_BTags1Inf_->SaveEff("e acc N_{Jets}=9+, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);  
-  ElecAccHTMHT_NJets7Inf_BTags1Inf_->SaveEff("e acc N_{Jets}=7+, B_{Tags}#geq1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecAccHTMHT_NJets2_BTags1_->SaveEff("e acc N_{Jets}=2, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets3_BTags1_->SaveEff("e acc N_{Jets}=3, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets4_BTags1_->SaveEff("e acc N_{Jets}=4, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets5_BTags1_->SaveEff("e acc N_{Jets}=5, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets6_BTags1_->SaveEff("e acc N_{Jets}=6, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets78_BTags1_->SaveEff("e acc N_{Jets}=7-8, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets9Inf_BTags1_->SaveEff("e acc N_{Jets}=9+, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
-  ElecAccHTMHT_NJets7Inf_BTags1_->SaveEff("e acc N_{Jets}=7+, B_{Tags}=1;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecAccHTMHT_NJets2_BTags2Inf_->SaveEff("e acc N_{Jets}=2, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets3_BTags2Inf_->SaveEff("e acc N_{Jets}=3, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets4_BTags2Inf_->SaveEff("e acc N_{Jets}=4, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets5_BTags2Inf_->SaveEff("e acc N_{Jets}=5, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets6_BTags2Inf_->SaveEff("e acc N_{Jets}=6, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets78_BTags2Inf_->SaveEff("e acc N_{Jets}=7-8, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets9Inf_BTags2Inf_->SaveEff("e acc N_{Jets}=9+, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
-  ElecAccHTMHT_NJets7Inf_BTags2Inf_->SaveEff("e acc N_{Jets}=7+, B_{Tags}#geq2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecAccHTMHT_NJets3_BTags2_->SaveEff("e acc N_{Jets}=3, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets4_BTags2_->SaveEff("e acc N_{Jets}=4, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets5_BTags2_->SaveEff("e acc N_{Jets}=5, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets6_BTags2_->SaveEff("e acc N_{Jets}=6, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets78_BTags2_->SaveEff("e acc N_{Jets}=7-8, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets9Inf_BTags2_->SaveEff("e acc N_{Jets}=9+, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
-  ElecAccHTMHT_NJets7Inf_BTags2_->SaveEff("e acc N_{Jets}=7+, B_{Tags}=2;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
-  ElecAccHTMHT_NJets3_BTags3Inf_->SaveEff("e acc N_{Jets}=3, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets4_BTags3Inf_->SaveEff("e acc N_{Jets}=4, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets5_BTags3Inf_->SaveEff("e acc N_{Jets}=5, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets6_BTags3Inf_->SaveEff("e acc N_{Jets}=6, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets78_BTags3Inf_->SaveEff("e acc N_{Jets}=7-8, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecAccHTMHT_NJets9Inf_BTags3Inf_->SaveEff("e acc N_{Jets}=9+, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
-  ElecAccHTMHT_NJets7Inf_BTags3Inf_->SaveEff("e acc N_{Jets}=7+, B_{Tags}#geq3;H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies); 
+  ElecAccHTMHT_NJets2_BTags0_->SaveEff("e acc N_{jet}=2, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets3_BTags0_->SaveEff("e acc N_{jet}=3, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets4_BTags0_->SaveEff("e acc N_{jet}=4, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets5_BTags0_->SaveEff("e acc N_{jet}=5, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets6_BTags0_->SaveEff("e acc N_{jet}=6, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets78_BTags0_->SaveEff("e acc N_{jet}=7-8, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets9Inf_BTags0_->SaveEff("e acc N_{jet}=9+, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);
+  ElecAccHTMHT_NJets7Inf_BTags0_->SaveEff("e acc N_{jet}=7+, N_{b-jet}=0;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);
+  ElecAccHTMHT_NJets2_BTags1Inf_->SaveEff("e acc N_{jet}=2, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets3_BTags1Inf_->SaveEff("e acc N_{jet}=3, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets4_BTags1Inf_->SaveEff("e acc N_{jet}=4, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets5_BTags1Inf_->SaveEff("e acc N_{jet}=5, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets6_BTags1Inf_->SaveEff("e acc N_{jet}=6, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets78_BTags1Inf_->SaveEff("e acc N_{jet}=7-8, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets9Inf_BTags1Inf_->SaveEff("e acc N_{jet}=9+, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);  
+  ElecAccHTMHT_NJets7Inf_BTags1Inf_->SaveEff("e acc N_{jet}=7+, N_{b-jet}#geq1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);
+  ElecAccHTMHT_NJets2_BTags1_->SaveEff("e acc N_{jet}=2, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets3_BTags1_->SaveEff("e acc N_{jet}=3, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets4_BTags1_->SaveEff("e acc N_{jet}=4, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets5_BTags1_->SaveEff("e acc N_{jet}=5, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets6_BTags1_->SaveEff("e acc N_{jet}=6, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets78_BTags1_->SaveEff("e acc N_{jet}=7-8, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets9Inf_BTags1_->SaveEff("e acc N_{jet}=9+, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies); 
+  ElecAccHTMHT_NJets7Inf_BTags1_->SaveEff("e acc N_{jet}=7+, N_{b-jet}=1;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);
+  ElecAccHTMHT_NJets2_BTags2Inf_->SaveEff("e acc N_{jet}=2, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets3_BTags2Inf_->SaveEff("e acc N_{jet}=3, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets4_BTags2Inf_->SaveEff("e acc N_{jet}=4, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets5_BTags2Inf_->SaveEff("e acc N_{jet}=5, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets6_BTags2Inf_->SaveEff("e acc N_{jet}=6, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets78_BTags2Inf_->SaveEff("e acc N_{jet}=7-8, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets9Inf_BTags2Inf_->SaveEff("e acc N_{jet}=9+, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies); 
+  ElecAccHTMHT_NJets7Inf_BTags2Inf_->SaveEff("e acc N_{jet}=7+, N_{b-jet}#geq2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);
+  ElecAccHTMHT_NJets3_BTags2_->SaveEff("e acc N_{jet}=3, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets4_BTags2_->SaveEff("e acc N_{jet}=4, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets5_BTags2_->SaveEff("e acc N_{jet}=5, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets6_BTags2_->SaveEff("e acc N_{jet}=6, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets78_BTags2_->SaveEff("e acc N_{jet}=7-8, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets9Inf_BTags2_->SaveEff("e acc N_{jet}=9+, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies); 
+  ElecAccHTMHT_NJets7Inf_BTags2_->SaveEff("e acc N_{jet}=7+, N_{b-jet}=2;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies); 
+  ElecAccHTMHT_NJets3_BTags3Inf_->SaveEff("e acc N_{jet}=3, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets4_BTags3Inf_->SaveEff("e acc N_{jet}=4, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets5_BTags3Inf_->SaveEff("e acc N_{jet}=5, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets6_BTags3Inf_->SaveEff("e acc N_{jet}=6, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets78_BTags3Inf_->SaveEff("e acc N_{jet}=7-8, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccHTMHT_NJets9Inf_BTags3Inf_->SaveEff("e acc N_{jet}=9+, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies); 
+  ElecAccHTMHT_NJets7Inf_BTags3Inf_->SaveEff("e acc N_{jet}=7+, N_{b-jet}#geq3;H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies); 
 
   // reco
   //muon
   //1D
-  MuRecoBTag_->SaveEff("#mu reco; B_{Tags}", dEfficiencies);   
-  MuRecoNJets_->SaveEff("#mu reco; N_{Jets}", dEfficiencies);   
-  MuRecoHT_->SaveEff("#mu reco; H_{T} [GeV]", dEfficiencies);   
-  MuRecoMHT_->SaveEff("#mu reco; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuRecoRelPTJet_->SaveEff("#mu reco; p_{T}(#mu)/Jet p_{T}", dEfficiencies);   
-  MuRecoDeltaRJet_->SaveEff("#mu reco; #DeltaR", dEfficiencies);   
-  MuRecoRelPTDeltaRJet_->SaveEff("#mu reco; p_{T}(#mu)/Jet p_{T}; #DeltaR", dEfficiencies);   
+  MuRecoBTag_->SaveEff("#mu reco; N_{b-jet}; #varepsilon_{Id}^{#mu}", dEfficiencies);   
+  MuRecoNJets_->SaveEff("#mu reco; N_{jet}; #varepsilon_{Id}^{#mu}", dEfficiencies);   
+  MuRecoHT_->SaveEff("#mu reco; H_{T} [GeV]; #varepsilon_{Id}^{#mu}", dEfficiencies);   
+  MuRecoMHT_->SaveEff("#mu reco; H_{T}^{miss} [GeV]; #varepsilon_{Id}^{#mu}", dEfficiencies);   
+  MuRecoRelPTJet_->SaveEff("#mu reco; p_{T}(#mu)/Jet p_{T}; #varepsilon_{Id}^{#mu}", dEfficiencies);   
+  MuRecoDeltaRJet_->SaveEff("#mu reco; #DeltaR; #varepsilon_{Id}^{#mu}", dEfficiencies);   
+  MuRecoRelPTDeltaRJet_->SaveEff("#mu reco; p_{T}(#mu)/Jet p_{T}; #DeltaR; #varepsilon_{Id}^{#mu}", dEfficiencies);   
 
   //elec
   //1D
-  ElecRecoBTag_->SaveEff("e reco; B_{Tags}", dEfficiencies);   
-  ElecRecoNJets_->SaveEff("e reco; N_{Jets}", dEfficiencies);   
-  ElecRecoHT_->SaveEff("e reco; H_{T} [GeV]", dEfficiencies);   
-  ElecRecoMHT_->SaveEff("e reco; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecRecoRelPTJet_->SaveEff("e reco; p_{T}(e)/Jet p_{T}", dEfficiencies);   
-  ElecRecoDeltaRJet_->SaveEff("e reco; #DeltaR", dEfficiencies);   
-  ElecRecoRelPTDeltaRJet_->SaveEff("e reco; p_{T}(e)/Jet p_{T}; #DeltaR", dEfficiencies);   
+  ElecRecoBTag_->SaveEff("e reco; N_{b-jet}; #varepsilon_{Id}^{e}", dEfficiencies);   
+  ElecRecoNJets_->SaveEff("e reco; N_{jet}; #varepsilon_{Id}^{e}", dEfficiencies);   
+  ElecRecoHT_->SaveEff("e reco; H_{T} [GeV]; #varepsilon_{Id}^{e}", dEfficiencies);   
+  ElecRecoMHT_->SaveEff("e reco; H_{T}^{miss} [GeV]; #varepsilon_{Id}^{e}", dEfficiencies);   
+  ElecRecoRelPTJet_->SaveEff("e reco; p_{T}(e)/Jet p_{T}; #varepsilon_{Id}^{e}", dEfficiencies);   
+  ElecRecoDeltaRJet_->SaveEff("e reco; #DeltaR; #varepsilon_{Id}^{e}", dEfficiencies);   
+  ElecRecoRelPTDeltaRJet_->SaveEff("e reco; p_{T}(e)/Jet p_{T}; #DeltaR; #varepsilon_{Id}^{e}", dEfficiencies);   
 
   // iso
   //muon
   //1D
-  MuIsoBTag_->SaveEff("#mu iso; B_{Tags}", dEfficiencies);   
-  MuIsoNJets_->SaveEff("#mu iso; N_{Jets}", dEfficiencies);   
-  MuIsoHT_->SaveEff("#mu iso; H_{T} [GeV]", dEfficiencies);   
-  MuIsoMHT_->SaveEff("#mu iso; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuIsoRelPTJet_->SaveEff("#mu iso; p_{T}(#mu)/Jet p_{T}", dEfficiencies);   
-  MuIsoDeltaRJet_->SaveEff("#mu iso; #DeltaR", dEfficiencies);   
-  MuIsoRelPTDeltaRJet_->SaveEff("#mu iso; p_{T}(#mu)/Jet p_{T}; #DeltaR", dEfficiencies);   
+  MuIsoBTag_->SaveEff("#mu iso; N_{b-jet}; #varepsilon_{Iso}^{#mu}", dEfficiencies);   
+  MuIsoNJets_->SaveEff("#mu iso; N_{jet}; #varepsilon_{Iso}^{#mu}", dEfficiencies);   
+  MuIsoHT_->SaveEff("#mu iso; H_{T} [GeV]; #varepsilon_{Iso}^{#mu}", dEfficiencies);   
+  MuIsoMHT_->SaveEff("#mu iso; H_{T}^{miss} [GeV]; #varepsilon_{Iso}^{#mu}", dEfficiencies);   
+  MuIsoRelPTJet_->SaveEff("#mu iso; p_{T}(#mu)/Jet p_{T}; #varepsilon_{Iso}^{#mu}", dEfficiencies);   
+  MuIsoDeltaRJet_->SaveEff("#mu iso; #DeltaR; #varepsilon_{Iso}^{#mu}", dEfficiencies);   
+  MuIsoRelPTDeltaRJet_->SaveEff("#mu iso; p_{T}(#mu)/Jet p_{T}; #DeltaR; #varepsilon_{Iso}^{#mu}", dEfficiencies);   
 
   //elec
   //1D
-  ElecIsoBTag_->SaveEff("e iso; B_{Tags}", dEfficiencies);   
-  ElecIsoNJets_->SaveEff("e iso; N_{Jets}", dEfficiencies);   
-  ElecIsoHT_->SaveEff("e iso; H_{T} [GeV]", dEfficiencies);   
-  ElecIsoMHT_->SaveEff("e iso; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecIsoRelPTJet_->SaveEff("e iso; p_{T}(e)/Jet p_{T}", dEfficiencies);   
-  ElecIsoDeltaRJet_->SaveEff("e iso; #DeltaR", dEfficiencies);   
-  ElecIsoRelPTDeltaRJet_->SaveEff("e iso; p_{T}(e)/Jet p_{T}; #DeltaR", dEfficiencies);   
+  ElecIsoBTag_->SaveEff("e iso; N_{b-jet}; #varepsilon_{Iso}^{e}", dEfficiencies);   
+  ElecIsoNJets_->SaveEff("e iso; N_{jet}; #varepsilon_{Iso}^{e}", dEfficiencies);   
+  ElecIsoHT_->SaveEff("e iso; H_{T} [GeV]; #varepsilon_{Iso}^{e}", dEfficiencies);   
+  ElecIsoMHT_->SaveEff("e iso; H_{T}^{miss} [GeV]; #varepsilon_{Iso}^{e}", dEfficiencies);   
+  ElecIsoRelPTJet_->SaveEff("e iso; p_{T}(e)/Jet p_{T}; #varepsilon_{Iso}^{e}", dEfficiencies);   
+  ElecIsoDeltaRJet_->SaveEff("e iso; #DeltaR; #varepsilon_{Iso}^{e}", dEfficiencies);   
+  ElecIsoRelPTDeltaRJet_->SaveEff("e iso; p_{T}(e)/Jet p_{T}; #DeltaR; #varepsilon_{Iso}^{e}", dEfficiencies);   
 
   // m_{T}^{W}
   //muon
   //1D
-  MuMTWBTag_->SaveEff("#mu m_{T}^{W}; B_{Tags}", dEfficiencies);   
-  MuMTWNJets_->SaveEff("#mu m_{T}^{W}; N_{Jets}", dEfficiencies);   
-  MuMTWHT_->SaveEff("#mu m_{T}^{W}; H_{T} [GeV]", dEfficiencies);   
-  MuMTWMHT_->SaveEff("#mu m_{T}^{W}; #slash{H}_{T} [GeV]", dEfficiencies);   
-  MuMTWPTActivity_->SaveEff("#mu m_{T}^{W};  Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);
-  MuMTWHTNJets_->SaveEff("#mu m_{T}(w); H_{T} [GeV]; N_{Jets}", dEfficiencies);
-  MuMTWMHTNJets_->SaveEff("#mu m_{T}(w); #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
-  MuMTWHTMHT_->SaveEff("#mu m_{T}(w); H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuMTWHTMHT_NJets24_->SaveEff("#mu m_{T}(w) N_{Jets}=2-4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuMTWHTMHT_NJets56_->SaveEff("#mu m_{T}(w) N_{Jets}=5-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuMTWHTMHT_NJets7Inf_->SaveEff("#mu m_{T}(w) N_{Jets}=7+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuMTWBTag_->SaveEff("#mu m_{T}^{W}; N_{b-jet}; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);   
+  MuMTWNJets_->SaveEff("#mu m_{T}^{W}; N_{jet}; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);   
+  MuMTWHT_->SaveEff("#mu m_{T}^{W}; H_{T} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);   
+  MuMTWMHT_->SaveEff("#mu m_{T}^{W}; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);   
+  MuMTWPTActivity_->SaveEff("#mu m_{T}^{W};  Activity; p_{T}(#mu) [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies, true);
+  MuMTWHTNJets_->SaveEff("#mu m_{T}(w); H_{T} [GeV]; N_{jet}; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
+  MuMTWMHTNJets_->SaveEff("#mu m_{T}(w); H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
+  MuMTWHTMHT_->SaveEff("#mu m_{T}(w); H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
+  MuMTWHTMHT_NJets24_->SaveEff("#mu m_{T}(w) N_{jet}=2-4; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
+  MuMTWHTMHT_NJets56_->SaveEff("#mu m_{T}(w) N_{jet}=5-6; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
+  MuMTWHTMHT_NJets7Inf_->SaveEff("#mu m_{T}(w) N_{jet}=7+; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
 
-  MuMTWHTMHT_NJets2_->SaveEff("#mu m_{T}(w) N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuMTWHTMHT_NJets3_->SaveEff("#mu m_{T}(w) N_{Jets}=3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuMTWHTMHT_NJets4_->SaveEff("#mu m_{T}(w) N_{Jets}=4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuMTWHTMHT_NJets5_->SaveEff("#mu m_{T}(w) N_{Jets}=5; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuMTWHTMHT_NJets6_->SaveEff("#mu m_{T}(w) N_{Jets}=6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuMTWHTMHT_NJets78_->SaveEff("#mu m_{T}(w) N_{Jets}=7-8; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuMTWHTMHT_NJets9Inf_->SaveEff("#mu m_{T}(w) N_{Jets}=9+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuMTWHTMHT_NJets2_->SaveEff("#mu m_{T}(w) N_{jet}=2; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
+  MuMTWHTMHT_NJets3_->SaveEff("#mu m_{T}(w) N_{jet}=3; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
+  MuMTWHTMHT_NJets4_->SaveEff("#mu m_{T}(w) N_{jet}=4; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
+  MuMTWHTMHT_NJets5_->SaveEff("#mu m_{T}(w) N_{jet}=5; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
+  MuMTWHTMHT_NJets6_->SaveEff("#mu m_{T}(w) N_{jet}=6; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
+  MuMTWHTMHT_NJets78_->SaveEff("#mu m_{T}(w) N_{jet}=7-8; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
+  MuMTWHTMHT_NJets9Inf_->SaveEff("#mu m_{T}(w) N_{jet}=9+; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);
 
 
   //muon
   //1D
-  MuDiLepBTag_->SaveEff("#mu di lep; B_{Tags}", dEfficiencies);   
-  MuDiLepNJets_->SaveEff("#mu di lep; N_{Jets}", dEfficiencies);   
-  MuDiLepHT_->SaveEff("#mu di lep; H_{T} [GeV]", dEfficiencies);   
-  MuDiLepMHT_->SaveEff("#mu di lep; #slash{H}_{T} [GeV]", dEfficiencies);  
+  MuDiLepBTag_->SaveEff("#mu di lep; N_{b-jet}; #beta_{1l}^{#mu}", dEfficiencies);   
+  MuDiLepNJets_->SaveEff("#mu di lep; N_{jet}; #beta_{1l}^{#mu}", dEfficiencies);   
+  MuDiLepHT_->SaveEff("#mu di lep; H_{T} [GeV]; #beta_{1l}^{#mu}", dEfficiencies);   
+  MuDiLepMHT_->SaveEff("#mu di lep; H_{T}^{miss} [GeV]; #beta_{1l}^{#mu}", dEfficiencies);  
 
-  MuDiLepEffBTag_->SaveEff("#mu dilep eff; B_{Tags}", dEfficiencies);   
-  MuDiLepEffNJets_->SaveEff("#mu dilep eff; N_{Jets}", dEfficiencies);   
-  MuDiLepEffHT_->SaveEff("#mu dilep eff; H_{T} [GeV]", dEfficiencies);   
-  MuDiLepEffMHT_->SaveEff("#mu dilep eff; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuDiLepEffNJetsBTags_->SaveEff("#mu dilep eff; N_{Jets}; B_{Tags}", dEfficiencies);
+  MuDiLepEffBTag_->SaveEff("#mu dilep eff; N_{b-jet}; #varepsilon_{2l,SR,old}^{#mu}", dEfficiencies);   
+  MuDiLepEffNJets_->SaveEff("#mu dilep eff; N_{jet}; #varepsilon_{2l,SR,old}^{#mu}", dEfficiencies);   
+  MuDiLepEffHT_->SaveEff("#mu dilep eff; H_{T} [GeV]; #varepsilon_{2l,SR,old}^{#mu}", dEfficiencies);   
+  MuDiLepEffMHT_->SaveEff("#mu dilep eff; H_{T}^{miss} [GeV]; #varepsilon_{2l,SR,old}^{#mu}", dEfficiencies);
+  MuDiLepEffNJetsBTags_->SaveEff("#mu dilep eff; N_{jet}; N_{b-jet}; #varepsilon_{2l,SR,old}^{#mu}", dEfficiencies);
   //muon
   //1D
-  MuDiLepContributionBTag_->SaveEff("#mu di lep contri; B_{Tags}", dEfficiencies);   
-  MuDiLepContributionNJets_->SaveEff("#mu di lep contri; N_{Jets}", dEfficiencies);   
-  MuDiLepContributionHT_->SaveEff("#mu di lep contri; H_{T} [GeV]", dEfficiencies);   
-  MuDiLepContributionMHT_->SaveEff("#mu di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuDiLepFractionBTag_->SaveEff("#mu di lep contri; B_{Tags}", dEfficiencies);   
-  MuDiLepFractionNJets_->SaveEff("#mu di lep contri; N_{Jets}", dEfficiencies);   
-  MuDiLepFractionHT_->SaveEff("#mu di lep contri; H_{T} [GeV]", dEfficiencies);   
-  MuDiLepFractionMHT_->SaveEff("#mu di lep contri; #slash{H}_{T} [GeV]", dEfficiencies); 
+  MuDiLepContributionBTag_->SaveEff("#mu di lep contri; N_{b-jet}; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);   
+  MuDiLepContributionNJets_->SaveEff("#mu di lep contri; N_{jet}; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);   
+  MuDiLepContributionHT_->SaveEff("#mu di lep contri; H_{T} [GeV]; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);   
+  MuDiLepContributionMHT_->SaveEff("#mu di lep contri; H_{T}^{miss} [GeV]; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);
+  MuDiLepFractionBTag_->SaveEff("#mu di lep contri; N_{b-jet}; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);   
+  MuDiLepFractionNJets_->SaveEff("#mu di lep contri; N_{jet}; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);   
+  MuDiLepFractionHT_->SaveEff("#mu di lep contri; H_{T} [GeV]; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);   
+  MuDiLepFractionMHT_->SaveEff("#mu di lep contri; H_{T}^{miss} [GeV]; #varepsilon_{2l,SR}^{#mu}", dEfficiencies); 
 
   //elec
   //1D
   
-  ElecDiLepBTag_->SaveEff("e di lep; B_{Tags}", dEfficiencies);   
-  ElecDiLepNJets_->SaveEff("e di lep; N_{Jets}", dEfficiencies);   
-  ElecDiLepHT_->SaveEff("e di lep; H_{T} [GeV]", dEfficiencies);   
-  ElecDiLepMHT_->SaveEff("e di lep; #slash{H}_{T} [GeV]", dEfficiencies);  
+  ElecDiLepBTag_->SaveEff("e di lep; N_{b-jet}; #beta_{1l}^{#mu}", dEfficiencies);   
+  ElecDiLepNJets_->SaveEff("e di lep; N_{jet}; #beta_{1l}^{#mu}", dEfficiencies);   
+  ElecDiLepHT_->SaveEff("e di lep; H_{T} [GeV]; #beta_{1l}^{#mu}", dEfficiencies);   
+  ElecDiLepMHT_->SaveEff("e di lep; H_{T}^{miss} [GeV]; #beta_{1l}^{#mu}", dEfficiencies);  
 
-  ElecDiLepEffBTag_->SaveEff("e dilep eff; B_{Tags}", dEfficiencies);   
-  ElecDiLepEffNJets_->SaveEff("e dilep eff; N_{Jets}", dEfficiencies);   
-  ElecDiLepEffHT_->SaveEff("e dilep eff; H_{T} [GeV]", dEfficiencies);   
-  ElecDiLepEffMHT_->SaveEff("e dilep eff; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecDiLepEffNJetsBTags_->SaveEff("e dilep eff; N_{Jets}; B_{Tags}", dEfficiencies);
+  ElecDiLepEffBTag_->SaveEff("e dilep eff; N_{b-jet}; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);   
+  ElecDiLepEffNJets_->SaveEff("e dilep eff; N_{jet}; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);   
+  ElecDiLepEffHT_->SaveEff("e dilep eff; H_{T} [GeV]; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);   
+  ElecDiLepEffMHT_->SaveEff("e dilep eff; H_{T}^{miss} [GeV]; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);
+  ElecDiLepEffNJetsBTags_->SaveEff("e dilep eff; N_{jet}; N_{b-jet}; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);
   
-  ElecMTWBTag_->SaveEff("e m_{T}^{W}; B_{Tags}", dEfficiencies);   
-  ElecMTWNJets_->SaveEff("e m_{T}^{W}; N_{Jets}", dEfficiencies);   
-  ElecMTWHT_->SaveEff("e m_{T}^{W}; H_{T} [GeV]", dEfficiencies);   
-  ElecMTWMHT_->SaveEff("e m_{T}^{W}; #slash{H}_{T} [GeV]", dEfficiencies);   
-  ElecMTWPTActivity_->SaveEff("e m_{T}^{W}; Activity; p_{T}(e) [GeV]", dEfficiencies, true);
-  ElecMTWHTNJets_->SaveEff("e m_{T}(w); H_{T} [GeV]; N_{Jets}", dEfficiencies);
-  ElecMTWMHTNJets_->SaveEff("e m_{T}(w); #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
-  ElecMTWHTMHT_->SaveEff("e m_{T}(w); H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecMTWHTMHT_NJets24_->SaveEff("e m_{T}(w) N_{Jets}=2-4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecMTWHTMHT_NJets56_->SaveEff("e m_{T}(w) N_{Jets}=5-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecMTWHTMHT_NJets7Inf_->SaveEff("e m_{T}(w) N_{Jets}=7+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecMTWBTag_->SaveEff("e m_{T}^{W}; N_{b-jet}; #varepsilon_{m_{T}}^{e}", dEfficiencies);   
+  ElecMTWNJets_->SaveEff("e m_{T}^{W}; N_{jet}; #varepsilon_{m_{T}}^{e}", dEfficiencies);   
+  ElecMTWHT_->SaveEff("e m_{T}^{W}; H_{T} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);   
+  ElecMTWMHT_->SaveEff("e m_{T}^{W}; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);   
+  ElecMTWPTActivity_->SaveEff("e m_{T}^{W}; Activity; p_{T}(e) [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies, true);
+  ElecMTWHTNJets_->SaveEff("e m_{T}(w); H_{T} [GeV]; N_{jet}; #varepsilon_{m_{T}}^{e}", dEfficiencies);
+  ElecMTWMHTNJets_->SaveEff("e m_{T}(w); H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{m_{T}}^{e}", dEfficiencies);
+  ElecMTWHTMHT_->SaveEff("e m_{T}(w); H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);
+  ElecMTWHTMHT_NJets24_->SaveEff("e m_{T}(w) N_{jet}=2-4; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);
+  ElecMTWHTMHT_NJets56_->SaveEff("e m_{T}(w) N_{jet}=5-6; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);
+  ElecMTWHTMHT_NJets7Inf_->SaveEff("e m_{T}(w) N_{jet}=7+; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);
 
-  ElecMTWHTMHT_NJets2_->SaveEff("e m_{T}(w) N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecMTWHTMHT_NJets3_->SaveEff("e m_{T}(w) N_{Jets}=3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecMTWHTMHT_NJets4_->SaveEff("e m_{T}(w) N_{Jets}=4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecMTWHTMHT_NJets5_->SaveEff("e m_{T}(w) N_{Jets}=5; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecMTWHTMHT_NJets6_->SaveEff("e m_{T}(w) N_{Jets}=6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecMTWHTMHT_NJets78_->SaveEff("e m_{T}(w) N_{Jets}=7-8; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecMTWHTMHT_NJets9Inf_->SaveEff("e m_{T}(w) N_{Jets}=9+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecMTWHTMHT_NJets2_->SaveEff("e m_{T}(w) N_{jet}=2; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);
+  ElecMTWHTMHT_NJets3_->SaveEff("e m_{T}(w) N_{jet}=3; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);
+  ElecMTWHTMHT_NJets4_->SaveEff("e m_{T}(w) N_{jet}=4; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);
+  ElecMTWHTMHT_NJets5_->SaveEff("e m_{T}(w) N_{jet}=5; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);
+  ElecMTWHTMHT_NJets6_->SaveEff("e m_{T}(w) N_{jet}=6; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);
+  ElecMTWHTMHT_NJets78_->SaveEff("e m_{T}(w) N_{jet}=7-8; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);
+  ElecMTWHTMHT_NJets9Inf_->SaveEff("e m_{T}(w) N_{jet}=9+; H_{T} [GeV]; H_{T}^{miss} [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);
 
   //elec
   //1D
-  ElecDiLepContributionBTag_->SaveEff("e di lep contri; B_{Tags}", dEfficiencies);   
-  ElecDiLepContributionNJets_->SaveEff("e di lep contri; N_{Jets}", dEfficiencies);   
-  ElecDiLepContributionHT_->SaveEff("e di lep contri; H_{T} [GeV]", dEfficiencies);   
-  ElecDiLepContributionMHT_->SaveEff("e di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecDiLepFractionBTag_->SaveEff("e di lep contri; B_{Tags}", dEfficiencies);   
-  ElecDiLepFractionNJets_->SaveEff("e di lep contri; N_{Jets}", dEfficiencies);   
-  ElecDiLepFractionHT_->SaveEff("e di lep contri; H_{T} [GeV]", dEfficiencies);   
-  ElecDiLepFractionMHT_->SaveEff("e di lep contri; #slash{H}_{T} [GeV]", dEfficiencies);  
+  ElecDiLepContributionBTag_->SaveEff("e di lep contri; N_{b-jet}; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);   
+  ElecDiLepContributionNJets_->SaveEff("e di lep contri; N_{jet}; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);   
+  ElecDiLepContributionHT_->SaveEff("e di lep contri; H_{T} [GeV]; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);   
+  ElecDiLepContributionMHT_->SaveEff("e di lep contri; H_{T}^{miss} [GeV]; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);
+  ElecDiLepFractionBTag_->SaveEff("e di lep contri; N_{b-jet}; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);   
+  ElecDiLepFractionNJets_->SaveEff("e di lep contri; N_{jet}; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);   
+  ElecDiLepFractionHT_->SaveEff("e di lep contri; H_{T} [GeV]; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);   
+  ElecDiLepFractionMHT_->SaveEff("e di lep contri; H_{T}^{miss} [GeV]; #varepsilon_{2l,SR,old}^{e}", dEfficiencies);  
 
+  MuDiLepCRBTag_->SaveEff("#mu dilep contrib CR; N_{b-jet}; #beta_{1l,cr}^{#mu}", dEfficiencies);   
+  MuDiLepCRNJets_->SaveEff("#mu dilep contrib CR; N_{jet}; #beta_{1l,cr}^{#mu}", dEfficiencies);   
+  MuDiLepCRHT_->SaveEff("#mu dilep contrib CR; H_{T} [GeV]; #beta_{1l,cr}^{#mu}", dEfficiencies);   
+  MuDiLepCRMHT_->SaveEff("#mu dilep contrib CR; H_{T}^{miss} [GeV]; #beta_{1l,cr}^{#mu}", dEfficiencies);
+  MuDiLepCRMHTNJets_->SaveEff("#mu dilep contrib CR; H_{T}^{miss} [GeV]; N_{jet}; #beta_{1l,cr}^{#mu}", dEfficiencies);
+  MuDiLepCRNJetsBTags_->SaveEff("#mu dilep contrib CR; N_{jet}; N_{b-jet}; #beta_{1l,cr}^{#mu}", dEfficiencies);
 
-  MuDiLepCRBTag_->SaveEff("#mu dilep contrib CR; B_{Tags}", dEfficiencies);   
-  MuDiLepCRNJets_->SaveEff("#mu dilep contrib CR; N_{Jets}", dEfficiencies);   
-  MuDiLepCRHT_->SaveEff("#mu dilep contrib CR; H_{T} [GeV]", dEfficiencies);   
-  MuDiLepCRMHT_->SaveEff("#mu dilep contrib CR; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuDiLepCRMHTNJets_->SaveEff("#mu dilep contrib CR; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
-  MuDiLepCRNJetsBTags_->SaveEff("#mu dilep contrib CR; N_{Jets}; B_{Tags}", dEfficiencies);
+  ElecDiLepCRBTag_->SaveEff("e dilep contrib CR; N_{b-jet}; #beta_{1l,cr}^{e}", dEfficiencies);   
+  ElecDiLepCRNJets_->SaveEff("e dilep contrib CR; N_{jet}; #beta_{1l,cr}^{e}", dEfficiencies);   
+  ElecDiLepCRHT_->SaveEff("e dilep contrib CR; H_{T} [GeV]; #beta_{1l,cr}^{e}", dEfficiencies);   
+  ElecDiLepCRMHT_->SaveEff("e dilep contrib CR; H_{T}^{miss} [GeV]; #beta_{1l,cr}^{e}", dEfficiencies);
+  ElecDiLepCRMHTNJets_->SaveEff("e dilep contrib CR; H_{T}^{miss} [GeV]; N_{jet}; #beta_{1l,cr}^{e}", dEfficiencies);
+  ElecDiLepCRNJetsBTags_->SaveEff("e dilep contrib CR; N_{jet}; N_{b-jet}; #beta_{1l,cr}^{e}", dEfficiencies);
 
-  ElecDiLepCRBTag_->SaveEff("e dilep contrib CR; B_{Tags}", dEfficiencies);   
-  ElecDiLepCRNJets_->SaveEff("e dilep contrib CR; N_{Jets}", dEfficiencies);   
-  ElecDiLepCRHT_->SaveEff("e dilep contrib CR; H_{T} [GeV]", dEfficiencies);   
-  ElecDiLepCRMHT_->SaveEff("e dilep contrib CR; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecDiLepCRMHTNJets_->SaveEff("e dilep contrib CR; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
-  ElecDiLepCRNJetsBTags_->SaveEff("e dilep contrib CR; N_{Jets}; B_{Tags}", dEfficiencies);
+  MuDiLepSRBTag_->SaveEff("#mu dilep contrib SR; N_{b-jet}; f_{2l,SR}^{#mu}", dEfficiencies);   
+  MuDiLepSRNJets_->SaveEff("#mu dilep contrib SR; N_{jet}; f_{2l,SR}^{#mu}", dEfficiencies);   
+  MuDiLepSRHT_->SaveEff("#mu dilep contrib SR; H_{T} [GeV]; f_{2l,SR}^{#mu}", dEfficiencies);   
+  MuDiLepSRMHT_->SaveEff("#mu dilep contrib SR; H_{T}^{miss} [GeV]; f_{2l,SR}^{#mu}", dEfficiencies);
+  MuDiLepSRMHTNJets_->SaveEff("#mu dilep contrib SR; H_{T}^{miss} [GeV]; N_{jet}; f_{2l,SR}^{#mu}", dEfficiencies);
+  MuDiLepSRNJetsBTags_->SaveEff("#mu dilep contrib SR; N_{jet}; N_{b-jet}; f_{2l,SR}^{#mu}", dEfficiencies);
+  MuDiLepSRSearchBins_->SaveEff("#mu dilep contrib SR; N_{jet}; Search region bin number; f_{2l,SR}^{#mu}", dEfficiencies);
 
-  MuDiLepSRBTag_->SaveEff("#mu dilep contrib SR; B_{Tags}", dEfficiencies);   
-  MuDiLepSRNJets_->SaveEff("#mu dilep contrib SR; N_{Jets}", dEfficiencies);   
-  MuDiLepSRHT_->SaveEff("#mu dilep contrib SR; H_{T} [GeV]", dEfficiencies);   
-  MuDiLepSRMHT_->SaveEff("#mu dilep contrib SR; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuDiLepSRMHTNJets_->SaveEff("#mu dilep contrib SR; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
-  MuDiLepSRNJetsBTags_->SaveEff("#mu dilep contrib SR; N_{Jets}; B_{Tags}", dEfficiencies);
-  MuDiLepSRSearchBins_->SaveEff("#mu dilep contrib SR; N_{Jets}; SearchBins(QCD)", dEfficiencies);
+  ElecDiLepSRBTag_->SaveEff("e dilep contrib SR; N_{b-jet}; f_{2l,SR}^{e}", dEfficiencies);   
+  ElecDiLepSRNJets_->SaveEff("e dilep contrib SR; N_{jet}; f_{2l,SR}^{e}", dEfficiencies);   
+  ElecDiLepSRHT_->SaveEff("e dilep contrib SR; H_{T} [GeV]; f_{2l,SR}^{e}", dEfficiencies);   
+  ElecDiLepSRMHT_->SaveEff("e dilep contrib SR; H_{T}^{miss} [GeV]; f_{2l,SR}^{e}", dEfficiencies);
+  ElecDiLepSRMHTNJets_->SaveEff("e dilep contrib SR; H_{T}^{miss} [GeV]; N_{jet}; f_{2l,SR}^{e}", dEfficiencies);
+  ElecDiLepSRNJetsBTags_->SaveEff("e dilep contrib SR; N_{jet}; N_{b-jet}; f_{2l,SR}^{e}", dEfficiencies);
+  ElecDiLepSRSearchBins_->SaveEff("e dilep contrib SR; N_{jet}; Search region bin number; f_{2l,SR}^{e}", dEfficiencies);
 
-  ElecDiLepSRBTag_->SaveEff("e dilep contrib SR; B_{Tags}", dEfficiencies);   
-  ElecDiLepSRNJets_->SaveEff("e dilep contrib SR; N_{Jets}", dEfficiencies);   
-  ElecDiLepSRHT_->SaveEff("e dilep contrib SR; H_{T} [GeV]", dEfficiencies);   
-  ElecDiLepSRMHT_->SaveEff("e dilep contrib SR; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecDiLepSRMHTNJets_->SaveEff("e dilep contrib SR; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
-  ElecDiLepSRNJetsBTags_->SaveEff("e dilep contrib SR; N_{Jets}; B_{Tags}", dEfficiencies);
-  ElecDiLepSRSearchBins_->SaveEff("e dilep contrib SR; N_{Jets}; SearchBins(QCD)", dEfficiencies);
+  MuDiLepSRwoVetoBTag_->SaveEff("#mu dilep contrib SRwoVeto; N_{b-jet}; f_{2l,SR,woVeto}^{#mu}", dEfficiencies);   
+  MuDiLepSRwoVetoNJets_->SaveEff("#mu dilep contrib SRwoVeto; N_{jet}; f_{2l,SR,woVeto}^{#mu}", dEfficiencies);   
+  MuDiLepSRwoVetoHT_->SaveEff("#mu dilep contrib SRwoVeto; H_{T} [GeV]; f_{2l,SR,woVeto}^{#mu}", dEfficiencies);   
+  MuDiLepSRwoVetoMHT_->SaveEff("#mu dilep contrib SRwoVeto; H_{T}^{miss} [GeV]; f_{2l,SR,woVeto}^{#mu}", dEfficiencies);
+  MuDiLepSRwoVetoMHTNJets_->SaveEff("#mu dilep contrib SRwoVeto; H_{T}^{miss} [GeV]; N_{jet}; f_{2l,SR,woVeto}^{#mu}", dEfficiencies);
+  MuDiLepSRwoVetoNJetsBTags_->SaveEff("#mu dilep contrib SRwoVeto; N_{jet}; N_{b-jet}; f_{2l,SR,woVeto}^{#mu}", dEfficiencies);
+  MuDiLepSRwoVetoSearchBins_->SaveEff("#mu dilep contrib SRwoVeto; N_{jet}; Search region bin number; f_{2l,SR,woVeto}^{#mu}", dEfficiencies);
 
-  MuDiLepSRwoVetoBTag_->SaveEff("#mu dilep contrib SRwoVeto; B_{Tags}", dEfficiencies);   
-  MuDiLepSRwoVetoNJets_->SaveEff("#mu dilep contrib SRwoVeto; N_{Jets}", dEfficiencies);   
-  MuDiLepSRwoVetoHT_->SaveEff("#mu dilep contrib SRwoVeto; H_{T} [GeV]", dEfficiencies);   
-  MuDiLepSRwoVetoMHT_->SaveEff("#mu dilep contrib SRwoVeto; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuDiLepSRwoVetoMHTNJets_->SaveEff("#mu dilep contrib SRwoVeto; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
-  MuDiLepSRwoVetoNJetsBTags_->SaveEff("#mu dilep contrib SRwoVeto; N_{Jets}; B_{Tags}", dEfficiencies);
-  MuDiLepSRwoVetoSearchBins_->SaveEff("#mu dilep contrib SRwoVeto; N_{Jets}; SearchBins(QCD)", dEfficiencies);
+  ElecDiLepSRwoVetoBTag_->SaveEff("e dilep contrib SRwoVeto; N_{b-jet}; f_{2l,SR,woVeto}^{e}", dEfficiencies);   
+  ElecDiLepSRwoVetoNJets_->SaveEff("e dilep contrib SRwoVeto; N_{jet}; f_{2l,SR,woVeto}^{e}", dEfficiencies);   
+  ElecDiLepSRwoVetoHT_->SaveEff("e dilep contrib SRwoVeto; H_{T} [GeV]; f_{2l,SR,woVeto}^{e}", dEfficiencies);   
+  ElecDiLepSRwoVetoMHT_->SaveEff("e dilep contrib SRwoVeto; H_{T}^{miss} [GeV]; f_{2l,SR,woVeto}^{e}", dEfficiencies);
+  ElecDiLepSRwoVetoMHTNJets_->SaveEff("e dilep contrib SRwoVeto; H_{T}^{miss} [GeV]; N_{jet}; f_{2l,SR,woVeto}^{e}", dEfficiencies);
+  ElecDiLepSRwoVetoNJetsBTags_->SaveEff("e dilep contrib SRwoVeto; N_{jet}; N_{b-jet}; f_{2l,SR,woVeto}^{e}", dEfficiencies);
+  ElecDiLepSRwoVetoSearchBins_->SaveEff("e dilep contrib SRwoVeto; N_{jet}; Search region bin number; f_{2l,SR,woVeto}^{e}", dEfficiencies);
 
-  ElecDiLepSRwoVetoBTag_->SaveEff("e dilep contrib SRwoVeto; B_{Tags}", dEfficiencies);   
-  ElecDiLepSRwoVetoNJets_->SaveEff("e dilep contrib SRwoVeto; N_{Jets}", dEfficiencies);   
-  ElecDiLepSRwoVetoHT_->SaveEff("e dilep contrib SRwoVeto; H_{T} [GeV]", dEfficiencies);   
-  ElecDiLepSRwoVetoMHT_->SaveEff("e dilep contrib SRwoVeto; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecDiLepSRwoVetoMHTNJets_->SaveEff("e dilep contrib SRwoVeto; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);
-  ElecDiLepSRwoVetoNJetsBTags_->SaveEff("e dilep contrib SRwoVeto; N_{Jets}; B_{Tags}", dEfficiencies);
-  ElecDiLepSRwoVetoSearchBins_->SaveEff("e dilep contrib SRwoVeto; N_{Jets}; SearchBins(QCD)", dEfficiencies);
+  MuDiLepSRBTagEff_->SaveEff("#mu dilep contrib SR; N_{b-jet}; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);   
+  MuDiLepSRNJetsEff_->SaveEff("#mu dilep contrib SR; N_{jet}; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);   
+  MuDiLepSRHTEff_->SaveEff("#mu dilep contrib SR; H_{T} [GeV]; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);   
+  MuDiLepSRMHTEff_->SaveEff("#mu dilep contrib SR; H_{T}^{miss} [GeV]; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);
+  MuDiLepSRMHTNJetsEff_->SaveEff("#mu dilep contrib SR; H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);
+  MuDiLepSRNJetsBTagsEff_->SaveEff("#mu dilep contrib SR; N_{jet}; N_{b-jet}; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);
+  MuDiLepSRSearchBinsEff_->SaveEff("#mu dilep contrib SR; N_{jet}; Search region bin number; #varepsilon_{2l,SR}^{#mu}", dEfficiencies);
+
+  ElecDiLepSRBTagEff_->SaveEff("e dilep contrib SR; N_{b-jet}; #varepsilon_{2l,SR}^{e}", dEfficiencies);   
+  ElecDiLepSRNJetsEff_->SaveEff("e dilep contrib SR; N_{jet}; #varepsilon_{2l,SR}^{e}", dEfficiencies);   
+  ElecDiLepSRHTEff_->SaveEff("e dilep contrib SR; H_{T} [GeV]; #varepsilon_{2l,SR}^{e}", dEfficiencies);   
+  ElecDiLepSRMHTEff_->SaveEff("e dilep contrib SR; H_{T}^{miss} [GeV]; #varepsilon_{2l,SR}^{e}", dEfficiencies);
+  ElecDiLepSRMHTNJetsEff_->SaveEff("e dilep contrib SR; H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{2l,SR}^{e}", dEfficiencies);
+  ElecDiLepSRNJetsBTagsEff_->SaveEff("e dilep contrib SR; N_{jet}; N_{b-jet}; #varepsilon_{2l,SR}^{e}", dEfficiencies);
+  ElecDiLepSRSearchBinsEff_->SaveEff("e dilep contrib SR; N_{jet}; Search region bin number; #varepsilon_{2l,SR}^{e}", dEfficiencies);
+
+  MuDiLepSRwoVetoBTagEff_->SaveEff("#mu dilep contrib SRwoVeto; N_{b-jet}; #varepsilon_{2l,SR,woVeto}^{#mu}", dEfficiencies);   
+  MuDiLepSRwoVetoNJetsEff_->SaveEff("#mu dilep contrib SRwoVeto; N_{jet}; #varepsilon_{2l,SR,woVeto}^{#mu}", dEfficiencies);   
+  MuDiLepSRwoVetoHTEff_->SaveEff("#mu dilep contrib SRwoVeto; H_{T} [GeV]; #varepsilon_{2l,SR,woVeto}^{#mu}", dEfficiencies);   
+  MuDiLepSRwoVetoMHTEff_->SaveEff("#mu dilep contrib SRwoVeto; H_{T}^{miss} [GeV]; #varepsilon_{2l,SR,woVeto}^{#mu}", dEfficiencies);
+  MuDiLepSRwoVetoMHTNJetsEff_->SaveEff("#mu dilep contrib SRwoVeto; H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{2l,SR,woVeto}^{#mu}", dEfficiencies);
+  MuDiLepSRwoVetoNJetsBTagsEff_->SaveEff("#mu dilep contrib SRwoVeto; N_{jet}; N_{b-jet}; #varepsilon_{2l,SR,woVeto}^{#mu}", dEfficiencies);
+  MuDiLepSRwoVetoSearchBinsEff_->SaveEff("#mu dilep contrib SRwoVeto; N_{jet}; Search region bin number; #varepsilon_{2l,SR,woVeto}^{#mu}", dEfficiencies);
+
+  ElecDiLepSRwoVetoBTagEff_->SaveEff("e dilep contrib SRwoVeto; N_{b-jet}; #varepsilon_{2l,SR,woVeto}^{e}", dEfficiencies);   
+  ElecDiLepSRwoVetoNJetsEff_->SaveEff("e dilep contrib SRwoVeto; N_{jet}; #varepsilon_{2l,SR,woVeto}^{e}", dEfficiencies);   
+  ElecDiLepSRwoVetoHTEff_->SaveEff("e dilep contrib SRwoVeto; H_{T} [GeV]; #varepsilon_{2l,SR,woVeto}^{e}", dEfficiencies);   
+  ElecDiLepSRwoVetoMHTEff_->SaveEff("e dilep contrib SRwoVeto; H_{T}^{miss} [GeV]; #varepsilon_{2l,SR,woVeto}^{e}", dEfficiencies);
+  ElecDiLepSRwoVetoMHTNJetsEff_->SaveEff("e dilep contrib SRwoVeto; H_{T}^{miss} [GeV]; N_{jet}; #varepsilon_{2l,SR,woVeto}^{e}", dEfficiencies);
+  ElecDiLepSRwoVetoNJetsBTagsEff_->SaveEff("e dilep contrib SRwoVeto; N_{jet}; N_{b-jet}; #varepsilon_{2l,SR,woVeto}^{e}", dEfficiencies);
+  ElecDiLepSRwoVetoSearchBinsEff_->SaveEff("e dilep contrib SRwoVeto; N_{jet}; Search region bin number; #varepsilon_{2l,SR,woVeto}^{e}", dEfficiencies);
 
   
   // pt and activity  
   //muon
-  MuPurityOldPT_->SaveEff("#mu purity; p_{T}(#mu) [GeV]", dEfficiencies);   
-  MuPurityOldActivity_->SaveEff("#mu purity; Activity", dEfficiencies, true);   
-  MuAccPT_->SaveEff("#mu acc; p_{T}(#mu) [GeV]", dEfficiencies);   
-  MuAccActivity_->SaveEff("#mu acc; Activity", dEfficiencies, true);   
-  MuRecoPT_->SaveEff("#mu reco; p_{T}(#mu) [GeV]", dEfficiencies);   
-  MuRecoActivity_->SaveEff("#mu reco; Activity", dEfficiencies, true);   
-  MuRecoActivityPT_->SaveEff("#mu reco; Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);   
-  MuIsoPT_->SaveEff("#mu iso; p_{T}(#mu) [GeV]", dEfficiencies);   
-  MuIsoActivity_->SaveEff("#mu iso; Activity", dEfficiencies, true);   
-  MuMTWPT_->SaveEff("#mu m_{T}^{W}; p_{T}(#mu) [GeV]", dEfficiencies);   
-  MuMTWActivity_->SaveEff("#mu m_{T}^{W}; Activity", dEfficiencies, true);   
-  MuIsoActivityPT_->SaveEff("#mu Iso; Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);   
-  MuRecoPTEta_->SaveEff("#mu reco; p_{T}(#mu) [GeV]; #eta(#mu)", dEfficiencies, true);   
-  MuIsoPTEta_->SaveEff("#mu iso; p_{T}(#mu) [GeV]; #eta(#mu)", dEfficiencies, true);   
+  MuPurityOldPT_->SaveEff("#mu purity; p_{T}(#mu) [GeV]; #beta_{old}^{#mu}", dEfficiencies);   
+  MuPurityOldActivity_->SaveEff("#mu purity; Activity; #beta_{old}^{#mu}", dEfficiencies, true);   
+  MuAccPT_->SaveEff("#mu acc; p_{T}(#mu) [GeV]; #varepsilon_{Acc}^{#mu}", dEfficiencies);   
+  MuAccActivity_->SaveEff("#mu acc; Activity; #varepsilon_{Acc}^{#mu}", dEfficiencies, true);   
+  MuRecoPT_->SaveEff("#mu reco; p_{T}(#mu) [GeV]; #varepsilon_{Id}^{#mu}", dEfficiencies);   
+  MuRecoActivity_->SaveEff("#mu reco; Activity; #varepsilon_{Id}^{#mu}", dEfficiencies, true);   
+  MuRecoActivityPT_->SaveEff("#mu reco; Activity; p_{T}(#mu) [GeV]; #varepsilon_{Id}^{#mu}", dEfficiencies, true);   
+  MuIsoPT_->SaveEff("#mu iso; p_{T}(#mu) [GeV]; #varepsilon_{Iso}^{#mu}", dEfficiencies);   
+  MuIsoActivity_->SaveEff("#mu iso; Activity; #varepsilon_{Iso}^{#mu}", dEfficiencies, true);   
+  MuMTWPT_->SaveEff("#mu m_{T}^{W}; p_{T}(#mu) [GeV]; #varepsilon_{m_{T}}^{#mu}", dEfficiencies);   
+  MuMTWActivity_->SaveEff("#mu m_{T}^{W}; Activity; #varepsilon_{m_{T}}^{#mu}", dEfficiencies, true);   
+  MuIsoActivityPT_->SaveEff("#mu Iso; Activity; p_{T}(#mu) [GeV]; #varepsilon_{Iso}^{#mu}", dEfficiencies, true);   
+  MuRecoPTEta_->SaveEff("#mu reco; p_{T}(#mu) [GeV]; #eta(#mu); #varepsilon_{Id}^{#mu}", dEfficiencies, true);   
+  MuIsoPTEta_->SaveEff("#mu iso; p_{T}(#mu) [GeV]; #eta(#mu); #varepsilon_{Id}^{#mu}", dEfficiencies, true);   
 
-  MuIsoActivityPTBTags0_->SaveEff("#mu Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
-  MuRecoPTEtaBTags0_->SaveEff("#mu reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
-  MuIsoActivityPTBTags1Inf_->SaveEff("#mu Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
-  MuRecoPTEtaBTags1Inf_->SaveEff("#mu reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
+  MuIsoActivityPTBTags0_->SaveEff("#mu Iso; Activity; p_{T}(e) [GeV]; #varepsilon_{Iso}^{#mu}", dEfficiencies, true);   
+  MuRecoPTEtaBTags0_->SaveEff("#mu reco; p_{T}(e) [GeV]; #eta(e); #varepsilon_{Id}^{#mu}", dEfficiencies, true);   
+  MuIsoActivityPTBTags1Inf_->SaveEff("#mu Iso; Activity; p_{T}(e) [GeV]; #varepsilon_{Iso}^{#mu}", dEfficiencies, true);   
+  MuRecoPTEtaBTags1Inf_->SaveEff("#mu reco; p_{T}(e) [GeV]; #eta(e); #varepsilon_{Id}^{#mu}", dEfficiencies, true);   
 
   //elec
-  ElecPurityOldPT_->SaveEff("e purity; p_{T}(e) [GeV]", dEfficiencies);   
-  ElecPurityOldActivity_->SaveEff("e purity; Activity", dEfficiencies, true);   
-  ElecAccPT_->SaveEff("e acc; p_{T}(e) [GeV]", dEfficiencies);   
-  ElecAccActivity_->SaveEff("e acc; Activity", dEfficiencies, true);   
-  ElecRecoPT_->SaveEff("e reco; p_{T}(e) [GeV]", dEfficiencies);   
-  ElecRecoActivity_->SaveEff("e reco; Activity", dEfficiencies, true);   
-  ElecRecoActivityPT_->SaveEff("e reco; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
-  ElecIsoPT_->SaveEff("e iso; p_{T}(e) [GeV]", dEfficiencies);   
-  ElecIsoActivity_->SaveEff("e iso; Activity", dEfficiencies, true);   
-  ElecMTWPT_->SaveEff("e m_{T}^{W}; p_{T}(e) [GeV]", dEfficiencies);   
-  ElecMTWActivity_->SaveEff("e m_{T}^{W}; Activity", dEfficiencies, true);   
-  ElecIsoActivityPT_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
-  ElecRecoPTEta_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);  
-  ElecIsoPTEta_->SaveEff("e iso; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true); 
+  ElecPurityOldPT_->SaveEff("e purity; p_{T}(e) [GeV]; #beta_{old}^{e}", dEfficiencies);   
+  ElecPurityOldActivity_->SaveEff("e purity; Activity; #beta_{old}^{e}", dEfficiencies, true);   
+  ElecAccPT_->SaveEff("e acc; p_{T}(e) [GeV]; #varepsilon_{Acc}^{e}", dEfficiencies);   
+  ElecAccActivity_->SaveEff("e acc; Activity; #varepsilon_{Acc}^{e}", dEfficiencies, true);   
+  ElecRecoPT_->SaveEff("e reco; p_{T}(e) [GeV]; #varepsilon_{Id}^{e}", dEfficiencies);   
+  ElecRecoActivity_->SaveEff("e reco; Activity; #varepsilon_{Id}^{e}", dEfficiencies, true);   
+  ElecRecoActivityPT_->SaveEff("e reco; Activity; p_{T}(e) [GeV]; #varepsilon_{Id}^{e}", dEfficiencies, true);   
+  ElecIsoPT_->SaveEff("e iso; p_{T}(e) [GeV]; #varepsilon_{Iso}^{e}", dEfficiencies);   
+  ElecIsoActivity_->SaveEff("e iso; Activity; #varepsilon_{Iso}^{e}", dEfficiencies, true);   
+  ElecMTWPT_->SaveEff("e m_{T}^{W}; p_{T}(e) [GeV]; #varepsilon_{m_{T}}^{e}", dEfficiencies);   
+  ElecMTWActivity_->SaveEff("e m_{T}^{W}; Activity; #varepsilon_{m_{T}}^{e}", dEfficiencies, true);   
+  ElecIsoActivityPT_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]; #varepsilon_{Iso}^{e}", dEfficiencies, true);   
+  ElecRecoPTEta_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e); #varepsilon_{Id}^{e}", dEfficiencies, true);  
+  ElecIsoPTEta_->SaveEff("e iso; p_{T}(e) [GeV]; #eta(e); #varepsilon_{Iso}^{e}", dEfficiencies, true); 
 
-  ElecIsoActivityPTBTags0_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
-  ElecRecoPTEtaBTags0_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
-  ElecIsoActivityPTBTags1Inf_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]", dEfficiencies, true);   
-  ElecRecoPTEtaBTags1Inf_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e)", dEfficiencies, true);   
+  ElecIsoActivityPTBTags0_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]; #varepsilon_{Iso}^{e}", dEfficiencies, true);   
+  ElecRecoPTEtaBTags0_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e); #varepsilon_{Id}^{e}", dEfficiencies, true);   
+  ElecIsoActivityPTBTags1Inf_->SaveEff("e Iso; Activity; p_{T}(e) [GeV]; #varepsilon_{Iso}^{e}", dEfficiencies, true);   
+  ElecRecoPTEtaBTags1Inf_->SaveEff("e reco; p_{T}(e) [GeV]; #eta(e); #varepsilon_{Id}^{e}", dEfficiencies, true);   
 
   // NEW
-  MuRecoActivityPTBarrel_->SaveEff("#mu Reco (barrel); Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);
-  MuIsoActivityPTBarrel_->SaveEff("#mu Iso (barrel); Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);
-  ElecRecoActivityPTBarrel_->SaveEff("e Reco (barrel); Activity; p_{T}(e) [GeV]", dEfficiencies, true);
-  ElecIsoActivityPTBarrel_->SaveEff("e Iso (barrel); Activity; p_{T}(e) [GeV]", dEfficiencies, true);
+  MuRecoActivityPTBarrel_->SaveEff("#mu Reco (barrel); Activity; p_{T}(#mu) [GeV]; #varepsilon_{Id}^{#mu}", dEfficiencies, true);
+  MuIsoActivityPTBarrel_->SaveEff("#mu Iso (barrel); Activity; p_{T}(#mu) [GeV]; #varepsilon_{Iso}^{#mu}", dEfficiencies, true);
+  ElecRecoActivityPTBarrel_->SaveEff("e Reco (barrel); Activity; p_{T}(e) [GeV]; #varepsilon_{Id}^{#mu}", dEfficiencies, true);
+  ElecIsoActivityPTBarrel_->SaveEff("e Iso (barrel); Activity; p_{T}(e) [GeV]; #varepsilon_{Iso}^{#mu}", dEfficiencies, true);
 
-  MuRecoActivityPTDisk_->SaveEff("#mu Reco (disk); Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);
-  MuIsoActivityPTDisk_->SaveEff("#mu Iso (disk); Activity; p_{T}(#mu) [GeV]", dEfficiencies, true);
-  ElecRecoActivityPTDisk_->SaveEff("e Reco (disk); Activity; p_{T}(e) [GeV]", dEfficiencies, true);
-  ElecIsoActivityPTDisk_->SaveEff("e Iso (disk); Activity; p_{T}(e) [GeV]", dEfficiencies, true);
+  MuRecoActivityPTDisk_->SaveEff("#mu Reco (disk); Activity; p_{T}(#mu) [GeV]; #varepsilon_{Id}^{e}", dEfficiencies, true);
+  MuIsoActivityPTDisk_->SaveEff("#mu Iso (disk); Activity; p_{T}(#mu) [GeV]; #varepsilon_{Iso}^{e}", dEfficiencies, true);
+  ElecRecoActivityPTDisk_->SaveEff("e Reco (disk); Activity; p_{T}(e) [GeV]; #varepsilon_{Id}^{e}", dEfficiencies, true);
+  ElecIsoActivityPTDisk_->SaveEff("e Iso (disk); Activity; p_{T}(e) [GeV]; #varepsilon_{Iso}^{e}", dEfficiencies, true);
 
 
   //Isotracks
   //1D
-  ExpectationReductionIsoTrackBTagEff_->SaveEff("iso track expec. reduction; B_{Tags}", dEfficiencies);   
-  ExpectationReductionIsoTrackNJetsEff_->SaveEff("iso track expec. reduction; N_{Jets}", dEfficiencies);   
+  ExpectationReductionIsoTrackBTagEff_->SaveEff("iso track expec. reduction; N_{b-jet}", dEfficiencies);   
+  ExpectationReductionIsoTrackNJetsEff_->SaveEff("iso track expec. reduction; N_{jet}", dEfficiencies);   
   ExpectationReductionIsoTrackHTEff_->SaveEff("iso track expec. reduction; H_{T}", dEfficiencies);   
-  ExpectationReductionIsoTrackMHTEff_->SaveEff("iso track expec. reduction; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ExpectationReductionIsoTrackMHTEff_->SaveEff("iso track expec. reduction; H_{T}^{miss} [GeV]", dEfficiencies);   
   ExpectationReductionIsoTrackPTEff_->SaveEff("iso track expec. reduction; p_{T} [GeV]", dEfficiencies);   
   ExpectationReductionIsoTrackActivityEff_->SaveEff("iso track expec. reduction; Activity", dEfficiencies, true);   
   //2D
-  IsoTrackReductionHTNJets_->SaveEff("iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets24_->SaveEff("iso track expec. reduction N_{Jets}=2-4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets56_->SaveEff("iso track expec. reduction N_{Jets}=5-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets7Inf_->SaveEff("iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets2_->SaveEff("iso track expec. reduction N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets3_->SaveEff("iso track expec. reduction N_{Jets}=3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets4_->SaveEff("iso track expec. reduction N_{Jets}=4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets5_->SaveEff("iso track expec. reduction N_{Jets}=5; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets6_->SaveEff("iso track expec. reduction N_{Jets}=6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets78_->SaveEff("iso track expec. reduction N_{Jets}=7-8; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets9Inf_->SaveEff("iso track expec. reduction N_{Jets}#geq9; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionMHTNJets_->SaveEff("iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  IsoTrackReductionBTagNJets_->SaveEff("iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
+  IsoTrackReductionHTNJets_->SaveEff("iso track expec. reduction; H_{T} [GeV]; N_{jet}", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets24_->SaveEff("iso track expec. reduction N_{jet}=2-4; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets56_->SaveEff("iso track expec. reduction N_{jet}=5-6; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets7Inf_->SaveEff("iso track expec. reduction N_{jet}#geq7; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets2_->SaveEff("iso track expec. reduction N_{jet}=2; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets3_->SaveEff("iso track expec. reduction N_{jet}=3; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets4_->SaveEff("iso track expec. reduction N_{jet}=4; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets5_->SaveEff("iso track expec. reduction N_{jet}=5; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets6_->SaveEff("iso track expec. reduction N_{jet}=6; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets78_->SaveEff("iso track expec. reduction N_{jet}=7-8; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets9Inf_->SaveEff("iso track expec. reduction N_{jet}#geq9; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionMHTNJets_->SaveEff("iso track expec. reduction; H_{T}^{miss} [GeV]; N_{jet}", dEfficiencies);   
+  IsoTrackReductionBTagNJets_->SaveEff("iso track expec. reduction; N_{b-jet}; N_{jet}", dEfficiencies);   
   IsoTrackReductionPTActivity_->SaveEff("iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true);   
 
-  IsoTrackReductionHTMHT_NJets24_BTags0_->SaveEff("iso track expec. reduction N_{Jets}=2-4, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets56_BTags0_->SaveEff("iso track expec. reduction N_{Jets}=5-6, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets7Inf_BTags0_->SaveEff("iso track expec. reduction N_{Jets}#geq7, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets24_BTags1Inf_->SaveEff("iso track expec. reduction N_{Jets}=3-4, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets56_BTags1Inf_->SaveEff("iso track expec. reduction N_{Jets}=5-6, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  IsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_->SaveEff("iso track expec. reduction N_{Jets}#geq7, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets24_BTags0_->SaveEff("iso track expec. reduction N_{jet}=2-4, N_{b-jet}=0; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets56_BTags0_->SaveEff("iso track expec. reduction N_{jet}=5-6, N_{b-jet}=0; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets7Inf_BTags0_->SaveEff("iso track expec. reduction N_{jet}#geq7, N_{b-jet}=0; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets24_BTags1Inf_->SaveEff("iso track expec. reduction N_{jet}=3-4, N_{b-jet}=1+; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets56_BTags1Inf_->SaveEff("iso track expec. reduction N_{jet}=5-6, N_{b-jet}=1+; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  IsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_->SaveEff("iso track expec. reduction N_{jet}#geq7, N_{b-jet}=1+; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
 
   // mu iso tracks
   //1D
-  ExpectationReductionMuIsoTrackBTagEff_->SaveEff("#mu iso track expec. reduction; B_{Tags}", dEfficiencies);   
-  ExpectationReductionMuIsoTrackNJetsEff_->SaveEff("#mu iso track expec. reduction; N_{Jets}", dEfficiencies);   
+  ExpectationReductionMuIsoTrackBTagEff_->SaveEff("#mu iso track expec. reduction; N_{b-jet}", dEfficiencies);   
+  ExpectationReductionMuIsoTrackNJetsEff_->SaveEff("#mu iso track expec. reduction; N_{jet}", dEfficiencies);   
   ExpectationReductionMuIsoTrackHTEff_->SaveEff("#mu iso track expec. reduction; H_{T}", dEfficiencies);   
-  ExpectationReductionMuIsoTrackMHTEff_->SaveEff("#mu iso track expec. reduction; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ExpectationReductionMuIsoTrackMHTEff_->SaveEff("#mu iso track expec. reduction; H_{T}^{miss} [GeV]", dEfficiencies);   
   ExpectationReductionMuIsoTrackPTEff_->SaveEff("#mu iso track expec. reduction; p_{T} [GeV]", dEfficiencies);   
   ExpectationReductionMuIsoTrackActivityEff_->SaveEff("#mu iso track expec. reduction; Activity", dEfficiencies, true);   
   //2D
-  MuIsoTrackReductionHTNJets_->SaveEff("#mu iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  MuIsoTrackReductionMHTNJets_->SaveEff("#mu iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  MuIsoTrackReductionBTagNJets_->SaveEff("#mu iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
+  MuIsoTrackReductionHTNJets_->SaveEff("#mu iso track expec. reduction; H_{T} [GeV]; N_{jet}", dEfficiencies);   
+  MuIsoTrackReductionMHTNJets_->SaveEff("#mu iso track expec. reduction; H_{T}^{miss} [GeV]; N_{jet}", dEfficiencies);   
+  MuIsoTrackReductionBTagNJets_->SaveEff("#mu iso track expec. reduction; N_{b-jet}; N_{jet}", dEfficiencies);   
   MuIsoTrackReductionPTActivity_->SaveEff("#mu iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true); 
-  MuIsoTrackReductionHTMHT_NJets24_->SaveEff("#mu iso track expec. reduction N_{Jets}=2-4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets56_->SaveEff("#mu iso track expec. reduction N_{Jets}=5-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets7Inf_->SaveEff("#mu iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets2_->SaveEff("#mu iso track expec. reduction N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets3_->SaveEff("#mu iso track expec. reduction N_{Jets}=3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets4_->SaveEff("#mu iso track expec. reduction N_{Jets}=4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets5_->SaveEff("#mu iso track expec. reduction N_{Jets}=5; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets6_->SaveEff("#mu iso track expec. reduction N_{Jets}=6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets78_->SaveEff("#mu iso track expec. reduction N_{Jets}=7-8; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets9Inf_->SaveEff("#mu iso track expec. reduction N_{Jets}#geq9; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  
+  MuIsoTrackReductionHTMHT_NJets24_->SaveEff("#mu iso track expec. reduction N_{jet}=2-4; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets56_->SaveEff("#mu iso track expec. reduction N_{jet}=5-6; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets7Inf_->SaveEff("#mu iso track expec. reduction N_{jet}#geq7; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets2_->SaveEff("#mu iso track expec. reduction N_{jet}=2; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets3_->SaveEff("#mu iso track expec. reduction N_{jet}=3; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets4_->SaveEff("#mu iso track expec. reduction N_{jet}=4; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets5_->SaveEff("#mu iso track expec. reduction N_{jet}=5; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets6_->SaveEff("#mu iso track expec. reduction N_{jet}=6; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets78_->SaveEff("#mu iso track expec. reduction N_{jet}=7-8; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets9Inf_->SaveEff("#mu iso track expec. reduction N_{jet}#geq9; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
 
-  MuIsoTrackReductionHTMHT_NJets24_BTags0_->SaveEff("#mu iso track expec. reduction N_{Jets}=2-4, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets56_BTags0_->SaveEff("#mu iso track expec. reduction N_{Jets}=5-6, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets7Inf_BTags0_->SaveEff("#mu iso track expec. reduction N_{Jets}#geq7, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets24_BTags1Inf_->SaveEff("#mu iso track expec. reduction N_{Jets}=2-4, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets56_BTags1Inf_->SaveEff("#mu iso track expec. reduction N_{Jets}=5-6, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  MuIsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_->SaveEff("#mu iso track expec. reduction N_{Jets}#geq7, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets24_BTags0_->SaveEff("#mu iso track expec. reduction N_{jet}=2-4, N_{b-jet}=0; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets56_BTags0_->SaveEff("#mu iso track expec. reduction N_{jet}=5-6, N_{b-jet}=0; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets7Inf_BTags0_->SaveEff("#mu iso track expec. reduction N_{jet}#geq7, N_{b-jet}=0; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets24_BTags1Inf_->SaveEff("#mu iso track expec. reduction N_{jet}=2-4, N_{b-jet}=1+; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets56_BTags1Inf_->SaveEff("#mu iso track expec. reduction N_{jet}=5-6, N_{b-jet}=1+; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  MuIsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_->SaveEff("#mu iso track expec. reduction N_{jet}#geq7, N_{b-jet}=1+; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
 
   // elec iso tracks
   //1D
-  ExpectationReductionElecIsoTrackBTagEff_->SaveEff("e iso track expec. reduction; B_{Tags}", dEfficiencies);   
-  ExpectationReductionElecIsoTrackNJetsEff_->SaveEff("e iso track expec. reduction; N_{Jets}", dEfficiencies);   
+  ExpectationReductionElecIsoTrackBTagEff_->SaveEff("e iso track expec. reduction; N_{b-jet}", dEfficiencies);   
+  ExpectationReductionElecIsoTrackNJetsEff_->SaveEff("e iso track expec. reduction; N_{jet}", dEfficiencies);   
   ExpectationReductionElecIsoTrackHTEff_->SaveEff("e iso track expec. reduction; H_{T}", dEfficiencies);   
-  ExpectationReductionElecIsoTrackMHTEff_->SaveEff("e iso track expec. reduction; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ExpectationReductionElecIsoTrackMHTEff_->SaveEff("e iso track expec. reduction; H_{T}^{miss} [GeV]", dEfficiencies);   
   ExpectationReductionElecIsoTrackPTEff_->SaveEff("e iso track expec. reduction; p_{T} [GeV]", dEfficiencies);   
   ExpectationReductionElecIsoTrackActivityEff_->SaveEff("e iso track expec. reduction; Activity", dEfficiencies, true);   
   //2D
-  ElecIsoTrackReductionHTNJets_->SaveEff("e iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  ElecIsoTrackReductionMHTNJets_->SaveEff("e iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  ElecIsoTrackReductionBTagNJets_->SaveEff("e iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
+  ElecIsoTrackReductionHTNJets_->SaveEff("e iso track expec. reduction; H_{T} [GeV]; N_{jet}", dEfficiencies);   
+  ElecIsoTrackReductionMHTNJets_->SaveEff("e iso track expec. reduction; H_{T}^{miss} [GeV]; N_{jet}", dEfficiencies);   
+  ElecIsoTrackReductionBTagNJets_->SaveEff("e iso track expec. reduction; N_{b-jet}; N_{jet}", dEfficiencies);   
   ElecIsoTrackReductionPTActivity_->SaveEff("e iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true); 
-  ElecIsoTrackReductionHTMHT_NJets24_->SaveEff("e iso track expec. reduction N_{Jets}=2-4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets56_->SaveEff("e iso track expec. reduction N_{Jets}=5-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets7Inf_->SaveEff("e iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets2_->SaveEff("e iso track expec. reduction N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets3_->SaveEff("e iso track expec. reduction N_{Jets}=3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets4_->SaveEff("e iso track expec. reduction N_{Jets}=4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets5_->SaveEff("e iso track expec. reduction N_{Jets}=5; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets6_->SaveEff("e iso track expec. reduction N_{Jets}=6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets78_->SaveEff("e iso track expec. reduction N_{Jets}=7-8; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets9Inf_->SaveEff("e iso track expec. reduction N_{Jets}#geq9; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  
+  ElecIsoTrackReductionHTMHT_NJets24_->SaveEff("e iso track expec. reduction N_{jet}=2-4; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets56_->SaveEff("e iso track expec. reduction N_{jet}=5-6; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets7Inf_->SaveEff("e iso track expec. reduction N_{jet}#geq7; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets2_->SaveEff("e iso track expec. reduction N_{jet}=2; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets3_->SaveEff("e iso track expec. reduction N_{jet}=3; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets4_->SaveEff("e iso track expec. reduction N_{jet}=4; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets5_->SaveEff("e iso track expec. reduction N_{jet}=5; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets6_->SaveEff("e iso track expec. reduction N_{jet}=6; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets78_->SaveEff("e iso track expec. reduction N_{jet}=7-8; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets9Inf_->SaveEff("e iso track expec. reduction N_{jet}#geq9; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
 
-  ElecIsoTrackReductionHTMHT_NJets24_BTags0_->SaveEff("e iso track expec. reduction N_{Jets}=2-4, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets56_BTags0_->SaveEff("e iso track expec. reduction N_{Jets}=5-6, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets7Inf_BTags0_->SaveEff("e iso track expec. reduction N_{Jets}#geq7, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets24_BTags1Inf_->SaveEff("e iso track expec. reduction N_{Jets}=2-4, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets56_BTags1Inf_->SaveEff("e iso track expec. reduction N_{Jets}=5-6, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  ElecIsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_->SaveEff("e iso track expec. reduction N_{Jets}#geq7, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets24_BTags0_->SaveEff("e iso track expec. reduction N_{jet}=2-4, N_{b-jet}=0; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets56_BTags0_->SaveEff("e iso track expec. reduction N_{jet}=5-6, N_{b-jet}=0; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets7Inf_BTags0_->SaveEff("e iso track expec. reduction N_{jet}#geq7, N_{b-jet}=0; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets24_BTags1Inf_->SaveEff("e iso track expec. reduction N_{jet}=2-4, N_{b-jet}=1+; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets56_BTags1Inf_->SaveEff("e iso track expec. reduction N_{jet}=5-6, N_{b-jet}=1+; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  ElecIsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_->SaveEff("e iso track expec. reduction N_{jet}#geq7, N_{b-jet}=1+; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
   
   // pion iso tracks
   //1D
-  ExpectationReductionPionIsoTrackBTagEff_->SaveEff("#pi iso track expec. reduction; B_{Tags}", dEfficiencies);   
-  ExpectationReductionPionIsoTrackNJetsEff_->SaveEff("#pi iso track expec. reduction; N_{Jets}", dEfficiencies);   
+  ExpectationReductionPionIsoTrackBTagEff_->SaveEff("#pi iso track expec. reduction; N_{b-jet}", dEfficiencies);   
+  ExpectationReductionPionIsoTrackNJetsEff_->SaveEff("#pi iso track expec. reduction; N_{jet}", dEfficiencies);   
   ExpectationReductionPionIsoTrackHTEff_->SaveEff("#pi iso track expec. reduction; H_{T}", dEfficiencies);   
-  ExpectationReductionPionIsoTrackMHTEff_->SaveEff("#pi iso track expec. reduction; #slash{H}_{T} [GeV]", dEfficiencies);   
+  ExpectationReductionPionIsoTrackMHTEff_->SaveEff("#pi iso track expec. reduction; H_{T}^{miss} [GeV]", dEfficiencies);   
   ExpectationReductionPionIsoTrackPTEff_->SaveEff("#pi iso track expec. reduction; p_{T} [GeV]", dEfficiencies);   
   ExpectationReductionPionIsoTrackActivityEff_->SaveEff("#pi iso track expec. reduction; Activity", dEfficiencies, true);   
   //2D
-  PionIsoTrackReductionHTNJets_->SaveEff("#pi iso track expec. reduction; H_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  PionIsoTrackReductionMHTNJets_->SaveEff("#pi iso track expec. reduction; #slash{H}_{T} [GeV]; N_{Jets}", dEfficiencies);   
-  PionIsoTrackReductionBTagNJets_->SaveEff("#pi iso track expec. reduction; B_{Tags}; N_{Jets}", dEfficiencies);   
+  PionIsoTrackReductionHTNJets_->SaveEff("#pi iso track expec. reduction; H_{T} [GeV]; N_{jet}", dEfficiencies);   
+  PionIsoTrackReductionMHTNJets_->SaveEff("#pi iso track expec. reduction; H_{T}^{miss} [GeV]; N_{jet}", dEfficiencies);   
+  PionIsoTrackReductionBTagNJets_->SaveEff("#pi iso track expec. reduction; N_{b-jet}; N_{jet}", dEfficiencies);   
   PionIsoTrackReductionPTActivity_->SaveEff("#pi iso track expec. reduction; Activity; p_{T} [GeV]", dEfficiencies, true);
-  PionIsoTrackReductionHTMHT_NJets24_->SaveEff("#pi iso track expec. reduction N_{Jets}=2-4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets56_->SaveEff("#pi iso track expec. reduction N_{Jets}=5-6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets7Inf_->SaveEff("#pi iso track expec. reduction N_{Jets}#geq7; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets2_->SaveEff("#pi iso track expec. reduction N_{Jets}=2; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets3_->SaveEff("#pi iso track expec. reduction N_{Jets}=3; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets4_->SaveEff("#pi iso track expec. reduction N_{Jets}=4; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets5_->SaveEff("#pi iso track expec. reduction N_{Jets}=5; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets6_->SaveEff("#pi iso track expec. reduction N_{Jets}=6; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets78_->SaveEff("#pi iso track expec. reduction N_{Jets}=7-8; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets9Inf_->SaveEff("#pi iso track expec. reduction N_{Jets}#geq9; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  
+  PionIsoTrackReductionHTMHT_NJets24_->SaveEff("#pi iso track expec. reduction N_{jet}=2-4; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets56_->SaveEff("#pi iso track expec. reduction N_{jet}=5-6; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets7Inf_->SaveEff("#pi iso track expec. reduction N_{jet}#geq7; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets2_->SaveEff("#pi iso track expec. reduction N_{jet}=2; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets3_->SaveEff("#pi iso track expec. reduction N_{jet}=3; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets4_->SaveEff("#pi iso track expec. reduction N_{jet}=4; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets5_->SaveEff("#pi iso track expec. reduction N_{jet}=5; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets6_->SaveEff("#pi iso track expec. reduction N_{jet}=6; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets78_->SaveEff("#pi iso track expec. reduction N_{jet}=7-8; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets9Inf_->SaveEff("#pi iso track expec. reduction N_{jet}#geq9; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
 
-  PionIsoTrackReductionHTMHT_NJets24_BTags0_->SaveEff("#pi iso track expec. reduction N_{Jets}=2-4, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets56_BTags0_->SaveEff("#pi iso track expec. reduction N_{Jets}=5-6, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets7Inf_BTags0_->SaveEff("#pi iso track expec. reduction N_{Jets}#geq7, B_{Tags}=0; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets24_BTags1Inf_->SaveEff("#pi iso track expec. reduction N_{Jets}=2-4, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets56_BTags1Inf_->SaveEff("#pi iso track expec. reduction N_{Jets}=5-6, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
-  PionIsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_->SaveEff("#pi iso track expec. reduction N_{Jets}#geq7, B_{Tags}=1+; H_{T} [GeV]; #slash{H}_{T} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets24_BTags0_->SaveEff("#pi iso track expec. reduction N_{jet}=2-4, N_{b-jet}=0; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets56_BTags0_->SaveEff("#pi iso track expec. reduction N_{jet}=5-6, N_{b-jet}=0; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets7Inf_BTags0_->SaveEff("#pi iso track expec. reduction N_{jet}#geq7, N_{b-jet}=0; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets24_BTags1Inf_->SaveEff("#pi iso track expec. reduction N_{jet}=2-4, N_{b-jet}=1+; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets56_BTags1Inf_->SaveEff("#pi iso track expec. reduction N_{jet}=5-6, N_{b-jet}=1+; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
+  PionIsoTrackReductionHTMHT_NJets7Inf_BTags1Inf_->SaveEff("#pi iso track expec. reduction N_{jet}#geq7, N_{b-jet}=1+; H_{T} [GeV]; H_{T}^{miss} [GeV]", dEfficiencies);
 
   if(doAdditionalPlots){
+    outPutFile->cd();
+    outPutFile->mkdir("FractionsIsoTrack");
+    TDirectory *dFractionsIsoTrack = (TDirectory*)outPutFile->Get("FractionsIsoTrack");
+    dFractionsIsoTrack->cd();
+    IsoTrackFractionPTActivity_->SaveEff("iso track fraction; Activity; p_{T} [GeV]; fraction of events [%]", dFractionsIsoTrack, true, true, true);
+    MuIsoTrackFractionPTActivity_->SaveEff("mu iso track fraction; Activity; p_{T} [GeV]; fraction of events [%]", dFractionsIsoTrack, true, true, true);
+    ElecIsoTrackFractionPTActivity_->SaveEff("elec iso track fraction; Activity; p_{T} [GeV]; fraction of events [%]", dFractionsIsoTrack, true, true, true);
+    PionIsoTrackFractionPTActivity_->SaveEff("pion iso track fraction; Activity; p_{T} [GeV]; fraction of events [%]", dFractionsIsoTrack, true, true, true);
+
+    if(doTAPplots){
+      TrackIsolationPTActivity_->SaveEff("track isolation; Activity; p_{T} [GeV]; #varepsilon_{trk}^{iso}", dEfficiencies, true, true);
+      MuTrackIsolationPTActivity_->SaveEff("mu track isolation; Activity; p_{T} [GeV]; #varepsilon_{#mu trk}^{iso}", dEfficiencies, true, true);
+      ElecTrackIsolationPTActivity_->SaveEff("elec track isolation; Activity; p_{T} [GeV]; #varepsilon_{e trk}^{iso}", dEfficiencies, true, true);
+      PionTrackIsolationPTActivity_->SaveEff("pion track isolation; Activity; p_{T} [GeV]; #varepsilon_{#pi trk}^{iso}", dEfficiencies, true, true);
+    }
+
     TH1D *MuWoVetoFracHT_ = (TH1D*) MuAccWoVetoFracHT_->Clone("MuWoVetoFracHT");
     MuWoVetoFracHT_->Add(MuRecoWoVetoFracHT_);
     MuWoVetoFracHT_->Add(MuIsoWoVetoFracHT_);
@@ -4251,6 +4752,76 @@ void EffMaker::Terminate()
   savePlot(ElecIsoFracNJets_);
   savePlot(ElecIsoFracBTags_);
 
+  MuIsoTrackVetoPt_->Scale(1./MuIsoTrackVetoPt_->Integral());
+  ElecIsoTrackVetoPt_->Scale(1./ElecIsoTrackVetoPt_->Integral());
+  PionIsoTrackVetoPt_->Scale(1./PionIsoTrackVetoPt_->Integral());
+  IsoTrackVetoPt_->Scale(1./IsoTrackVetoPt_->Integral());
+
+  MuIsoTrackVetoPtAcc_->Scale(1./MuIsoTrackVetoPtAcc_->Integral());
+  ElecIsoTrackVetoPtAcc_->Scale(1./ElecIsoTrackVetoPtAcc_->Integral());
+  PionIsoTrackVetoPtAcc_->Scale(1./PionIsoTrackVetoPtAcc_->Integral());
+  IsoTrackVetoPtAcc_->Scale(1./IsoTrackVetoPtAcc_->Integral());
+
+  MuIsoTrackVetoPtIDIso_->Scale(1./MuIsoTrackVetoPtIDIso_->Integral());
+  ElecIsoTrackVetoPtIDIso_->Scale(1./ElecIsoTrackVetoPtIDIso_->Integral());
+  PionIsoTrackVetoPtIDIso_->Scale(1./PionIsoTrackVetoPtIDIso_->Integral());
+  IsoTrackVetoPtIDIso_->Scale(1./IsoTrackVetoPtIDIso_->Integral());
+
+  MuIsoTrackVetoPtID_->Scale(1./MuIsoTrackVetoPtID_->Integral());
+  ElecIsoTrackVetoPtID_->Scale(1./ElecIsoTrackVetoPtID_->Integral());
+  PionIsoTrackVetoPtID_->Scale(1./PionIsoTrackVetoPtID_->Integral());
+  IsoTrackVetoPtID_->Scale(1./IsoTrackVetoPtID_->Integral());
+
+  MuIsoTrackVetoPtIso_->Scale(1./MuIsoTrackVetoPtIso_->Integral());
+  ElecIsoTrackVetoPtIso_->Scale(1./ElecIsoTrackVetoPtIso_->Integral());
+  PionIsoTrackVetoPtIso_->Scale(1./PionIsoTrackVetoPtIso_->Integral());
+  IsoTrackVetoPtIso_->Scale(1./IsoTrackVetoPtIso_->Integral());
+
+  MuIsoTrackVetoPtMuAcc_->Scale(1./MuIsoTrackVetoPtMuAcc_->Integral());
+  ElecIsoTrackVetoPtMuAcc_->Scale(1./ElecIsoTrackVetoPtMuAcc_->Integral());
+  PionIsoTrackVetoPtMuAcc_->Scale(1./PionIsoTrackVetoPtMuAcc_->Integral());
+  IsoTrackVetoPtMuAcc_->Scale(1./IsoTrackVetoPtMuAcc_->Integral());
+
+  MuIsoTrackVetoPtMuIDIso_->Scale(1./MuIsoTrackVetoPtMuIDIso_->Integral());
+  ElecIsoTrackVetoPtMuIDIso_->Scale(1./ElecIsoTrackVetoPtMuIDIso_->Integral());
+  PionIsoTrackVetoPtMuIDIso_->Scale(1./PionIsoTrackVetoPtMuIDIso_->Integral());
+  IsoTrackVetoPtMuIDIso_->Scale(1./IsoTrackVetoPtMuIDIso_->Integral());
+
+  MuIsoTrackVetoPtMuID_->Scale(1./MuIsoTrackVetoPtMuID_->Integral());
+  ElecIsoTrackVetoPtMuID_->Scale(1./ElecIsoTrackVetoPtMuID_->Integral());
+  PionIsoTrackVetoPtMuID_->Scale(1./PionIsoTrackVetoPtMuID_->Integral());
+  IsoTrackVetoPtMuID_->Scale(1./IsoTrackVetoPtMuID_->Integral());
+
+  MuIsoTrackVetoPtMuIso_->Scale(1./MuIsoTrackVetoPtMuIso_->Integral());
+  ElecIsoTrackVetoPtMuIso_->Scale(1./ElecIsoTrackVetoPtMuIso_->Integral());
+  PionIsoTrackVetoPtMuIso_->Scale(1./PionIsoTrackVetoPtMuIso_->Integral());
+  IsoTrackVetoPtMuIso_->Scale(1./IsoTrackVetoPtMuIso_->Integral());
+
+  MuIsoTrackVetoPtElecAcc_->Scale(1./MuIsoTrackVetoPtElecAcc_->Integral());
+  ElecIsoTrackVetoPtElecAcc_->Scale(1./ElecIsoTrackVetoPtElecAcc_->Integral());
+  PionIsoTrackVetoPtElecAcc_->Scale(1./PionIsoTrackVetoPtElecAcc_->Integral());
+  IsoTrackVetoPtElecAcc_->Scale(1./IsoTrackVetoPtElecAcc_->Integral());
+
+  MuIsoTrackVetoPtElecIDIso_->Scale(1./MuIsoTrackVetoPtElecIDIso_->Integral());
+  ElecIsoTrackVetoPtElecIDIso_->Scale(1./ElecIsoTrackVetoPtElecIDIso_->Integral());
+  PionIsoTrackVetoPtElecIDIso_->Scale(1./PionIsoTrackVetoPtElecIDIso_->Integral());
+  IsoTrackVetoPtElecIDIso_->Scale(1./IsoTrackVetoPtElecIDIso_->Integral());
+
+  MuIsoTrackVetoPtElecID_->Scale(1./MuIsoTrackVetoPtElecID_->Integral());
+  ElecIsoTrackVetoPtElecID_->Scale(1./ElecIsoTrackVetoPtElecID_->Integral());
+  PionIsoTrackVetoPtElecID_->Scale(1./PionIsoTrackVetoPtElecID_->Integral());
+  IsoTrackVetoPtElecID_->Scale(1./IsoTrackVetoPtElecID_->Integral());
+
+  MuIsoTrackVetoPtElecIso_->Scale(1./MuIsoTrackVetoPtElecIso_->Integral());
+  ElecIsoTrackVetoPtElecIso_->Scale(1./ElecIsoTrackVetoPtElecIso_->Integral());
+  PionIsoTrackVetoPtElecIso_->Scale(1./PionIsoTrackVetoPtElecIso_->Integral());
+  IsoTrackVetoPtElecIso_->Scale(1./IsoTrackVetoPtElecIso_->Integral());
+
+
+  savePlot(MuIsoTrackVetoPt_);
+  savePlot(ElecIsoTrackVetoPt_);
+  savePlot(PionIsoTrackVetoPt_);
+  savePlot(IsoTrackVetoPt_);
 
   savePlot(MuIsoTrackVetoPtAcc_);
   savePlot(ElecIsoTrackVetoPtAcc_);
@@ -4362,4 +4933,17 @@ void EffMaker::Terminate()
   }
   outPutFile->cd();
   outPutFile->Close();
+  
+  TFile *outPutFileSam = new TFile("Efficiencies_reco_LepTrack.root","RECREATE"); 
+  outPutFileSam->cd();
+
+  recoLepOverAccMu->SaveEff("recoLepOverAccMu; p_{T}(mu) [GeV]; #eta(mu)", outPutFileSam, true);
+  recoTrackOverAccMu->SaveEff("recoTrackOverAccMu; p_{T}(mu) [GeV]; #eta(mu)", outPutFileSam, true);
+  recoOverAccMu->SaveEff("recoOverAccMu; p_{T}(mu) [GeV]; #eta(mu)", outPutFileSam, true);
+  recoLepOverAccEl->SaveEff("recoLepOverAccEl; p_{T}(e) [GeV]; #eta(e)", outPutFileSam, true);
+  recoTrackOverAccEl->SaveEff("recoTrackOverAccEl; p_{T}(e) [GeV]; #eta(e)", outPutFileSam, true);
+  recoOverAccEl->SaveEff("recoOverAccEl; p_{T}(e) [GeV]; #eta(e)", outPutFileSam, true);
+
+  outPutFileSam->cd();
+  outPutFileSam->Close();
 }

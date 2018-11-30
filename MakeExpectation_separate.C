@@ -70,13 +70,13 @@ void MakeExpectation_separate()
   for(Int_t i=0; i<nChains; i++){ // i<nChains
     std::cout<<"Processing Tree: "<<i<<std::endl;
     if(i>2){ //2
-      Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d.root",i)); // folder already has to exist for the time beeing...
-      //Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d_1.root",i), 1000000, 0);
-      //Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d_2.root",i), TChain::kBigNumber, 1000001);
+      Effchain[i]->Process("ExpecMaker", TString::Format("/nfs/dust/cms/user/kurzsimo/LostLeptonExpectation_bTagPlotting/separate/Expectation_%d.root",i)); // folder already has to exist for the time beeing...
+      //Effchain[i]->Process("ExpecMaker", TString::Format("/nfs/dust/cms/user/kurzsimo/LostLeptonExpectation_final/Expectation_separate_isoTrack/Expectation_%d_1.root",i), 1000000, 0);
+      //Effchain[i]->Process("ExpecMaker", TString::Format("/nfs/dust/cms/user/kurzsimo/LostLeptonExpectation_final/Expectation_separate_isoTrack/Expectation_%d_2.root",i), TChain::kBigNumber, 1000001);
     }else{
-      Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d.root, 600",i));
-      //Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d_1.root, 600",i), 1000000, 0);
-      //Effchain[i]->Process("ExpecMaker", TString::Format("Expectation_separate/Expectation_%d_2.root, 600",i), TChain::kBigNumber, 1000001);
+      Effchain[i]->Process("ExpecMaker", TString::Format("/nfs/dust/cms/user/kurzsimo/LostLeptonExpectation_bTagPlotting/separate/Expectation_%d.root, 600",i));
+      //Effchain[i]->Process("ExpecMaker", TString::Format("/nfs/dust/cms/user/kurzsimo/LostLeptonExpectation_final/Expectation_separate_isoTrack/Expectation_%d_1.root, 600",i), 1000000, 0);
+      //Effchain[i]->Process("ExpecMaker", TString::Format("/nfs/dust/cms/user/kurzsimo/LostLeptonExpectation_final/Expectation_separate_isoTrack/Expectation_%d_2.root, 600",i), TChain::kBigNumber, 1000001);
     }
   }
 /*
